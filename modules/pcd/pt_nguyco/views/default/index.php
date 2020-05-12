@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Html;
 use yii\bootstrap\Modal;
 use kartik\grid\GridView;
@@ -11,7 +12,6 @@ CrudAsset::register($this);
 $this->title = "Điểm nguy cơ";
 $is_partial = request('partial') == true;
 ?>
-
 <div class="pt-nguyco-index">
     <div id="ajaxCrudDatatable">
         <?= $this->render('_search_gs', ['model' => $searchModel]) ?>
@@ -22,11 +22,11 @@ $is_partial = request('partial') == true;
             'filterModel' => $searchModel,
             'filterSelector' => 'select[name="pagination"]',
             'pjax' => true,
-            'pjaxSettings'     => [
+            'pjaxSettings' => [
                 'options' => [
                     'enablePushState' => $is_partial ? false : true,
-                    'formSelector'    => '#ajaxCrudDatatable form[data-pjax]',
-                    'scrollTo'        => true,
+                    'formSelector' => '#ajaxCrudDatatable form[data-pjax]',
+                    'scrollTo' => true,
                 ],
             ],
             'columns' => require(__DIR__ . '/_columns.php'),
@@ -43,10 +43,13 @@ $is_partial = request('partial') == true;
             'striped' => true,
             'condensed' => true,
             'responsive' => true,
+            'resizableColumns' => false,
             'panel' => [
                 'type' => 'primary',
                 'heading' => 'Danh sách Điểm nguy cơ',
-            ]
+            ],
+            'floatHeader' => false,
+            'tableOptions' => ['style' => 'width: 2000px;'],
         ]) ?>
     </div>
 </div>

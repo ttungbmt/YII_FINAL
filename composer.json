@@ -20,7 +20,41 @@
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "ttungbmt/yii2-core": "*",
-        "nanson/yii2-postgis": "^1.0"
+        "creocoder/yii2-nested-sets": "^0.9.0",
+        "johnitvn/yii2-ajaxcrud": "^2.1",
+        "sheershoff/yii2-module-urlrules": "~1.0.0",
+        "mootensai/yii2-relation-trait": "^1.1",
+        "johnitvn/yii2-rbac-plus": "*",
+        "oxyaction/yii2-polymorphic-relation-behavior": "^1.0",
+        "dmirogin/yii2-js-urlmanager": "^1.1",
+        "paulzi/yii2-json-behavior": "^1.0",
+        "kop/yii2-scroll-pager": "^2.5",
+        "moonlandsoft/yii2-phpexcel": "^1.1",
+        "pheme/yii2-settings": "^0.5.0",
+        "nterms/yii2-pagesize-widget": "*",
+        "pheme/yii2-toggle-column": "*",
+        "2amigos/yii2-ckeditor-widget": "^2.1",
+        "yii2tech/ar-position": "^1.0",
+        "creocoder/yii2-flysystem": "^0.9.0",
+        "kv4nt/yii2-owl-carousel2": "*",
+        "bower-asset/noty": "^3.1",
+        "nepstor/yii2-datetime-compare-validator": "^2.0",
+        "webzop/yii2-notifications": "*",
+        "phpoffice/phpspreadsheet": "^1.1",
+        "softark/yii2-dual-listbox": "dev-master",
+        "frostealth/yii2-relation-behavior": "@stable",
+        "cornernote/yii2-linkall": "*",
+        "yii2tech/ar-softdelete": "*",
+        "voskobovich/yii2-tree-manager": "^1.0",
+        "paulzi/yii2-nested-sets" : "^1.0",
+        "wbraganca/yii2-fancytree-widget": "*",
+        "jakezatecky/array_group_by": "^2.0",
+        "rob006/yii2-simple-auth-yii-authenticator": "^1.0",
+        "liyunfang/yii2-widget-linkpager": "^1.0",
+        "tuyakhov/yii2-notifications": "*",
+        "machour/yii2-notifications": "*",
+        "yii2tech/spreadsheet": "*",
+        "kriss/yii2-link-pager-with-submit": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
@@ -33,7 +67,13 @@
     },
     "autoload": {
         "psr-4": {
-
+            "ttungbmt\\map\\": "extensions/yii2-widget-map",
+            "ttungbmt\\amcharts\\": "extensions/yii2-amcharts",
+            "ttungbmt\\noty\\": "extensions/yii2-noty",
+            "yarisrespect\\excel\\": "extensions/yii2-excel",
+            "ttungbmt\\pager\\": "extensions/yii2-pager",
+            "ttungbmt\\datatables\\": "extensions/yii2-datatables/src",
+            "modules\\": "modules"
         }
     },
     "config": {

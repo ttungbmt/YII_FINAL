@@ -2,6 +2,7 @@
 namespace common\supports;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class MyUser extends \yii\web\User
 {
@@ -45,7 +46,7 @@ class MyUser extends \yii\web\User
 
         $action = $this->mapArray($slug, function ($item) use ($perms, $params){
             foreach ($perms as $perm){
-                if(str_is($perm, $item)) {
+                if(Str::is($perm, $item)) {
                     if(!empty($params)) return $this->can($perm, $params);
 
                     return true;

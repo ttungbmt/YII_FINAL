@@ -2,6 +2,7 @@
 namespace common\modules\auth\supports;
 
 use app\modules\auth\models\VUser;
+use Illuminate\Support\Str;
 use Yii;
 use yii\db\Query;
 use yii\rbac\Item;
@@ -182,7 +183,7 @@ class UserService
 
         $action = $this->mapArray($slug, function ($item) use($perms, $params){
             foreach ($perms as $perm){
-                if(str_is($perm, $item)) {
+                if(Str::is($perm, $item)) {
                     if(!empty($params)) return $this->user->can($perm, $params);
 
                     return true;

@@ -1,4 +1,6 @@
 <?php
+use Illuminate\Support\Str;
+
 return [
     [
         'class' => 'kartik\grid\SerialColumn',
@@ -20,6 +22,7 @@ return [
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'ten_cs',
+
     ],
     [
         'class' => '\kartik\grid\DataColumn',
@@ -41,15 +44,12 @@ return [
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'khupho',
+        'width' => '50px'
     ],
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'to_dp',
-    ],
-
-    [
-        'class' => '\kartik\grid\DataColumn',
-        'attribute' => 'sonha',
+        'width' => '50px'
     ],
     [
         'class' => '\kartik\grid\DataColumn',
@@ -57,15 +57,20 @@ return [
     ],
     [
         'class' => '\kartik\grid\DataColumn',
-        'attribute' => 'loaihinh',
-        'width' => 200,
+        'attribute' => 'nhom',
+        'label' => 'Nhóm',
+        'width' => '50px',
         'value' => function($model){
-            return $model->loaihinh_id ? data_get($model->dm_loaihinh, 'ten_lh') : $model->loaihinh;
+            return $model->loaihinh_id ? data_get($model->dm_loaihinh, 'nhom') : $model->nhom;
         }
     ],
     [
         'class' => '\kartik\grid\DataColumn',
-        'attribute' => 'nhom',
+        'attribute' => 'loaihinh',
+        'contentOptions' => ['style' => 'max-width:250px;'],
+        'value' => function($model){
+            return $model->loaihinh_id ? data_get($model->dm_loaihinh, 'ten_lh') : $model->loaihinh;
+        }
     ],
     [
         'class' => '\kartik\grid\DataColumn',
