@@ -1,0 +1,29 @@
+#cabenhForm .dashed {
+  margin: 10px 0 15px 0;
+  border-style: dashed; }
+#cabenhForm header {
+  margin-top: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center; }
+  #cabenhForm header p:first-child {
+    font-size: 15px; }
+  #cabenhForm header p:nth-child(2) {
+    font-size: 23px; }
+#cabenhForm .phieu-body {
+  padding: 20px 10px; }
+  #cabenhForm .phieu-body .phieu-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #2196F3; }
+
+thead tr {
+  font-weight: 500; }
+
+tfoot tr {
+  font-weight: 500; }
+
+.invalid-feedback {
+  font-size: 90%; }
+
+/*# sourceMappingURL=app.css.map */

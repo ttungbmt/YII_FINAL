@@ -3,6 +3,7 @@
 
 # runtime
 gsnc/runtime
+pcd/runtime
 
 
 public/assets
@@ -12,3 +13,6 @@ public/assets
 
 # video
 public/projects/*/storage/video
+public/*/storage/video
+
+public/pcd/assets/vue/vue-component/node_modules

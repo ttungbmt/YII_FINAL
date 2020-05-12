@@ -1,0 +1,28 @@
+{
+  "name": "leaflet-bouncemarker",
+  "description": "This little plugin for Leaflet will make a Marker bounce when you add it on a map on whenever you want it to.",
+  "keywords": [
+    "leaflet",
+    "plugin",
+    "bounce",
+    "marker"
+  ],
+  "homepage": "https://github.com/maximeh/leaflet.bouncemarker",
+  "dependencies": {},
+  "devDependencies": {},
+  "license": [
+    "MIT"
+  ],
+  "main": [
+    "./bouncemarker.js"
+  ],
+  "_release": "8044d11fea",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "8044d11feada4a1c0919e15b02387327dc7a685e"
+  },
+  "_source": "https://github.com/danalloway/leaflet.bouncemarker.git",
+  "_target": "*",
+  "_originalSource": "leafelet-bouncemarker"
+}

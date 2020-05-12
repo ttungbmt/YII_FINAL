@@ -1,0 +1,285 @@
+.pin {
+    position: absolute;
+    border-radius: 50%;
+    z-index: 1000;
+
+}
+
+@keyframes scale {
+
+    0% {
+        transform: scale(0);
+    }
+
+    30% {
+        transform: scale(1.7);
+    }
+
+    50% {
+        transform: scale(0.9);
+    }
+
+    70% {
+        transform: scale(1.4);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes bounce {
+    0% {
+        opacity: 0;
+        transform: translateY(-2000px) rotate(-45deg);
+    }
+
+    60% {
+        opacity: 1;
+        transform: translateY(30px) rotate(-45deg);
+    }
+
+    80% {
+        transform: translateY(-10px) rotate(-45deg);
+    }
+
+    100% {
+        transform: translateY(0) rotate(-45deg);
+    }
+}
+
+
+
+.pin-wave {
+    position: absolute;
+    z-index: -2;
+}
+.pin-wave:after {
+    position: absolute;
+    content: "";
+    border-radius: 50%;
+    opacity: 0;
+}
+
+@keyframes pulsate {
+    0% {
+        transform: scale(0.1);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+.shadow {
+    position: absolute;
+}
+
+.shadow::after {
+    position: absolute;
+    left: -125px;
+    display: block;
+    width: 50px;
+    height: 50px;
+    margin-top: -25px;
+    content: '';
+    -webkit-transform: rotateX(55deg);
+    transform: rotateX(55deg);
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.5) 100px 0 20px;
+}
+
+/* -- Geolocation dot (01) ------------------------------------------------------- */
+
+.geodot {
+    width: 10px;
+    height: 10px;
+    background: rgba(32, 150, 243, 1);
+    border-radius: 50%;
+    position: absolute;
+    left: -5px;
+    top: -5px;
+    animation: animationGeoDot linear 3s;
+    transform-origin: 50% 50%;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+}
+
+.geodot-wave {
+    width: 260px;
+    height: 260px;
+    background: rgba(32, 150, 243, 0.4);
+    border-radius: 200px;
+    position: absolute;
+    left: -130px;
+    top: -130px;
+    opacity: 0;
+    animation: animationWave cubic-bezier(0, .54, .53, 1) 3s;
+    transform-origin: 50% 50%;
+    animation-fill-mode: forwards;
+    animation-delay: 0.9s;
+    animation-iteration-count: infinite;
+}
+
+.geodot-wave2 {
+    width: 260px;
+    height: 260px;
+    background: rgba(32, 150, 243, 0.4);
+    border-radius: 200px;
+    position: absolute;
+    left: -130px;
+    top: -130px;
+    opacity: 0;
+    animation: animationWave cubic-bezier(0, .54, .53, 1) 3s;
+    transform-origin: 50% 50%;
+    animation-fill-mode: forwards;
+    animation-delay: 1.07s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes animationGeoDot {
+
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    5% {
+        transform: scale(2);
+    }
+
+    10% {
+        transform: scale(0.90);
+        opacity: 1;
+    }
+
+    11% {
+        transform: scale(1.50);
+    }
+
+    12% {
+        transform: scale(1.00);
+    }
+
+    28% {
+        background: rgba(32, 150, 243, 1);
+    }
+
+    29% {
+        background: rgba(255, 255, 255, 1);
+    }
+
+    31% {
+        background: rgba(32, 150, 243, 1);
+    }
+
+    33% {
+        background: rgba(255, 255, 255, 1);
+    }
+
+    35% {
+        background: rgba(32, 150, 243, 1);
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes animationWave {
+    0% {
+        opacity: 0;
+        transform: scale(0.00);
+    }
+
+    1% {
+        opacity: 1;
+    }
+
+    10% {
+        background: rgba(32, 150, 243, 0.4);
+    }
+
+    100% {
+        transform: scale(1);
+        background: rgba(32, 150, 243, 0.0);
+    }
+}
+
+
+.pin02 {
+    width: 30px;
+    height: 30px;
+    border-radius: 50% 50% 50% 0;
+    background: #00cae9;
+    position: absolute;
+    transform: rotate(-45deg);
+    left: 50%;
+    top: 50%;
+    margin: -20px 0 0 -20px;
+}
+.pin02:after {
+    content: "";
+    width: 14px;
+    height: 14px;
+    margin: 8px 0 0 8px;
+    background: #e6e6e6;
+    position: absolute;
+    border-radius: 50%;
+}
+
+.bounce {
+    animation-name: bounce;
+    animation-fill-mode: both;
+    animation-duration: 1s;
+}
+
+.pulse {
+    /*background: #d6d4d4;*/
+    border-radius: 50%;
+    height: 14px;
+    width: 14px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: 11px 0px 0px -12px;
+    transform: rotateX(55deg);
+    z-index: -2;
+}
+.pulse:after {
+    content: "";
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    position: absolute;
+    margin: -13px 0 0 -13px;
+    animation: pulsate 1s ease-out;
+    animation-iteration-count: infinite;
+    opacity: 0;
+    box-shadow: 0 0 1px 2px #00cae9;
+    animation-delay: 1.1s;
+}
+
+@keyframes pulsate {
+    0% {
+        transform: scale(0.1, 0.1);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.2, 1.2);
+        opacity: 0;
+    }
+}

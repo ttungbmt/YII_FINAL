@@ -1,0 +1,79 @@
+$position: (
+    "": "",
+    "t" : "top",
+    "b" : "bottom",
+    "l" : "left",
+    "r" : "right"
+);
+
+.no-space { margin: 0; padding: 0 }
+
+.no-margin {
+  margin: 0!important;
+}
+.no-margin-top {
+  margin-top: 0!important;
+}
+.no-margin-bottom {
+  margin-bottom: 0!important;
+}
+.no-margin-left {
+  margin-left: 0!important;
+}
+.no-margin-right {
+  margin-right: 0!important;
+}
+
+.no-padding {
+  padding: 0!important;
+}
+.no-padding-top {
+  padding-top: 0!important;
+}
+.no-padding-bottom {
+  padding-bottom: 0!important;
+}
+.no-padding-left {
+  padding-left: 0!important;
+}
+.no-padding-right {
+  padding-right: 0!important;
+}
+
+$i: 5;
+@while $i <= 50 {
+  .gap-#{$i}{
+    margin-top: $i*1px;
+    margin-bottom: $i*1px;
+    &:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  }
+  $i: $i + 5;
+}
+
+@each $name, $value in $position {
+  $i: 5;
+  @while $i <= 40 {
+    @if str_length($name) == 0{
+      .m#{$name}#{$i} {
+        margin: $i*1px;
+      }
+      .p#{$name}#{$i} {
+        padding: $i*1px;
+      }
+    } @else if str_length($name) == 1 {
+      .m#{$name}#{$i} {
+        margin-#{$value}: $i*1px;
+      }
+      .p#{$name}#{$i} {
+        padding-#{$value}: $i*1px;
+      }
+    }
+
+    $i: $i + 5;
+  }
+}
+

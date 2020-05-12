@@ -1,0 +1,22 @@
+.ajax-crud, #crud-datatable-pjax {
+  #crud-datatable.grid-view {
+    .panel-heading {
+      padding: 10px;
+      .panel-title {
+        font-weight: 500;
+        font-size: 17px;
+      }
+    }
+
+    table.kv-grid-table {
+      #crud-datatable-filters td{
+        padding: 10px!important;
+      }
+    }
+  }
+
+  .glyphicon {
+    font-size: 13px;
+  }
+}
+

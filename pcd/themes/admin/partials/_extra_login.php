@@ -1,0 +1,1 @@
+<div class="btn btn-light text-center mb-2"><a href="<?=asset('/storage/pcd-app.apk')?>" target="_blank">Tải ứng dụng truyền thông</a></div>

@@ -1,0 +1,21 @@
+{
+  "name": "Leaflet.geojsonCSS",
+  "version": "0.0.1",
+  "main": [
+    "leaflet.geojsoncss.js"
+  ],
+  "ignore": [],
+  "dependencies": {
+    "leaflet": ">=0.7"
+  },
+  "homepage": "https://github.com/albburtsev/Leaflet.geojsonCSS",
+  "_release": "0.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.1",
+    "commit": "2719a6c8b0d356dd325d329f66c8bd5efe592bce"
+  },
+  "_source": "https://github.com/albburtsev/Leaflet.geojsonCSS.git",
+  "_target": "^0.0.1",
+  "_originalSource": "Leaflet.geojsonCSS"
+}

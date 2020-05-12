@@ -1,0 +1,53 @@
+{
+  "name": "My awesome CMS - Laravel 5",
+  "version": "0.0.1",
+  "homepage": "",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "leaflet-draw": "^0.3.0",
+    "jquery": "^2.2.2",
+    "esri-leaflet": "^1.0.3",
+    "leaflet.locatecontrol": "^0.49.0",
+    "leaflet-bouncemarker": "leaflet-bouncemarker-zavan#*",
+    "leaflet-filterable-layer-control": "^0.1.1",
+    "leaflet.contextmenu": "Leaflet.contextmenu#*",
+    "lodash": "^4.6.1",
+    "vue": "^1.0.20",
+    "ion.rangeslider": "^2.1.2",
+    "leaflet-plugins": "^1.5.2",
+    "leaflet.fullscreen": "^1.3.1",
+    "geocomplete": "^1.6.5",
+    "Leaflet.awesome-markers": "^2.0.2",
+    "Ionicons": "ionicons#^2.0.1",
+    "leaflet-fullscreen": "leaflet-fullscreen-bower#^1.0.1",
+    "Leaflet.VisualClick": "^1.1.0",
+    "animate.css": "^3.5.1",
+    "bootstrap-datepicker": "^1.6.0",
+    "jquery-sticky": "^1.0.3",
+    "roboto-fontface": "^0.4.5",
+    "jquery-table2excel": "^1.0.4",
+    "excellentexport": "*",
+    "axios": "^0.13.1",
+    "eventEmitter": "^5.1.0",
+    "bootstrap": "^3.3.7",
+    "jquery-ui": "^1.12.0",
+    "jquery.nicescroll": "jquery-nicescroll#^3.6.8",
+    "SpinKit": "spinkit#^1.2.5",
+    "jspanel3": "^3.1.1",
+    "moment": "^2.14.1",
+    "hammerjs": "^2.0.8",
+    "jquery-serialize-object": "^2.5.0",
+    "perfect-scrollbar": "^0.6.12"
+  }
+}

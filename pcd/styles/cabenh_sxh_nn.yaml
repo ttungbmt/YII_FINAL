@@ -1,0 +1,63 @@
+define: &c_sxh7 ${env('sxh_7', '#ff0000')}
+define: &c_sxh7_14 ${env('sxh_7', '#fc7a00')}
+define: &c_sxh14_21 ${env('sxh_7', '#008000')}
+define: &c_sxh21_28 ${env('sxh_7', '#0000FF')}
+define: &c_sxh28 ${env('sxh_7', '#8C8C8C')}
+define: &shp square
+
+title: cabenh sxh nn
+feature-styles:
+- name: sxh_7
+  rules:
+  - filter: ${songaybenh > 0 AND songaybenh <= 7}
+    symbolizers:
+      - point:
+          size: 8
+          symbols:
+          - mark:
+              shape: *shp
+              fill-color: *c_sxh7
+
+- name: sxh_7_14
+  rules:
+  - filter: ${songaybenh > 7 AND songaybenh <= 14}
+    symbolizers:
+      - point:
+          size: 8
+          symbols:
+          - mark:
+              shape: *shp
+              fill-color: *c_sxh7_14
+
+- name: sxh_14_21
+  rules:
+  - filter: ${songaybenh > 14 AND songaybenh <= 21}
+    symbolizers:
+      - point:
+          size: 8
+          symbols:
+          - mark:
+              shape: *shp
+              fill-color: *c_sxh14_21
+
+- name: sxh_21_28
+  rules:
+  - filter: ${songaybenh > 21 AND songaybenh <= 28}
+    symbolizers:
+      - point:
+          size: 8
+          symbols:
+          - mark:
+              shape: *shp
+              fill-color: *c_sxh21_28
+
+- name: sxh_28
+  rules:
+  - filter: ${songaybenh > 28}
+    symbolizers:
+      - point:
+          size: 8
+          symbols:
+          - mark:
+              shape: *shp
+              fill-color: *c_sxh28

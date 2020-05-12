@@ -1,0 +1,17 @@
+{
+  "style": {
+    "width": "100%", "height": "100%"
+  },
+  "center": [10.76046578290121, 106.63351318359376],
+  "zoom": 10,
+  "minZoom": 9,
+  "maxZoom": 20,
+  "zoomControl": true,
+  "animate": true,
+
+  "visualClick": true,
+  "visualClickEvents": "click contextmenu",
+
+
+  "clipBound": "/data/ranhTP_pl.geojson"
+}

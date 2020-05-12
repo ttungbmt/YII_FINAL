@@ -1,0 +1,108 @@
+// Edges
+.no-edge-top {
+  top: 0;
+}
+.no-edge-bottom {
+  bottom: 0;
+}
+.no-edge-left {
+  left: 0;
+}
+.no-edge-right {
+  right: 0;
+}
+
+//Lists
+.lis-n {
+  list-style: none;
+}
+
+// Vertical alignment
+.va-t {
+  vertical-align: top;
+}
+.va-m {
+  vertical-align: middle;
+}
+.va-m {
+  vertical-align: bottom;
+}
+.va-b {
+  vertical-align: baseline;
+}
+.va-tt {
+  vertical-align: text-top;
+}
+.va-tb {
+  vertical-align: text-bottom;
+}
+
+// Positions
+.pos, .pos-r  {
+  position: relative;
+}
+.pos-s {
+  position: static;
+}
+.pos-f {
+  position: fixed;
+}
+
+// Display elements
+.display-block,
+label.display-block {
+  display: block;
+}
+.display-inline-block {
+  display: inline-block;
+}
+
+// Cursors
+.cur-p {
+  cursor: pointer;
+}
+.cur-m {
+  cursor: move;
+}
+.cur-d {
+  cursor: default;
+}
+
+// Overflow
+.ov {
+  overflow: hidden;
+}
+.ov-v {
+  overflow: visible;
+}
+.ov-a {
+  overflow: auto;
+}
+
+// Full width
+.full-width {
+  width: 100%;
+}
+
+// Tạo bóng Z-levels
+.z-depth-0 {
+  box-shadow: none !important;
+}
+.z-depth-1{
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+.z-depth-1-half{
+  box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+}
+.z-depth-2{
+  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.z-depth-3{
+  box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+.z-depth-4{
+  box-shadow: 0 16px 28px 0 rgba(0, 0, 0, 0.22), 0 25px 55px 0 rgba(0, 0, 0, 0.21);
+}
+.z-depth-5{
+  box-shadow: 0 27px 24px 0 rgba(0, 0, 0, 0.2), 0 40px 77px 0 rgba(0, 0, 0, 0.22);
+}

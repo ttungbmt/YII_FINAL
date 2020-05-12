@@ -1,0 +1,17 @@
+.markerPopup {
+  font-family: Roboto, Arial;
+  font-size: 13px;
+  .pTitle {
+    font-weight: 500;
+    color: #2196F3;
+    border-bottom: 1px solid rgba(134, 133, 133, 0.13);
+  }
+  .pContent {
+    > div {
+      margin-bottom: 5px;
+    }
+    i {
+      font-size: 13px;
+    }
+  }
+}

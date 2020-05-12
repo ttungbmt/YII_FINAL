@@ -1,0 +1,134 @@
+{
+  "shape": {
+    "edit": {
+      "remove": true,
+      "buffer": {
+        "replace_polylines": false,
+        "separate_buffer": false
+      }
+    },
+    "draw": {
+      "polyline": {
+        "metric": true,
+        "repeatMode": false
+      },
+      "marker": {
+
+      },
+      "rectangle": {
+        "repeatMode": false
+      },
+      "circle": {
+        "repeatMode": false
+      },
+      "polygon": {
+        "allowIntersection": false,
+        "showArea": true
+      }
+    }
+  },
+
+  "locale": {
+    "draw": {
+      "toolbar": {
+        "actions": {
+          "title": "Hủy bỏ",
+          "text": "Hủy bỏ"
+        },
+        "undo": {
+          "title": "Xóa điểm đã vẽ cuối cùng",
+          "text": "Xóa điểm cuối cùng"
+        },
+        "buttons": {
+          "polyline": "Vẽ đường",
+          "polygon": "Vẽ đa giác",
+          "rectangle": "Vẽ hình chữ nhật",
+          "circle": "Vẽ đường tròn",
+          "marker": "Thêm điểm"
+        },
+        "finish": {
+          "title": "Kết thúc",
+          "text": "Kết thúc"
+        }
+      },
+      "handlers": {
+        "circle": {
+          "tooltip": {
+            "start": "Click và kéo chuột để vẽ đường tròn."
+          },
+          "radius": "Bán kính"
+        },
+        "marker": {
+          "tooltip": {
+            "start": "Click lên bản đồ để đặt marker"
+          }
+        },
+        "polygon": {
+          "tooltip": {
+            "start": "Click để bắt đầu vẽ hình",
+            "cont": "Click để tiếp tục vẽ hình",
+            "end": "Click điểm đầu để khép hình"
+          }
+        },
+        "polyline": {
+          "error": "<strong>Lỗi:</strong> Các cạnh không được bắt chéo!",
+          "tooltip": {
+            "start": "Click để bắt đầu vẽ đường",
+            "cont": "Click để tiếp tục vẽ đường",
+            "end": "Click điểm cuỗi để kết thúc đường"
+          }
+        },
+        "rectangle": {
+          "tooltip": {
+            "start": "Click và kéo chuột để vẽ hình chữ nhật"
+          }
+        },
+        "simpleshape": {
+          "tooltip": {
+            "end": "Thả chuột để kết thúc"
+          }
+        }
+      }
+    },
+    "edit": {
+      "toolbar": {
+        "actions": {
+          "save": {
+            "title": "Lưu những thay đổi",
+            "text": "Lưu"
+          },
+          "cancel": {
+            "title": "Hủy bỏ chỉnh sửa, bỏ tất cả những thay đổi",
+            "text": "Hủy bỏ"
+          }
+        },
+        "buttons": {
+          "buffer": "Mở rộng lớp",
+          "bufferDisabled": "Không có lớp để mở rộng",
+          "edit": "Xóa lớp",
+          "editDisabled": "Không có lớp để chỉnh sửa",
+          "remove": "Xóa lớp",
+          "removeDisabled": "Không có lớp để xóa"
+        }
+      },
+      "handlers": {
+        "buffer": {
+          "tooltip": {
+            "text": "Click và kéo chuột để mở rộng hoặc thu hẹp hình"
+          }
+        },
+        "edit": {
+          "tooltip": {
+            "text": "Kéo chuột hoặc đánh dấu để chỉnh sửa đối tượng",
+            "subtext": "Click hủy bỏ để quay lại"
+          }
+        },
+        "remove": {
+          "tooltip": {
+            "text": "Click lên đối tượng để xóa"
+          }
+        }
+      }
+    }
+  }
+}

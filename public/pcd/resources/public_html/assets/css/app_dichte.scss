@@ -1,0 +1,252 @@
+@import "_phieudt";
+@import "_dsCabenh";
+@import "_nhapcabenh";
+@import "_gridview";
+@import "_tk_cabenh";
+@import "vendor/_bootstrap_datepicker";
+
+body {
+  overflow: auto;
+}
+
+.form-control {
+  padding: 3px 10px!important;
+  height: 34px;
+  border-radius: 0px;
+  font-size: 13px!important;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.leaflet-bar-part {
+  padding: 0!important;
+}
+
+
+@media (max-width: 768px) {
+  .main-body {
+    padding-top: 0px!important;
+  }
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: #565656;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  border-bottom: 1px solid #2196f3;
+}
+
+.nav-tabs.nav-tabs-bottom li.active a {
+  border-bottom-color: #2196f3;
+}
+
+.cabenh-index {
+
+}
+
+.grid-view{
+  //thead {
+  //  tr th {
+  //    text-align: center;
+  //  }
+  //}
+  //tbody {
+  //  tr {
+  //    td {
+  //      padding: 5px 13px;
+  //    }
+  //  }
+  //}
+  .panel .panel-heading {
+    padding-top:8px;
+    padding-bottom:8px;
+  }
+  //.kv-panel-before {
+  //  .kv-grid-toolbar a{
+  //    padding-top: 4px;
+  //  }
+  //  .dropdown-menu {
+  //    height: 43px;
+  //  }
+  //}
+}
+
+
+.form-control {
+  border-bottom: 1px solid rgb(204, 204, 204)!important;
+}
+
+
+
+
+
+
+// Thư viện ----------------------------------------
+$gray-base:              #000 !default;
+$gray-darker:            lighten($gray-base, 13.5%) !default; // #222
+$gray-dark:              #212121 !default;
+$gray:                   #666 !default;
+$gray-light:             #bbb !default;
+$gray-lighter:           lighten($gray-base, 93.5%) !default; // #eee
+
+$brand-primary:         #2196F3 !default;
+$brand-success:         #4CAF50 !default;
+$brand-info:            #9C27B0 !default;
+$brand-warning:         #ff9800 !default;
+$brand-danger:          #e51c23 !default;
+
+@mixin transition($transition...) {
+  -webkit-transition: $transition;
+  -o-transition: $transition;
+  transition: $transition;
+}
+
+@mixin scale($ratio...) {
+  -webkit-transform: scale($ratio);
+  -ms-transform: scale($ratio); // IE9 only
+  -o-transform: scale($ratio);
+  transform: scale($ratio);
+}
+@mixin rotate($degrees) {
+  -webkit-transform: rotate($degrees);
+  -ms-transform: rotate($degrees); // IE9 only
+  -o-transform: rotate($degrees);
+  transform: rotate($degrees);
+}
+
+.radio,
+.radio-inline,
+.checkbox,
+.checkbox-inline {
+  label {
+    padding-left: 25px;
+  }
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    margin-left: -25px;
+  }
+}
+
+input[type="radio"],
+.radio input[type="radio"],
+.radio-inline input[type="radio"] {
+  position: relative;
+  margin-top: 6px;
+  margin-right: 4px;
+  vertical-align: top;
+  border: none;
+  background-color: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:before,
+  &:after {
+    content: "";
+    display: block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    @include transition(240ms);
+  }
+
+  &:before {
+    position: absolute;
+    left: 0;
+    top: -3px;
+    background-color: $brand-primary;
+    @include scale(0);
+  }
+
+  &:after {
+    position: relative;
+    top: -3px;
+    border: 2px solid #868585;
+  }
+
+  &:checked:before {
+    @include scale(0.5);
+  }
+
+  &:disabled:checked:before {
+    background-color: $gray-light;
+  }
+
+  &:checked:after {
+    border-color: $brand-primary;
+  }
+
+  &:disabled:after,
+  &:disabled:checked:after {
+    border-color: $gray-light;
+  }
+}
+
+input[type="checkbox"],
+.checkbox input[type="checkbox"],
+.checkbox-inline input[type="checkbox"] {
+  position: relative;
+  border: none;
+  margin-bottom: -4px;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus:after {
+    border-color: $brand-primary;
+  }
+
+  &:after {
+    content: "";
+    display: block;
+    width: 18px;
+    height: 18px;
+    margin-top: -2px;
+    margin-right: 5px;
+    border: 2px solid #868585;
+    border-radius: 2px;
+    @include transition(240ms);
+  }
+
+  &:checked:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 6px;
+    display: table;
+    width: 6px;
+    height: 12px;
+    border: 2px solid #fff;
+    border-top-width: 0;
+    border-left-width: 0;
+    @include rotate(45deg);
+  }
+
+  &:checked:after {
+    background-color: $brand-primary;
+    border-color: $brand-primary;
+  }
+
+  &:disabled:after {
+    border-color: $gray-light;
+  }
+
+  &:disabled:checked:after {
+    background-color: $gray-light;
+    border-color: transparent;
+  }
+}

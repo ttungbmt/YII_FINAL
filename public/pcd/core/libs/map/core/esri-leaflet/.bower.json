@@ -1,0 +1,26 @@
+{
+  "name": "esri-leaflet",
+  "version": "2.0.1",
+  "main": "dist/esri-leaflet.js",
+  "dependencies": {
+    "leaflet": "^1.0.0-rc.1"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "examples",
+    "spec",
+    "site"
+  ],
+  "homepage": "https://github.com/Esri/esri-leaflet",
+  "_release": "2.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.1",
+    "commit": "fa36bb9f744cb1f14b1c67141f03bc4204156108"
+  },
+  "_source": "https://github.com/Esri/esri-leaflet.git",
+  "_target": "2.0.1",
+  "_originalSource": "esri-leaflet"
+}

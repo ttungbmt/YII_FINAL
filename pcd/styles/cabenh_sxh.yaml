@@ -1,0 +1,169 @@
+define: &c_sxh7 ${env('sxh_7', '#ff0000')}
+define: &c_sxh7_14 ${env('sxh_7', '#fc7a00')}
+define: &c_sxh14_21 ${env('sxh_7', '#008000')}
+define: &c_sxh21_28 ${env('sxh_7', '#0000FF')}
+define: &c_sxh28 ${env('sxh_7', '#8C8C8C')}
+define: &c_sot ${env('sxh_7', '#ff00d4')}
+define: &c_zika ${env('sxh_7', '#aa2672')}
+define: &c_khac ${env('sxh_7', '#fff600')}
+define: &shp_noi circle
+define: &shp_ngoai triangle
+define: &stroke '#FF0000'
+define: &strokestyle
+  stroke: *stroke
+  stroke-width: 2
+  stroke-opacity: 0.5
+
+title: 'Ca bệnh SXH'
+feature-styles:
+- name: sxh_7
+  rules:
+  - filter: ${chuandoan = 1 AND songaybenh > 0 AND songaybenh <= 7 AND ht_dieutri = 1}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_noi
+              fill-color: *c_sxh7
+  - filter: ${chuandoan = 1 AND songaybenh > 0 AND songaybenh <= 7 AND ht_dieutri = 0}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_ngoai
+              fill-color: *c_sxh7
+
+- name: sxh_7_14
+  rules:
+  - filter: ${chuandoan = 1 AND songaybenh > 7 AND songaybenh <= 14 AND ht_dieutri = 1}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_noi
+              fill-color: *c_sxh7_14
+  - filter: ${chuandoan = 1 AND songaybenh > 7 AND songaybenh <= 14 AND ht_dieutri = 0}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_ngoai
+              fill-color: *c_sxh7_14
+
+- name: sxh_14_21
+  rules:
+  - filter: ${chuandoan = 1 AND songaybenh > 14 AND songaybenh <= 21 AND ht_dieutri = 1}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_noi
+              fill-color: *c_sxh14_21
+  - filter: ${chuandoan = 1 AND songaybenh > 14 AND songaybenh <= 21 AND ht_dieutri = 0}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_ngoai
+              fill-color: *c_sxh14_21
+
+- name: sxh_21_28
+  rules:
+  - filter: ${chuandoan = 1 AND songaybenh > 21 AND songaybenh <= 28 AND ht_dieutri = 1}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_noi
+              fill-color: *c_sxh21_28
+  - filter: ${chuandoan = 1 AND songaybenh > 21 AND songaybenh <= 28 AND ht_dieutri = 0}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_ngoai
+              fill-color: *c_sxh21_28
+
+- name: sxh_28
+  rules:
+  - filter: ${chuandoan = 1 AND songaybenh > 28 AND ht_dieutri = 1}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_noi
+              fill-color: *c_sxh28
+  - filter: ${chuandoan = 1 AND songaybenh > 28 AND ht_dieutri = 0}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_ngoai
+              fill-color: *c_sxh28
+
+- name: sot
+  rules:
+  - filter: ${chuandoan = 2 AND ht_dieutri = 1}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_noi
+              fill-color: *c_sot
+  - filter: ${chuandoan = 2 AND ht_dieutri = 0}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_ngoai
+              fill-color: *c_sot
+
+- name: khac
+  rules:
+  - filter: ${chuandoan = 3 AND ht_dieutri = 1}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_noi
+              fill-color: *c_khac
+  - filter: ${chuandoan = 3 AND ht_dieutri = 0}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_ngoai
+              fill-color: *c_khac
+
+- name: zika
+  rules:
+  - filter: ${chuandoan_bd = 'ZIKA' AND ht_dieutri = 1}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_noi
+              fill-color: *c_zika
+  - filter: ${chuandoan_bd = 'ZIKA' AND ht_dieutri = 0}
+    symbolizers:
+      - point:
+          size: 10
+          symbols:
+          - mark:
+              shape: *shp_ngoai
+              fill-color: *c_zika

@@ -1,0 +1,27 @@
+.grid-view {
+  .panel {
+    .panel-heading {
+      padding: 10px;
+      .panel-title {
+        font-size: 15px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .glyphicon {
+    font-size: 13px;
+  }
+}
+
+
+.kv-grid-table {
+  thead {
+    input {
+      padding: 7px;
+    }
+  }
+  //th {
+  //  padding: 8px 10px!important;
+  //}
+}

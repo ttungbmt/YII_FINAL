@@ -1,0 +1,11 @@
+.datepicker table tr td span {
+  width: 31%!important;
+  height: 40px!important;
+  line-height: 30px!important;
+}
+
+.datepicker {
+  .datepicker-days, .datepicker-months, .datepicker-years {
+    max-width: 500px;
+  }
+}

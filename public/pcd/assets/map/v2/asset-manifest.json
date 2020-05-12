@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/pcd/assets/map/v2/static/css/main.chunk.css",
+    "main.js": "/pcd/assets/map/v2/static/js/main.chunk.js",
+    "main.js.map": "/pcd/assets/map/v2/static/js/main.chunk.js.map",
+    "runtime-main.js": "/pcd/assets/map/v2/static/js/runtime-main.js",
+    "runtime-main.js.map": "/pcd/assets/map/v2/static/js/runtime-main.js.map",
+    "static/css/2.chunk.css": "/pcd/assets/map/v2/static/css/2.chunk.css",
+    "static/js/2.chunk.js": "/pcd/assets/map/v2/static/js/2.chunk.js",
+    "static/js/2.chunk.js.map": "/pcd/assets/map/v2/static/js/2.chunk.js.map",
+    "index.html": "/pcd/assets/map/v2/index.html",
+    "precache-manifest.51eebf3c5635b11a25af116395113963.js": "/pcd/assets/map/v2/precache-manifest.51eebf3c5635b11a25af116395113963.js",
+    "service-worker.js": "/pcd/assets/map/v2/service-worker.js",
+    "static/css/2.chunk.css.map": "/pcd/assets/map/v2/static/css/2.chunk.css.map",
+    "static/css/main.chunk.css.map": "/pcd/assets/map/v2/static/css/main.chunk.css.map",
+    "static/js/2.chunk.js.LICENSE": "/pcd/assets/map/v2/static/js/2.chunk.js.LICENSE",
+    "static/media/leaflet.extra-markers.min.css": "/pcd/assets/map/v2/static/media/markers_default@2x.0e04541b.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.js",
+    "static/css/2.chunk.css",
+    "static/js/2.chunk.js",
+    "static/css/main.chunk.css",
+    "static/js/main.chunk.js"
+  ]
+}
