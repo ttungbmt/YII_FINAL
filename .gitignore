@@ -11,4 +11,4 @@ public/assets
 /vendor
 
 # video
-public/*/storage/video
+public/projects/*/storage/video

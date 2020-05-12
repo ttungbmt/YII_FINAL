@@ -13,7 +13,7 @@ return [
 //    'logo_desc' => 'SỞ NÔNG NGHIỆP',
 
     'assets' => [
-        'logo'             => '/gsnc/assets/img/logo-site.png',
-        'login_background' => '/gsnc/assets/img/bg-login.jpg',
+        'logo'             => '/projects/gsnc/assets/img/logo-site.png',
+        'login_background' => '/projects/gsnc/assets/img/bg-login.jpg',
     ]
 ];

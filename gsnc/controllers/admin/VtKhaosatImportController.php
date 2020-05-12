@@ -21,7 +21,7 @@ class VtKhaosatImportController extends GsncController
     {
         return [
             'header' => array_merge(['stt', 'donvikhaosat',  'maquan', 'maphuong', 'diachi', 'tenchuho', 'ngaykhaosat', 'vs', 'hl_xn', 'hl_mt', 'hl_vs', 'lat', 'lng'], range(1, 41)),
-            'sample' => '/gsnc/storage/samples/vt-khaosat-import.xlsx'
+            'sample' => '/projects/gsnc/storage/samples/vt-khaosat-import.xlsx'
         ];
     }
     protected function prepareData()

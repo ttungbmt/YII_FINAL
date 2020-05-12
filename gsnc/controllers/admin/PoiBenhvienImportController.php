@@ -34,7 +34,7 @@ class PoiBenhvienImportController extends GsncController
 
         return [
             'header' => ['stt', 'donvilaymau', 'ten', 'maquan', 'maphuong', 'diachi', 'loaimau_id', 'ngaylaymau', 'onhiem_id', 'dienthoai', 'website', 'gioithieu', 'loaibv_id', 'mamau', 'vs', 'hl_xn', 'hl_mt', 'hl_vs', 'lat', 'lng'],
-            'sample' => '/gsnc/storage/samples/benhvien-import.xlsx'
+            'sample' => '/projects/gsnc/storage/samples/benhvien-import.xlsx'
         ];
     }
 

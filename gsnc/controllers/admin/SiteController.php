@@ -171,7 +171,7 @@ class SiteController extends GsncController
 
     public function actionDocGuide()
     {
-        $url = '/gsnc/storage/docs/HDSD.pdf';
+        $url = '/projects/gsnc/storage/docs/HDSD.pdf';
         return $this->render('doc_guide', compact('url'));
     }
     public function actionVideoGuide()

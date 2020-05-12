@@ -27,7 +27,7 @@ class MaunuocImportController extends GsncController
     {
         return [
             'header' => ['stt', 'donvilaymau', 'maquan', 'maphuong', 'mamau', 'diachi', 'loaimau_id', 'ngaylaymau', 'vs', 'hl_xn', 'hl_mt', 'hl_vs', 'lat', 'lng'],
-            'sample' => '/gsnc/storage/samples/vt-khaosat-import.xlsx',
+            'sample' => '/projects/gsnc/storage/samples/vt-khaosat-import.xlsx',
         ];
     }
 
