@@ -6,8 +6,9 @@ gsnc/runtime
 pcd/runtime
 
 
-public/assets
 /vendor
+/node_modules
+/public/assets
 # composer vendor dir
 
 # video
