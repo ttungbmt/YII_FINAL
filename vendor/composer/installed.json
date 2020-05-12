@@ -1015,17 +1015,17 @@
     },
     {
         "name": "doctrine/inflector",
-        "version": "1.4.1",
-        "version_normalized": "1.4.1.0",
+        "version": "2.0.1",
+        "version_normalized": "2.0.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/doctrine/inflector.git",
-            "reference": "4111f6853aea6f28b2b1dcfdde83d12dd3d5e6e3"
+            "reference": "18b995743e7ec8b15fd6efc594f0fa3de4bfe6d7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/inflector/zipball/4111f6853aea6f28b2b1dcfdde83d12dd3d5e6e3",
-            "reference": "4111f6853aea6f28b2b1dcfdde83d12dd3d5e6e3",
+            "url": "https://api.github.com/repos/doctrine/inflector/zipball/18b995743e7ec8b15fd6efc594f0fa3de4bfe6d7",
+            "reference": "18b995743e7ec8b15fd6efc594f0fa3de4bfe6d7",
             "shasum": ""
         },
         "require": {
@@ -1038,7 +1038,7 @@
             "phpstan/phpstan-strict-rules": "^0.11",
             "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0"
         },
-        "time": "2020-05-09T15:09:09+00:00",
+        "time": "2020-05-11T11:25:59+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1048,7 +1048,6 @@
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
-                "Doctrine\\Common\\Inflector\\": "lib/Doctrine/Common/Inflector",
                 "Doctrine\\Inflector\\": "lib/Doctrine/Inflector"
             }
         },
@@ -1839,8 +1838,8 @@
     },
     {
         "name": "illuminate/contracts",
-        "version": "v7.10.3",
-        "version_normalized": "7.10.3.0",
+        "version": "v7.11.0",
+        "version_normalized": "7.11.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/illuminate/contracts.git",
@@ -1885,8 +1884,8 @@
     },
     {
         "name": "illuminate/filesystem",
-        "version": "v7.10.3",
-        "version_normalized": "7.10.3.0",
+        "version": "v7.11.0",
+        "version_normalized": "7.11.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/illuminate/filesystem.git",
@@ -1940,17 +1939,17 @@
     },
     {
         "name": "illuminate/http",
-        "version": "v7.10.3",
-        "version_normalized": "7.10.3.0",
+        "version": "v7.11.0",
+        "version_normalized": "7.11.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/illuminate/http.git",
-            "reference": "6a52e7cab94e0f43cd3929386c56961337eac731"
+            "reference": "e1ea16fbc835c0cb9461457aea49b04dad593c2e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/illuminate/http/zipball/6a52e7cab94e0f43cd3929386c56961337eac731",
-            "reference": "6a52e7cab94e0f43cd3929386c56961337eac731",
+            "url": "https://api.github.com/repos/illuminate/http/zipball/e1ea16fbc835c0cb9461457aea49b04dad593c2e",
+            "reference": "e1ea16fbc835c0cb9461457aea49b04dad593c2e",
             "shasum": ""
         },
         "require": {
@@ -1966,7 +1965,7 @@
             "ext-gd": "Required to use Illuminate\\Http\\Testing\\FileFactory::image().",
             "guzzlehttp/guzzle": "Required to use the HTTP Client (^6.3.1|^7.0)."
         },
-        "time": "2020-05-06T13:33:13+00:00",
+        "time": "2020-05-12T14:31:35+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1994,8 +1993,8 @@
     },
     {
         "name": "illuminate/session",
-        "version": "v7.10.3",
-        "version_normalized": "7.10.3.0",
+        "version": "v7.11.0",
+        "version_normalized": "7.11.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/illuminate/session.git",
@@ -2047,21 +2046,21 @@
     },
     {
         "name": "illuminate/support",
-        "version": "v7.10.3",
-        "version_normalized": "7.10.3.0",
+        "version": "v7.11.0",
+        "version_normalized": "7.11.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/illuminate/support.git",
-            "reference": "cd11fa914c52a2249c48cde08d03a871597e8781"
+            "reference": "5458d0d0048f185b3d4a911e5d21d2bb2fb336ca"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/illuminate/support/zipball/cd11fa914c52a2249c48cde08d03a871597e8781",
-            "reference": "cd11fa914c52a2249c48cde08d03a871597e8781",
+            "url": "https://api.github.com/repos/illuminate/support/zipball/5458d0d0048f185b3d4a911e5d21d2bb2fb336ca",
+            "reference": "5458d0d0048f185b3d4a911e5d21d2bb2fb336ca",
             "shasum": ""
         },
         "require": {
-            "doctrine/inflector": "^1.1",
+            "doctrine/inflector": "^1.4|^2.0",
             "ext-json": "*",
             "ext-mbstring": "*",
             "illuminate/contracts": "^7.0",
@@ -2080,7 +2079,7 @@
             "symfony/var-dumper": "Required to use the dd function (^5.0).",
             "vlucas/phpdotenv": "Required to use the Env class and env helper (^4.0)."
         },
-        "time": "2020-05-05T16:21:56+00:00",
+        "time": "2020-05-12T14:31:35+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2671,17 +2670,17 @@
     },
     {
         "name": "kartik-v/yii2-builder",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v1.6.7",
+        "version_normalized": "1.6.7.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/yii2-builder.git",
-            "reference": "74843d777dc9cb1d6e04f73f82c471b6aadde037"
+            "reference": "9639b36959094500b1bd519b39b581def5d98e17"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-builder/zipball/74843d777dc9cb1d6e04f73f82c471b6aadde037",
-            "reference": "74843d777dc9cb1d6e04f73f82c471b6aadde037",
+            "url": "https://api.github.com/repos/kartik-v/yii2-builder/zipball/9639b36959094500b1bd519b39b581def5d98e17",
+            "reference": "9639b36959094500b1bd519b39b581def5d98e17",
             "shasum": ""
         },
         "require": {
@@ -2689,14 +2688,14 @@
             "kartik-v/yii2-helpers": ">=1.3.8",
             "kartik-v/yii2-widget-activeform": ">=1.5.6"
         },
-        "time": "2020-02-19T04:10:14+00:00",
+        "time": "2019-06-18T13:41:07+00:00",
         "type": "yii2-extension",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.6.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "kartik\\builder\\": "src"
@@ -2725,30 +2724,30 @@
     },
     {
         "name": "kartik-v/yii2-date-range",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v1.7.2",
+        "version_normalized": "1.7.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/yii2-date-range.git",
-            "reference": "697e4ee6fbf798765588190286ad649b268cf2a9"
+            "reference": "fbc192c685c3c529a399d9a388036d08985401a6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-date-range/zipball/697e4ee6fbf798765588190286ad649b268cf2a9",
-            "reference": "697e4ee6fbf798765588190286ad649b268cf2a9",
+            "url": "https://api.github.com/repos/kartik-v/yii2-date-range/zipball/fbc192c685c3c529a399d9a388036d08985401a6",
+            "reference": "fbc192c685c3c529a399d9a388036d08985401a6",
             "shasum": ""
         },
         "require": {
             "kartik-v/yii2-krajee-base": ">=2.0.0"
         },
-        "time": "2020-03-10T05:51:18+00:00",
+        "time": "2020-02-09T12:41:06+00:00",
         "type": "yii2-extension",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.7.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "kartik\\daterange\\": "src"
@@ -2781,31 +2780,31 @@
     },
     {
         "name": "kartik-v/yii2-datecontrol",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v1.9.7",
+        "version_normalized": "1.9.7.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/yii2-datecontrol.git",
-            "reference": "0e7057f644fb178c9a949836c2b0dc7325d07e02"
+            "reference": "e095702e8bcd325a09f6a6e6b21f0b529b6965b9"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-datecontrol/zipball/0e7057f644fb178c9a949836c2b0dc7325d07e02",
-            "reference": "0e7057f644fb178c9a949836c2b0dc7325d07e02",
+            "url": "https://api.github.com/repos/kartik-v/yii2-datecontrol/zipball/e095702e8bcd325a09f6a6e6b21f0b529b6965b9",
+            "reference": "e095702e8bcd325a09f6a6e6b21f0b529b6965b9",
             "shasum": ""
         },
         "require": {
             "kartik-v/php-date-formatter": ">1.3",
             "kartik-v/yii2-krajee-base": ">=1.9"
         },
-        "time": "2020-02-03T06:37:57+00:00",
+        "time": "2018-09-23T07:29:23+00:00",
         "type": "yii2-extension",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.9.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "kartik\\datecontrol\\": "src"
@@ -2835,31 +2834,31 @@
     },
     {
         "name": "kartik-v/yii2-detail-view",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v1.8.2",
+        "version_normalized": "1.8.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/yii2-detail-view.git",
-            "reference": "0c021d3251ee4732b3cc181fb26f0d3da9cec58c"
+            "reference": "e36b0db146a25528f9eb0470d2fc4ced1f009d99"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-detail-view/zipball/0c021d3251ee4732b3cc181fb26f0d3da9cec58c",
-            "reference": "0c021d3251ee4732b3cc181fb26f0d3da9cec58c",
+            "url": "https://api.github.com/repos/kartik-v/yii2-detail-view/zipball/e36b0db146a25528f9eb0470d2fc4ced1f009d99",
+            "reference": "e36b0db146a25528f9eb0470d2fc4ced1f009d99",
             "shasum": ""
         },
         "require": {
             "kartik-v/yii2-dialog": "~1.0",
             "kartik-v/yii2-widget-activeform": ">=1.5.7"
         },
-        "time": "2019-05-25T07:13:20+00:00",
+        "time": "2018-10-10T08:20:20+00:00",
         "type": "yii2-extension",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.8.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "kartik\\detail\\": "src"
@@ -3060,17 +3059,17 @@
     },
     {
         "name": "kartik-v/yii2-export",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v1.4.0",
+        "version_normalized": "1.4.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/yii2-export.git",
-            "reference": "f76c63e4f60661655ced726dc758a36da4182abc"
+            "reference": "7e8ff2d4ba2435ab6903692edd390ba8e84e3faa"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-export/zipball/f76c63e4f60661655ced726dc758a36da4182abc",
-            "reference": "f76c63e4f60661655ced726dc758a36da4182abc",
+            "url": "https://api.github.com/repos/kartik-v/yii2-export/zipball/7e8ff2d4ba2435ab6903692edd390ba8e84e3faa",
+            "reference": "7e8ff2d4ba2435ab6903692edd390ba8e84e3faa",
             "shasum": ""
         },
         "require": {
@@ -3078,14 +3077,14 @@
             "kartik-v/yii2-mpdf": ">=1.0",
             "phpoffice/phpspreadsheet": ">=1.0"
         },
-        "time": "2020-05-07T04:36:31+00:00",
+        "time": "2019-05-25T07:08:54+00:00",
         "type": "yii2-extension",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.4.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "kartik\\export\\": "src"
@@ -3237,30 +3236,30 @@
     },
     {
         "name": "kartik-v/yii2-helpers",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v1.3.9",
+        "version_normalized": "1.3.9.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/yii2-helpers.git",
-            "reference": "0cbfd0e23e81eaea2ab4595705b2bfa8b91bc36c"
+            "reference": "0bec7a97bf9d0293d96be5c496fe9654c4dec94b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-helpers/zipball/0cbfd0e23e81eaea2ab4595705b2bfa8b91bc36c",
-            "reference": "0cbfd0e23e81eaea2ab4595705b2bfa8b91bc36c",
+            "url": "https://api.github.com/repos/kartik-v/yii2-helpers/zipball/0bec7a97bf9d0293d96be5c496fe9654c4dec94b",
+            "reference": "0bec7a97bf9d0293d96be5c496fe9654c4dec94b",
             "shasum": ""
         },
         "require": {
             "kartik-v/yii2-krajee-base": ">=2.0.0"
         },
-        "time": "2019-05-25T07:24:13+00:00",
+        "time": "2018-10-09T08:03:44+00:00",
         "type": "yii2-extension",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.3.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "kartik\\helpers\\": "src"
@@ -3344,8 +3343,8 @@
     },
     {
         "name": "kartik-v/yii2-mpdf",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v1.0.6",
+        "version_normalized": "1.0.6.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/yii2-mpdf.git",
@@ -3507,17 +3506,17 @@
     },
     {
         "name": "kartik-v/yii2-tree-manager",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v1.1.2",
+        "version_normalized": "1.1.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/yii2-tree-manager.git",
-            "reference": "35e907e5b60a59d1a1de3dee5ff6262221a6cb73"
+            "reference": "e09c47108b51a42ba3dc3c54d5c82ba6907cd25b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-tree-manager/zipball/35e907e5b60a59d1a1de3dee5ff6262221a6cb73",
-            "reference": "35e907e5b60a59d1a1de3dee5ff6262221a6cb73",
+            "url": "https://api.github.com/repos/kartik-v/yii2-tree-manager/zipball/e09c47108b51a42ba3dc3c54d5c82ba6907cd25b",
+            "reference": "e09c47108b51a42ba3dc3c54d5c82ba6907cd25b",
             "shasum": ""
         },
         "require": {
@@ -3525,14 +3524,14 @@
             "kartik-v/yii2-dialog": ">=1.0",
             "kartik-v/yii2-widget-activeform": ">=1.5.7"
         },
-        "time": "2019-10-10T16:35:58+00:00",
+        "time": "2019-03-13T17:21:14+00:00",
         "type": "yii2-extension",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.1.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "kartik\\tree\\": "src"
@@ -3566,24 +3565,24 @@
     },
     {
         "name": "kartik-v/yii2-validators",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v1.0.3",
+        "version_normalized": "1.0.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/yii2-validators.git",
-            "reference": "bd5c771232b556fe7920a22e6705f03e6747b8f5"
+            "reference": "756b4461d9409276c43f9574ceda597cab44e65b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-validators/zipball/bd5c771232b556fe7920a22e6705f03e6747b8f5",
-            "reference": "bd5c771232b556fe7920a22e6705f03e6747b8f5",
+            "url": "https://api.github.com/repos/kartik-v/yii2-validators/zipball/756b4461d9409276c43f9574ceda597cab44e65b",
+            "reference": "756b4461d9409276c43f9574ceda597cab44e65b",
             "shasum": ""
         },
         "require": {
             "giggsey/libphonenumber-for-php": "^8",
             "kartik-v/yii2-krajee-base": ">=2.0.0"
         },
-        "time": "2020-04-02T17:24:22+00:00",
+        "time": "2019-08-22T12:32:31+00:00",
         "type": "yii2-extension",
         "extra": {
             "bootstrap": "kartik\\validators\\Bootstrap",
@@ -3591,7 +3590,7 @@
                 "dev-master": "1.0.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "kartik\\validators\\": "src"
@@ -4009,31 +4008,31 @@
     },
     {
         "name": "kartik-v/yii2-widget-fileinput",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v1.0.9",
+        "version_normalized": "1.0.9.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/yii2-widget-fileinput.git",
-            "reference": "8616a7686508462da3de8f8d2021fc74f2cf40dc"
+            "reference": "fcf5bf41fac35363d3f24a01a34f228c2534c7b7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-widget-fileinput/zipball/8616a7686508462da3de8f8d2021fc74f2cf40dc",
-            "reference": "8616a7686508462da3de8f8d2021fc74f2cf40dc",
+            "url": "https://api.github.com/repos/kartik-v/yii2-widget-fileinput/zipball/fcf5bf41fac35363d3f24a01a34f228c2534c7b7",
+            "reference": "fcf5bf41fac35363d3f24a01a34f228c2534c7b7",
             "shasum": ""
         },
         "require": {
             "kartik-v/bootstrap-fileinput": ">=5.0.0",
             "kartik-v/yii2-krajee-base": ">=2.0.0"
         },
-        "time": "2020-02-03T03:00:51+00:00",
+        "time": "2019-04-19T11:45:08+00:00",
         "type": "yii2-extension",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.0.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "kartik\\file\\": "src"
@@ -4618,17 +4617,17 @@
     },
     {
         "name": "kartik-v/yii2-widgets",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "v3.4.1",
+        "version_normalized": "3.4.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/yii2-widgets.git",
-            "reference": "0674838c869e5ccabc15756ee0c065ccecd09969"
+            "reference": "e5a030d700243a90eccf96a070380bd3b76e17a3"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-widgets/zipball/0674838c869e5ccabc15756ee0c065ccecd09969",
-            "reference": "0674838c869e5ccabc15756ee0c065ccecd09969",
+            "url": "https://api.github.com/repos/kartik-v/yii2-widgets/zipball/e5a030d700243a90eccf96a070380bd3b76e17a3",
+            "reference": "e5a030d700243a90eccf96a070380bd3b76e17a3",
             "shasum": ""
         },
         "require": {
@@ -4652,14 +4651,14 @@
             "kartik-v/yii2-widget-touchspin": "*",
             "kartik-v/yii2-widget-typeahead": "*"
         },
-        "time": "2019-09-03T03:11:11+00:00",
+        "time": "2018-10-09T17:40:19+00:00",
         "type": "yii2-extension",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.0.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "kartik\\widgets\\": "src"
@@ -9912,24 +9911,24 @@
         "dist": {
             "type": "path",
             "url": "./packages/ttungbmt/yii2-core",
-            "reference": "003b47534613be139d517019a4a107e45f935b0c"
+            "reference": "a14e17e4f635632226a37b7b8823f182f48463bd"
         },
         "require": {
             "codeonyii/yii2-at-least-validator": "*",
             "guzzlehttp/guzzle": "^6.5",
             "illuminate/http": "*",
-            "kartik-v/yii2-builder": "dev-master",
-            "kartik-v/yii2-date-range": "dev-master",
-            "kartik-v/yii2-datecontrol": "dev-master",
-            "kartik-v/yii2-detail-view": "dev-master",
-            "kartik-v/yii2-export": "dev-master",
+            "kartik-v/yii2-builder": "@dev",
+            "kartik-v/yii2-date-range": "@dev",
+            "kartik-v/yii2-datecontrol": "@dev",
+            "kartik-v/yii2-detail-view": "@dev",
+            "kartik-v/yii2-export": "@dev",
             "kartik-v/yii2-field-range": "*",
-            "kartik-v/yii2-helpers": "dev-master",
-            "kartik-v/yii2-mpdf": "dev-master",
-            "kartik-v/yii2-tree-manager": "dev-master",
-            "kartik-v/yii2-validators": "dev-master",
-            "kartik-v/yii2-widget-fileinput": "dev-master",
-            "kartik-v/yii2-widgets": "dev-master",
+            "kartik-v/yii2-helpers": "@dev",
+            "kartik-v/yii2-mpdf": "@dev",
+            "kartik-v/yii2-tree-manager": "@dev",
+            "kartik-v/yii2-validators": "@dev",
+            "kartik-v/yii2-widget-fileinput": "@dev",
+            "kartik-v/yii2-widgets": "@dev",
             "mdmsoft/yii2-admin": "dev-master",
             "nanson/yii2-postgis": "^1.0",
             "nepstor/yii2-datetime-compare-validator": "*",
