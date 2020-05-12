@@ -177,10 +177,10 @@ class SiteController extends GsncController
     public function actionVideoGuide()
     {
         $media = [
-            ['title' => 'Nhập excel mẫu nước', 'content' => 'Hướng dẫn nhập dữ liệu excel mẫu nước vào CSDL.', 'url' => asset('/storage/video/importMaunuoc.mp4')],
-            ['title' => 'Nhập excel vị trí khảo sát', 'content' => 'Hướng dẫn nhập dữ liệu excel vị trí khảo sát vào CSDL.', 'url' => asset('/storage/video/importVtKhaosat.mp4')],
-            ['title' => 'Lấy dữ liệu từ máy GPS', 'content' => 'Hướng dẫn lấy dữ liệu từ máy GPS.', 'url' => asset('/storage/video/Lay du lieu tu may GPS.mp4')],
-            ['title' => 'Định vị bằng máy GPS', 'content' => 'Hướng dẫn Định vị bằng máy GPS.', 'url' => asset('/storage/video/Dinh vi bang may GPS.mp4')],
+            ['title' => 'Nhập excel mẫu nước', 'content' => 'Hướng dẫn nhập dữ liệu excel mẫu nước vào CSDL.', 'url' => url('/projects/gsnc/storage/video/importMaunuoc.mp4')],
+            ['title' => 'Nhập excel vị trí khảo sát', 'content' => 'Hướng dẫn nhập dữ liệu excel vị trí khảo sát vào CSDL.', 'url' => url('/projects/gsnc/storage/video/importVtKhaosat.mp4')],
+            ['title' => 'Lấy dữ liệu từ máy GPS', 'content' => 'Hướng dẫn lấy dữ liệu từ máy GPS.', 'url' => url('/projects/gsnc/storage/video/Lay du lieu tu may GPS.mp4')],
+            ['title' => 'Định vị bằng máy GPS', 'content' => 'Hướng dẫn Định vị bằng máy GPS.', 'url' => url('/projects/gsnc/storage/video/Dinh vi bang may GPS.mp4')],
         ];
 
         return $this->render('video_guide', compact('media'));

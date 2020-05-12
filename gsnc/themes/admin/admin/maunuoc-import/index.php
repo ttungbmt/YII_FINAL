@@ -9,7 +9,6 @@ use kartik\select2\Select2;
 $this->title = 'Nhập Excel Mẫu nước';
 $qcvn = api('dm/qcvnmc');
 $files = \gsnc\models\DmQcvn::pluck('link', 'id');
-
 ?>
 <style>
     table, th, td {

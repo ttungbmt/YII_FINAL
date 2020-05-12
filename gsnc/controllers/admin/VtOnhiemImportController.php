@@ -19,7 +19,7 @@ class VtOnhiemImportController extends GsncController
 
     protected $modelClass = 'gsnc\forms\VtOnhiemImportForm';
 
-    protected $sampleFile = 'storage/samples/vt-onhiem-import.xlsx';
+    protected $sampleFile = '/projects/gsnc/storage/samples/vt-onhiem-import.xlsx';
     public $validateHeader = ['maquan', 'maphuong', 'diachi', 'ten', 'onhiem_id','ghichu', 'lat', 'lng'];
     public function actionIndex()
     {
@@ -116,7 +116,7 @@ class VtOnhiemImportController extends GsncController
         return $this->render('index', [
 
             'model'      => $model,
-            'sampleFile' => asset($this->sampleFile)
+            'sampleFile' => url($this->sampleFile)
         ]);
     }
     protected function saveModels($models)

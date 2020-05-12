@@ -20,7 +20,7 @@ class PoiThugomracImportController extends GsncController
 
     protected $modelClass = 'gsnc\forms\ThugomracImportForm';
 
-    protected $sampleFile = 'storage/samples/thugomrac-import.xlsx';
+    protected $sampleFile = '/projects/gsnc/storage/samples/thugomrac-import.xlsx';
     public $validateHeader = ['maquan', 'maphuong', 'diachi', 'ten','sonha' ,'tenduong','onhiem_id', 'lat', 'lng'];
     public function actionIndex()
     {
@@ -117,7 +117,7 @@ class PoiThugomracImportController extends GsncController
         return $this->render('index', [
 
             'model'      => $model,
-            'sampleFile' => asset($this->sampleFile)
+            'sampleFile' => url($this->sampleFile)
         ]);
     }
     protected function saveModels($models)
