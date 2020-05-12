@@ -37,7 +37,7 @@ $maphuong = userInfo()->ma_phuong;
                     <?= $form->field($model, 'tinh')->dropDownList(['hcm' => 'Hồ Chí Minh']); ?>
                 </div>
                 <div class="col-md-4">
-                    <?= $form->field($model, 'ma_quan')->dropDownList(api('/dm/quan'), [
+                    <?= $form->field($model, 'ma_quan')->dropDownList(api('/dm/quan?role=true'), [
                         'prompt'  => 'Chọn quận huyện...',
                         'id'      => 'drop-quan',
                         'options' => [

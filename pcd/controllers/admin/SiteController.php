@@ -92,7 +92,6 @@ class SiteController extends AppController {
             return $this->redirect($url);
         }
 
-
         $role = RoleHc::init();
 
         //Số lượng ca bệnh

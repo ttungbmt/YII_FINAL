@@ -58,6 +58,10 @@ return [
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'loaihinh',
+        'width' => 200,
+        'value' => function($model){
+            return $model->loaihinh_id ? data_get($model->dm_loaihinh, 'ten_lh') : $model->loaihinh;
+        }
     ],
     [
         'class' => '\kartik\grid\DataColumn',

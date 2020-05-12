@@ -1,0 +1,3 @@
+[submodule "packages/ttungbmt/yii2-core"]
+	path = packages/ttungbmt/yii2-core
+	url = https://github.com/ttungbmt/yii2-core.git

@@ -148,6 +148,10 @@ class PtNguyco extends App {
         return $this->hasOne(DmLoaihinh::className(), ['id' => 'loaihinh_id']);
     }
 
+    public function getLoaihinh() {
+        return $this->hasOne(DmLoaihinh::className(), ['id' => 'loaihinh_id']);
+    }
+
     public function getDiachiText() {
         $addrs = collect([$this->sonha, $this->tenduong])->filter()->implode(' ');
         return trim($addrs);

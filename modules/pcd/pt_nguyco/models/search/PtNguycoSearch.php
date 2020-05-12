@@ -32,7 +32,7 @@ class PtNguycoSearch extends PtNguyco
     public function search($params)
     {
         $roles = RoleHc::init();
-        $query = PtNguyco::find()->with(['quan', 'phuong']);
+        $query = PtNguyco::find()->with(['quan', 'phuong', 'loaihinh']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
