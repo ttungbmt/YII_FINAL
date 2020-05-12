@@ -7,7 +7,7 @@ pcd/runtime
 
 
 public/assets
-
+/vendor
 # composer vendor dir
 
 # video
