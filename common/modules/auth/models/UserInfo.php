@@ -47,11 +47,11 @@ class UserInfo extends MyModel
     {
         return $this->hasOne(HcQuan::className(), ['maquan' => 'maquan']);
     }
-//
-//    public function getUser()
-//    {
-//        return $this->hasOne(UserInfo::className(), ['id' => 'user_id']);
-//    }
+
+    public function getUser()
+    {
+        return $this->hasOne(UserInfo::className(), ['id' => 'user_id']);
+    }
 
     /**
      * @inheritdoc
