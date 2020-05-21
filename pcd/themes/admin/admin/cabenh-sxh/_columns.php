@@ -138,12 +138,14 @@ return [
     [
         'class'     => '\kartik\grid\DataColumn',
         'attribute' => 'maquan',
-        'value'     => 'hcPhuong.tenquan'
+        'value'     => 'hcPhuong.tenquan',
+        'filter' => false
     ],
     [
         'class'     => '\kartik\grid\DataColumn',
         'attribute' => 'maphuong',
-        'value'     => 'hcPhuong.tenphuong'
+        'value'     => 'hcPhuong.tenphuong',
+        'filter' => false
     ],
     [
         'class'      => '\kartik\grid\DataColumn',
