@@ -1,5 +1,5 @@
 <?php
-
+use kartik\export\ExportMenu;
 use yii\helpers\Html;
 use yii\bootstrap\Modal;
 use kartik\grid\GridView;
@@ -11,6 +11,15 @@ use johnitvn\ajaxcrud\CrudAsset;
 CrudAsset::register($this);
 $this->title = "Điểm nguy cơ";
 $is_partial = request('partial') == true;
+$gridColumns = require(__DIR__ . '/_columns.php');
+$exportMenu = ExportMenu::widget([
+    'dataProvider' => $dataProvider,
+    'columns' => $gridColumns,
+    'dropdownOptions' => [
+        'label' => '<i class="icon-database-export"></i>',
+        'class' => 'btn btn-default'
+    ]
+])
 ?>
 <div class="pt-nguyco-index">
     <div id="ajaxCrudDatatable">
@@ -29,15 +38,16 @@ $is_partial = request('partial') == true;
                     'scrollTo' => true,
                 ],
             ],
-            'columns' => require(__DIR__ . '/_columns.php'),
+            'columns' => $gridColumns,
             'toolbar' => [
                 ['content' =>
                     Html::a('Thêm mới', ['create'],
                         ['data-pjax' => 0, 'title' => 'Thêm mới Điểm nguy cơ', 'class' => 'btn btn-default',]) .
                     Html::a('<i class="icon-reload-alt"></i>', [''],
                         ['data-pjax' => 0, 'class' => 'btn btn-default', 'title' => lang('Reset Grid')]) .
-                    '{toggleData}' .
-                    '{export}'
+                    '{toggleData}'.$exportMenu
+
+//                    '{export}'
                 ],
             ],
             'striped' => true,
