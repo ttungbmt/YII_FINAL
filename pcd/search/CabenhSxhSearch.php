@@ -6,6 +6,7 @@ use pcd\models\Chuyenca;
 use pcd\supports\RoleHc;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\db\Expression;
 
 class CabenhSxhSearch extends CabenhSxh
 {
@@ -76,7 +77,14 @@ class CabenhSxhSearch extends CabenhSxh
             'loai_xm_cb' => $this->loai_xm_cb,
         ]);
 
-        $query->andFilterDate(['ngaymacbenh' => [$this->date_from, $this->date_to]]);
+        if($this->date_from){
+            $query->andWhere("COALESCE(ngaymacbenh, ngaynhapvien) >= '{$this->date_from}'");
+        }
+
+        if($this->date_to){
+            $query->andWhere("COALESCE(ngaymacbenh, ngaynhapvien) <= '{$this->date_to}'");
+        }
+
         $query->andFilterDate(['>=', 'ngaybaocao', '2019-01-01']);
 
 
