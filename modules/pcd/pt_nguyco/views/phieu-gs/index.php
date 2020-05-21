@@ -1,4 +1,6 @@
 <?php
+
+use kartik\export\ExportMenu;
 use yii\helpers\Html;
 use yii\bootstrap\Modal;
 use kartik\grid\GridView;
@@ -10,6 +12,15 @@ use johnitvn\ajaxcrud\CrudAsset;
 CrudAsset::register($this);
 
 $this->title = "Phiếu giám sát";
+$gridColumns = require(__DIR__ . '/_columns.php');
+$exportMenu = ExportMenu::widget([
+    'dataProvider' => $dataProvider,
+    'columns' => $gridColumns,
+    'dropdownOptions' => [
+        'label' => '<i class="icon-database-export"></i>',
+        'class' => 'btn btn-default'
+    ]
+])
 ?>
 <div class="phieu-gs-index">
     <?= $this->render('_search', ['model' => $searchModel]) ?>
@@ -21,7 +32,7 @@ $this->title = "Phiếu giám sát";
             'filterModel' => $searchModel,
             'filterSelector' => 'select[name="pagination"]',
             'pjax'=>true,
-            'columns' => require(__DIR__.'/_columns.php'),
+            'columns' => $gridColumns,
             'toolbar'=> [
                 ['content'=>
                     Html::a('Thêm mới', ['create'],
@@ -29,7 +40,7 @@ $this->title = "Phiếu giám sát";
                     Html::a('<i class="icon-reload-alt"></i>', [''],
                     ['data-pjax'=>1, 'class'=>'btn btn-default', 'title'=> lang('Reset Grid')]).
                     '{toggleData}'.
-                    '{export}'
+                    $exportMenu
                 ],
             ],          
             'striped' => true,
