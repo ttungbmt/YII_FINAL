@@ -91,9 +91,9 @@ class SiteController extends AppController {
         $host = data_get($_SERVER, 'HTTP_HOST');
 
         if (!Yii::$app->request->isSecureConnection && $host == 'pcd.hcmgis.vn') {
-            $url = Yii::$app->request->getAbsoluteUrl();
-            $url = str_replace('http:', 'https:', $url);
-            return $this->redirect($url);
+//            $url = Yii::$app->request->getAbsoluteUrl();
+//            $url = str_replace('http:', 'https:', $url);
+//            return $this->redirect($url);
         }
 
         $role = RoleHc::init();
