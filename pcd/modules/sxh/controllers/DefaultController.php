@@ -29,11 +29,6 @@ class DefaultController extends AppController {
         $model = new SxhForm();
         $model->loadForm($id);
 
-//        if($_SERVER['SERVER_NAME'] !== 'pcd.hcmgis.vn'){
-//            dd($model->toArray());
-//        }
-
-
         return $this->render('update', compact('model'));
     }
 

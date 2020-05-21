@@ -1,5 +1,5 @@
 <?php
-namespace modules\pcd\import\forms;
+namespace pcd\modules\import\forms;
 use common\models\DynamicImportForm;
 
 class DansoImportForm extends DynamicImportForm {

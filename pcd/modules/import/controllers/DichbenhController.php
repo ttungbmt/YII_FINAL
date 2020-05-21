@@ -1,5 +1,5 @@
 <?php
-namespace modules\pcd\import\controllers;
+namespace pcd\modules\import\controllers;
 
 use common\controllers\BackendController;
 use common\controllers\ImportTrait;
@@ -9,17 +9,17 @@ use pcd\models\DmPhuong;
 use pcd\models\DmQuan;
 use yii\base\Model;
 
-class DncController extends BackendController {
+class DichbenhController extends BackendController {
     use ImportTrait;
     public $enableCsrfValidation = false;
-    protected $modelImportClass = 'modules\pcd\import\forms\DncImportForm';
-    protected $modelClass = 'modules\pcd\pt_nguyco\models\PtNguyco';
+    protected $modelImportClass = 'pcd\modules\import\forms\DichbenhImportForm';
+    protected $modelClass = 'pcd\modules\benh_tn\models\BenhTn';
 
     protected function options()
     {
         return [
-            'header' => ['maquan', 'maphuong', 'khupho', 'to', 'diachi', 'sonha', 'tenduong', 'ten_cs', 'dienthoai', 'loaihinh', 'nhom', 'ngaycapnhat', 'ngayxoa', 'lat', 'lng',],
-            'sample' => '/pcd/storage/samples/MAU_DNC.xlsx',
+            'header' => ['bv', 'icd', 't_benh', 'shs', 'ho_ten', 'phai', 'tuoi', 'dia_chi', 'nghe_nghiep', 'me', 'dt', 'qh', 'px', 'ng_nv', 'ng_bc', 'nam_nv', 'thang_nv', 'tuan_nv', 'nam_bc', 'thang_bc', 'tuan_bc', 'hinh_thuc_dieu_tri', 'lat', 'lng'],
+            'sample' => '/gsnc/storage/samples/vt-khaosat-import.xlsx',
             'startDataRow' => 1
         ];
     }
@@ -49,7 +49,10 @@ class DncController extends BackendController {
 
         foreach ($excelModels as $k => $i) {
             $data[$k] = $i->toArray();
-            $models[$k] = new $this->modelClass();
+            $data[$k]['maquan'] = $data[$k]['qh'];
+            $data[$k]['maphuong'] = $data[$k]['px'];
+
+            $models[$k] = new BenhTn();
         }
 
         // Validate model and relation 2rd
@@ -78,11 +81,9 @@ class DncController extends BackendController {
     protected function saveModels($models, $data, $connection)
     {
         foreach ($models as $m) {
-            if($m->lat && $m->lng){
-                $m->geom = [floatval($m->lng), floatval($m->lat)];
-            }
-
             $m->save();
         }
+//
+//        $connection->createCommand()->batchInsert('ql_chitieu', ['chitieu_id', 'giatri', 'entity_type', 'entity_id'], $chitieus)->execute();
     }
 }

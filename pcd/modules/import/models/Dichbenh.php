@@ -1,5 +1,5 @@
 <?php
-namespace modules\pcd\import\models;
+namespace pcd\modules\import\models;
 use common\models\MyModel;
 use Yii;
 

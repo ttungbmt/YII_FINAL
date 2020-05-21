@@ -1,6 +1,7 @@
 <?php
 namespace common\libs\excel;
 
+use Illuminate\Support\Str;
 use PHPExcel_Cell;
 use PHPExcel_IOFactory;
 use PHPExcel_RichText;
@@ -108,7 +109,7 @@ class Excel
                 $value = $cell->getValue();
 
                 if ($r === $startRow) {
-                    $key = $isFormatHeader ? str_slug($value, '_') : $value;
+                    $key = $isFormatHeader ? Str::slug($value, '_') : $value;
 
                     $this->headers[$key] = [
                         'key'        => $key,
@@ -251,7 +252,7 @@ class Excel
 
         $header = $headingsArray[$row_header];
         foreach($header as $k => $value) {
-            $header[$k] = str_slug($value, '_');
+            $header[$k] = Str::slug($value, '_');
         }
 
         return $header;

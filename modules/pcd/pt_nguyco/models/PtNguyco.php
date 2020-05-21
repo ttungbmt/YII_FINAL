@@ -58,7 +58,7 @@ class PtNguyco extends App {
     public function rules() {
         return [
             [['loaihinh_id', 'ky_ck'], 'integer'],
-            [['khupho', 'to_dp', 'ngaycapnhat', 'ngayxoa', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'safe'],
+            [['khupho', 'to_dp', 'ngaycapnhat', 'ngayxoa', 'created_at', 'updated_at', 'created_by', 'updated_by', 'diachi'], 'safe'],
             [['maphuong', 'maquan', 'khupho', 'to_dp', 'dienthoai', 'sonha', 'tenduong', 'nhom',], 'safe'],
             [['maso', 'ten_cs', 'loaihinh', 'tochuc_gs', 'ghichu', 'phancap_ql', 'thuchien',], 'string', 'max' => 255],
             [['ngaycapnhat', 'ngayky_ck'], 'date', 'format' => 'php:d/m/Y'],

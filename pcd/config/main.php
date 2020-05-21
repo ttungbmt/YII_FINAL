@@ -27,7 +27,7 @@ return [
             'class' => 'modules\pcd\pt_nguyco\Module',
         ],
         'import'    => [
-            'class' => 'modules\pcd\import\Module',
+            'class' => 'pcd\modules\import\Module',
         ],
         'benh_tn'   => [
             'class' => 'pcd\modules\benh_tn\Module',

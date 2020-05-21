@@ -8,7 +8,6 @@
 
         <validation-observer ref="observer" v-slot="{ passes, handleSubmit }">
             <b-form @submit.prevent="onSubmit" id="sxh-form" ref="form">
-
                 <b-card no-body>
                     <leaflet-part/>
                     <header-part :shownChuyenca="shownChuyenca"/>
@@ -39,11 +38,6 @@
                 </b-card>
             </b-form>
         </validation-observer>
-
-       <!-- <b-card header="Form Data Result">
-            <pre class="m-0">{{ form }}</pre>
-            <pre class="m-0">{{ xacminh }}</pre>
-        </b-card>-->
     </div>
 </template>
 <script>

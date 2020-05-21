@@ -1,5 +1,5 @@
 <?php
-namespace modules\pcd\import\forms;
+namespace pcd\modules\import\forms;
 
 use common\models\DynamicImportForm;
 
@@ -45,25 +45,26 @@ class DncImportForm extends DynamicImportForm {
         return $rules;
     }
 
+
     public function fields(){
         $data = collect();
 
-//        $f0 = collect([
-//            'qh' => $this->dm_quan,
-//            'px' => $this->dm_phuong,
-//        ])->map(function ($dm, $k){
-//            return function($model, $field) use($dm, $k){
-//                $val = $this->arr_where($dm, $field);
-//                return in_array($k, ['qh', 'px']) ? (string)$val : $val;
-//            };
-//        })->all();
-//
-//        $data->push($f0);
+        $f0 = collect([
+            'maquan' => $this->dm_quan,
+            'maphuong' => $this->dm_phuong,
+        ])->map(function ($dm, $k){
+            return function($model, $field) use($dm, $k){
+                $val = $this->arr_where($dm, $field);
+                return in_array($k, ['maquan', 'maphuong']) ? (string)$val : $val;
+            };
+        })->all();
+
+        $data->push($f0);
 
         $data->push([
-            'maphuong',
-            'maquan',
-            'khupho', 'to', 'diachi', 'sonha', 'tenduong', 'ten_cs', 'dienthoai', 'loaihinh', 'nhom', 'ngaycapnhat', 'ngayxoa', 'lat', 'lng',
+            'khupho',
+            'to_dp' => 'to',
+            'diachi', 'sonha', 'tenduong', 'ten_cs', 'dienthoai', 'loaihinh', 'nhom', 'ngaycapnhat', 'ngayxoa', 'lat', 'lng',
         ]);
 
         return $data->collapse()->all();

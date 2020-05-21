@@ -16,53 +16,6 @@ let external = Object.keys(pkg.devDependencies).concat([
 ]);
 
 export default [
-    // ESM build to be used with webpack/rollup.
-    // {
-    //     input: 'src/index.js',
-    //     output: {
-    //         format: 'esm',
-    //         file: 'dist/library.esm.js'
-    //     },
-    //     plugins: [
-    //         babel({
-    //             exclude: 'node_modules/**', // only transpile our source code
-    //             runtimeHelpers: true,
-    //         }), //Place babel before commonjs plugin.
-    //         commonjs(), // converts date-fns to ES modules
-    //         vue()
-    //     ]
-    // },
-    // Browser build.
-    // {
-    //     input: 'src/index.js',
-    //     output: {
-    //         format: 'iife',
-    //         file: 'dist/library.js',
-    //         name: 'VueCore',
-    //         globals: {
-    //             'excellentexport': 'ExcellentExport',
-    //             'lodash-es': '_',
-    //             'jquery': '$',
-    //         }
-    //     },
-    //     plugins: [
-    //         resolve(),
-    //         commonjs(),
-    //         babel({
-    //             exclude: 'node_modules/**', // only transpile our source code
-    //             runtimeHelpers: true,
-    //         }),
-    //         vue({
-    //             css: true,
-    //             compileTemplate: true,
-    //         }),
-    //         buble(),
-    //         replace({
-    //             "process.env.NODE_ENV": JSON.stringify("production")
-    //         }),
-    //     ],
-    //     external
-    // },
     {
         input: 'src/pages/sxh/index.js',
         output: {

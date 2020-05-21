@@ -1,5 +1,5 @@
 <?php
-namespace modules\pcd\import\controllers;
+namespace pcd\modules\import\controllers;
 
 use common\controllers\BackendController;
 

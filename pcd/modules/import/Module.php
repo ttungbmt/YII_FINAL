@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\pcd\import;
+namespace pcd\modules\import;
 
 /**
  * import module definition class
@@ -10,7 +10,7 @@ class Module extends \yii\base\Module
     /**
      * {@inheritdoc}
      */
-    public $controllerNamespace = 'modules\pcd\import\controllers';
+    public $controllerNamespace = 'pcd\modules\import\controllers';
 
     /**
      * {@inheritdoc}

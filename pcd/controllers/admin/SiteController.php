@@ -11,6 +11,10 @@ use yii\db\Expression;
 use yii\db\Query;
 
 class SiteController extends AppController {
+    public function actionTest(){
+        return $this->render('test');
+    }
+
     public function actionNotification() {
         $model = (new Query())
             ->select('xmcabenh, count(*)')

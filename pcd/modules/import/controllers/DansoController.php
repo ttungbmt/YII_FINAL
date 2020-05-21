@@ -1,5 +1,5 @@
 <?php
-namespace modules\pcd\import\controllers;
+namespace pcd\modules\import\controllers;
 
 use common\controllers\BackendController;
 use common\controllers\ImportTrait;
@@ -14,7 +14,7 @@ class DansoController extends BackendController {
     use ImportTrait;
 
     public $enableCsrfValidation = false;
-    protected $modelImportClass = 'modules\pcd\import\forms\DansoImportForm';
+    protected $modelImportClass = 'pcd\modules\import\forms\DansoImportForm';
     protected $modelClass = 'pcd\models\Danso';
 
     public function actionQuan(){

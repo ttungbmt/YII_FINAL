@@ -1,4 +1,6 @@
 <?php
+
+use Illuminate\Support\Arr;
 use kartik\alert\Alert;
 use kartik\helpers\Html;
 use kartik\widgets\ActiveForm;
@@ -50,7 +52,7 @@ use yii\widgets\LinkPager;
                 'attributeDefaults' => [
                     'type' => TabularForm::INPUT_TEXT,
                 ],
-                'attributes'        => array_first($models)->formAttrs(),
+                'attributes'        => Arr::first($models)->formAttrs(),
                 'checkboxColumn'    => false,
                 'actionColumn'      => false,
                 'gridSettings'      => [

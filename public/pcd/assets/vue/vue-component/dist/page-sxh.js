@@ -6517,13 +6517,129 @@
 
 	//
 
-	// --- Static ---
-	var from = function from() {
-	  return Array.from.apply(Array, arguments);
+	/**
+	 * Utilities to get information about the current environment
+	 */
+	// --- Constants ---
+	var hasWindowSupport = typeof window !== 'undefined';
+	var hasDocumentSupport = typeof document !== 'undefined';
+	var hasNavigatorSupport = typeof navigator !== 'undefined';
+	var hasPromiseSupport = typeof Promise !== 'undefined';
+	var hasMutationObserverSupport = typeof MutationObserver !== 'undefined' || typeof WebKitMutationObserver !== 'undefined' || typeof MozMutationObserver !== 'undefined';
+	var isBrowser = hasWindowSupport && hasDocumentSupport && hasNavigatorSupport; // Browser type sniffing
+
+	var userAgent = isBrowser ? window.navigator.userAgent.toLowerCase() : '';
+	var isJSDOM = userAgent.indexOf('jsdom') > 0;
+	var isIE = /msie|trident/.test(userAgent); // Determine if the browser supports the option passive for events
+
+	var hasPassiveEventSupport = function () {
+	  var passiveEventSupported = false;
+
+	  if (isBrowser) {
+	    try {
+	      var options = {
+	        get passive() {
+	          // This function will be called when the browser
+	          // attempts to access the passive property.
+
+	          /* istanbul ignore next: will never be called in JSDOM */
+	          passiveEventSupported = true;
+	        }
+
+	      };
+	      window.addEventListener('test', options, options);
+	      window.removeEventListener('test', options, options);
+	    } catch (err) {
+	      /* istanbul ignore next: will never be called in JSDOM */
+	      passiveEventSupported = false;
+	    }
+	  }
+
+	  return passiveEventSupported;
+	}();
+	var hasTouchSupport = isBrowser && ('ontouchstart' in document.documentElement || navigator.maxTouchPoints > 0);
+	var hasPointerEventSupport = isBrowser && Boolean(window.PointerEvent || window.MSPointerEvent);
+	var hasIntersectionObserverSupport = isBrowser && 'IntersectionObserver' in window && 'IntersectionObserverEntry' in window && // Edge 15 and UC Browser lack support for `isIntersecting`
+	// but we an use intersectionRatio > 0 instead
+	// 'isIntersecting' in window.IntersectionObserverEntry.prototype &&
+	'intersectionRatio' in window.IntersectionObserverEntry.prototype; // --- Getters ---
+
+	var getEnv = function getEnv(key) {
+	  var fallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+	  var env = typeof process !== 'undefined' && process ? process.env || {} : {};
+
+	  if (!key) {
+	    /* istanbul ignore next */
+	    return env;
+	  }
+
+	  return env[key] || fallback;
 	};
-	var isArray = function isArray(val) {
-	  return Array.isArray(val);
-	}; // --- Instance ---
+	var getNoWarn = function getNoWarn() {
+	  return getEnv('BOOTSTRAP_VUE_NO_WARN');
+	};
+
+	/**
+	 * Log a warning message to the console with BootstrapVue formatting
+	 * @param {string} message
+	 */
+
+	var warn = function warn(message)
+	/* istanbul ignore next */
+	{
+	  if (!getNoWarn()) {
+	    console.warn("[BootstrapVue warn]: ".concat(message));
+	  }
+	};
+	/**
+	 * Warn when no Promise support is given
+	 * @param {string} source
+	 * @returns {boolean} warned
+	 */
+
+	var warnNotClient = function warnNotClient(source) {
+	  /* istanbul ignore else */
+	  if (isBrowser) {
+	    return false;
+	  } else {
+	    warn("".concat(source, ": Can not be called during SSR."));
+	    return true;
+	  }
+	};
+	/**
+	 * Warn when no Promise support is given
+	 * @param {string} source
+	 * @returns {boolean} warned
+	 */
+
+	var warnNoPromiseSupport = function warnNoPromiseSupport(source) {
+	  /* istanbul ignore else */
+	  if (hasPromiseSupport) {
+	    return false;
+	  } else {
+	    warn("".concat(source, ": Requires Promise support."));
+	    return true;
+	  }
+	};
+	/**
+	 * Warn when no MutationObserver support is given
+	 * @param {string} source
+	 * @returns {boolean} warned
+	 */
+
+	var warnNoMutationObserverSupport = function warnNoMutationObserverSupport(source) {
+	  /* istanbul ignore else */
+	  if (hasMutationObserverSupport) {
+	    return false;
+	  } else {
+	    warn("".concat(source, ": Requires MutationObserver support."));
+	    return true;
+	  }
+	}; // Default export
+
+	// --- Static ---
+	var from = Array.from;
+	var isArray = Array.isArray; // --- Instance ---
 
 	var arrayIncludes = function arrayIncludes(array, value) {
 	  return array.indexOf(value) !== -1;
@@ -6542,33 +6658,19 @@
 
 	function _objectSpread(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+	function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-	var assign = function assign() {
-	  return Object.assign.apply(Object, arguments);
-	};
-	var create = function create(proto, optionalProps) {
-	  return Object.create(proto, optionalProps);
-	};
-	var defineProperties = function defineProperties(obj, props) {
-	  return Object.defineProperties(obj, props);
-	};
-	var defineProperty$1 = function defineProperty(obj, prop, descr) {
-	  return Object.defineProperty(obj, prop, descr);
-	};
-	var freeze = function freeze(obj) {
-	  return Object.freeze(obj);
-	};
-	var getOwnPropertyNames = function getOwnPropertyNames(obj) {
-	  return Object.getOwnPropertyNames(obj);
-	};
-	var keys$2 = function keys(obj) {
-	  return Object.keys(obj);
-	}; // --- "Instance" ---
+	var assign = Object.assign;
+	var getOwnPropertyNames = Object.getOwnPropertyNames;
+	var keys$2 = Object.keys;
+	var defineProperties = Object.defineProperties;
+	var defineProperty$1 = Object.defineProperty;
+	var freeze = Object.freeze;
+	var create = Object.create;
 
 	var hasOwnProperty$2 = function hasOwnProperty(obj, prop) {
 	  return Object.prototype.hasOwnProperty.call(obj, prop);
@@ -6648,69 +6750,7 @@
 	  return freeze(obj);
 	};
 
-	/**
-	 * Utilities to get information about the current environment
-	 */
-	// --- Constants ---
-	var hasWindowSupport = typeof window !== 'undefined';
-	var hasDocumentSupport = typeof document !== 'undefined';
-	var hasNavigatorSupport = typeof navigator !== 'undefined';
-	var hasPromiseSupport = typeof Promise !== 'undefined';
-	var hasMutationObserverSupport = typeof MutationObserver !== 'undefined' || typeof WebKitMutationObserver !== 'undefined' || typeof MozMutationObserver !== 'undefined';
-	var isBrowser = hasWindowSupport && hasDocumentSupport && hasNavigatorSupport; // Browser type sniffing
-
-	var userAgent = isBrowser ? window.navigator.userAgent.toLowerCase() : '';
-	var isJSDOM = userAgent.indexOf('jsdom') > 0;
-	var isIE = /msie|trident/.test(userAgent); // Determine if the browser supports the option passive for events
-
-	var hasPassiveEventSupport = function () {
-	  var passiveEventSupported = false;
-
-	  if (isBrowser) {
-	    try {
-	      var options = {
-	        get passive() {
-	          // This function will be called when the browser
-	          // attempts to access the passive property.
-
-	          /* istanbul ignore next: will never be called in JSDOM */
-	          passiveEventSupported = true;
-	        }
-
-	      };
-	      window.addEventListener('test', options, options);
-	      window.removeEventListener('test', options, options);
-	    } catch (err) {
-	      /* istanbul ignore next: will never be called in JSDOM */
-	      passiveEventSupported = false;
-	    }
-	  }
-
-	  return passiveEventSupported;
-	}();
-	var hasTouchSupport = isBrowser && ('ontouchstart' in document.documentElement || navigator.maxTouchPoints > 0);
-	var hasPointerEventSupport = isBrowser && Boolean(window.PointerEvent || window.MSPointerEvent);
-	var hasIntersectionObserverSupport = isBrowser && 'IntersectionObserver' in window && 'IntersectionObserverEntry' in window && // Edge 15 and UC Browser lack support for `isIntersecting`
-	// but we an use intersectionRatio > 0 instead
-	// 'isIntersecting' in window.IntersectionObserverEntry.prototype &&
-	'intersectionRatio' in window.IntersectionObserverEntry.prototype; // --- Getters ---
-
-	var getEnv = function getEnv(key) {
-	  var fallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-	  var env = typeof process !== 'undefined' && process ? process.env || {} : {};
-
-	  if (!key) {
-	    /* istanbul ignore next */
-	    return env;
-	  }
-
-	  return env[key] || fallback;
-	};
-	var getNoWarn = function getNoWarn() {
-	  return getEnv('BOOTSTRAP_VUE_NO_WARN');
-	};
-
-	function _typeof$1(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$1 = function _typeof(obj) { return typeof obj; }; } else { _typeof$1 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$1(obj); }
+	function _typeof$1(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$1 = function _typeof(obj) { return typeof obj; }; } else { _typeof$1 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$1(obj); }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6785,7 +6825,7 @@
 	  return File;
 	}(_wrapNativeSuper(Object));
 
-	function _typeof$2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$2 = function _typeof(obj) { return typeof obj; }; } else { _typeof$2 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$2(obj); }
+	function _typeof$2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$2 = function _typeof(obj) { return typeof obj; }; } else { _typeof$2 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$2(obj); }
 
 	var toType = function toType(val) {
 	  return _typeof$2(val);
@@ -6834,7 +6874,7 @@
 
 	function _objectSpread$1(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$1(source, true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -6863,11 +6903,6 @@
 	  return defaultValue;
 	};
 
-	var identity = function identity(x) {
-	  return x;
-	};
-
-	var RX_ARRAY_NOTATION = /\[(\d+)]/g;
 	/**
 	 * Get property defined by dot/array notation in string.
 	 *
@@ -6897,8 +6932,8 @@
 	  } // Handle string array notation (numeric indices only)
 
 
-	  path = String(path).replace(RX_ARRAY_NOTATION, '.$1');
-	  var steps = path.split('.').filter(identity); // Handle case where someone passes a string of only dots
+	  path = String(path).replace(/\[(\d+)]/g, '.$1');
+	  var steps = path.split('.').filter(Boolean); // Handle case where someone passes a string of only dots
 
 	  if (steps.length === 0) {
 	    return defaultValue;
@@ -6911,66 +6946,6 @@
 	  return steps.every(function (step) {
 	    return isObject(obj) && step in obj && (obj = obj[step]) != null;
 	  }) ? obj : defaultValue;
-	};
-
-	/**
-	 * Log a warning message to the console with BootstrapVue formatting
-	 * @param {string} message
-	 */
-
-	var warn = function warn(message)
-	/* istanbul ignore next */
-	{
-	  var source = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-	  if (!getNoWarn()) {
-	    console.warn("[BootstrapVue warn]: ".concat(source ? "".concat(source, " - ") : '').concat(message));
-	  }
-	};
-	/**
-	 * Warn when no Promise support is given
-	 * @param {string} source
-	 * @returns {boolean} warned
-	 */
-
-	var warnNotClient = function warnNotClient(source) {
-	  /* istanbul ignore else */
-	  if (isBrowser) {
-	    return false;
-	  } else {
-	    warn("".concat(source, ": Can not be called during SSR."));
-	    return true;
-	  }
-	};
-	/**
-	 * Warn when no Promise support is given
-	 * @param {string} source
-	 * @returns {boolean} warned
-	 */
-
-	var warnNoPromiseSupport = function warnNoPromiseSupport(source) {
-	  /* istanbul ignore else */
-	  if (hasPromiseSupport) {
-	    return false;
-	  } else {
-	    warn("".concat(source, ": Requires Promise support."));
-	    return true;
-	  }
-	};
-	/**
-	 * Warn when no MutationObserver support is given
-	 * @param {string} source
-	 * @returns {boolean} warned
-	 */
-
-	var warnNoMutationObserverSupport = function warnNoMutationObserverSupport(source) {
-	  /* istanbul ignore else */
-	  if (hasMutationObserverSupport) {
-	    return false;
-	  } else {
-	    warn("".concat(source, ": Requires MutationObserver support."));
-	    return true;
-	  }
 	};
 
 	// NOTES
@@ -7026,7 +7001,6 @@
 	    variant: 'secondary'
 	  },
 	  BButtonClose: {
-	    content: '&times;',
 	    // `textVariant` is `null` to inherit the current text color
 	    textVariant: null,
 	    ariaLabel: 'Close'
@@ -7052,19 +7026,6 @@
 	    // Chrome default file prompt
 	    placeholder: 'No file chosen',
 	    dropPlaceholder: 'Drop files here'
-	  },
-	  BFormTag: {
-	    removeLabel: 'Remove tag',
-	    variant: 'secondary'
-	  },
-	  BFormTags: {
-	    addButtonText: 'Add',
-	    addButtonVariant: 'outline-secondary',
-	    duplicateTagText: 'Duplicate tag(s)',
-	    invalidTagText: 'Invalid tag(s)',
-	    placeholder: 'Add tag...',
-	    tagRemoveLabel: 'Remove tag',
-	    tagVariant: 'secondary'
 	  },
 	  BFormText: {
 	    textVariant: 'muted'
@@ -7102,7 +7063,6 @@
 	    cancelVariant: 'secondary',
 	    okTitle: 'OK',
 	    okVariant: 'primary',
-	    headerCloseContent: '&times;',
 	    headerCloseLabel: 'Close'
 	  },
 	  BNavbar: {
@@ -7166,7 +7126,6 @@
 
 	function _createClass(Constructor, protoProps, staticProps) { if (protoProps) { _defineProperties(Constructor.prototype, protoProps); } if (staticProps) { _defineProperties(Constructor, staticProps); } return Constructor; }
 
-	var NAME$2 = 'BvConfig';
 	var PROP_NAME = '$bvConfig'; // Config manager class
 
 	var BvConfig =
@@ -7206,7 +7165,7 @@
 	      configKeys.forEach(function (cmpName) {
 	        /* istanbul ignore next */
 	        if (!hasOwnProperty$2(DEFAULTS, cmpName)) {
-	          warn("Unknown config property \"".concat(cmpName, "\""), NAME$2);
+	          warn("config: unknown config property \"".concat(cmpName, "\""));
 	          return;
 	        }
 
@@ -7220,7 +7179,7 @@
 	          if (!isArray(breakpoints) || breakpoints.length < 2 || breakpoints.some(function (b) {
 	            return !isString(b) || b.length === 0;
 	          })) {
-	            warn('"breakpoints" must be an array of at least 2 breakpoint names', NAME$2);
+	            warn('config: "breakpoints" must be an array of at least 2 breakpoint names');
 	          } else {
 	            _this.$_config.breakpoints = cloneDeep(breakpoints);
 	          }
@@ -7230,7 +7189,7 @@
 	          props.forEach(function (prop) {
 	            /* istanbul ignore if */
 	            if (!hasOwnProperty$2(DEFAULTS[cmpName], prop)) {
-	              warn("Unknown config property \"".concat(cmpName, ".").concat(prop, "\""), NAME$2);
+	              warn("config: unknown config property \"".concat(cmpName, ".").concat(prop, "\""));
 	            } else {
 	              // TODO: If we pre-populate the config with defaults, we can skip this line
 	              _this.$_config[cmpName] = _this.$_config[cmpName] || {};
@@ -7296,7 +7255,7 @@
 
 	function _objectSpread$2(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { _defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$2(source, true).forEach(function (key) { _defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$2(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	/**
@@ -7522,11 +7481,11 @@
 	  /* istanbul ignore else: can't test in JSDOM, as it supports passive */
 	  if (hasPassiveEventSupport) {
 	    return isObject(options) ? options : {
-	      useCapture: !!options || false
+	      useCapture: Boolean(options || false)
 	    };
 	  } else {
 	    // Need to translate to actual Boolean value
-	    return !!(isObject(options) ? options.useCapture : options);
+	    return Boolean(isObject(options) ? options.useCapture : options);
 	  }
 	}; // Attach an event listener to an element
 
@@ -7540,20 +7499,14 @@
 	  if (el && el.removeEventListener) {
 	    el.removeEventListener(evtName, handler, parseEventOptions(options));
 	  }
-	}; // Remove a node from DOM
-
-	var removeNode = function removeNode(el) {
-	  return el && el.parentNode && el.parentNode.removeChild(el);
-	}; // Determine if an element is an HTML element
+	}; // Determine if an element is an HTML Element
 
 	var isElement = function isElement(el) {
-	  return !!(el && el.nodeType === Node.ELEMENT_NODE);
+	  return Boolean(el && el.nodeType === Node.ELEMENT_NODE);
 	}; // Determine if an HTML element is visible - Faster than CSS check
 
 	var isVisible = function isVisible(el) {
-	  if (!isElement(el) || !el.parentNode || !contains(d.body, el)) {
-	    // Note this can fail for shadow dom elements since they
-	    // are not a direct descendant of document.body
+	  if (!isElement(el) || !contains(d.body, el)) {
 	    return false;
 	  }
 
@@ -7568,12 +7521,12 @@
 
 
 	  var bcr = getBCR(el);
-	  return !!(bcr && bcr.height > 0 && bcr.width > 0);
+	  return Boolean(bcr && bcr.height > 0 && bcr.width > 0);
 	}; // Determine if an element is disabled
 
 	var isDisabled = function isDisabled(el) {
-	  return !isElement(el) || el.disabled || hasAttr(el, 'disabled') || hasClass(el, 'disabled');
-	}; // Cause/wait-for an element to reflow its content (adjusting its height/width)
+	  return !isElement(el) || el.disabled || Boolean(getAttr(el, 'disabled')) || hasClass(el, 'disabled');
+	}; // Cause/wait-for an element to reflow it's content (adjusting it's height/width)
 
 	var reflow = function reflow(el) {
 	  // Requesting an elements offsetHight will trigger a reflow of the element content
@@ -7591,7 +7544,11 @@
 	}; // Determine if an element matches a selector
 
 	var matches = function matches(el, selector) {
-	  return isElement(el) ? matchesEl.call(el, selector) : false;
+	  if (!isElement(el)) {
+	    return false;
+	  }
+
+	  return matchesEl.call(el, selector);
 	}; // Finds closest element matching selector. Returns `null` if not found
 
 	var closest = function closest(selector, root) {
@@ -7609,7 +7566,11 @@
 	}; // Returns true if the parent element contains the child element
 
 	var contains = function contains(parent, child) {
-	  return parent && isFunction(parent.contains) ? parent.contains(child) : false;
+	  if (!parent || !isFunction(parent.contains)) {
+	    return false;
+	  }
+
+	  return parent.contains(child);
 	}; // Get an element given an ID
 
 	var getById = function getById(id) {
@@ -7709,7 +7670,7 @@
 	  }
 
 	  return _offset;
-	}; // Return an element's offset with respect to to its offsetParent
+	}; // Return an element's offset with respect to to it's offsetParent
 	// https://j11y.io/jquery/#v=git&fn=jQuery.fn.position
 
 	var position = function position(el)
@@ -7755,25 +7716,6 @@
 	  };
 	};
 
-	// Number utilities
-	// Converts a value (string, number, etc) to an integer number
-	// Assumes radix base 10
-	// Returns NaN if the value cannot be converted
-	var toInteger = function toInteger(val) {
-	  return parseInt(val, 10);
-	}; // Converts a value (string, number, etc) to a number
-	// Returns NaN if the value cannot be converted
-
-	var toFloat = function toFloat(val) {
-	  return parseFloat(val);
-	}; // Converts a value (string, number, etc) to a string
-	// representation with 'precision' digits after the decimal
-	// Returns the string 'NaN' if the value cannot be converted
-
-	var toFixed = function toFixed(val, precision) {
-	  return toFloat(val).toFixed(toInteger(precision) || 0);
-	};
-
 	var e=function(){return (e=Object.assign||function(e){for(var t,r=1,s=arguments.length;r<s;r++){ for(var a in t=arguments[r]){ Object.prototype.hasOwnProperty.call(t,a)&&(e[a]=t[a]); } }return e}).apply(this,arguments)},t={kebab:/-(\w)/g,styleProp:/:(.*)/,styleList:/;(?![^(]*\))/g};function r(e,t){return t?t.toUpperCase():""}function s(e){for(var s,a={},c=0,o=e.split(t.styleList);c<o.length;c++){var n=o[c].split(t.styleProp),i=n[0],l=n[1];(i=i.trim())&&("string"==typeof l&&(l=l.trim()),a[(s=i,s.replace(t.kebab,r))]=l);}return a}function a(){
 	var arguments$1 = arguments;
 	for(var t,r,a={},c=arguments.length;c--;){ for(var o=0,n=Object.keys(arguments[c]);o<n.length;o++){ switch(t=n[o]){case"class":case"style":case"directives":if(Array.isArray(a[t])||(a[t]=[]),"style"===t){var i=void 0;i=Array.isArray(arguments$1[c].style)?arguments$1[c].style:[arguments$1[c].style];for(var l=0;l<i.length;l++){var y=i[l];"string"==typeof y&&(i[l]=s(y));}arguments$1[c].style=i;}a[t]=a[t].concat(arguments$1[c][t]);break;case"staticClass":if(!arguments$1[c][t]){ break; }void 0===a[t]&&(a[t]=""),a[t]&&(a[t]+=" "),a[t]+=arguments$1[c][t].trim();break;case"on":case"nativeOn":a[t]||(a[t]={});for(var p=0,f=Object.keys(arguments[c][t]||{});p<f.length;p++){ r=f[p],a[t][r]?a[t][r]=[].concat(a[t][r],arguments$1[c][t][r]):a[t][r]=arguments$1[c][t][r]; }break;case"attrs":case"props":case"domProps":case"scopedSlots":case"staticStyle":case"hook":case"transition":a[t]||(a[t]={}),a[t]=e({},arguments$1[c][t],a[t]);break;case"slot":case"key":case"ref":case"tag":case"show":case"keepAlive":default:a[t]||(a[t]=arguments$1[c][t]);} } }return a}//# sourceMappingURL=lib.esm.js.map
@@ -7782,7 +7724,7 @@
 
 	function _objectSpread$3(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { _defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$3(source, true).forEach(function (key) { _defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$3(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var NO_FADE_PROPS = {
@@ -7879,7 +7821,7 @@
 	  var $scopedSlots = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	  var $slots = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 	  // Ensure names is an array
-	  names = concat(names).filter(identity); // Returns true if the either a $scopedSlot or $slot exists with the specified name
+	  names = concat(names).filter(Boolean); // Returns true if the either a $scopedSlot or $slot exists with the specified name
 
 	  return names.some(function (name) {
 	    return $scopedSlots[name] || $slots[name];
@@ -7901,7 +7843,7 @@
 	  var $scopedSlots = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 	  var $slots = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 	  // Ensure names is an array
-	  names = concat(names).filter(identity);
+	  names = concat(names).filter(Boolean);
 	  var slot;
 
 	  for (var i = 0; i < names.length && !slot; i++) {
@@ -7934,14 +7876,8 @@
 	};
 
 	function _defineProperty$4(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var NAME$3 = 'BButtonClose';
+	var NAME$2 = 'BButtonClose';
 	var props = {
-	  content: {
-	    type: String,
-	    default: function _default() {
-	      return getComponentConfig(NAME$3, 'content');
-	    }
-	  },
 	  disabled: {
 	    type: Boolean,
 	    default: false
@@ -7949,13 +7885,13 @@
 	  ariaLabel: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$3, 'ariaLabel');
+	      return getComponentConfig(NAME$2, 'ariaLabel');
 	    }
 	  },
 	  textVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$3, 'textVariant');
+	      return getComponentConfig(NAME$2, 'textVariant');
 	    }
 	  }
 	}; // @vue/component
@@ -7963,7 +7899,7 @@
 	var BButtonClose =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$3,
+	  name: NAME$2,
 	  functional: true,
 	  props: props,
 	  render: function render(h, _ref) {
@@ -7997,7 +7933,7 @@
 
 	    if (!hasNormalizedSlot('default', $scopedSlots, $slots)) {
 	      componentData.domProps = {
-	        innerHTML: props.content
+	        innerHTML: '&times;'
 	      };
 	    }
 
@@ -8006,14 +7942,14 @@
 	});
 
 	function _defineProperty$5(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var NAME$4 = 'BAlert'; // Convert `show` value to a number
+	var NAME$3 = 'BAlert'; // Convert `show` value to a number
 
 	var parseCountDown = function parseCountDown(show) {
 	  if (show === '' || isBoolean(show)) {
 	    return 0;
 	  }
 
-	  show = toInteger(show);
+	  show = parseInt(show, 10);
 	  return show > 0 ? show : 0;
 	}; // Convert `show` value to a boolean
 
@@ -8023,24 +7959,24 @@
 	    return true;
 	  }
 
-	  if (toInteger(show) < 1) {
+	  if (parseInt(show, 10) < 1) {
 	    // Boolean will always return false for the above comparison
 	    return false;
 	  }
 
-	  return !!show;
+	  return Boolean(show);
 	}; // Is a value number like (i.e. a number or a number as string)
 
 
 	var isNumericLike = function isNumericLike(value) {
-	  return !isNaN(toInteger(value));
+	  return !isNaN(parseInt(value, 10));
 	}; // @vue/component
 
 
 	var BAlert =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$4,
+	  name: NAME$3,
 	  mixins: [normalizeSlotMixin],
 	  model: {
 	    prop: 'show',
@@ -8050,7 +7986,7 @@
 	    variant: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$4, 'variant');
+	        return getComponentConfig(NAME$3, 'variant');
 	      }
 	    },
 	    dismissible: {
@@ -8060,7 +7996,7 @@
 	    dismissLabel: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$4, 'dismissLabel');
+	        return getComponentConfig(NAME$3, 'dismissLabel');
 	      }
 	    },
 	    show: {
@@ -8199,6 +8135,10 @@
 	  }
 	});
 
+	var identity = function identity(x) {
+	  return x;
+	};
+
 	/**
 	 * Given an array of properties or an object of property keys,
 	 * plucks all the values off the target object, returning a new object
@@ -8218,50 +8158,19 @@
 	  }, {});
 	};
 
-	// String utilities
-
-	var RX_TRIM_LEFT = /^\s+/;
-	var RX_REGEXP_REPLACE = /[-/\\^$*+?.()|[\]{}]/g;
-
-	var lowerFirst = function lowerFirst(str) {
-	  str = isString(str) ? str.trim() : String(str);
-	  return str.charAt(0).toLowerCase() + str.slice(1);
-	}; // Uppercases the first letter of a string and returns a new string
-
-	var upperFirst = function upperFirst(str) {
-	  str = isString(str) ? str.trim() : String(str);
-	  return str.charAt(0).toUpperCase() + str.slice(1);
-	}; // Escape characters to be used in building a regular expression
-
-	var escapeRegExp = function escapeRegExp(str) {
-	  return str.replace(RX_REGEXP_REPLACE, '\\$&');
-	}; // Convert a value to a string that can be rendered
-	// `undefined`/`null` will be converted to `''`
-	// Plain objects and arrays will be JSON stringified
+	/**
+	 * Convert a value to a string that can be rendered.
+	 */
 
 	var toString$3 = function toString(val) {
 	  var spaces = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2;
 	  return isUndefinedOrNull(val) ? '' : isArray(val) || isPlainObject(val) && val.toString === Object.prototype.toString ? JSON.stringify(val, null, spaces) : String(val);
-	}; // Remove leading white space from a string
-
-	var trimLeft = function trimLeft(str) {
-	  return toString$3(str).replace(RX_TRIM_LEFT, '');
-	}; // Remove Trailing white space from a string
-
-	var trim$1 = function trim(str) {
-	  return toString$3(str).trim();
-	}; // Lower case a string
-
-	var lowerCase = function lowerCase(str) {
-	  return toString$3(str).toLowerCase();
-	}; // Upper case a string
+	};
 
 	var ANCHOR_TAG = 'a'; // Precompile RegExp
 
 	var commaRE = /%2C/g;
-	var encodeReserveRE = /[!'()*]/g;
-	var plusRE = /\+/g;
-	var queryStartRE = /^(\?|#|&)/; // Method to replace reserved chars
+	var encodeReserveRE = /[!'()*]/g; // Method to replace reserved chars
 
 	var encodeReserveReplacer = function encodeReserveReplacer(c) {
 	  return '%' + c.charCodeAt(0).toString(16);
@@ -8313,14 +8222,14 @@
 	};
 	var parseQuery = function parseQuery(query) {
 	  var parsed = {};
-	  query = toString$3(query).trim().replace(queryStartRE, '');
+	  query = toString$3(query).trim().replace(/^(\?|#|&)/, '');
 
 	  if (!query) {
 	    return parsed;
 	  }
 
 	  query.split('&').forEach(function (param) {
-	    var parts = param.replace(plusRE, ' ').split('=');
+	    var parts = param.replace(/\+/g, ' ').split('=');
 	    var key = decode(parts.shift());
 	    var val = parts.length > 0 ? decode(parts.join('=')) : null;
 
@@ -8410,7 +8319,7 @@
 
 	function _objectSpread$4(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { _defineProperty$6(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$4(source, true).forEach(function (key) { _defineProperty$6(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$6(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	/**
@@ -8535,14 +8444,14 @@
 	      if (evtIsEvent && this.disabled) {
 	        // Stop event from bubbling up
 	        evt.stopPropagation(); // Kill the event loop attached to this specific `EventTarget`
-	        // Needed to prevent `vue-router` for doing its thing
+	        // Needed to prevent `vue-router` for doing it's thing
 
 	        evt.stopImmediatePropagation();
 	      } else {
 	        /* istanbul ignore next: difficult to test, but we know it works */
 	        if (isRouterLink && evt.currentTarget.__vue__) {
 	          // Router links do not emit instance `click` events, so we
-	          // add in an `$emit('click', evt)` on its Vue instance
+	          // add in an $emit('click', evt) on it's vue instance
 	          evt.currentTarget.__vue__.$emit('click', evt);
 	        } // Call the suppliedHandler(s), if any provided
 
@@ -8551,7 +8460,7 @@
 	          return isFunction(h);
 	        }).forEach(function (handler) {
 	          handler.apply(void 0, _toConsumableArray$1(_arguments));
-	        }); // Emit the global `$root` click event
+	        }); // Emit the global $root click event
 
 	        this.$root.$emit('clicked::link', evt);
 	      } // Stop scroll-to-top behavior or navigation on
@@ -8615,10 +8524,10 @@
 
 	function _objectSpread$5(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { _defineProperty$7(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$5(source, true).forEach(function (key) { _defineProperty$7(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$7(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var NAME$5 = 'BBadge';
+	var NAME$4 = 'BBadge';
 	var linkProps = propsFactory();
 	delete linkProps.href.default;
 	delete linkProps.to.default;
@@ -8630,7 +8539,7 @@
 	  variant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$5, 'variant');
+	      return getComponentConfig(NAME$4, 'variant');
 	    }
 	  },
 	  pill: {
@@ -8642,23 +8551,22 @@
 	var BBadge =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$5,
+	  name: NAME$4,
 	  functional: true,
 	  props: props$1,
 	  render: function render(h, _ref) {
 	    var props = _ref.props,
 	        data = _ref.data,
 	        children = _ref.children;
-	    var isBLink = props.href || props.to;
-	    var tag = isBLink ? BLink : props.tag;
+	    var tag = !props.href && !props.to ? props.tag : BLink;
 	    var componentData = {
 	      staticClass: 'badge',
 	      class: [props.variant ? "badge-".concat(props.variant) : 'badge-secondary', {
-	        'badge-pill': props.pill,
+	        'badge-pill': Boolean(props.pill),
 	        active: props.active,
 	        disabled: props.disabled
 	      }],
-	      props: isBLink ? pluckProps(linkProps, props) : {}
+	      props: pluckProps(linkProps, props)
 	    };
 	    return h(tag, a(data, componentData), children);
 	  }
@@ -8691,7 +8599,7 @@
 
 	function _objectSpread$6(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { _defineProperty$8(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$6(source, true).forEach(function (key) { _defineProperty$8(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$8(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$2 = _objectSpread$6({}, propsFactory(), {
@@ -8763,7 +8671,7 @@
 
 	function _objectSpread$7(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { _defineProperty$9(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$7(source, true).forEach(function (key) { _defineProperty$9(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$9(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$3 = {
@@ -8834,11 +8742,11 @@
 
 	function _objectSpread$8(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$8(Object(source), true).forEach(function (key) { _defineProperty$a(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$8(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$8(source, true).forEach(function (key) { _defineProperty$a(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$8(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$a(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	var NAME$6 = 'BButton';
+	var NAME$5 = 'BButton';
 	var btnProps = {
 	  block: {
 	    type: Boolean,
@@ -8851,13 +8759,13 @@
 	  size: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$6, 'size');
+	      return getComponentConfig(NAME$5, 'size');
 	    }
 	  },
 	  variant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$6, 'variant');
+	      return getComponentConfig(NAME$5, 'variant');
 	    }
 	  },
 	  type: {
@@ -8888,12 +8796,7 @@
 	delete linkProps$1.to.default;
 	var linkPropKeys = keys$2(linkProps$1);
 	var props$4 = _objectSpread$8({}, linkProps$1, {}, btnProps); // --- Helper methods ---
-	// Returns true if a tag's name is name
-
-	var tagIs = function tagIs(tag, name) {
-	  return toString$3(tag).toLowerCase() === toString$3(name).toLowerCase();
-	}; // Focus handler for toggle buttons.  Needs class of 'focus' when focused.
-
+	// Focus handler for toggle buttons.  Needs class of 'focus' when focused.
 
 	var handleFocus = function handleFocus(evt) {
 	  if (evt.type === 'focusin') {
@@ -8902,11 +8805,11 @@
 	    removeClass(evt.target, 'focus');
 	  }
 	}; // Is the requested button a link?
-	// If tag prop is set to `a`, we use a b-link to get proper disabled handling
 
 
 	var isLink = function isLink(props) {
-	  return props.href || props.to || tagIs(props.tag, 'a');
+	  // If tag prop is set to `a`, we use a b-link to get proper disabled handling
+	  return Boolean(props.href || props.to || props.tag && String(props.tag).toLowerCase() === 'a');
 	}; // Is the button to be a toggle button?
 
 
@@ -8916,7 +8819,13 @@
 
 
 	var isButton = function isButton(props) {
-	  return !(isLink(props) || props.tag && !tagIs(props.tag, 'button'));
+	  if (isLink(props)) {
+	    return false;
+	  } else if (props.tag && String(props.tag).toLowerCase() !== 'button') {
+	    return false;
+	  }
+
+	  return true;
 	}; // Is the requested tag not a button or link?
 
 
@@ -8928,7 +8837,7 @@
 	var computeClass = function computeClass(props) {
 	  var _ref;
 
-	  return ["btn-".concat(props.variant || getComponentConfig(NAME$6, 'variant')), (_ref = {}, _defineProperty$a(_ref, "btn-".concat(props.size), props.size), _defineProperty$a(_ref, 'btn-block', props.block), _defineProperty$a(_ref, 'rounded-pill', props.pill), _defineProperty$a(_ref, 'rounded-0', props.squared && !props.pill), _defineProperty$a(_ref, "disabled", props.disabled), _defineProperty$a(_ref, "active", props.pressed), _ref)];
+	  return ["btn-".concat(props.variant || getComponentConfig(NAME$5, 'variant')), (_ref = {}, _defineProperty$a(_ref, "btn-".concat(props.size), Boolean(props.size)), _defineProperty$a(_ref, 'btn-block', props.block), _defineProperty$a(_ref, 'rounded-pill', props.pill), _defineProperty$a(_ref, 'rounded-0', props.squared && !props.pill), _defineProperty$a(_ref, "disabled", props.disabled), _defineProperty$a(_ref, "active", props.pressed), _ref)];
 	}; // Compute the link props to pass to b-link (if required)
 
 
@@ -8976,7 +8885,7 @@
 	var BButton =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$6,
+	  name: NAME$5,
 	  functional: true,
 	  props: props$4,
 	  render: function render(h, _ref2) {
@@ -9033,7 +8942,7 @@
 	});
 
 	function _defineProperty$b(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var NAME$7 = 'BButtonGroup';
+	var NAME$6 = 'BButtonGroup';
 	var props$5 = {
 	  vertical: {
 	    type: Boolean,
@@ -9058,7 +8967,7 @@
 	var BButtonGroup =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$7,
+	  name: NAME$6,
 	  functional: true,
 	  props: props$5,
 	  render: function render(h, _ref) {
@@ -9069,7 +8978,7 @@
 	      class: _defineProperty$b({
 	        'btn-group': !props.vertical,
 	        'btn-group-vertical': props.vertical
-	      }, "btn-group-".concat(props.size), props.size),
+	      }, "btn-group-".concat(props.size), Boolean(props.size)),
 	      attrs: {
 	        role: props.ariaRole
 	      }
@@ -9089,7 +8998,7 @@
 	/*
 	 * Key Codes (events)
 	 */
-	var KEY_CODES = freeze({
+	var KEY_CODES = {
 	  SPACE: 32,
 	  ENTER: 13,
 	  ESC: 27,
@@ -9111,7 +9020,7 @@
 	  INSERT: 45,
 	  INS: 45,
 	  DELETE: 46
-	});
+	};
 
 	var ITEM_SELECTOR = ['.btn:not(.disabled):not([disabled]):not(.dropdown-item)', '.form-control:not(.disabled):not([disabled])', 'select:not(.disabled):not([disabled])', 'input[type="checkbox"]:not(.disabled)', 'input[type="radio"]:not(.disabled)'].join(','); // @vue/component
 
@@ -9233,12 +9142,34 @@
 	});
 
 	/**
+	 * Transform the first character to uppercase
+	 * @param {string} str
+	 */
+
+	var upperFirst = function upperFirst(str) {
+	  if (!isString(str)) {
+	    str = String(str);
+	  }
+
+	  str = str.trim();
+	  return str.charAt(0).toUpperCase() + str.slice(1);
+	};
+
+	/**
 	 * @param {string} prefix
 	 * @param {string} value
 	 */
 
 	var prefixPropName = function prefixPropName(prefix, value) {
 	  return prefix + upperFirst(value);
+	};
+
+	/**
+	 * @param {string} str
+	 */
+	var lowerFirst = function lowerFirst(str) {
+	  str = String(str);
+	  return str.charAt(0).toLowerCase() + str.slice(1);
 	};
 
 	/**
@@ -9331,7 +9262,7 @@
 	  }
 	});
 
-	var NAME$8 = 'BCardSubTitle';
+	var NAME$7 = 'BCardSubTitle';
 	var props$7 = {
 	  subTitle: {
 	    type: String,
@@ -9344,7 +9275,7 @@
 	  subTitleTextVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$8, 'subTitleTextVariant');
+	      return getComponentConfig(NAME$7, 'subTitleTextVariant');
 	    }
 	  }
 	}; // @vue/component
@@ -9352,7 +9283,7 @@
 	var BCardSubTitle =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$8,
+	  name: NAME$7,
 	  functional: true,
 	  props: props$7,
 	  render: function render(h, _ref) {
@@ -9378,7 +9309,7 @@
 
 	function _objectSpread$9(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { _defineProperty$c(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$9(source, true).forEach(function (key) { _defineProperty$c(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$c(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$8 = _objectSpread$9({}, copyProps(cardMixin.props, prefixPropName.bind(null, 'body')), {
@@ -9426,7 +9357,7 @@
 	      staticClass: 'card-body',
 	      class: [(_ref2 = {
 	        'card-img-overlay': props.overlay
-	      }, _defineProperty$c(_ref2, "bg-".concat(props.bodyBgVariant), props.bodyBgVariant), _defineProperty$c(_ref2, "border-".concat(props.bodyBorderVariant), props.bodyBorderVariant), _defineProperty$c(_ref2, "text-".concat(props.bodyTextVariant), props.bodyTextVariant), _ref2), props.bodyClass || {}]
+	      }, _defineProperty$c(_ref2, "bg-".concat(props.bodyBgVariant), Boolean(props.bodyBgVariant)), _defineProperty$c(_ref2, "border-".concat(props.bodyBorderVariant), Boolean(props.bodyBorderVariant)), _defineProperty$c(_ref2, "text-".concat(props.bodyTextVariant), Boolean(props.bodyTextVariant)), _ref2), props.bodyClass || {}]
 	    }), [cardTitle, cardSubTitle].concat(_toConsumableArray$2(cardContent)));
 	  }
 	});
@@ -9435,7 +9366,7 @@
 
 	function _objectSpread$a(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { _defineProperty$d(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$a(source, true).forEach(function (key) { _defineProperty$d(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$d(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$9 = _objectSpread$a({}, copyProps(cardMixin.props, prefixPropName.bind(null, 'header')), {
@@ -9467,7 +9398,7 @@
 	        children = _ref.children;
 	    return h(props.headerTag, a(data, {
 	      staticClass: 'card-header',
-	      class: [props.headerClass, (_ref2 = {}, _defineProperty$d(_ref2, "bg-".concat(props.headerBgVariant), props.headerBgVariant), _defineProperty$d(_ref2, "border-".concat(props.headerBorderVariant), props.headerBorderVariant), _defineProperty$d(_ref2, "text-".concat(props.headerTextVariant), props.headerTextVariant), _ref2)]
+	      class: [props.headerClass, (_ref2 = {}, _defineProperty$d(_ref2, "bg-".concat(props.headerBgVariant), Boolean(props.headerBgVariant)), _defineProperty$d(_ref2, "border-".concat(props.headerBorderVariant), Boolean(props.headerBorderVariant)), _defineProperty$d(_ref2, "text-".concat(props.headerTextVariant), Boolean(props.headerTextVariant)), _ref2)]
 	    }), children || [h('div', {
 	      domProps: htmlOrText(props.headerHtml, props.header)
 	    })]);
@@ -9478,7 +9409,7 @@
 
 	function _objectSpread$b(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { _defineProperty$e(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$b(source, true).forEach(function (key) { _defineProperty$e(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$e(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$a = _objectSpread$b({}, copyProps(cardMixin.props, prefixPropName.bind(null, 'footer')), {
@@ -9510,7 +9441,7 @@
 	        children = _ref.children;
 	    return h(props.footerTag, a(data, {
 	      staticClass: 'card-footer',
-	      class: [props.footerClass, (_ref2 = {}, _defineProperty$e(_ref2, "bg-".concat(props.footerBgVariant), props.footerBgVariant), _defineProperty$e(_ref2, "border-".concat(props.footerBorderVariant), props.footerBorderVariant), _defineProperty$e(_ref2, "text-".concat(props.footerTextVariant), props.footerTextVariant), _ref2)]
+	      class: [props.footerClass, (_ref2 = {}, _defineProperty$e(_ref2, "bg-".concat(props.footerBgVariant), Boolean(props.footerBgVariant)), _defineProperty$e(_ref2, "border-".concat(props.footerBorderVariant), Boolean(props.footerBorderVariant)), _defineProperty$e(_ref2, "text-".concat(props.footerTextVariant), Boolean(props.footerTextVariant)), _ref2)]
 	    }), children || [h('div', {
 	      domProps: htmlOrText(props.footerHtml, props.footer)
 	    })]);
@@ -9608,7 +9539,7 @@
 
 	function _objectSpread$c(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { _defineProperty$f(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$c(source, true).forEach(function (key) { _defineProperty$f(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$f(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var cardImgProps = copyProps(props$b, prefixPropName.bind(null, 'img'));
@@ -9685,7 +9616,7 @@
 	      class: (_class = {
 	        'flex-row': props.imgLeft || props.imgStart,
 	        'flex-row-reverse': (props.imgRight || props.imgEnd) && !(props.imgLeft || props.imgStart)
-	      }, _defineProperty$f(_class, "text-".concat(props.align), props.align), _defineProperty$f(_class, "bg-".concat(props.bgVariant), props.bgVariant), _defineProperty$f(_class, "border-".concat(props.borderVariant), props.borderVariant), _defineProperty$f(_class, "text-".concat(props.textVariant), props.textVariant), _class)
+	      }, _defineProperty$f(_class, "text-".concat(props.align), Boolean(props.align)), _defineProperty$f(_class, "bg-".concat(props.bgVariant), Boolean(props.bgVariant)), _defineProperty$f(_class, "border-".concat(props.borderVariant), Boolean(props.borderVariant)), _defineProperty$f(_class, "text-".concat(props.textVariant), Boolean(props.textVariant)), _class)
 	    }), [imgFirst, header].concat(_toConsumableArray$3(content), [footer, imgLast]));
 	  }
 	});
@@ -9768,7 +9699,6 @@
 
 	function _createClass$1(Constructor, protoProps, staticProps) { if (protoProps) { _defineProperties$1(Constructor.prototype, protoProps); } if (staticProps) { _defineProperties$1(Constructor, staticProps); } return Constructor; }
 	var OBSERVER_PROP_NAME = '__bv__visibility_observer';
-	var onlyDgitsRE = /^\d+$/;
 
 	var VisibilityObserver =
 	/*#__PURE__*/
@@ -9894,7 +9824,7 @@
 
 	  keys$2(modifiers).forEach(function (mod) {
 	    /* istanbul ignore else: Until <b-img-lazy> is switched to use this directive */
-	    if (onlyDgitsRE.test(mod)) {
+	    if (/^\d+$/.test(mod)) {
 	      options.margin = "".concat(mod, "px");
 	    } else if (mod.toLowerCase() === 'once') {
 	      options.once = true;
@@ -9944,7 +9874,7 @@
 
 	function _defineProperty$g(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	var NAME$9 = 'BImg'; // Blank image with fill template
+	var NAME$8 = 'BImg'; // Blank image with fill template
 
 	var BLANK_TEMPLATE = '<svg width="%{w}" height="%{h}" ' + 'xmlns="http://www.w3.org/2000/svg" ' + 'viewBox="0 0 %{w} %{h}" preserveAspectRatio="none">' + '<rect width="100%" height="100%" style="fill:%{f};"></rect>' + '</svg>';
 	var props$d = {
@@ -10021,13 +9951,13 @@
 	  blankColor: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$9, 'blankColor');
+	      return getComponentConfig(NAME$8, 'blankColor');
 	    }
 	  }
 	}; // --- Helper methods ---
 
 	var makeBlankImgSrc = function makeBlankImgSrc(width, height, color) {
-	  var src = encodeURIComponent(BLANK_TEMPLATE.replace('%{w}', toString$3(width)).replace('%{h}', toString$3(height)).replace('%{f}', color));
+	  var src = encodeURIComponent(BLANK_TEMPLATE.replace('%{w}', String(width)).replace('%{h}', String(height)).replace('%{f}', color));
 	  return "data:image/svg+xml;charset=UTF-8,".concat(src);
 	}; // @vue/component
 
@@ -10035,7 +9965,7 @@
 	var BImg =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$9,
+	  name: NAME$8,
 	  functional: true,
 	  props: props$d,
 	  render: function render(h, _ref) {
@@ -10044,17 +9974,17 @@
 	    var props = _ref.props,
 	        data = _ref.data;
 	    var src = props.src;
-	    var width = toInteger(props.width) || null;
-	    var height = toInteger(props.height) || null;
+	    var width = parseInt(props.width, 10) ? parseInt(props.width, 10) : null;
+	    var height = parseInt(props.height, 10) ? parseInt(props.height, 10) : null;
 	    var align = null;
 	    var block = props.block;
-	    var srcset = concat(props.srcset).filter(identity).join(',');
-	    var sizes = concat(props.sizes).filter(identity).join(',');
+	    var srcset = concat(props.srcset).filter(Boolean).join(',');
+	    var sizes = concat(props.sizes).filter(Boolean).join(',');
 
 	    if (props.blank) {
-	      if (!height && width) {
+	      if (!height && Boolean(width)) {
 	        height = width;
-	      } else if (!width && height) {
+	      } else if (!width && Boolean(height)) {
 	        width = height;
 	      }
 
@@ -10083,8 +10013,8 @@
 	      attrs: {
 	        src: src,
 	        alt: props.alt,
-	        width: width ? toString$3(width) : null,
-	        height: height ? toString$3(height) : null,
+	        width: width ? String(width) : null,
+	        height: height ? String(height) : null,
 	        srcset: srcset || null,
 	        sizes: sizes || null
 	      },
@@ -10093,13 +10023,13 @@
 	        'img-fluid': props.fluid || props.fluidGrow,
 	        'w-100': props.fluidGrow,
 	        rounded: props.rounded === '' || props.rounded === true
-	      }, _defineProperty$g(_class, "rounded-".concat(props.rounded), isString(props.rounded) && props.rounded !== ''), _defineProperty$g(_class, align, align), _defineProperty$g(_class, 'd-block', block), _class)
+	      }, _defineProperty$g(_class, "rounded-".concat(props.rounded), isString(props.rounded) && props.rounded !== ''), _defineProperty$g(_class, align, Boolean(align)), _defineProperty$g(_class, 'd-block', block), _class)
 	    }));
 	  }
 	});
 
 	function _defineProperty$h(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var NAME$a = 'BImgLazy';
+	var NAME$9 = 'BImgLazy';
 	var props$e = {
 	  src: {
 	    type: String,
@@ -10134,7 +10064,7 @@
 	  blankColor: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$a, 'blankColor');
+	      return getComponentConfig(NAME$9, 'blankColor');
 	    }
 	  },
 	  blankWidth: {
@@ -10192,7 +10122,7 @@
 	var BImgLazy =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$a,
+	  name: NAME$9,
 	  directives: {
 	    bVisible: VBVisible
 	  },
@@ -10216,11 +10146,11 @@
 	      return this.isShown ? this.height : this.blankHeight || this.height;
 	    },
 	    computedSrcset: function computedSrcset() {
-	      var srcset = concat(this.srcset).filter(identity).join(',');
+	      var srcset = concat(this.srcset).filter(Boolean).join(',');
 	      return !this.blankSrc || this.isShown ? srcset : null;
 	    },
 	    computedSizes: function computedSizes() {
-	      var sizes = concat(this.sizes).filter(identity).join(',');
+	      var sizes = concat(this.sizes).filter(Boolean).join(',');
 	      return !this.blankSrc || this.isShown ? sizes : null;
 	    }
 	  },
@@ -10273,7 +10203,7 @@
 	        name: 'b-visible',
 	        // Value expects a callback (passed one arg of `visible` = `true` or `false`)
 	        value: this.doShow,
-	        modifiers: (_modifiers = {}, _defineProperty$h(_modifiers, "".concat(toInteger(this.offset) || 0), true), _defineProperty$h(_modifiers, "once", true), _modifiers)
+	        modifiers: (_modifiers = {}, _defineProperty$h(_modifiers, "".concat(parseInt(this.offset, 10) || 0), true), _defineProperty$h(_modifiers, "once", true), _modifiers)
 	      });
 	    }
 
@@ -10307,7 +10237,7 @@
 
 	function _objectSpread$d(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$d(Object(source), true).forEach(function (key) { _defineProperty$i(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$d(source, true).forEach(function (key) { _defineProperty$i(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$i(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	// The `omit()` util creates a new object, so we can just pass the original props
@@ -10425,8 +10355,16 @@
 	    var props = _ref.props,
 	        data = _ref.data,
 	        children = _ref.children;
+	    var baseClass = 'card-group';
+
+	    if (props.deck) {
+	      baseClass = 'card-deck';
+	    } else if (props.columns) {
+	      baseClass = 'card-columns';
+	    }
+
 	    return h(props.tag, a(data, {
-	      class: props.deck ? 'card-deck' : props.columns ? 'card-columns' : 'card-group'
+	      class: baseClass
 	    }), children);
 	  }
 	});
@@ -10454,7 +10392,7 @@
 
 	function _objectSpread$e(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$e(Object(source), true).forEach(function (key) { _defineProperty$j(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$e(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$e(source, true).forEach(function (key) { _defineProperty$j(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$e(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$j(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	/**
@@ -10577,7 +10515,7 @@
 	  }
 	};
 
-	var NAME$b = 'BCarousel'; // Slide directional classes
+	var NAME$a = 'BCarousel'; // Slide directional classes
 
 	var DIRECTION = {
 	  next: {
@@ -10629,7 +10567,7 @@
 	var BCarousel =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$b,
+	  name: NAME$a,
 	  mixins: [idMixin, normalizeSlotMixin],
 	  provide: function provide() {
 	    return {
@@ -10644,25 +10582,25 @@
 	    labelPrev: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$b, 'labelPrev');
+	        return getComponentConfig(NAME$a, 'labelPrev');
 	      }
 	    },
 	    labelNext: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$b, 'labelNext');
+	        return getComponentConfig(NAME$a, 'labelNext');
 	      }
 	    },
 	    labelGotoSlide: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$b, 'labelGotoSlide');
+	        return getComponentConfig(NAME$a, 'labelGotoSlide');
 	      }
 	    },
 	    labelIndicators: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$b, 'labelIndicators');
+	        return getComponentConfig(NAME$a, 'labelIndicators');
 	      }
 	    },
 	    interval: {
@@ -10728,7 +10666,7 @@
 	      transitionEndEvent: null,
 	      slides: [],
 	      direction: null,
-	      isPaused: !(toInteger(this.interval) > 0),
+	      isPaused: !(parseInt(this.interval, 10) > 0),
 	      // Touch event handling values
 	      touchStartX: 0,
 	      touchDeltaX: 0
@@ -10742,7 +10680,7 @@
 	  watch: {
 	    value: function value(newVal, oldVal) {
 	      if (newVal !== oldVal) {
-	        this.setSlide(toInteger(newVal) || 0);
+	        this.setSlide(parseInt(newVal, 10) || 0);
 	      }
 	    },
 	    interval: function interval(newVal, oldVal) {
@@ -10780,7 +10718,7 @@
 	    this._animationTimeout = null;
 	    this._touchTimeout = null; // Set initial paused state
 
-	    this.isPaused = !(toInteger(this.interval) > 0);
+	    this.isPaused = !(parseInt(this.interval, 10) > 0);
 	  },
 	  mounted: function mounted() {
 	    // Cache current browser transitionend event name
@@ -11512,80 +11450,6 @@
 	  }
 	};
 
-	// Generic collapse transion helper component
-
-	var onEnter = function onEnter(el) {
-	  el.style.height = 0; // Animaton frame delay neeeded for `appear` to work
-
-	  requestAF(function () {
-	    reflow(el);
-	    el.style.height = "".concat(el.scrollHeight, "px");
-	  });
-	};
-
-	var onAfterEnter = function onAfterEnter(el) {
-	  el.style.height = null;
-	};
-
-	var onLeave = function onLeave(el) {
-	  el.style.height = 'auto';
-	  el.style.display = 'block';
-	  el.style.height = "".concat(getBCR(el).height, "px");
-	  reflow(el);
-	  el.style.height = 0;
-	};
-
-	var onAfterLeave = function onAfterLeave(el) {
-	  el.style.height = null;
-	}; // Default transition props
-	// `appear` will use the enter classes
-
-
-	var TRANSITION_PROPS = {
-	  css: true,
-	  enterClass: '',
-	  enterActiveClass: 'collapsing',
-	  enterToClass: 'collapse show',
-	  leaveClass: 'collapse show',
-	  leaveActiveClass: 'collapsing',
-	  leaveToClass: 'collapse'
-	}; // Default transition handlers
-	// `appear` will use the enter handlers
-
-	var TRANSITION_HANDLERS = {
-	  enter: onEnter,
-	  afterEnter: onAfterEnter,
-	  leave: onLeave,
-	  afterLeave: onAfterLeave
-	}; // @vue/component
-
-	var BVCollapse =
-	/*#__PURE__*/
-	Vue.extend({
-	  name: 'BVCollapse',
-	  functional: true,
-	  props: {
-	    appear: {
-	      // If `true` (and `visible` is `true` on mount), animate initially visible
-	      type: Boolean,
-	      default: false
-	    }
-	  },
-	  render: function render(h, _ref) {
-	    var props = _ref.props,
-	        data = _ref.data,
-	        children = _ref.children;
-	    return h('transition', // We merge in the `appear` prop last
-	    a(data, {
-	      props: TRANSITION_PROPS,
-	      on: TRANSITION_HANDLERS
-	    }, {
-	      props: props
-	    }), // Note: `<tranition>` supports a single root element only
-	    children);
-	  }
-	});
-
 	var EVENT_STATE = 'bv::collapse::state';
 	var EVENT_ACCORDION = 'bv::collapse::accordion'; // Private event we emit on `$root` to ensure the toggle state is
 	// always synced. It gets emitted even if the state has not changed!
@@ -11626,11 +11490,6 @@
 	    tag: {
 	      type: String,
 	      default: 'div'
-	    },
-	    appear: {
-	      // If `true` (and `visible` is `true` on mount), animate initially visible
-	      type: Boolean,
-	      default: false
 	    }
 	  },
 	  data: function data() {
@@ -11728,25 +11587,35 @@
 	      this.show = !this.show;
 	    },
 	    onEnter: function onEnter(el) {
+	      el.style.height = 0;
+	      reflow(el);
+	      el.style.height = el.scrollHeight + 'px';
 	      this.transitioning = true; // This should be moved out so we can add cancellable events
 
 	      this.$emit('show');
 	    },
 	    onAfterEnter: function onAfterEnter(el) {
+	      el.style.height = null;
 	      this.transitioning = false;
 	      this.$emit('shown');
 	    },
 	    onLeave: function onLeave(el) {
-	      this.transitioning = true; // This should be moved out so we can add cancellable events
+	      el.style.height = 'auto';
+	      el.style.display = 'block';
+	      el.style.height = getBCR(el).height + 'px';
+	      reflow(el);
+	      this.transitioning = true;
+	      el.style.height = 0; // This should be moved out so we can add cancellable events
 
 	      this.$emit('hide');
 	    },
 	    onAfterLeave: function onAfterLeave(el) {
+	      el.style.height = null;
 	      this.transitioning = false;
 	      this.$emit('hidden');
 	    },
 	    emitState: function emitState() {
-	      this.$emit('input', this.show); // Let `v-b-toggle` know the state of this collapse
+	      this.$emit('input', this.show); // Let v-b-toggle know the state of this collapse
 
 	      this.$root.$emit(EVENT_STATE, this.safeId(), this.show);
 
@@ -11762,17 +11631,13 @@
 	      this.$root.$emit(EVENT_STATE_SYNC, this.safeId(), this.show);
 	    },
 	    checkDisplayBlock: function checkDisplayBlock() {
-	      // Check to see if the collapse has `display: block !important` set
-	      // We can't set `display: none` directly on `this.$el`, as it would
-	      // trigger a new transition to start (or cancel a current one)
+	      // Check to see if the collapse has `display: block !important;` set.
+	      // We can't set `display: none;` directly on this.$el, as it would
+	      // trigger a new transition to start (or cancel a current one).
 	      var restore = hasClass(this.$el, 'show');
 	      removeClass(this.$el, 'show');
 	      var isBlock = getCS(this.$el).display === 'block';
-
-	      if (restore) {
-	        addClass(this.$el, 'show');
-	      }
-
+	      restore && addClass(this.$el, 'show');
 	      return isBlock;
 	    },
 	    clickHandler: function clickHandler(evt) {
@@ -11786,7 +11651,7 @@
 
 	      if (matches(el, '.nav-link,.dropdown-item') || closest('.nav-link,.dropdown-item', el)) {
 	        if (!this.checkDisplayBlock()) {
-	          // Only close the collapse if it is not forced to be `display: block !important`
+	          // Only close the collapse if it is not forced to be 'display: block !important;'
 	          this.show = false;
 	        }
 	      }
@@ -11821,14 +11686,6 @@
 	    }
 	  },
 	  render: function render(h) {
-	    var _this2 = this;
-
-	    var scope = {
-	      visible: this.show,
-	      close: function close() {
-	        return _this2.show = false;
-	      }
-	    };
 	    var content = h(this.tag, {
 	      class: this.classObject,
 	      directives: [{
@@ -11841,10 +11698,15 @@
 	      on: {
 	        click: this.clickHandler
 	      }
-	    }, [this.normalizeSlot('default', scope)]);
-	    return h(BVCollapse, {
+	    }, [this.normalizeSlot('default')]);
+	    return h('transition', {
 	      props: {
-	        appear: this.appear
+	        enterClass: '',
+	        enterActiveClass: 'collapsing',
+	        enterToClass: '',
+	        leaveClass: '',
+	        leaveActiveClass: 'collapsing',
+	        leaveToClass: ''
 	      },
 	      on: {
 	        enter: this.onEnter,
@@ -11971,7 +11833,7 @@
 	    });
 	  } // Ensure the collapse class and aria-* attributes persist
 	  // after element is updated (either by parent re-rendering
-	  // or changes to this element or its contents
+	  // or changes to this element or it's contents
 
 
 	  if (el[BV_TOGGLE_STATE] === true) {
@@ -12071,7 +11933,7 @@
 
 	/**!
 	 * @fileOverview Kickass library to create and place poppers near their reference elements.
-	 * @version 1.16.1
+	 * @version 1.16.0
 	 * @license
 	 * Copyright (c) 2016 Federico Zivolo and contributors
 	 *
@@ -12417,7 +12279,7 @@
 	  var sideA = axis === 'x' ? 'Left' : 'Top';
 	  var sideB = sideA === 'Left' ? 'Right' : 'Bottom';
 
-	  return parseFloat(styles['border' + sideA + 'Width']) + parseFloat(styles['border' + sideB + 'Width']);
+	  return parseFloat(styles['border' + sideA + 'Width'], 10) + parseFloat(styles['border' + sideB + 'Width'], 10);
 	}
 
 	function getSize(axis, body, html, computedStyle) {
@@ -12574,8 +12436,8 @@
 	  var scrollParent = getScrollParent(children);
 
 	  var styles = getStyleComputedProperty(parent);
-	  var borderTopWidth = parseFloat(styles.borderTopWidth);
-	  var borderLeftWidth = parseFloat(styles.borderLeftWidth);
+	  var borderTopWidth = parseFloat(styles.borderTopWidth, 10);
+	  var borderLeftWidth = parseFloat(styles.borderLeftWidth, 10);
 
 	  // In cases where the parent is fixed, we must ignore negative scroll in offset calc
 	  if (fixedPosition && isHTML) {
@@ -12596,8 +12458,8 @@
 	  // differently when margins are applied to it. The margins are included in
 	  // the box of the documentElement, in the other cases not.
 	  if (!isIE10 && isHTML) {
-	    var marginTop = parseFloat(styles.marginTop);
-	    var marginLeft = parseFloat(styles.marginLeft);
+	    var marginTop = parseFloat(styles.marginTop, 10);
+	    var marginLeft = parseFloat(styles.marginLeft, 10);
 
 	    offsets.top -= borderTopWidth - marginTop;
 	    offsets.bottom -= borderTopWidth - marginTop;
@@ -13536,8 +13398,8 @@
 	  // Compute the sideValue using the updated popper offsets
 	  // take popper margin in account because we don't have this info available
 	  var css = getStyleComputedProperty(data.instance.popper);
-	  var popperMarginSide = parseFloat(css['margin' + sideCapitalized]);
-	  var popperBorderSide = parseFloat(css['border' + sideCapitalized + 'Width']);
+	  var popperMarginSide = parseFloat(css['margin' + sideCapitalized], 10);
+	  var popperBorderSide = parseFloat(css['border' + sideCapitalized + 'Width'], 10);
 	  var sideValue = center - data.offsets.popper[side] - popperMarginSide - popperBorderSide;
 
 	  // prevent arrowElement from being placed not contiguously to its popper
@@ -14791,7 +14653,7 @@
 	    }
 
 	    if (!this.clickOutEventName) {
-	      this.clickOutEventName = 'click';
+	      this.clickOutEventName = 'ontouchstart' in document.documentElement ? 'touchstart' : 'click';
 	    }
 
 	    if (this.listenForClickOut) {
@@ -14868,7 +14730,7 @@
 
 	function _objectSpread$f(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$f(Object(source), true).forEach(function (key) { _defineProperty$k(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$f(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$f(source, true).forEach(function (key) { _defineProperty$k(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$f(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$k(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -14879,7 +14741,9 @@
 
 	var ROOT_DROPDOWN_PREFIX = 'bv::dropdown::';
 	var ROOT_DROPDOWN_SHOWN = "".concat(ROOT_DROPDOWN_PREFIX, "shown");
-	var ROOT_DROPDOWN_HIDDEN = "".concat(ROOT_DROPDOWN_PREFIX, "hidden"); // Dropdown item CSS selectors
+	var ROOT_DROPDOWN_HIDDEN = "".concat(ROOT_DROPDOWN_PREFIX, "hidden"); // Delay when loosing focus before closing menu (in ms)
+
+	var FOCUSOUT_DELAY = hasTouchSupport ? 450 : 150; // Dropdown item CSS selectors
 
 	var Selector = {
 	  FORM_CHILD: '.dropdown form',
@@ -14913,11 +14777,6 @@
 	    return {
 	      bvDropdown: this
 	    };
-	  },
-	  inject: {
-	    bvNavbar: {
-	      default: null
-	    }
 	  },
 	  props: {
 	    disabled: {
@@ -14971,24 +14830,16 @@
 	    popperOpts: {
 	      // type: Object,
 	      default: function _default() {}
-	    },
-	    boundary: {
-	      // String: `scrollParent`, `window` or `viewport`
-	      // HTMLElement: HTML Element reference
-	      type: [String, HTMLElement$1],
-	      default: 'scrollParent'
 	    }
 	  },
 	  data: function data() {
 	    return {
 	      visible: false,
+	      inNavbar: null,
 	      visibleChangePrevented: false
 	    };
 	  },
 	  computed: {
-	    inNavbar: function inNavbar() {
-	      return !isNull(this.bvNavbar);
-	    },
 	    toggler: function toggler() {
 	      var toggle = this.$refs.toggle;
 	      return toggle ? toggle.$el || toggle : null;
@@ -15026,7 +14877,7 @@
 	        if (bvEvt.defaultPrevented) {
 	          // Reset value and exit if canceled
 	          this.visibleChangePrevented = true;
-	          this.visible = oldValue; // Just in case a child element triggered `this.hide(true)`
+	          this.visible = oldValue; // Just in case a child element triggered this.hide(true)
 
 	          this.$off('hidden', this.focusToggler);
 	          return;
@@ -15049,6 +14900,9 @@
 	  created: function created() {
 	    // Create non-reactive property
 	    this.$_popper = null;
+	    this.$_hideTimeout = null;
+
+	    this.$_noop = function () {};
 	  },
 	  deactivated: function deactivated()
 	  /* istanbul ignore next: not easy to test */
@@ -15062,6 +14916,7 @@
 	    this.visible = false;
 	    this.whileOpenListen(false);
 	    this.destroyPopper();
+	    this.clearHideTimeout();
 	  },
 	  methods: {
 	    // Event emitter
@@ -15076,27 +14931,34 @@
 	      if (this.disabled) {
 	        /* istanbul ignore next */
 	        return;
-	      } // Only instantiate Popper.js when dropdown is not in `<b-navbar>`
+	      } // Are we in a navbar ?
+
+
+	      if (isNull(this.inNavbar) && this.isNav) {
+	        // We should use an injection for this
+
+	        /* istanbul ignore next */
+	        this.inNavbar = Boolean(closest('.navbar', this.$el));
+	      } // Disable totally Popper.js for Dropdown in Navbar
 
 
 	      if (!this.inNavbar) {
 	        if (typeof Popper === 'undefined') {
 	          /* istanbul ignore next */
-	          warn('Popper.js not found. Falling back to CSS positioning', 'BDropdown');
+	          warn('b-dropdown: Popper.js not found. Falling back to CSS positioning.');
 	        } else {
-	          // For dropup with alignment we use the parent element as popper container
-	          var el = this.dropup && this.right || this.split ? this.$el : this.$refs.toggle; // Make sure we have a reference to an element, not a component!
+	          // for dropup with alignment we use the parent element as popper container
+	          var element = this.dropup && this.right || this.split ? this.$el : this.$refs.toggle; // Make sure we have a reference to an element, not a component!
 
-	          el = el.$el || el; // Instantiate Popper.js
+	          element = element.$el || element; // Instantiate popper.js
 
-	          this.createPopper(el);
+	          this.createPopper(element);
 	        }
 	      } // Ensure other menus are closed
 
 
-	      this.$root.$emit(ROOT_DROPDOWN_SHOWN, this); // Enable listeners
-
-	      this.whileOpenListen(true); // Wrap in `$nextTick()` to ensure menu is fully rendered/shown
+	      this.$root.$emit(ROOT_DROPDOWN_SHOWN, this);
+	      this.whileOpenListen(true); // Wrap in nextTick to ensure menu is fully rendered/shown
 
 	      this.$nextTick(function () {
 	        // Focus on the menu container on show
@@ -15117,12 +14979,19 @@
 	      this.$_popper = new Popper(element, this.$refs.menu, this.getPopperConfig());
 	    },
 	    destroyPopper: function destroyPopper() {
-	      // Ensure popper event listeners are removed cleanly
 	      if (this.$_popper) {
+	        // Ensure popper event listeners are removed cleanly
 	        this.$_popper.destroy();
 	      }
 
 	      this.$_popper = null;
+	    },
+	    clearHideTimeout: function clearHideTimeout() {
+	      /* istanbul ignore next */
+	      if (this.$_hideTimeout) {
+	        clearTimeout(this.$_hideTimeout);
+	        this.$_hideTimeout = null;
+	      }
 	    },
 	    getPopperConfig: function getPopperConfig() {
 	      var placement = AttachmentMap.BOTTOM;
@@ -15178,7 +15047,7 @@
 	      // Public method to show dropdown
 	      if (this.disabled) {
 	        return;
-	      } // Wrap in a `requestAF()` to allow any previous
+	      } // Wrap in a requestAnimationFrame to allow any previous
 	      // click handling to occur first
 
 
@@ -15204,13 +15073,13 @@
 	    },
 	    // Called only by a button that toggles the menu
 	    toggle: function toggle(evt) {
-	      evt = evt || {}; // Early exit when not a click event or ENTER, SPACE or DOWN were pressed
+	      evt = evt || {};
+	      var type = evt.type;
+	      var key = evt.keyCode;
 
-	      var _evt = evt,
-	          type = _evt.type,
-	          keyCode = _evt.keyCode;
+	      if (type !== 'click' && !(type === 'keydown' && (key === KEY_CODES.ENTER || key === KEY_CODES.SPACE || key === KEY_CODES.DOWN))) {
+	        // We only toggle on Click, Enter, Space, and Arrow Down
 
-	      if (type !== 'click' && !(type === 'keydown' && [KEY_CODES.ENTER, KEY_CODES.SPACE, KEY_CODES.DOWN].indexOf(keyCode) !== -1)) {
 	        /* istanbul ignore next */
 	        return;
 	      }
@@ -15232,36 +15101,32 @@
 	        this.show();
 	      }
 	    },
-	    // Mousedown handler for the toggle
-	    onMousedown: function onMousedown(evt)
-	    /* istanbul ignore next */
-	    {
-	      // We prevent the 'mousedown' event for the toggle to stop the
-	      // 'focusin' event from being fired
-	      // The event would otherwise be picked up by the global 'focusin'
-	      // listener and there is no cross-browser solution to detect it
-	      // relates to the toggle click
-	      // The 'click' event will still be fired and we handle closing
-	      // other dropdowns there too
-	      // See https://github.com/bootstrap-vue/bootstrap-vue/issues/4328
-	      evt.preventDefault();
+	    // Called only in split button mode, for the split button
+	    click: function click(evt) {
+	      /* istanbul ignore next */
+	      if (this.disabled) {
+	        this.visible = false;
+	        return;
+	      }
+
+	      this.$emit('click', evt);
 	    },
 	    // Called from dropdown menu context
 	    onKeydown: function onKeydown(evt) {
-	      var keyCode = evt.keyCode;
+	      var key = evt.keyCode;
 
-	      if (keyCode === KEY_CODES.ESC) {
+	      if (key === KEY_CODES.ESC) {
 	        // Close on ESC
 	        this.onEsc(evt);
-	      } else if (keyCode === KEY_CODES.DOWN) {
+	      } else if (key === KEY_CODES.DOWN) {
 	        // Down Arrow
 	        this.focusNext(evt, false);
-	      } else if (keyCode === KEY_CODES.UP) {
+	      } else if (key === KEY_CODES.UP) {
 	        // Up Arrow
 	        this.focusNext(evt, true);
 	      }
 	    },
-	    // If user presses ESC, close the menu
+	    // If uses presses ESC to close menu
 	    onEsc: function onEsc(evt) {
 	      if (this.visible) {
 	        this.visible = false;
@@ -15271,40 +15136,38 @@
 	        this.$once('hidden', this.focusToggler);
 	      }
 	    },
-	    // Called only in split button mode, for the split button
-	    onSplitClick: function onSplitClick(evt) {
-	      /* istanbul ignore next */
-	      if (this.disabled) {
-	        this.visible = false;
-	        return;
-	      }
+	    // Document click out listener
+	    clickOutHandler: function clickOutHandler(evt) {
+	      var _this3 = this;
 
-	      this.$emit('click', evt);
-	    },
-	    // Shared hide handler between click-out and focus-in events
-	    hideHandler: function hideHandler(evt) {
 	      var target = evt.target;
 
 	      if (this.visible && !contains(this.$refs.menu, target) && !contains(this.toggler, target)) {
-	        this.hide();
+	        var doHide = function doHide() {
+	          _this3.visible = false;
+	          return null;
+	        }; // When we are in a navbar (which has been responsively stacked), we
+	        // delay the dropdown's closing so that the next element has a chance
+	        // to have it's click handler fired (in case it's position moves on
+	        // the screen do to a navbar menu above it collapsing)
+	        // https://github.com/bootstrap-vue/bootstrap-vue/issues/4113
+
+
+	        this.clearHideTimeout();
+	        this.$_hideTimeout = this.inNavbar ? setTimeout(doHide, FOCUSOUT_DELAY) : doHide();
 	      }
 	    },
-	    // Document click-out listener
-	    clickOutHandler: function clickOutHandler(evt) {
-	      this.hideHandler(evt);
-	    },
-	    // Document focus-in listener
+	    // Document focusin listener
 	    focusInHandler: function focusInHandler(evt) {
-	      this.hideHandler(evt);
+	      // Shared logic with click-out handler
+	      this.clickOutHandler(evt);
 	    },
 	    // Keyboard nav
 	    focusNext: function focusNext(evt, up) {
-	      var _this3 = this;
+	      var _this4 = this;
 
 	      // Ignore key up/down on form elements
-	      var target = evt.target;
-
-	      if (!this.visible || evt && closest(Selector.FORM_CHILD, target)) {
+	      if (!this.visible || evt && closest(Selector.FORM_CHILD, evt.target)) {
 	        /* istanbul ignore next: should never happen */
 	        return;
 	      }
@@ -15312,14 +15175,14 @@
 	      evt.preventDefault();
 	      evt.stopPropagation();
 	      this.$nextTick(function () {
-	        var items = _this3.getItems();
+	        var items = _this4.getItems();
 
 	        if (items.length < 1) {
 	          /* istanbul ignore next: should never happen */
 	          return;
 	        }
 
-	        var index = items.indexOf(target);
+	        var index = items.indexOf(evt.target);
 
 	        if (up && index > 0) {
 	          index--;
@@ -15332,7 +15195,7 @@
 	          index = 0;
 	        }
 
-	        _this3.focusItem(index, items);
+	        _this4.focusItem(index, items);
 	      });
 	    },
 	    focusItem: function focusItem(idx, items) {
@@ -15352,10 +15215,10 @@
 	      this.$refs.menu.focus && this.$refs.menu.focus();
 	    },
 	    focusToggler: function focusToggler() {
-	      var _this4 = this;
+	      var _this5 = this;
 
 	      this.$nextTick(function () {
-	        var toggler = _this4.toggler;
+	        var toggler = _this5.toggler;
 
 	        if (toggler && toggler.focus) {
 	          toggler.focus();
@@ -15365,25 +15228,25 @@
 	  }
 	};
 
-	var NAME$c = 'BDropdown';
+	var NAME$b = 'BDropdown';
 	var props$j = {
 	  toggleText: {
 	    // This really should be toggleLabel
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$c, 'toggleText');
+	      return getComponentConfig(NAME$b, 'toggleText');
 	    }
 	  },
 	  size: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$c, 'size');
+	      return getComponentConfig(NAME$b, 'size');
 	    }
 	  },
 	  variant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$c, 'variant');
+	      return getComponentConfig(NAME$b, 'variant');
 	    }
 	  },
 	  block: {
@@ -15391,7 +15254,7 @@
 	    default: false
 	  },
 	  menuClass: {
-	    type: [String, Array, Object],
+	    type: [String, Array],
 	    default: null
 	  },
 	  toggleTag: {
@@ -15399,7 +15262,7 @@
 	    default: 'button'
 	  },
 	  toggleClass: {
-	    type: [String, Array, Object],
+	    type: [String, Array],
 	    default: null
 	  },
 	  noCaret: {
@@ -15421,12 +15284,8 @@
 	  splitVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$c, 'splitVariant');
+	      return getComponentConfig(NAME$b, 'splitVariant');
 	    }
-	  },
-	  splitClass: {
-	    type: [String, Array, Object],
-	    default: null
 	  },
 	  splitButtonType: {
 	    type: String,
@@ -15438,13 +15297,19 @@
 	  role: {
 	    type: String,
 	    default: 'menu'
+	  },
+	  boundary: {
+	    // String: `scrollParent`, `window` or `viewport`
+	    // HTMLElement: HTML Element reference
+	    type: [String, HTMLElement$1],
+	    default: 'scrollParent'
 	  }
 	}; // @vue/component
 
 	var BDropdown =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$c,
+	  name: NAME$b,
 	  mixins: [idMixin, dropdownMixin, normalizeSlotMixin],
 	  props: props$j,
 	  computed: {
@@ -15500,12 +15365,11 @@
 	      split = h(BButton, {
 	        ref: 'button',
 	        props: btnProps,
-	        class: this.splitClass,
 	        attrs: {
 	          id: this.safeId('_BV_button_')
 	        },
 	        on: {
-	          click: this.onSplitClick
+	          click: this.click
 	        }
 	      }, [buttonContent]);
 	    }
@@ -15527,9 +15391,9 @@
 	        'aria-expanded': this.visible ? 'true' : 'false'
 	      },
 	      on: {
-	        mousedown: this.onMousedown,
 	        click: this.toggle,
-	        keydown: this.toggle // Handle ENTER, SPACE and DOWN
+	        // click
+	        keydown: this.toggle // enter, space, down
 
 	      }
 	    }, [this.split ? h('span', {
@@ -15545,7 +15409,7 @@
 	        'aria-labelledby': this.safeId(this.split ? '_BV_button_' : '_BV_toggle_')
 	      },
 	      on: {
-	        keydown: this.onKeydown // Handle UP, DOWN and ESC
+	        keydown: this.onKeydown // up, down, esc
 
 	      }
 	    }, !this.lazy || this.visible ? this.normalizeSlot('default', {
@@ -15565,7 +15429,7 @@
 
 	function _objectSpread$g(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$g(Object(source), true).forEach(function (key) { _defineProperty$l(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$g(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$g(source, true).forEach(function (key) { _defineProperty$l(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$g(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$l(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$k = propsFactory(); // @vue/component
@@ -15627,7 +15491,7 @@
 
 	function _objectSpread$h(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$h(Object(source), true).forEach(function (key) { _defineProperty$m(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$h(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$h(source, true).forEach(function (key) { _defineProperty$m(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$h(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$m(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$l = {
@@ -15699,7 +15563,7 @@
 
 	function _objectSpread$i(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$i(Object(source), true).forEach(function (key) { _defineProperty$n(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$i(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$i(source, true).forEach(function (key) { _defineProperty$n(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$i(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$n(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$m = {
@@ -15749,7 +15613,7 @@
 
 	function _objectSpread$j(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$j(Object(source), true).forEach(function (key) { _defineProperty$o(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$j(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$j(source, true).forEach(function (key) { _defineProperty$o(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$j(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$o(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$n = {
@@ -15831,10 +15695,9 @@
 
 	function _objectSpread$k(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$k(Object(source), true).forEach(function (key) { _defineProperty$p(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$k(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$k(source, true).forEach(function (key) { _defineProperty$p(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$k(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$p(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 	var BDropdownForm =
 	/*#__PURE__*/
 	Vue.extend({
@@ -15844,10 +15707,6 @@
 	    disabled: {
 	      type: Boolean,
 	      default: false
-	    },
-	    formClass: {
-	      type: [String, Object, Array],
-	      default: null
 	    }
 	  }),
 	  render: function render(h, _ref) {
@@ -15865,9 +15724,9 @@
 	    }), [h(BForm, {
 	      ref: 'form',
 	      staticClass: 'b-dropdown-form',
-	      class: [props.formClass, {
+	      class: {
 	        disabled: props.disabled
-	      }],
+	      },
 	      props: props,
 	      attrs: _objectSpread$k({}, $attrs, {
 	        disabled: props.disabled,
@@ -15920,7 +15779,7 @@
 
 	function _objectSpread$l(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$l(Object(source), true).forEach(function (key) { _defineProperty$r(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$l(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$l(source, true).forEach(function (key) { _defineProperty$r(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$l(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$r(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$p = {
@@ -16053,7 +15912,7 @@
 	    return h(props.tag, {
 	      ref: data.ref,
 	      staticClass: 'embed-responsive',
-	      class: _defineProperty$s({}, "embed-responsive-".concat(props.aspect), props.aspect)
+	      class: _defineProperty$s({}, "embed-responsive-".concat(props.aspect), Boolean(props.aspect))
 	    }, [h(props.type, a(data, {
 	      ref: '',
 	      staticClass: 'embed-responsive-item'
@@ -16068,8 +15927,6 @@
 	    BEmbed: BEmbed
 	  }
 	});
-
-	var OPTIONS_OBJECT_DEPRECATED_MSG = 'Setting prop "options" to an object is deprecated. Use the array format instead.'; // @vue/component
 
 	var formOptionsMixin = {
 	  props: {
@@ -16098,46 +15955,56 @@
 	  },
 	  computed: {
 	    formOptions: function formOptions() {
-	      var _this = this;
-
-	      var options = this.options; // Normalize the given options array
+	      var options = this.options;
+	      var valueField = this.valueField;
+	      var textField = this.textField;
+	      var htmlField = this.htmlField;
+	      var disabledField = this.disabledField;
 
 	      if (isArray(options)) {
+	        // Normalize flat-ish arrays to Array of Objects
 	        return options.map(function (option) {
-	          return _this.normalizeOption(option);
+	          if (isPlainObject(option)) {
+	            var value = option[valueField];
+	            var text = String(option[textField]);
+	            return {
+	              value: isUndefined(value) ? text : value,
+	              text: stripTags(text),
+	              html: option[htmlField],
+	              disabled: Boolean(option[disabledField])
+	            };
+	          }
+
+	          return {
+	            value: option,
+	            text: stripTags(String(option)),
+	            disabled: false
+	          };
 	        });
-	      } // Deprecate the object options format
+	      } else {
+	        // options is Object
+	        // Normalize Objects to Array of Objects
+	        return keys$2(options).map(function (key) {
+	          var option = options[key] || {};
 
+	          if (isPlainObject(option)) {
+	            var value = option[valueField];
+	            var text = option[textField];
+	            return {
+	              value: isUndefined(value) ? key : value,
+	              text: isUndefined(text) ? stripTags(String(key)) : stripTags(String(text)),
+	              html: option[htmlField],
+	              disabled: Boolean(option[disabledField])
+	            };
+	          }
 
-	      warn(OPTIONS_OBJECT_DEPRECATED_MSG, this.$options.name); // Normalize a `options` object to an array of options
-
-	      return keys$2(options).map(function (key) {
-	        return _this.normalizeOption(options[key] || {}, key);
-	      });
-	    }
-	  },
-	  methods: {
-	    normalizeOption: function normalizeOption(option) {
-	      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-	      // When the option is an object, normalize it
-	      if (isPlainObject(option)) {
-	        var value = get$1(option, this.valueField);
-	        var text = get$1(option, this.textField);
-	        return {
-	          value: isUndefined(value) ? key || text : value,
-	          text: stripTags(String(isUndefined(text) ? key : text)),
-	          html: get$1(option, this.htmlField),
-	          disabled: Boolean(get$1(option, this.disabledField))
-	        };
-	      } // Otherwise create an `<option>` object from the given value
-
-
-	      return {
-	        value: key || option,
-	        text: stripTags(String(option)),
-	        disabled: false
-	      };
+	          return {
+	            value: key,
+	            text: stripTags(String(option)),
+	            disabled: false
+	          };
+	        });
+	      }
 	    }
 	  }
 	};
@@ -16146,7 +16013,7 @@
 
 	function _objectSpread$m(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$m(Object(source), true).forEach(function (key) { _defineProperty$t(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$m(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$m(source, true).forEach(function (key) { _defineProperty$t(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$m(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$t(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -16183,7 +16050,7 @@
 	});
 
 	function _defineProperty$u(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var NAME$d = 'BFormText';
+	var NAME$c = 'BFormText';
 	var props$r = {
 	  id: {
 	    type: String,
@@ -16196,7 +16063,7 @@
 	  textVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$d, 'textVariant');
+	      return getComponentConfig(NAME$c, 'textVariant');
 	    }
 	  },
 	  inline: {
@@ -16208,7 +16075,7 @@
 	var BFormText =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$d,
+	  name: NAME$c,
 	  functional: true,
 	  props: props$r,
 	  render: function render(h, _ref) {
@@ -16218,7 +16085,7 @@
 	    return h(props.tag, a(data, {
 	      class: _defineProperty$u({
 	        'form-text': !props.inline
-	      }, "text-".concat(props.textVariant), props.textVariant),
+	      }, "text-".concat(props.textVariant), Boolean(props.textVariant)),
 	      attrs: {
 	        id: props.id
 	      }
@@ -16405,7 +16272,14 @@
 	    },
 	    stateClass: function stateClass() {
 	      var state = this.computedState;
-	      return state === true ? 'is-valid' : state === false ? 'is-invalid' : null;
+
+	      if (state === true) {
+	        return 'is-valid';
+	      } else if (state === false) {
+	        return 'is-invalid';
+	      }
+
+	      return null;
 	    }
 	  }
 	};
@@ -16426,10 +16300,9 @@
 
 	function _objectSpread$n(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$n(Object(source), true).forEach(function (key) { _defineProperty$v(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$n(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$n(source, true).forEach(function (key) { _defineProperty$v(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$n(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$v(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var RX_COL_CLASS = /^col-/; // Generates a prop object with a type of `[Boolean, String, Number]`
 
 	var boolStrNum = function boolStrNum() {
 	  return {
@@ -16450,7 +16323,7 @@
 	var computeBreakpoint = function computeBreakpoint(type, breakpoint, val) {
 	  var className = type;
 
-	  if (isUndefinedOrNull(val) || val === false) {
+	  if (isUndefined(val) || isNull(val) || val === false) {
 	    return undefined;
 	  }
 
@@ -16463,12 +16336,12 @@
 
 	  if (type === 'col' && (val === '' || val === true)) {
 	    // .col-md
-	    return lowerCase(className);
+	    return className.toLowerCase();
 	  } // .order-md-6
 
 
 	  className += "-".concat(val);
-	  return lowerCase(className);
+	  return className.toLowerCase();
 	}; // Memoized function for better performance on generating class names
 
 
@@ -16478,7 +16351,7 @@
 
 	var generateProps = function generateProps() {
 	  // Grab the breakpoints from the cached config (exclude the '' (xs) breakpoint)
-	  var breakpoints = getBreakpointsUpCached().filter(identity); // Supports classes like: .col-sm, .col-md-6, .col-lg-auto
+	  var breakpoints = getBreakpointsUpCached().filter(Boolean); // Supports classes like: .col-sm, .col-md-6, .col-lg-auto
 
 	  var breakpointCol = breakpoints.reduce(function (propMap, breakpoint) {
 	    if (breakpoint) {
@@ -16574,7 +16447,7 @@
 	    }
 
 	    var hasColClasses = classList.some(function (className) {
-	      return RX_COL_CLASS.test(className);
+	      return /^col-/.test(className);
 	    });
 	    classList.push((_classList$push = {
 	      // Default to .col if no other col-{bp}-* classes generated nor `cols` specified.
@@ -16590,11 +16463,11 @@
 
 	function _objectSpread$o(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$o(Object(source), true).forEach(function (key) { _defineProperty$w(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$o(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$o(source, true).forEach(function (key) { _defineProperty$w(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$o(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$w(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	var NAME$e = 'BFormGroup'; // Selector for finding first input in the form-group
+	var NAME$d = 'BFormGroup'; // Selector for finding first input in the form-group
 
 	var SELECTOR = 'input:not([disabled]),textarea:not([disabled]),select:not([disabled])'; // Render helper functions (here rather than polluting the instance with more methods)
 
@@ -16702,8 +16575,7 @@
 	        // will properly read the aria-labelledby in IE.
 	        tabindex: isLegend ? '-1' : null
 	      },
-	      class: [// Hide the focus ring on the legend
-	      isLegend ? 'bv-no-focus-ring' : '', // When horizontal or if a legend is rendered, add col-form-label
+	      class: [// When horizontal or if a legend is rendered, add col-form-label
 	      // for correct sizing as Bootstrap has inconsistent font styling
 	      // for legend in non-horizontal form-groups.
 	      // See: https://github.com/twbs/bootstrap/issues/27805
@@ -16803,7 +16675,7 @@
 
 
 	var BFormGroup = {
-	  name: NAME$e,
+	  name: NAME$d,
 	  mixins: [idMixin, formStateMixin, normalizeSlotMixin],
 
 	  get props() {
@@ -16932,9 +16804,7 @@
 
 	      if (inputs && inputs.length === 1 && inputs[0].focus) {
 	        // if only a single input, focus it, emulating label behaviour
-	        try {
-	          inputs[0].focus();
-	        } catch (_unused) {}
+	        inputs[0].focus();
 	      }
 	    },
 	    setInputDescribedBy: function setInputDescribedBy(add, remove) {
@@ -16976,8 +16846,6 @@
 
 	    var content = h(isHorizontal ? BCol : 'div', {
 	      ref: 'content',
-	      // Hide focus ring
-	      staticClass: 'bv-no-focus-ring',
 	      attrs: {
 	        tabindex: isFieldset ? '-1' : null,
 	        role: isFieldset ? 'group' : null
@@ -17089,7 +16957,7 @@
 
 	function _objectSpread$p(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$p(Object(source), true).forEach(function (key) { _defineProperty$x(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$p(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$p(source, true).forEach(function (key) { _defineProperty$x(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$p(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$x(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -17186,7 +17054,7 @@
 	      // Required only works when a name is provided for the input(s)
 	      // Child can only be required when parent is
 	      // Groups will always have a name (either user supplied or auto generated)
-	      return this.getName && (this.isGroup ? this.bvGroup.required : this.required);
+	      return Boolean(this.getName && (this.isGroup ? this.bvGroup.required : this.required));
 	    },
 	    getName: function getName() {
 	      // Group name preferred over local name
@@ -17629,12 +17497,11 @@
 	      })]);
 	    });
 	    return h('div', {
-	      class: [this.groupClasses, 'bv-no-focus-ring'],
+	      class: this.groupClasses,
 	      attrs: {
 	        id: this.safeId(),
 	        role: this.isRadioGroup ? 'radiogroup' : 'group',
-	        // Tabindex to allow group to be focused
-	        // if needed by screen readers
+	        // Tabindex to allow group to be focused if needed
 	        tabindex: '-1',
 	        'aria-required': this.required ? 'true' : null,
 	        'aria-invalid': this.computedAriaInvalid
@@ -17734,880 +17601,6 @@
 	  }
 	});
 
-	var NAME$f = 'BFormTag';
-	var BFormTag =
-	/*#__PURE__*/
-	Vue.extend({
-	  name: NAME$f,
-	  mixins: [idMixin, normalizeSlotMixin],
-	  props: {
-	    variant: {
-	      type: String,
-	      default: function _default() {
-	        return getComponentConfig(NAME$f, 'variant');
-	      }
-	    },
-	    disabled: {
-	      type: Boolean,
-	      default: false
-	    },
-	    title: {
-	      type: String,
-	      default: null
-	    },
-	    pill: {
-	      type: Boolean,
-	      default: false
-	    },
-	    removeLabel: {
-	      type: String,
-	      default: function _default() {
-	        return getComponentConfig(NAME$f, 'removeLabel');
-	      }
-	    },
-	    tag: {
-	      type: String,
-	      default: 'span'
-	    }
-	  },
-	  methods: {
-	    onClick: function onClick() {
-	      this.$emit('remove');
-	    }
-	  },
-	  render: function render(h) {
-	    var tagId = this.safeId();
-	    var $remove = h();
-
-	    if (!this.disabled) {
-	      $remove = h(BButtonClose, {
-	        staticClass: 'b-form-tag-remove ml-1',
-	        props: {
-	          ariaLabel: this.removeLabel
-	        },
-	        attrs: {
-	          'aria-controls': tagId
-	        },
-	        on: {
-	          click: this.onClick
-	        }
-	      });
-	    }
-
-	    var $tag = h('span', {
-	      staticClass: 'b-form-tag-content flex-grow-1 text-truncate'
-	    }, this.normalizeSlot('default') || this.title || [h()]);
-	    return h(BBadge, {
-	      staticClass: 'b-form-tag d-inline-flex align-items-baseline mw-100',
-	      class: {
-	        disabled: this.disabled
-	      },
-	      attrs: {
-	        id: tagId,
-	        title: this.title || null
-	      },
-	      props: {
-	        tag: this.tag,
-	        variant: this.variant,
-	        pill: this.pill
-	      }
-	    }, [$tag, $remove]);
-	  }
-	});
-
-	function _toConsumableArray$4(arr) { return _arrayWithoutHoles$4(arr) || _iterableToArray$4(arr) || _nonIterableSpread$4(); }
-
-	function _nonIterableSpread$4() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-	function _iterableToArray$4(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); } }
-
-	function _arrayWithoutHoles$4(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
-	function ownKeys$q(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
-
-	function _objectSpread$q(target) {
-	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$q(Object(source), true).forEach(function (key) { _defineProperty$y(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$q(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-	function _defineProperty$y(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-	var NAME$g = 'BFormTags'; // Supported input types (for built in input)
-
-	var TYPES = ['text', 'email', 'tel', 'url', 'number']; // Pre-compiled regular expressions for performance reasons
-
-	var RX_SPACES = /[\s\uFEFF\xA0]+/g; // --- Utility methods ---
-	// Escape special chars in string and replace
-	// contiguous spaces with a whitespace match
-
-	var escapeRegExpChars = function escapeRegExpChars(str) {
-	  return escapeRegExp(str).replace(RX_SPACES, '\\s');
-	}; // Remove leading/trailing spaces from array of tags and remove duplicates
-
-
-	var cleanTags = function cleanTags(tags) {
-	  return concat(tags).map(function (tag) {
-	    return trim$1(toString$3(tag));
-	  }).filter(function (tag, index, arr) {
-	    return tag.length > 0 && arr.indexOf(tag) === index;
-	  });
-	}; // Processes an input/change event, normalizing string or event argument
-
-
-	var processEventValue = function processEventValue(evt) {
-	  return isString(evt) ? evt : isEvent(evt) ? evt.target.value || '' : '';
-	}; // Returns a fresh empty `tagsState` object
-
-
-	var cleanTagsState = function cleanTagsState() {
-	  return {
-	    all: [],
-	    valid: [],
-	    invalid: [],
-	    duplicate: []
-	  };
-	}; // @vue/component
-
-
-	var BFormTags =
-	/*#__PURE__*/
-	Vue.extend({
-	  name: NAME$g,
-	  mixins: [idMixin, normalizeSlotMixin],
-	  model: {
-	    // Even though this is the default that Vue assumes, we need
-	    // to add it for the docs to reflect that this is the model
-	    prop: 'value',
-	    event: 'input'
-	  },
-	  props: {
-	    inputId: {
-	      type: String,
-	      default: null
-	    },
-	    placeholder: {
-	      type: String,
-	      default: function _default() {
-	        return getComponentConfig(NAME$g, 'placeholder');
-	      }
-	    },
-	    disabled: {
-	      type: Boolean,
-	      default: false
-	    },
-	    name: {
-	      type: String,
-	      default: null
-	    },
-	    form: {
-	      type: String,
-	      default: null
-	    },
-	    autofocus: {
-	      type: Boolean,
-	      default: false
-	    },
-	    state: {
-	      // Tri-state: `true`, `false`, `null`
-	      type: Boolean,
-	      default: null
-	    },
-	    size: {
-	      type: String,
-	      default: null
-	    },
-	    inputType: {
-	      type: String,
-	      default: 'text',
-	      validator: function validator(type) {
-	        return arrayIncludes(TYPES, type);
-	      }
-	    },
-	    inputClass: {
-	      type: [String, Array, Object],
-	      default: null
-	    },
-	    inputAttrs: {
-	      // Additional attributes to add to the input element
-	      type: Object,
-	      default: function _default() {
-	        return {};
-	      }
-	    },
-	    addButtonText: {
-	      type: String,
-	      default: function _default() {
-	        return getComponentConfig(NAME$g, 'addButtonText');
-	      }
-	    },
-	    addButtonVariant: {
-	      type: String,
-	      default: function _default() {
-	        return getComponentConfig(NAME$g, 'addButtonVariant');
-	      }
-	    },
-	    tagVariant: {
-	      type: String,
-	      default: function _default() {
-	        return getComponentConfig(NAME$g, 'tagVariant');
-	      }
-	    },
-	    tagClass: {
-	      type: [String, Array, Object],
-	      default: null
-	    },
-	    tagPills: {
-	      type: Boolean,
-	      default: false
-	    },
-	    tagRemoveLabel: {
-	      type: String,
-	      default: function _default() {
-	        return getComponentConfig(NAME$g, 'tagRemoveLabel');
-	      }
-	    },
-	    tagValidator: {
-	      type: Function,
-	      default: null
-	    },
-	    duplicateTagText: {
-	      type: String,
-	      default: function _default() {
-	        return getComponentConfig(NAME$g, 'duplicateTagText');
-	      }
-	    },
-	    invalidTagText: {
-	      type: String,
-	      default: function _default() {
-	        return getComponentConfig(NAME$g, 'invalidTagText');
-	      }
-	    },
-	    separator: {
-	      // Character (or characters) that trigger adding tags
-	      type: [String, Array],
-	      default: null
-	    },
-	    removeOnDelete: {
-	      // Enable deleting last tag in list when BACKSPACE is
-	      // pressed and input is empty
-	      type: Boolean,
-	      default: false
-	    },
-	    addOnChange: {
-	      // Enable change event triggering tag addition
-	      // Handy if using <select> as the input
-	      type: Boolean,
-	      default: false
-	    },
-	    noAddOnEnter: {
-	      // Disable ENTER key from triggering tag addition
-	      type: Boolean,
-	      default: false
-	    },
-	    noOuterFocus: {
-	      // Disable the focus ring on the root element
-	      type: Boolean,
-	      default: false
-	    },
-	    value: {
-	      // The v-model prop
-	      type: Array,
-	      default: function _default() {
-	        return [];
-	      }
-	    }
-	  },
-	  data: function data() {
-	    return {
-	      hasFocus: false,
-	      newTag: '',
-	      tags: [],
-	      // Populated when tags are parsed
-	      tagsState: cleanTagsState()
-	    };
-	  },
-	  computed: {
-	    computedInputId: function computedInputId() {
-	      return this.inputId || this.safeId('__input__');
-	    },
-	    computedInputType: function computedInputType() {
-	      // We only allow certain types
-	      return arrayIncludes(TYPES, this.inputType) ? this.inputType : 'text';
-	    },
-	    computedInputAttrs: function computedInputAttrs() {
-	      return _objectSpread$q({}, this.inputAttrs, {
-	        // Must have attributes
-	        id: this.computedInputId,
-	        value: this.newTag,
-	        disabled: this.disabled || null,
-	        form: this.form || null
-	      });
-	    },
-	    computedInputHandlers: function computedInputHandlers() {
-	      return {
-	        input: this.onInputInput,
-	        change: this.onInputChange,
-	        keydown: this.onInputKeydown
-	      };
-	    },
-	    computedSeparator: function computedSeparator() {
-	      // Merge the array into a string
-	      return concat(this.separator).filter(isString).filter(identity).join('');
-	    },
-	    computedSeparatorRegExp: function computedSeparatorRegExp() {
-	      // We use a computed prop here to precompile the RegExp
-	      // The RegExp is a character class RE in the form of `/[abc]+/`
-	      // where a, b, and c are the valid separator characters
-	      // -> `tags = str.split(/[abc]+/).filter(t => t)`
-	      var separator = this.computedSeparator;
-	      return separator ? new RegExp("[".concat(escapeRegExpChars(separator), "]+")) : null;
-	    },
-	    computedJoiner: function computedJoiner() {
-	      // When tag(s) are invalid or duplicate, we leave them
-	      // in the input so that the user can see them
-	      // If there are more than one tag in the input, we use the
-	      // first separator character as the separator in the input
-	      // We append a space if the first separator is not a space
-	      var joiner = this.computedSeparator.charAt(0);
-	      return joiner !== ' ' ? "".concat(joiner, " ") : joiner;
-	    },
-	    disableAddButton: function disableAddButton() {
-	      var _this = this;
-
-	      // If 'Add' button should be disabled
-	      // If the input contains at least one tag that can
-	      // be added, then the 'Add' button should be enabled
-	      var newTag = trim$1(this.newTag);
-	      return newTag === '' || !this.splitTags(newTag).some(function (t) {
-	        return !arrayIncludes(_this.tags, t) && _this.validateTag(t);
-	      });
-	    },
-	    duplicateTags: function duplicateTags() {
-	      return this.tagsState.duplicate;
-	    },
-	    hasDuplicateTags: function hasDuplicateTags() {
-	      return this.duplicateTags.length > 0;
-	    },
-	    invalidTags: function invalidTags() {
-	      return this.tagsState.invalid;
-	    },
-	    hasInvalidTags: function hasInvalidTags() {
-	      return this.invalidTags.length > 0;
-	    }
-	  },
-	  watch: {
-	    value: function value(newVal) {
-	      this.tags = cleanTags(newVal);
-	    },
-	    tags: function tags(newVal) {
-	      // Update the `v-model` (if it differs from the value prop)
-	      if (!looseEqual(newVal, this.value)) {
-	        this.$emit('input', newVal);
-	      }
-	    },
-	    tagsState: function tagsState(newVal, oldVal) {
-	      // Emit a tag-state event when the `tagsState` object changes
-	      if (!looseEqual(newVal, oldVal)) {
-	        this.$emit('tag-state', newVal.valid, newVal.invalid, newVal.duplicate);
-	      }
-	    }
-	  },
-	  created: function created() {
-	    // We do this in created to make sure an input event emits
-	    // if the cleaned tags are not equal to the value prop
-	    this.tags = cleanTags(this.value);
-	  },
-	  mounted: function mounted() {
-	    this.handleAutofocus();
-	  },
-	  activated: function activated()
-	  /* istanbul ignore next */
-	  {
-	    this.handleAutofocus();
-	  },
-	  methods: {
-	    addTag: function addTag(newTag) {
-	      newTag = isString(newTag) ? newTag : this.newTag;
-	      /* istanbul ignore next */
-
-	      if (this.disabled || trim$1(newTag) === '') {
-	        // Early exit
-	        return;
-	      }
-
-	      var parsed = this.parseTags(newTag); // Add any new tags to the `tags` array, or if the
-	      // array of `allTags` is empty, we clear the input
-
-	      if (parsed.valid.length > 0 || parsed.all.length === 0) {
-	        // Clear the user input element (and leave in any invalid/duplicate tag(s)
-
-	        /* istanbul ignore if: full testing to be added later */
-	        if (matches(this.getInput(), 'select')) {
-	          // The following is needed to properly
-	          // work with `<select>` elements
-	          this.newTag = '';
-	        } else {
-	          var invalidAndDuplicates = [].concat(_toConsumableArray$4(parsed.invalid), _toConsumableArray$4(parsed.duplicate));
-	          this.newTag = parsed.all.filter(function (tag) {
-	            return arrayIncludes(invalidAndDuplicates, tag);
-	          }).join(this.computedJoiner).concat(invalidAndDuplicates.length > 0 ? this.computedJoiner.charAt(0) : '');
-	        }
-	      }
-
-	      if (parsed.valid.length > 0) {
-	        // We add the new tags in one atomic operation
-	        // to trigger reactivity once (instead of once per tag)
-	        // We do this after we update the new tag input value
-	        // `concat()` can be faster than array spread, when both args are arrays
-	        this.tags = concat(this.tags, parsed.valid);
-	      }
-
-	      this.tagsState = parsed; // Attempt to re-focus the input (specifically for when using the Add
-	      // button, as the button disappears after successfully adding a tag
-
-	      this.focus();
-	    },
-	    removeTag: function removeTag(tag) {
-	      /* istanbul ignore next */
-	      if (this.disabled) {
-	        return;
-	      } // TODO:
-	      //   Add `onRemoveTag(tag)` user method, which if returns `false`
-	      //   will prevent the tag from being removed (i.e. confirmation)
-	      //   Or emit cancelable `BvEvent`
-
-
-	      this.tags = this.tags.filter(function (t) {
-	        return t !== tag;
-	      }); // Return focus to the input (if possible)
-
-	      this.focus();
-	    },
-	    // --- Input element event handlers ---
-	    onInputInput: function onInputInput(evt) {
-	      /* istanbul ignore next: hard to test composition events */
-	      if (this.disabled || isEvent(evt) && evt.target.composing) {
-	        // `evt.target.composing` is set by Vue (`v-model` directive)
-	        // https://github.com/vuejs/vue/blob/dev/src/platforms/web/runtime/directives/model.js
-	        return;
-	      }
-
-	      var newTag = processEventValue(evt);
-	      var separatorRe = this.computedSeparatorRegExp;
-
-	      if (this.newTag !== newTag) {
-	        this.newTag = newTag;
-	      } // We ignore leading whitespace for the following
-
-
-	      newTag = trimLeft(newTag);
-
-	      if (separatorRe && separatorRe.test(newTag.slice(-1))) {
-	        // A trailing separator character was entered, so add the tag(s)
-	        // Note: More than one tag on input event is possible via copy/paste
-	        this.addTag();
-	      } else {
-	        // Validate (parse tags) on input event
-	        this.tagsState = newTag === '' ? cleanTagsState() : this.parseTags(newTag);
-	      }
-	    },
-	    onInputChange: function onInputChange(evt) {
-	      // Change is triggered on `<input>` blur, or `<select>` selected
-	      // This event is opt-in
-	      if (!this.disabled && this.addOnChange) {
-	        var newTag = processEventValue(evt);
-	        /* istanbul ignore next */
-
-	        if (this.newTag !== newTag) {
-	          this.newTag = newTag;
-	        }
-
-	        this.addTag();
-	      }
-	    },
-	    onInputKeydown: function onInputKeydown(evt) {
-	      // Early exit
-
-	      /* istanbul ignore next */
-	      if (this.disabled || !isEvent(evt)) {
-	        return;
-	      }
-
-	      var keyCode = evt.keyCode;
-	      var value = evt.target.value || '';
-	      /* istanbul ignore else: testing to be added later */
-
-	      if (!this.noAddOnEnter && keyCode === KEY_CODES.ENTER) {
-	        // Attempt to add the tag when user presses enter
-	        evt.preventDefault();
-	        this.addTag();
-	      } else if (this.removeOnDelete && keyCode === KEY_CODES.BACKSPACE && value === '') {
-	        // Remove the last tag if the user pressed backspace and the input is empty
-	        evt.preventDefault();
-	        this.tags.pop();
-	      }
-	    },
-	    // --- Wrapper event handlers ---
-	    onClick: function onClick(evt) {
-	      if (!this.disabled && isEvent(evt) && evt.target === evt.currentTarget) {
-	        this.$nextTick(this.focus);
-	      }
-	    },
-	    onFocusin: function onFocusin() {
-	      this.hasFocus = true;
-	    },
-	    onFocusout: function onFocusout() {
-	      this.hasFocus = false;
-	    },
-	    handleAutofocus: function handleAutofocus() {
-	      var _this2 = this;
-
-	      this.$nextTick(function () {
-	        requestAF(function () {
-	          if (_this2.autofocus && !_this2.disabled) {
-	            _this2.focus();
-	          }
-	        });
-	      });
-	    },
-	    // --- Public methods ---
-	    focus: function focus() {
-	      if (!this.disabled) {
-	        try {
-	          this.getInput().focus();
-	        } catch (_unused) {}
-	      }
-	    },
-	    blur: function blur() {
-	      try {
-	        this.getInput().blur();
-	      } catch (_unused2) {}
-	    },
-	    // --- Private methods ---
-	    splitTags: function splitTags(newTag) {
-	      // Split the input into an array of raw tags
-	      newTag = toString$3(newTag);
-	      var separatorRe = this.computedSeparatorRegExp; // Split the tag(s) via the optional separator
-	      // Normally only a single tag is provided, but copy/paste
-	      // can enter multiple tags in a single operation
-
-	      return (separatorRe ? newTag.split(separatorRe) : [newTag]).map(trim$1).filter(identity);
-	    },
-	    parseTags: function parseTags(newTag) {
-	      var _this3 = this;
-
-	      // Takes `newTag` value and parses it into `validTags`,
-	      // `invalidTags`, and duplicate tags as an object
-	      // Split the input into raw tags
-	      var tags = this.splitTags(newTag); // Base results
-
-	      var parsed = {
-	        all: tags,
-	        valid: [],
-	        invalid: [],
-	        duplicate: []
-	      }; // Parse the unique tags
-
-	      tags.forEach(function (tag) {
-	        if (arrayIncludes(_this3.tags, tag) || arrayIncludes(parsed.valid, tag)) {
-	          // Unique duplicate tags
-	          if (!arrayIncludes(parsed.duplicate, tag)) {
-	            parsed.duplicate.push(tag);
-	          }
-	        } else if (_this3.validateTag(tag)) {
-	          // We only add unique/valid tags
-	          parsed.valid.push(tag);
-	        } else {
-	          // Unique invalid tags
-	          if (!arrayIncludes(parsed.invalid, tag)) {
-	            parsed.invalid.push(tag);
-	          }
-	        }
-	      });
-	      return parsed;
-	    },
-	    validateTag: function validateTag(tag) {
-	      // Call the user supplied tag validator
-	      var validator = this.tagValidator;
-	      return isFunction(validator) ? validator(tag) : true;
-	    },
-	    getInput: function getInput() {
-	      // Returns the input element reference (or null if not found)
-	      return select("#".concat(this.computedInputId), this.$el);
-	    },
-	    // Default User Interface render
-	    defaultRender: function defaultRender(_ref) {
-	      var tags = _ref.tags,
-	          addTag = _ref.addTag,
-	          removeTag = _ref.removeTag,
-	          inputType = _ref.inputType,
-	          inputAttrs = _ref.inputAttrs,
-	          inputHandlers = _ref.inputHandlers,
-	          inputClass = _ref.inputClass,
-	          tagClass = _ref.tagClass,
-	          tagVariant = _ref.tagVariant,
-	          tagPills = _ref.tagPills,
-	          tagRemoveLabel = _ref.tagRemoveLabel,
-	          invalidTagText = _ref.invalidTagText,
-	          duplicateTagText = _ref.duplicateTagText,
-	          isInvalid = _ref.isInvalid,
-	          invalidTags = _ref.invalidTags,
-	          isDuplicate = _ref.isDuplicate,
-	          duplicateTags = _ref.duplicateTags,
-	          disabled = _ref.disabled,
-	          placeholder = _ref.placeholder,
-	          addButtonText = _ref.addButtonText,
-	          addButtonVariant = _ref.addButtonVariant,
-	          disableAddButton = _ref.disableAddButton;
-	      var h = this.$createElement; // Make the list of tags
-
-	      var $tags = tags.map(function (tag, idx) {
-	        tag = toString$3(tag);
-	        return h(BFormTag, {
-	          key: "li-tag__".concat(tag),
-	          staticClass: 'mt-1 mr-1',
-	          class: tagClass,
-	          props: {
-	            // 'BFormTag' will auto generate an ID
-	            // so we do not need to set the ID prop
-	            tag: 'li',
-	            title: tag,
-	            disabled: disabled,
-	            variant: tagVariant,
-	            pill: tagPills,
-	            removeLabel: tagRemoveLabel
-	          },
-	          on: {
-	            remove: function remove() {
-	              return removeTag(tag);
-	            }
-	          }
-	        }, tag);
-	      }); // Feedback IDs if needed
-
-	      var invalidFeedbackId = invalidTagText && isInvalid ? this.safeId('__invalid_feedback__') : null;
-	      var duplicateFeedbackId = duplicateTagText && isDuplicate ? this.safeId('__duplicate_feedback__') : null; // Compute the `aria-describedby` attribute value
-
-	      var ariaDescribedby = [inputAttrs['aria-describedby'], invalidFeedbackId, duplicateFeedbackId].filter(identity).join(' '); // Input
-
-	      var $input = h('input', {
-	        ref: 'input',
-	        // Directive needed to get `evt.target.composing` set (if needed)
-	        directives: [{
-	          name: 'model',
-	          value: inputAttrs.value
-	        }],
-	        staticClass: 'b-form-tags-input w-100 flex-grow-1 p-0 m-0 bg-transparent border-0',
-	        class: inputClass,
-	        style: {
-	          outline: 0,
-	          minWidth: '5rem'
-	        },
-	        attrs: _objectSpread$q({}, inputAttrs, {
-	          'aria-describedby': ariaDescribedby || null,
-	          type: inputType,
-	          placeholder: placeholder || null
-	        }),
-	        domProps: {
-	          value: inputAttrs.value
-	        },
-	        on: inputHandlers
-	      }); // Add button
-
-	      var $button = h(BButton, {
-	        ref: 'button',
-	        staticClass: 'b-form-tags-button py-0',
-	        class: {
-	          // Only show the button if the tag can be added
-	          // We use the `invisible` class instead of not rendering
-	          // the button, so that we maintain layout to prevent
-	          // the user input from jumping around
-	          invisible: disableAddButton
-	        },
-	        style: {
-	          fontSize: '90%'
-	        },
-	        props: {
-	          variant: addButtonVariant,
-	          disabled: disableAddButton
-	        },
-	        on: {
-	          click: function click() {
-	            return addTag();
-	          }
-	        }
-	      }, [this.normalizeSlot('add-button-text') || addButtonText]); // ID of the tags+input `<ul>` list
-	      // Note we could concatenate inputAttrs.id with `__TAG__LIST__`
-	      // But note that the inputID may be null until after mount
-	      // `safeId` returns `null`, if no user provided ID, until after
-	      // mount when a unique ID is generated
-
-	      var tagListId = this.safeId('__TAG__LIST__');
-	      var $field = h('li', {
-	        key: '__li-input__',
-	        staticClass: 'd-inline-flex flex-grow-1 mt-1',
-	        attrs: {
-	          role: 'group',
-	          'aria-live': 'off',
-	          'aria-controls': tagListId
-	        }
-	      }, [$input, $button]); // Wrap in an unordered list element (we use a list for accessibility)
-
-	      var $ul = h('ul', {
-	        key: '_tags_list_',
-	        staticClass: 'list-unstyled mt-n1 mb-0 d-flex flex-wrap align-items-center',
-	        attrs: {
-	          id: tagListId,
-	          // Don't interrupt the user abruptly
-	          // Although maybe this should be 'assertive'
-	          // to provide immediate feedback of the tag added/removed
-	          'aria-live': 'polite',
-	          // Only read elements that have been added or removed
-	          'aria-atomic': 'false',
-	          'aria-relevant': 'additions removals'
-	        }
-	      }, // `concat()` is faster than array spread when args are known to be arrays
-	      concat($tags, $field)); // Assemble the feedback
-
-	      var $feedback = h();
-
-	      if (invalidTagText || duplicateTagText) {
-	        // Add an aria live region for the invalid/duplicate tag
-	        // messages if the user has not disabled the messages
-	        var joiner = this.computedJoiner; // Invalid tag feedback if needed (error)
-
-	        var $invalid = h();
-
-	        if (invalidFeedbackId) {
-	          $invalid = h(BFormInvalidFeedback, {
-	            key: '_tags_invalid_feedback_',
-	            props: {
-	              id: invalidFeedbackId,
-	              forceShow: true
-	            }
-	          }, [this.invalidTagText, ': ', this.invalidTags.join(joiner)]);
-	        } // Duplicate tag feedback if needed (warning, not error)
-
-
-	        var $duplicate = h();
-
-	        if (duplicateFeedbackId) {
-	          $duplicate = h(BFormText, {
-	            key: '_tags_duplicate_feedback_',
-	            props: {
-	              id: duplicateFeedbackId
-	            }
-	          }, [this.duplicateTagText, ': ', this.duplicateTags.join(joiner)]);
-	        }
-
-	        $feedback = h('div', {
-	          key: '_tags_feedback_',
-	          attrs: {
-	            'aria-live': 'polite',
-	            'aria-atomic': 'true'
-	          }
-	        }, [$invalid, $duplicate]);
-	      } // Return the content
-
-
-	      return [$ul, $feedback];
-	    }
-	  },
-	  render: function render(h) {
-	    var _this4 = this;
-
-	    // Scoped slot properties
-	    var scope = {
-	      // Array of tags (shallow copy to prevent mutations)
-	      tags: this.tags.slice(),
-	      // Methods
-	      removeTag: this.removeTag,
-	      addTag: this.addTag,
-	      // We don't include this in the attrs, as users may want to override this
-	      inputType: this.computedInputType,
-	      // <input> v-bind:inputAttrs
-	      inputAttrs: this.computedInputAttrs,
-	      // <input> v-on:inputHandlers
-	      inputHandlers: this.computedInputHandlers,
-	      // <input> :id="inputId"
-	      inputId: this.computedInputId,
-	      // Invalid/Duplicate state information
-	      invalidTags: this.invalidTags.slice(),
-	      isInvalid: this.hasInvalidTags,
-	      duplicateTags: this.duplicateTags.slice(),
-	      isDuplicate: this.hasDuplicateTags,
-	      // If the 'Add' button should be disabled
-	      disableAddButton: this.disableAddButton,
-	      // Pass-though values
-	      state: this.state,
-	      separator: this.separator,
-	      disabled: this.disabled,
-	      size: this.size,
-	      placeholder: this.placeholder,
-	      inputClass: this.inputClass,
-	      tagRemoveLabel: this.tagRemoveLabel,
-	      tagVariant: this.tagVariant,
-	      tagPills: this.tagPills,
-	      tagClass: this.tagClass,
-	      addButtonText: this.addButtonText,
-	      addButtonVariant: this.addButtonVariant,
-	      invalidTagText: this.invalidTagText,
-	      duplicateTagText: this.duplicateTagText
-	    }; // Generate the user interface
-
-	    var $content = this.normalizeSlot('default', scope) || this.defaultRender(scope); // Add hidden inputs for form submission
-
-	    var $hidden = h();
-
-	    if (this.name && !this.disabled) {
-	      // We add hidden inputs for each tag if a name is provided
-	      // for native submission of forms
-	      $hidden = this.tags.map(function (tag) {
-	        return h('input', {
-	          key: tag,
-	          attrs: {
-	            type: 'hidden',
-	            value: tag,
-	            name: _this4.name,
-	            form: _this4.form || null
-	          }
-	        });
-	      });
-	    } // Return the rendered output
-
-
-	    return h('div', {
-	      staticClass: 'b-form-tags form-control h-auto',
-	      class: _defineProperty$y({
-	        focus: this.hasFocus && !this.noOuterFocus && !this.disabled,
-	        disabled: this.disabled,
-	        'is-valid': this.state === true,
-	        'is-invalid': this.state === false
-	      }, "form-control-".concat(this.size), this.size),
-	      attrs: {
-	        id: this.safeId(),
-	        role: 'group',
-	        tabindex: this.disabled || this.noOuterFocus ? null : '-1'
-	      },
-	      on: {
-	        focusin: this.onFocusin,
-	        focusout: this.onFocusout,
-	        click: this.onClick
-	      }
-	    }, concat($content, $hidden));
-	  }
-	});
-
-	var FormTagsPlugin =
-	/*#__PURE__*/
-	pluginFactory({
-	  components: {
-	    BFormTags: BFormTags,
-	    BTags: BFormTags,
-	    BFormTag: BFormTag,
-	    BTag: BFormTag
-	  }
-	});
-
 	var formTextMixin = {
 	  model: {
 	    prop: 'value',
@@ -18667,11 +17660,15 @@
 	  },
 	  data: function data() {
 	    return {
-	      localValue: toString$3(this.value),
+	      localValue: this.stringifyValue(this.value),
 	      vModelValue: this.value
 	    };
 	  },
 	  computed: {
+	    computedDebounce: function computedDebounce() {
+	      // Ensure we have a positive number equal to or greater than 0
+	      return Math.max(parseInt(this.debounce, 10) || 0, 0);
+	    },
 	    computedClass: function computedClass() {
 	      return [{
 	        // Range input needs class `custom-range`
@@ -18696,18 +17693,11 @@
 
 
 	      return this.ariaInvalid;
-	    },
-	    computedDebounce: function computedDebounce() {
-	      // Ensure we have a positive number equal to or greater than 0
-	      return Math.max(toInteger(this.debounce) || 0, 0);
-	    },
-	    hasFormatter: function hasFormatter() {
-	      return isFunction(this.formatter);
 	    }
 	  },
 	  watch: {
 	    value: function value(newVal) {
-	      var stringifyValue = toString$3(newVal);
+	      var stringifyValue = this.stringifyValue(newVal);
 
 	      if (stringifyValue !== this.localValue && newVal !== this.vModelValue) {
 	        // Clear any pending debounce timeout, as we are overwriting the user input
@@ -18724,7 +17714,7 @@
 	    this.$on('hook:beforeDestroy', this.clearDebounce); // Preset the internal state
 
 	    var value = this.value;
-	    var stringifyValue = toString$3(value);
+	    var stringifyValue = this.stringifyValue(value);
 	    /* istanbul ignore next */
 
 	    if (stringifyValue !== this.localValue && value !== this.vModelValue) {
@@ -18737,11 +17727,14 @@
 	      clearTimeout(this.$_inputDebounceTimer);
 	      this.$_inputDebounceTimer = null;
 	    },
+	    stringifyValue: function stringifyValue(value) {
+	      return isUndefinedOrNull(value) ? '' : String(value);
+	    },
 	    formatValue: function formatValue(value, evt) {
 	      var force = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-	      value = toString$3(value);
+	      value = this.stringifyValue(value);
 
-	      if (this.hasFormatter && (!this.lazyFormatter || force)) {
+	      if ((!this.lazyFormatter || force) && isFunction(this.formatter)) {
 	        value = this.formatter(value, evt);
 	      }
 
@@ -18755,7 +17748,7 @@
 
 
 	      if (this.number) {
-	        var number = toFloat(value);
+	        var number = parseFloat(value);
 	        value = isNaN(number) ? value : number;
 	      }
 
@@ -18766,6 +17759,7 @@
 
 	      var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 	      var lazy = this.lazy;
+	      var ms = this.computedDebounce;
 
 	      if (lazy && !force) {
 	        return;
@@ -18782,29 +17776,12 @@
 	          _this.$emit('update', value);
 	        };
 
-	        var debounce = this.computedDebounce; // Only debounce the value update when a value greater than `0`
-	        // is set and we are not in lazy mode or this is a forced update
-
-	        if (debounce > 0 && !lazy && !force) {
-	          this.$_inputDebounceTimer = setTimeout(doUpdate, debounce);
+	        if (ms > 0 && !lazy && !force) {
+	          // Change/Blur/Force will not be debounced
+	          this.$_inputDebounceTimer = setTimeout(doUpdate, ms);
 	        } else {
 	          // Immediately update the v-model
 	          doUpdate();
-	        }
-	      } else if (this.hasFormatter) {
-	        // When the `vModelValue` hasn't changed but the actual input value
-	        // is out of sync, make sure to change it to the given one
-	        // Usually caused by browser autocomplete and how it triggers the
-	        // change or input event, or depending on the formatter function
-	        // https://github.com/bootstrap-vue/bootstrap-vue/issues/2657
-	        // https://github.com/bootstrap-vue/bootstrap-vue/issues/3498
-
-	        /* istanbul ignore next: hard to test */
-	        var $input = this.$refs.input;
-	        /* istanbul ignore if: hard to test outof sync value */
-
-	        if ($input && value !== $input.value) {
-	          $input.value = value;
 	        }
 	      }
 	    },
@@ -18865,7 +17842,7 @@
 	      if (formattedValue !== false) {
 	        // We need to use the modified value here to apply the
 	        // `.trim` and `.number` modifiers properly
-	        this.localValue = toString$3(this.modifyValue(formattedValue)); // We pass the formatted value here since the `updateValue` method
+	        this.localValue = this.stringifyValue(this.modifyValue(formattedValue)); // We pass the formatted value here since the `updateValue` method
 	        // handles the modifiers itself
 
 	        this.updateValue(formattedValue, true);
@@ -19022,15 +17999,15 @@
 	  }
 	};
 
-	function ownKeys$r(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$q(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$r(target) {
+	function _objectSpread$q(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$r(Object(source), true).forEach(function (key) { _defineProperty$z(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$r(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$q(source, true).forEach(function (key) { _defineProperty$y(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$q(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$z(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$y(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	var TYPES$1 = ['text', 'password', 'email', 'number', 'url', 'tel', 'search', 'range', 'color', 'date', 'time', 'datetime', 'datetime-local', 'month', 'week']; // @vue/component
+	var TYPES = ['text', 'password', 'email', 'number', 'url', 'tel', 'search', 'range', 'color', 'date', 'time', 'datetime', 'datetime-local', 'month', 'week']; // @vue/component
 
 	var BFormInput =
 	/*#__PURE__*/
@@ -19044,7 +18021,7 @@
 	      type: String,
 	      default: 'text',
 	      validator: function validator(type) {
-	        return arrayIncludes(TYPES$1, type);
+	        return arrayIncludes(TYPES, type);
 	      }
 	    },
 	    noWheel: {
@@ -19072,7 +18049,7 @@
 	  computed: {
 	    localType: function localType() {
 	      // We only allow certain types
-	      return arrayIncludes(TYPES$1, this.type) ? this.type : 'text';
+	      return arrayIncludes(TYPES, this.type) ? this.type : 'text';
 	    }
 	  },
 	  watch: {
@@ -19154,7 +18131,7 @@
 	      domProps: {
 	        value: self.localValue
 	      },
-	      on: _objectSpread$r({}, self.$listeners, {
+	      on: _objectSpread$q({}, self.$listeners, {
 	        input: self.onInput,
 	        change: self.onChange,
 	        blur: self.onBlur
@@ -19172,13 +18149,13 @@
 	  }
 	});
 
-	function ownKeys$s(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$r(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$s(target) {
+	function _objectSpread$r(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$s(Object(source), true).forEach(function (key) { _defineProperty$A(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$s(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$r(source, true).forEach(function (key) { _defineProperty$z(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$r(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$A(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$z(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	var BFormTextarea =
 	/*#__PURE__*/
@@ -19364,7 +18341,7 @@
 	      domProps: {
 	        value: self.localValue
 	      },
-	      on: _objectSpread$s({}, self.$listeners, {
+	      on: _objectSpread$r({}, self.$listeners, {
 	        input: self.onInput,
 	        change: self.onChange,
 	        blur: self.onBlur
@@ -19397,20 +18374,19 @@
 	  }
 	};
 
-	function ownKeys$t(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$s(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$t(target) {
+	function _objectSpread$s(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$t(Object(source), true).forEach(function (key) { _defineProperty$B(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$t(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$s(source, true).forEach(function (key) { _defineProperty$A(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$s(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$B(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var NAME$h = 'BFormFile';
-	var VALUE_EMPTY_DEPRECATED_MSG = 'Setting "value"/"v-model" to an empty string for reset is deprecated. Set to "null" instead.'; // @vue/component
+	function _defineProperty$A(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	var NAME$e = 'BFormFile'; // @vue/component
 
 	var BFormFile =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$h,
+	  name: NAME$e,
 	  mixins: [idMixin, formMixin, formStateMixin, formCustomMixin, normalizeSlotMixin],
 	  inheritAttrs: false,
 	  model: {
@@ -19430,7 +18406,7 @@
 	      validator: function validator(val) {
 	        /* istanbul ignore next */
 	        if (val === '') {
-	          warn(VALUE_EMPTY_DEPRECATED_MSG, NAME$h);
+	          warn("".concat(NAME$e, " - setting value/v-model to an empty string for reset is deprecated. Set to 'null' instead"));
 	          return true;
 	        }
 
@@ -19449,19 +18425,19 @@
 	    placeholder: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$h, 'placeholder');
+	        return getComponentConfig(NAME$e, 'placeholder');
 	      }
 	    },
 	    browseText: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$h, 'browseText');
+	        return getComponentConfig(NAME$e, 'browseText');
 	      }
 	    },
 	    dropPlaceholder: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$h, 'dropPlaceholder');
+	        return getComponentConfig(NAME$e, 'dropPlaceholder');
 	      }
 	    },
 	    multiple: {
@@ -19505,7 +18481,7 @@
 	      } // Convert selectedFile to an array (if not already one)
 
 
-	      var files = concat(this.selectedFile).filter(identity);
+	      var files = concat(this.selectedFile).filter(Boolean);
 
 	      if (this.hasNormalizedSlot('file-name')) {
 	        // There is a slot for formatting the files/names
@@ -19517,7 +18493,7 @@
 	        })];
 	      } else {
 	        // Use the user supplied formatter, or the built in one.
-	        return isFunction(this.fileNameFormatter) ? toString$3(this.fileNameFormatter(files)) : files.map(function (file) {
+	        return isFunction(this.fileNameFormatter) ? String(this.fileNameFormatter(files)) : files.map(function (file) {
 	          return file.name;
 	        }).join(', ');
 	      }
@@ -19705,7 +18681,7 @@
 	        'custom-file-input': this.custom,
 	        focus: this.custom && this.hasFocus
 	      }, this.stateClass],
-	      attrs: _objectSpread$t({}, this.$attrs, {
+	      attrs: _objectSpread$s({}, this.$attrs, {
 	        type: 'file',
 	        id: this.safeId(),
 	        name: this.name,
@@ -19742,7 +18718,7 @@
 
 	    return h('div', {
 	      staticClass: 'custom-file b-form-file',
-	      class: [this.stateClass, _defineProperty$B({}, "b-custom-control-".concat(this.size), this.size)],
+	      class: [this.stateClass, _defineProperty$A({}, "b-custom-control-".concat(this.size), Boolean(this.size))],
 	      attrs: {
 	        id: this.safeId('_BV_file_outer_')
 	      },
@@ -19764,123 +18740,19 @@
 	  }
 	});
 
-	var optionsMixin = {
-	  mixins: [formOptionsMixin],
-	  props: {
-	    labelField: {
-	      type: String,
-	      default: 'label'
-	    },
-	    optionsField: {
-	      type: String,
-	      default: 'options'
-	    }
-	  },
-	  methods: {
-	    normalizeOption: function normalizeOption(option) {
-	      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+	function ownKeys$t(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	      // When the option is an object, normalize it
-	      if (isPlainObject(option)) {
-	        var value = get$1(option, this.valueField);
-	        var text = get$1(option, this.textField);
-	        var options = get$1(option, this.optionsField); // When it has options, create an `<optgroup>` object
+	function _objectSpread$t(target) {
+	var arguments$1 = arguments;
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$t(source, true).forEach(function (key) { _defineProperty$B(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$t(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	        if (isArray(options)) {
-	          return {
-	            label: String(get$1(option, this.labelField) || text),
-	            options: options
-	          };
-	        } // Otherwise create an `<option>` object
-
-
-	        return {
-	          value: isUndefined(value) ? key || text : value,
-	          text: String(isUndefined(text) ? key : text),
-	          html: get$1(option, this.htmlField),
-	          disabled: Boolean(get$1(option, this.disabledField))
-	        };
-	      } // Otherwise create an `<option>` object from the given value
-
-
-	      return {
-	        value: key || option,
-	        text: String(option),
-	        disabled: false
-	      };
-	    }
-	  }
-	};
-
-	var NAME$i = 'BFormSelectOption';
-	var props$x = {
-	  value: {
-	    // type: [String, Number, Boolean, Object],
-	    required: true
-	  },
-	  disabled: {
-	    type: Boolean,
-	    default: false
-	  }
-	}; // @vue/component
-
-	var BFormSelectOption =
-	/*#__PURE__*/
-	Vue.extend({
-	  name: NAME$i,
-	  functional: true,
-	  props: props$x,
-	  render: function render(h, _ref) {
-	    var props = _ref.props,
-	        data = _ref.data,
-	        children = _ref.children;
-	    var value = props.value,
-	        disabled = props.disabled;
-	    return h('option', a(data, {
-	      attrs: {
-	        disabled: disabled
-	      },
-	      domProps: {
-	        value: value
-	      }
-	    }), children);
-	  }
-	});
-
-	var BFormSelectOptionGroup =
-	/*#__PURE__*/
-	Vue.extend({
-	  name: 'BFormSelectOptionGroup',
-	  mixins: [normalizeSlotMixin, formOptionsMixin],
-	  props: {
-	    label: {
-	      type: String,
-	      required: true
-	    }
-	  },
-	  render: function render(h) {
-	    return h('optgroup', {
-	      attrs: {
-	        label: this.label
-	      }
-	    }, [this.normalizeSlot('first'), this.formOptions.map(function (option, index) {
-	      return h(BFormSelectOption, {
-	        props: {
-	          value: option.value,
-	          disabled: option.disabled
-	        },
-	        domProps: htmlOrText(option.html, option.text),
-	        key: "option_".concat(index, "_opt")
-	      });
-	    }), this.normalizeSlot('default')]);
-	  }
-	});
+	function _defineProperty$B(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	var BFormSelect =
 	/*#__PURE__*/
 	Vue.extend({
 	  name: 'BFormSelect',
-	  mixins: [idMixin, normalizeSlotMixin, formMixin, formSizeMixin, formStateMixin, formCustomMixin, optionsMixin],
+	  mixins: [idMixin, normalizeSlotMixin, formMixin, formSizeMixin, formStateMixin, formCustomMixin, formOptionsMixin],
 	  model: {
 	    prop: 'value',
 	    event: 'input'
@@ -19945,6 +18817,17 @@
 	  render: function render(h) {
 	    var _this = this;
 
+	    var options = this.formOptions.map(function (option, index) {
+	      return h('option', {
+	        key: "option_".concat(index, "_opt"),
+	        attrs: {
+	          disabled: Boolean(option.disabled)
+	        },
+	        domProps: _objectSpread$t({}, htmlOrText(option.html, option.text), {
+	          value: option.value
+	        })
+	      });
+	    });
 	    return h('select', {
 	      ref: 'input',
 	      class: this.inputClass,
@@ -19980,24 +18863,7 @@
 	          });
 	        }
 	      }
-	    }, [this.normalizeSlot('first'), this.formOptions.map(function (option, index) {
-	      var key = "option_".concat(index, "_opt");
-	      var options = option.options;
-	      return isArray(options) ? h(BFormSelectOptionGroup, {
-	        props: {
-	          label: option.label,
-	          options: options
-	        },
-	        key: key
-	      }) : h(BFormSelectOption, {
-	        props: {
-	          value: option.value,
-	          disabled: option.disabled
-	        },
-	        domProps: htmlOrText(option.html, option.text),
-	        key: key
-	      });
-	    }), this.normalizeSlot('default')]);
+	    }, [this.normalizeSlot('first'), options, this.normalizeSlot('default')]);
 	  }
 	});
 
@@ -20006,11 +18872,7 @@
 	pluginFactory({
 	  components: {
 	    BFormSelect: BFormSelect,
-	    BFormSelectOption: BFormSelectOption,
-	    BFormSelectOptionGroup: BFormSelectOptionGroup,
-	    BSelect: BFormSelect,
-	    BSelectOption: BFormSelectOption,
-	    BSelectOptionGroup: BFormSelectOptionGroup
+	    BSelect: BFormSelect
 	  }
 	});
 
@@ -20023,7 +18885,7 @@
 	  }
 	});
 
-	var props$y = {
+	var props$x = {
 	  tag: {
 	    type: String,
 	    default: 'div'
@@ -20035,7 +18897,7 @@
 	Vue.extend({
 	  name: 'BInputGroupText',
 	  functional: true,
-	  props: props$y,
+	  props: props$x,
 	  render: function render(h, _ref) {
 	    var props = _ref.props,
 	        data = _ref.data,
@@ -20050,7 +18912,7 @@
 
 	function _objectSpread$u(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$u(Object(source), true).forEach(function (key) { _defineProperty$C(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$u(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$u(source, true).forEach(function (key) { _defineProperty$C(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$u(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$C(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var commonProps = {
@@ -20099,7 +18961,7 @@
 
 	function _objectSpread$v(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$v(Object(source), true).forEach(function (key) { _defineProperty$D(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$v(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$v(source, true).forEach(function (key) { _defineProperty$D(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$v(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$D(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -20126,7 +18988,7 @@
 
 	function _objectSpread$w(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$w(Object(source), true).forEach(function (key) { _defineProperty$E(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$w(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$w(source, true).forEach(function (key) { _defineProperty$E(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$w(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 	function _defineProperty$E(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -20151,22 +19013,22 @@
 
 	function _defineProperty$F(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	function _toConsumableArray$5(arr) { return _arrayWithoutHoles$5(arr) || _iterableToArray$5(arr) || _nonIterableSpread$5(); }
+	function _toConsumableArray$4(arr) { return _arrayWithoutHoles$4(arr) || _iterableToArray$4(arr) || _nonIterableSpread$4(); }
 
-	function _nonIterableSpread$5() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+	function _nonIterableSpread$4() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
 
-	function _iterableToArray$5(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); } }
+	function _iterableToArray$4(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); } }
 
-	function _arrayWithoutHoles$5(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-	var NAME$j = 'BInputGroup';
-	var props$z = {
+	function _arrayWithoutHoles$4(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+	var NAME$f = 'BInputGroup';
+	var props$y = {
 	  id: {
 	    type: String
 	  },
 	  size: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$j, 'size');
+	      return getComponentConfig(NAME$f, 'size');
 	    }
 	  },
 	  prepend: {
@@ -20190,9 +19052,9 @@
 	var BInputGroup =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$j,
+	  name: NAME$f,
 	  functional: true,
-	  props: props$z,
+	  props: props$y,
 	  render: function render(h, _ref) {
 	    var props = _ref.props,
 	        data = _ref.data,
@@ -20214,7 +19076,7 @@
 
 
 	    if (hasNormalizedSlot('default', $scopedSlots, $slots)) {
-	      childNodes.push.apply(childNodes, _toConsumableArray$5(normalizeSlot('default', {}, $scopedSlots, $slots)));
+	      childNodes.push.apply(childNodes, _toConsumableArray$4(normalizeSlot('default', {}, $scopedSlots, $slots)));
 	    } else {
 	      childNodes.push(h());
 	    } // Append prop
@@ -20232,7 +19094,7 @@
 
 	    return h(props.tag, a(data, {
 	      staticClass: 'input-group',
-	      class: _defineProperty$F({}, "input-group-".concat(props.size), props.size),
+	      class: _defineProperty$F({}, "input-group-".concat(props.size), Boolean(props.size)),
 	      attrs: {
 	        id: props.id || null,
 	        role: 'group'
@@ -20253,15 +19115,13 @@
 	  }
 	});
 
-	function _defineProperty$G(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var props$A = {
+	var props$z = {
 	  tag: {
 	    type: String,
 	    default: 'div'
 	  },
 	  fluid: {
-	    // String breakpoint name new in Bootstrap v4.4.x
-	    type: [Boolean, String],
+	    type: Boolean,
 	    default: false
 	  }
 	}; // @vue/component
@@ -20271,29 +19131,29 @@
 	Vue.extend({
 	  name: 'BContainer',
 	  functional: true,
-	  props: props$A,
+	  props: props$z,
 	  render: function render(h, _ref) {
 	    var props = _ref.props,
 	        data = _ref.data,
 	        children = _ref.children;
 	    return h(props.tag, a(data, {
-	      class: _defineProperty$G({
-	        container: !(props.fluid || props.fluid === ''),
-	        'container-fluid': props.fluid === true || props.fluid === ''
-	      }, "container-".concat(props.fluid), props.fluid && props.fluid !== true)
+	      class: {
+	        container: !props.fluid,
+	        'container-fluid': props.fluid
+	      }
 	    }), children);
 	  }
 	});
 
-	function _defineProperty$H(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var NAME$k = 'BJumbotron';
-	var props$B = {
+	function _defineProperty$G(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	var NAME$g = 'BJumbotron';
+	var props$A = {
 	  fluid: {
 	    type: Boolean,
 	    default: false
 	  },
 	  containerFluid: {
-	    type: [Boolean, String],
+	    type: Boolean,
 	    default: false
 	  },
 	  header: {
@@ -20331,19 +19191,19 @@
 	  bgVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$k, 'bgVariant');
+	      return getComponentConfig(NAME$g, 'bgVariant');
 	    }
 	  },
 	  borderVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$k, 'borderVariant');
+	      return getComponentConfig(NAME$g, 'borderVariant');
 	    }
 	  },
 	  textVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$k, 'textVariant');
+	      return getComponentConfig(NAME$g, 'textVariant');
 	    }
 	  }
 	}; // @vue/component
@@ -20351,9 +19211,9 @@
 	var BJumbotron =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$k,
+	  name: NAME$g,
 	  functional: true,
-	  props: props$B,
+	  props: props$A,
 	  render: function render(h, _ref) {
 	    var _class2;
 
@@ -20369,7 +19229,7 @@
 
 	    if (props.header || hasNormalizedSlot('header', $scopedSlots, $slots) || props.headerHtml) {
 	      childNodes.push(h(props.headerTag, {
-	        class: _defineProperty$H({}, "display-".concat(props.headerLevel), props.headerLevel)
+	        class: _defineProperty$G({}, "display-".concat(props.headerLevel), Boolean(props.headerLevel))
 	      }, normalizeSlot('header', {}, $scopedSlots, $slots) || props.headerHtml || stripTags(props.header)));
 	    } // Lead
 
@@ -20400,7 +19260,7 @@
 	      staticClass: 'jumbotron',
 	      class: (_class2 = {
 	        'jumbotron-fluid': props.fluid
-	      }, _defineProperty$H(_class2, "text-".concat(props.textVariant), props.textVariant), _defineProperty$H(_class2, "bg-".concat(props.bgVariant), props.bgVariant), _defineProperty$H(_class2, "border-".concat(props.borderVariant), props.borderVariant), _defineProperty$H(_class2, "border", props.borderVariant), _class2)
+	      }, _defineProperty$G(_class2, "text-".concat(props.textVariant), Boolean(props.textVariant)), _defineProperty$G(_class2, "bg-".concat(props.bgVariant), Boolean(props.bgVariant)), _defineProperty$G(_class2, "border-".concat(props.borderVariant), Boolean(props.borderVariant)), _defineProperty$G(_class2, "border", Boolean(props.borderVariant)), _class2)
 	    }), childNodes);
 	  }
 	});
@@ -20413,122 +19273,60 @@
 	  }
 	});
 
-	function ownKeys$x(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
-
-	function _objectSpread$x(target) {
-	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$x(Object(source), true).forEach(function (key) { _defineProperty$I(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$x(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-	function _defineProperty$I(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var COMMON_ALIGNMENT = ['start', 'end', 'center']; // Generates a prop object with a type of `[String, Number]`
-
-	var strNum$1 = function strNum() {
-	  return {
-	    type: [String, Number],
-	    default: null
-	  };
-	}; // Compute a `row-cols-{breakpoint}-{cols}` class name
-	// Memoized function for better performance on generating class names
-
-
-	var computeRowColsClass = memoize(function (breakpoint, cols) {
-	  cols = trim$1(toString$3(cols));
-	  return cols ? lowerCase(['row-cols', breakpoint, cols].filter(identity).join('-')) : null;
-	}); // Get the breakpoint name from the `rowCols` prop name
-	// Memoized function for better performance on extracting breakpoint names
-
-	var computeRowColsBreakpoint = memoize(function (prop) {
-	  return lowerCase(prop.replace('cols', ''));
-	}); // Cached copy of the `row-cols` breakpoint prop names
-	// Will be populated when the props are generated
-
-	var rowColsPropList = []; // Lazy evaled props factory for <b-row> (called only once,
-	// the first time the component is used)
-
-	var generateProps$2 = function generateProps() {
-	  // Grab the breakpoints from the cached config (including the '' (xs) breakpoint)
-	  var breakpoints = getBreakpointsUpCached(); // Supports classes like: `row-cols-2`, `row-cols-md-4`, `row-cols-xl-6`
-
-	  var rowColsProps = breakpoints.reduce(function (props, breakpoint) {
-	    props[suffixPropName(breakpoint, 'cols')] = strNum$1();
-	    return props;
-	  }, create(null)); // Cache the row-cols prop names
-
-	  rowColsPropList = keys$2(rowColsProps); // Return the generated props
-
-	  return _objectSpread$x({
-	    tag: {
-	      type: String,
-	      default: 'div'
-	    },
-	    noGutters: {
-	      type: Boolean,
-	      default: false
-	    },
-	    alignV: {
-	      type: String,
-	      default: null,
-	      validator: function validator(str) {
-	        return arrayIncludes(COMMON_ALIGNMENT.concat(['baseline', 'stretch']), str);
-	      }
-	    },
-	    alignH: {
-	      type: String,
-	      default: null,
-	      validator: function validator(str) {
-	        return arrayIncludes(COMMON_ALIGNMENT.concat(['between', 'around']), str);
-	      }
-	    },
-	    alignContent: {
-	      type: String,
-	      default: null,
-	      validator: function validator(str) {
-	        return arrayIncludes(COMMON_ALIGNMENT.concat(['between', 'around', 'stretch']), str);
-	      }
+	function _defineProperty$H(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	var COMMON_ALIGNMENT = ['start', 'end', 'center'];
+	var props$B = {
+	  tag: {
+	    type: String,
+	    default: 'div'
+	  },
+	  noGutters: {
+	    type: Boolean,
+	    default: false
+	  },
+	  alignV: {
+	    type: String,
+	    default: null,
+	    validator: function validator(str) {
+	      return arrayIncludes(COMMON_ALIGNMENT.concat(['baseline', 'stretch']), str);
 	    }
-	  }, rowColsProps);
-	}; // We do not use `Vue.extend()` here as that would evaluate the props
-	// immediately, which we do not want to happen
-	// @vue/component
+	  },
+	  alignH: {
+	    type: String,
+	    default: null,
+	    validator: function validator(str) {
+	      return arrayIncludes(COMMON_ALIGNMENT.concat(['between', 'around']), str);
+	    }
+	  },
+	  alignContent: {
+	    type: String,
+	    default: null,
+	    validator: function validator(str) {
+	      return arrayIncludes(COMMON_ALIGNMENT.concat(['between', 'around', 'stretch']), str);
+	    }
+	  }
+	}; // @vue/component
 
-
-	var BRow = {
+	var BRow =
+	/*#__PURE__*/
+	Vue.extend({
 	  name: 'BRow',
 	  functional: true,
-
-	  get props() {
-	    // Allow props to be lazy evaled on first access and
-	    // then they become a non-getter afterwards
-	    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Smart_self-overwriting_lazy_getters
-	    delete this.props;
-	    this.props = generateProps$2();
-	    return this.props;
-	  },
-
+	  props: props$B,
 	  render: function render(h, _ref) {
-	    var _classList$push;
+	    var _class;
 
 	    var props = _ref.props,
 	        data = _ref.data,
 	        children = _ref.children;
-	    var classList = []; // Loop through row-cols breakpoint props and generate the classes
-
-	    rowColsPropList.forEach(function (prop) {
-	      var c = computeRowColsClass(computeRowColsBreakpoint(prop), props[prop]); // If a class is returned, push it onto the array
-
-	      if (c) {
-	        classList.push(c);
-	      }
-	    });
-	    classList.push((_classList$push = {
-	      'no-gutters': props.noGutters
-	    }, _defineProperty$I(_classList$push, "align-items-".concat(props.alignV), props.alignV), _defineProperty$I(_classList$push, "justify-content-".concat(props.alignH), props.alignH), _defineProperty$I(_classList$push, "align-content-".concat(props.alignContent), props.alignContent), _classList$push));
 	    return h(props.tag, a(data, {
 	      staticClass: 'row',
-	      class: classList
+	      class: (_class = {
+	        'no-gutters': props.noGutters
+	      }, _defineProperty$H(_class, "align-items-".concat(props.alignV), props.alignV), _defineProperty$H(_class, "justify-content-".concat(props.alignH), props.alignH), _defineProperty$H(_class, "align-content-".concat(props.alignContent), props.alignContent), _class)
 	    }), children);
 	  }
-	};
+	});
 
 	var LayoutPlugin =
 	/*#__PURE__*/
@@ -20549,7 +19347,7 @@
 	  }
 	});
 
-	function _defineProperty$J(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$I(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$C = {
 	  tag: {
 	    type: String,
@@ -20579,7 +19377,7 @@
 	    horizontal = props.flush ? false : horizontal;
 	    var componentData = {
 	      staticClass: 'list-group',
-	      class: _defineProperty$J({
+	      class: _defineProperty$I({
 	        'list-group-flush': props.flush,
 	        'list-group-horizontal': horizontal === true
 	      }, "list-group-horizontal-".concat(horizontal), isString(horizontal))
@@ -20588,19 +19386,19 @@
 	  }
 	});
 
-	function ownKeys$y(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$x(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$y(target) {
+	function _objectSpread$x(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$y(Object(source), true).forEach(function (key) { _defineProperty$K(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$y(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$x(source, true).forEach(function (key) { _defineProperty$J(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$x(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$K(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var NAME$l = 'BListGroupItem';
+	function _defineProperty$J(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	var NAME$h = 'BListGroupItem';
 	var actionTags = ['a', 'router-link', 'button', 'b-link'];
 	var linkProps$2 = propsFactory();
 	delete linkProps$2.href.default;
 	delete linkProps$2.to.default;
-	var props$D = _objectSpread$y({
+	var props$D = _objectSpread$x({
 	  tag: {
 	    type: String,
 	    default: 'div'
@@ -20616,7 +19414,7 @@
 	  variant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$l, 'variant');
+	      return getComponentConfig(NAME$h, 'variant');
 	    }
 	  }
 	}, linkProps$2); // @vue/component
@@ -20624,7 +19422,7 @@
 	var BListGroupItem =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$l,
+	  name: NAME$h,
 	  functional: true,
 	  props: props$D,
 	  render: function render(h, _ref) {
@@ -20656,7 +19454,7 @@
 	      attrs: attrs,
 	      props: itemProps,
 	      staticClass: 'list-group-item',
-	      class: (_class = {}, _defineProperty$K(_class, "list-group-item-".concat(props.variant), props.variant), _defineProperty$K(_class, 'list-group-item-action', isAction), _defineProperty$K(_class, "active", props.active), _defineProperty$K(_class, "disabled", props.disabled), _class)
+	      class: (_class = {}, _defineProperty$J(_class, "list-group-item-".concat(props.variant), Boolean(props.variant)), _defineProperty$J(_class, 'list-group-item-action', isAction), _defineProperty$J(_class, "active", props.active), _defineProperty$J(_class, "disabled", props.disabled), _class)
 	    };
 	    return h(tag, a(data, componentData), children);
 	  }
@@ -20694,7 +19492,7 @@
 	  }
 	});
 
-	function _defineProperty$L(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$K(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$F = {
 	  tag: {
 	    type: String,
@@ -20719,7 +19517,7 @@
 	    var align = props.verticalAlign === 'top' ? 'start' : props.verticalAlign === 'bottom' ? 'end' : props.verticalAlign;
 	    return h(props.tag, a(data, {
 	      staticClass: 'd-flex',
-	      class: _defineProperty$L({}, "align-self-".concat(align), align)
+	      class: _defineProperty$K({}, "align-self-".concat(align), align)
 	    }), children);
 	  }
 	});
@@ -20802,7 +19600,7 @@
 
 	//
 	// Single root node portaling of content, which retains parent/child hierarchy
-	// Unlike Portal-Vue where portaled content is no longer a descendent of its
+	// Unlike Portal-Vue where portaled content is no longer a descendent of it's
 	// intended parent components
 	//
 	// Private components for use by Tooltips, Popovers and Modals
@@ -20835,7 +19633,8 @@
 	    };
 	  },
 	  destroyed: function destroyed() {
-	    removeNode(this.$el);
+	    var el = this.$el;
+	    el && el.parentNode && el.parentNode.removeChild(el);
 	  },
 	  render: function render(h) {
 	    var nodes = isFunction(this.updatedNodes) ? this.updatedNodes({}) : this.updatedNodes;
@@ -20891,13 +19690,13 @@
 	    this.mountTarget();
 	  },
 	  updated: function updated() {
-	    // We need to make sure that all children have completed updating
-	    // before rendering in the target
-	    // `vue-simple-portal` has the this in a `$nextTick()`,
-	    // while `portal-vue` doesn't
-	    // Just trying to see if the `$nextTick()` delay is required or not
-	    // Since all slots in Vue 2.6.x are always functions
-	    this.updateTarget();
+	    var _this = this;
+
+	    // Placed in a nextTick to ensure that children have completed
+	    // updating before rendering in the target
+	    this.$nextTick(function () {
+	      _this.updateTarget();
+	    });
 	  },
 	  beforeDestroy: function beforeDestroy() {
 	    this.unmountTarget();
@@ -20966,7 +19765,7 @@
 	  },
 	  render: function render(h) {
 	    if (this.disabled) {
-	      var nodes = concat(this.normalizeSlot('default')).filter(identity);
+	      var nodes = concat(this.normalizeSlot('default')).filter(Boolean);
 
 	      if (nodes.length > 0 && !nodes[0].text) {
 	        return nodes[0];
@@ -20977,121 +19776,6 @@
 	  }
 	});
 
-	var eventOptions$2 = {
-	  passive: true,
-	  capture: false
-	};
-	var PROP = '$_bv_documentHandlers_'; // @vue/component
-
-	var listenOnDocumentMixin = {
-	  created: function created() {
-	    var _this = this;
-
-	    /* istanbul ignore next */
-	    if (!isBrowser) {
-	      return;
-	    } // Declare non-reactive property
-	    // Object of arrays, keyed by event name,
-	    // where value is an array of handlers
-	    // Prop will be defined on client only
-
-
-	    this[PROP] = {}; // Set up our beforeDestroy handler (client only)
-
-	    this.$once('hook:beforeDestroy', function () {
-	      var items = _this[PROP] || {}; // Immediately delete this[PROP] to prevent the
-	      // listenOn/Off methods from running (which may occur
-	      // due to requestAnimationFrame/transition delays)
-
-	      delete _this[PROP]; // Remove all registered event handlers
-
-	      keys$2(items).forEach(function (evtName) {
-	        var handlers = items[evtName] || [];
-	        handlers.forEach(function (handler) {
-	          return eventOff(document, evtName, handler, eventOptions$2);
-	        });
-	      });
-	    });
-	  },
-	  methods: {
-	    listenDocument: function listenDocument(on, evtName, handler) {
-	      on ? this.listenOnDocument(evtName, handler) : this.listenOffDocument(evtName, handler);
-	    },
-	    listenOnDocument: function listenOnDocument(evtName, handler) {
-	      if (this[PROP] && isString(evtName) && isFunction(handler)) {
-	        this[PROP][evtName] = this[PROP][evtName] || [];
-
-	        if (!arrayIncludes(this[PROP][evtName], handler)) {
-	          this[PROP][evtName].push(handler);
-	          eventOn(document, evtName, handler, eventOptions$2);
-	        }
-	      }
-	    },
-	    listenOffDocument: function listenOffDocument(evtName, handler) {
-	      if (this[PROP] && isString(evtName) && isFunction(handler)) {
-	        eventOff(document, evtName, handler, eventOptions$2);
-	        this[PROP][evtName] = (this[PROP][evtName] || []).filter(function (h) {
-	          return h !== handler;
-	        });
-	      }
-	    }
-	  }
-	};
-
-	var eventOptions$3 = {
-	  passive: true,
-	  capture: false
-	};
-	var PROP$1 = '$_bv_windowHandlers_'; // @vue/component
-
-	var listenOnWindowMixin = {
-	  beforeCreate: function beforeCreate() {
-	    // Declare non-reactive property
-	    // Object of arrays, keyed by event name,
-	    // where value is an array of handlers
-	    this[PROP$1] = {};
-	  },
-	  beforeDestroy: function beforeDestroy() {
-	    if (isBrowser) {
-	      var items = this[PROP$1]; // Immediately delete this[PROP] to prevent the
-	      // listenOn/Off methods from running (which may occur
-	      // due to requestAnimationFrame delays)
-
-	      delete this[PROP$1]; // Remove all registered event handlers
-
-	      keys$2(items).forEach(function (evtName) {
-	        var handlers = items[evtName] || [];
-	        handlers.forEach(function (handler) {
-	          return eventOff(window, evtName, handler, eventOptions$3);
-	        });
-	      });
-	    }
-	  },
-	  methods: {
-	    listenWindow: function listenWindow(on, evtName, handler) {
-	      on ? this.listenOnWindow(evtName, handler) : this.listenOffWindow(evtName, handler);
-	    },
-	    listenOnWindow: function listenOnWindow(evtName, handler) {
-	      if (isBrowser && this[PROP$1] && isString(evtName) && isFunction(handler)) {
-	        this[PROP$1][evtName] = this[PROP$1][evtName] || [];
-
-	        if (!arrayIncludes(this[PROP$1][evtName], handler)) {
-	          this[PROP$1][evtName].push(handler);
-	          eventOn(window, evtName, handler, eventOptions$3);
-	        }
-	      }
-	    },
-	    listenOffWindow: function listenOffWindow(evtName, handler) {
-	      if (isBrowser && this[PROP$1] && isString(evtName) && isFunction(handler)) {
-	        eventOff(window, evtName, handler, eventOptions$3);
-	        this[PROP$1][evtName] = (this[PROP$1][evtName] || []).filter(function (h) {
-	          return h !== handler;
-	        });
-	      }
-	    }
-	  }
-	};
-
 	// This method returns a component's scoped style attribute name: `data-v-xxxxxxx`
 	// The `_scopeId` options property is added by vue-loader when using scoped styles
 	// and will be `undefined` if no scoped styles are in use
@@ -21100,12 +19784,12 @@
 	  return vm ? vm.$options._scopeId || defaultValue : defaultValue;
 	};
 
-	function _defineProperty$M(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$L(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var scopedStyleAttrsMixin = {
 	  computed: {
 	    scopedStyleAttrs: function scopedStyleAttrs() {
 	      var scopeId = getScopeId(this.$parent);
-	      return scopeId ? _defineProperty$M({}, scopeId, '') : {};
+	      return scopeId ? _defineProperty$L({}, scopeId, '') : {};
 	    }
 	  }
 	};
@@ -21204,7 +19888,7 @@
 	        div.className = 'modal-backdrop d-none';
 	        div.style.display = 'none';
 	        document.body.appendChild(div);
-	        this.baseZIndex = toInteger(getCS(div).zIndex || DEFAULT_ZINDEX);
+	        this.baseZIndex = parseInt(getCS(div).zIndex || DEFAULT_ZINDEX, 10);
 	        document.body.removeChild(div);
 	      }
 
@@ -21268,7 +19952,7 @@
 	          var actualPadding = el.style.paddingRight;
 	          var calculatedPadding = getCS(el).paddingRight || 0;
 	          setAttr(el, 'data-padding-right', actualPadding);
-	          el.style.paddingRight = "".concat(toFloat(calculatedPadding) + scrollbarWidth, "px");
+	          el.style.paddingRight = "".concat(parseFloat(calculatedPadding) + scrollbarWidth, "px");
 
 	          body._paddingChangedForModal.push(el);
 	        }); // Adjust sticky content margin
@@ -21281,7 +19965,7 @@
 	          var actualMargin = el.style.marginRight;
 	          var calculatedMargin = getCS(el).marginRight || 0;
 	          setAttr(el, 'data-margin-right', actualMargin);
-	          el.style.marginRight = "".concat(toFloat(calculatedMargin) - scrollbarWidth, "px");
+	          el.style.marginRight = "".concat(parseFloat(calculatedMargin) - scrollbarWidth, "px");
 
 	          body._marginChangedForModal.push(el);
 	        }); // Adjust <b-navbar-toggler> margin
@@ -21294,7 +19978,7 @@
 	          var actualMargin = el.style.marginRight;
 	          var calculatedMargin = getCS(el).marginRight || 0;
 	          setAttr(el, 'data-margin-right', actualMargin);
-	          el.style.marginRight = "".concat(toFloat(calculatedMargin) + scrollbarWidth, "px");
+	          el.style.marginRight = "".concat(parseFloat(calculatedMargin) + scrollbarWidth, "px");
 
 	          body._marginChangedForModal.push(el);
 	        }); // Adjust body padding
@@ -21302,7 +19986,7 @@
 	        var actualPadding = body.style.paddingRight;
 	        var calculatedPadding = getCS(body).paddingRight;
 	        setAttr(body, 'data-padding-right', actualPadding);
-	        body.style.paddingRight = "".concat(toFloat(calculatedPadding) + scrollbarWidth, "px");
+	        body.style.paddingRight = "".concat(parseFloat(calculatedPadding) + scrollbarWidth, "px");
 	      }
 	    },
 	    resetScrollbar: function resetScrollbar() {
@@ -21343,15 +20027,15 @@
 
 	var modalManager = new ModalManager();
 
-	function _typeof$3(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$3 = function _typeof(obj) { return typeof obj; }; } else { _typeof$3 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$3(obj); }
+	function _typeof$3(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$3 = function _typeof(obj) { return typeof obj; }; } else { _typeof$3 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$3(obj); }
 
-	function ownKeys$z(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$y(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$z(target) {
+	function _objectSpread$y(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$z(Object(source), true).forEach(function (key) { _defineProperty$N(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$z(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$y(source, true).forEach(function (key) { _defineProperty$M(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$y(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$N(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$M(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	function _classCallCheck$4(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -21396,7 +20080,7 @@
 	  _createClass$3(BvModalEvent, null, [{
 	    key: "Defaults",
 	    get: function get() {
-	      return _objectSpread$z({}, _get(_getPrototypeOf$1(BvModalEvent), "Defaults", this), {
+	      return _objectSpread$y({}, _get(_getPrototypeOf$1(BvModalEvent), "Defaults", this), {
 	        trigger: null
 	      });
 	    }
@@ -21405,15 +20089,15 @@
 	  return BvModalEvent;
 	}(BvEvent); // Named exports
 
-	function ownKeys$A(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$z(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$A(target) {
+	function _objectSpread$z(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$A(Object(source), true).forEach(function (key) { _defineProperty$O(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$A(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$z(source, true).forEach(function (key) { _defineProperty$N(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$z(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$O(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$N(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	var NAME$m = 'BModal'; // ObserveDom config to detect changes in modal content
+	var NAME$i = 'BModal'; // ObserveDom config to detect changes in modal content
 	// so that we can adjust the modal padding if needed
 
 	var OBSERVER_CONFIG = {
@@ -21451,7 +20135,7 @@
 	  size: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'size');
+	      return getComponentConfig(NAME$i, 'size');
 	    }
 	  },
 	  centered: {
@@ -21486,10 +20170,6 @@
 	    type: Boolean,
 	    default: false
 	  },
-	  ignoreEnforceFocusSelector: {
-	    type: [Array, String],
-	    default: ''
-	  },
 	  title: {
 	    type: String,
 	    default: ''
@@ -21500,7 +20180,7 @@
 	  titleTag: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'titleTag');
+	      return getComponentConfig(NAME$i, 'titleTag');
 	    }
 	  },
 	  titleClass: {
@@ -21518,25 +20198,25 @@
 	  headerBgVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'headerBgVariant');
+	      return getComponentConfig(NAME$i, 'headerBgVariant');
 	    }
 	  },
 	  headerBorderVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'headerBorderVariant');
+	      return getComponentConfig(NAME$i, 'headerBorderVariant');
 	    }
 	  },
 	  headerTextVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'headerTextVariant');
+	      return getComponentConfig(NAME$i, 'headerTextVariant');
 	    }
 	  },
 	  headerCloseVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'headerCloseVariant');
+	      return getComponentConfig(NAME$i, 'headerCloseVariant');
 	    }
 	  },
 	  headerClass: {
@@ -21546,13 +20226,13 @@
 	  bodyBgVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'bodyBgVariant');
+	      return getComponentConfig(NAME$i, 'bodyBgVariant');
 	    }
 	  },
 	  bodyTextVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'bodyTextVariant');
+	      return getComponentConfig(NAME$i, 'bodyTextVariant');
 	    }
 	  },
 	  modalClass: {
@@ -21574,19 +20254,19 @@
 	  footerBgVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'footerBgVariant');
+	      return getComponentConfig(NAME$i, 'footerBgVariant');
 	    }
 	  },
 	  footerBorderVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'footerBorderVariant');
+	      return getComponentConfig(NAME$i, 'footerBorderVariant');
 	    }
 	  },
 	  footerTextVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'footerTextVariant');
+	      return getComponentConfig(NAME$i, 'footerTextVariant');
 	    }
 	  },
 	  footerClass: {
@@ -21630,22 +20310,16 @@
 	    type: [HTMLElement$1, String, Object],
 	    default: null
 	  },
-	  headerCloseContent: {
-	    type: String,
-	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'headerCloseContent');
-	    }
-	  },
 	  headerCloseLabel: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'headerCloseLabel');
+	      return getComponentConfig(NAME$i, 'headerCloseLabel');
 	    }
 	  },
 	  cancelTitle: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'cancelTitle');
+	      return getComponentConfig(NAME$i, 'cancelTitle');
 	    }
 	  },
 	  cancelTitleHtml: {
@@ -21654,7 +20328,7 @@
 	  okTitle: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'okTitle');
+	      return getComponentConfig(NAME$i, 'okTitle');
 	    }
 	  },
 	  okTitleHtml: {
@@ -21663,13 +20337,13 @@
 	  cancelVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'cancelVariant');
+	      return getComponentConfig(NAME$i, 'cancelVariant');
 	    }
 	  },
 	  okVariant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$m, 'okVariant');
+	      return getComponentConfig(NAME$i, 'okVariant');
 	    }
 	  },
 	  lazy: {
@@ -21697,8 +20371,8 @@
 	var BModal =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$m,
-	  mixins: [idMixin, listenOnDocumentMixin, listenOnRootMixin, listenOnWindowMixin, normalizeSlotMixin, scopedStyleAttrsMixin],
+	  name: NAME$i,
+	  mixins: [idMixin, listenOnRootMixin, normalizeSlotMixin, scopedStyleAttrsMixin],
 	  inheritAttrs: false,
 	  model: {
 	    prop: 'visible',
@@ -21752,12 +20426,12 @@
 	    dialogClasses: function dialogClasses() {
 	      var _ref;
 
-	      return [(_ref = {}, _defineProperty$O(_ref, "modal-".concat(this.size), this.size), _defineProperty$O(_ref, 'modal-dialog-centered', this.centered), _defineProperty$O(_ref, 'modal-dialog-scrollable', this.scrollable), _ref), this.dialogClass];
+	      return [(_ref = {}, _defineProperty$N(_ref, "modal-".concat(this.size), Boolean(this.size)), _defineProperty$N(_ref, 'modal-dialog-centered', this.centered), _defineProperty$N(_ref, 'modal-dialog-scrollable', this.scrollable), _ref), this.dialogClass];
 	    },
 	    headerClasses: function headerClasses() {
 	      var _ref2;
 
-	      return [(_ref2 = {}, _defineProperty$O(_ref2, "bg-".concat(this.headerBgVariant), this.headerBgVariant), _defineProperty$O(_ref2, "text-".concat(this.headerTextVariant), this.headerTextVariant), _defineProperty$O(_ref2, "border-".concat(this.headerBorderVariant), this.headerBorderVariant), _ref2), this.headerClass];
+	      return [(_ref2 = {}, _defineProperty$N(_ref2, "bg-".concat(this.headerBgVariant), Boolean(this.headerBgVariant)), _defineProperty$N(_ref2, "text-".concat(this.headerTextVariant), Boolean(this.headerTextVariant)), _defineProperty$N(_ref2, "border-".concat(this.headerBorderVariant), Boolean(this.headerBorderVariant)), _ref2), this.headerClass];
 	    },
 	    titleClasses: function titleClasses() {
 	      return [{
@@ -21767,12 +20441,12 @@
 	    bodyClasses: function bodyClasses() {
 	      var _ref3;
 
-	      return [(_ref3 = {}, _defineProperty$O(_ref3, "bg-".concat(this.bodyBgVariant), this.bodyBgVariant), _defineProperty$O(_ref3, "text-".concat(this.bodyTextVariant), this.bodyTextVariant), _ref3), this.bodyClass];
+	      return [(_ref3 = {}, _defineProperty$N(_ref3, "bg-".concat(this.bodyBgVariant), Boolean(this.bodyBgVariant)), _defineProperty$N(_ref3, "text-".concat(this.bodyTextVariant), Boolean(this.bodyTextVariant)), _ref3), this.bodyClass];
 	    },
 	    footerClasses: function footerClasses() {
 	      var _ref4;
 
-	      return [(_ref4 = {}, _defineProperty$O(_ref4, "bg-".concat(this.footerBgVariant), this.footerBgVariant), _defineProperty$O(_ref4, "text-".concat(this.footerTextVariant), this.footerTextVariant), _defineProperty$O(_ref4, "border-".concat(this.footerBorderVariant), this.footerBorderVariant), _ref4), this.footerClass];
+	      return [(_ref4 = {}, _defineProperty$N(_ref4, "bg-".concat(this.footerBgVariant), Boolean(this.footerBgVariant)), _defineProperty$N(_ref4, "text-".concat(this.footerTextVariant), Boolean(this.footerTextVariant)), _defineProperty$N(_ref4, "border-".concat(this.footerBorderVariant), Boolean(this.footerBorderVariant)), _ref4), this.footerClass];
 	    },
 	    modalOuterStyle: function modalOuterStyle() {
 	      // Styles needed for proper stacking of modals
@@ -21789,10 +20463,6 @@
 	        hide: this.hide,
 	        visible: this.isVisible
 	      };
-	    },
-	    computeIgnoreEnforceFocusSelector: function computeIgnoreEnforceFocusSelector() {
-	      // Normalize to an single selector with selectors separated by `,`
-	      return concat(this.ignoreEnforceFocusSelector).filter(identity).join(',').trim();
 	    }
 	  },
 	  watch: {
@@ -21830,6 +20500,9 @@
 	      this._observer = null;
 	    }
 
+	    this.setEnforceFocus(false);
+	    this.setResizeEvent(false);
+
 	    if (this.isVisible) {
 	      this.isVisible = false;
 	      this.isShow = false;
@@ -21846,7 +20519,7 @@
 	    // Private method to create a BvModalEvent object
 	    buildEvent: function buildEvent(type) {
 	      var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-	      return new BvModalEvent(type, _objectSpread$A({
+	      return new BvModalEvent(type, _objectSpread$z({
 	        // Default options
 	        cancelable: false,
 	        target: this.$refs.modal || this.$el || null,
@@ -22070,7 +20743,7 @@
 	    // Event emitter
 	    emitEvent: function emitEvent(bvModalEvt) {
 	      var type = bvModalEvt.type; // We emit on root first incase a global listener wants to cancel
-	      // the event first before the instance emits its event
+	      // the event first before the instance emits it's event
 
 	      this.emitOnRoot("bv::modal::".concat(type), bvModalEvt, bvModalEvt.componentId);
 	      this.$emit(type, bvModalEvt);
@@ -22133,44 +20806,43 @@
 	      var content = this.$refs.content;
 	      var target = evt.target;
 
-	      if (this.noEnforceFocus || !this.isTop || !this.isVisible || !content || document === target || contains(content, target) || this.computeIgnoreEnforceFocusSelector && closest(this.computeIgnoreEnforceFocusSelector, target, true)) {
-	        return;
+	      if (!this.noEnforceFocus && this.isTop && this.isVisible && content && document !== target && !contains(content, target)) {
+	        var tabables = this.getTabables();
+
+	        if (this.$refs.bottomTrap && target === this.$refs.bottomTrap) {
+	          // If user pressed TAB out of modal into our bottom trab trap element
+	          // Find the first tabable element in the modal content and focus it
+	          if (attemptFocus(tabables[0])) {
+	            // Focus was successful
+	            return;
+	          }
+	        } else if (this.$refs.topTrap && target === this.$refs.topTrap) {
+	          // If user pressed CTRL-TAB out of modal and into our top tab trap element
+	          // Find the last tabable element in the modal content and focus it
+	          if (attemptFocus(tabables[tabables.length - 1])) {
+	            // Focus was successful
+	            return;
+	          }
+	        } // Otherwise focus the modal content container
+
+
+	        content.focus({
+	          preventScroll: true
+	        });
 	      }
-
-	      var tabables = this.getTabables();
-	      var _this$$refs = this.$refs,
-	          bottomTrap = _this$$refs.bottomTrap,
-	          topTrap = _this$$refs.topTrap;
-
-	      if (bottomTrap && target === bottomTrap) {
-	        // If user pressed TAB out of modal into our bottom trab trap element
-	        // Find the first tabable element in the modal content and focus it
-	        if (attemptFocus(tabables[0])) {
-	          // Focus was successful
-	          return;
-	        }
-	      } else if (topTrap && target === topTrap) {
-	        // If user pressed CTRL-TAB out of modal and into our top tab trap element
-	        // Find the last tabable element in the modal content and focus it
-	        if (attemptFocus(tabables[tabables.length - 1])) {
-	          // Focus was successful
-	          return;
-	        }
-	      } // Otherwise focus the modal content container
-
-
-	      content.focus({
-	        preventScroll: true
-	      });
 	    },
 	    // Turn on/off focusin listener
 	    setEnforceFocus: function setEnforceFocus(on) {
-	      this.listenDocument(on, 'focusin', this.focusHandler);
+	      var method = on ? eventOn : eventOff;
+	      method(document, 'focusin', this.focusHandler, EVT_OPTIONS);
 	    },
 	    // Resize listener
 	    setResizeEvent: function setResizeEvent(on) {
-	      this.listenWindow(on, 'resize', this.checkModalOverflow);
-	      this.listenWindow(on, 'orientationchange', this.checkModalOverflow);
+	      var method = on ? eventOn : eventOff; // These events should probably also check if
+	      // body is overflowing
+
+	      method(window, 'resize', this.checkModalOverflow, EVT_OPTIONS);
+	      method(window, 'orientationchange', this.checkModalOverflow, EVT_OPTIONS);
 	    },
 	    // Root listener handlers
 	    showHandler: function showHandler(id, triggerEl) {
@@ -22264,7 +20936,6 @@
 	            closeButton = h(BButtonClose, {
 	              ref: 'close-button',
 	              props: {
-	                content: this.headerCloseContent,
 	                disabled: this.isTransitioning,
 	                ariaLabel: this.headerCloseLabel,
 	                textVariant: this.headerCloseVariant || this.headerTextVariant
@@ -22476,7 +21147,7 @@
 	      return h('div', {
 	        key: "modal-outer-".concat(this._uid),
 	        style: this.modalOuterStyle,
-	        attrs: _objectSpread$A({}, scopedStyleAttrs, {}, this.$attrs, {
+	        attrs: _objectSpread$z({}, scopedStyleAttrs, {}, this.$attrs, {
 	          id: this.safeId('__BV_modal_outer_')
 	        })
 	      }, [modal, backdrop]);
@@ -22493,7 +21164,7 @@
 
 	var EVENT_SHOW = 'bv::show::modal'; // Prop name we use to store info on root element
 
-	var PROPERTY = '__bv_modal_directive__';
+	var HANDLER = '__bv_modal_directive__';
 	var EVENT_OPTS = {
 	  passive: true
 	};
@@ -22547,11 +21218,7 @@
 	      }
 	    };
 
-	    el[PROPERTY] = {
-	      handler: handler,
-	      target: target,
-	      trigger: trigger
-	    }; // If element is not a button, we add `role="button"` for accessibility
+	    el[HANDLER] = handler; // If element is not a button, we add `role="button"` for accessibility
 
 	    setRole(trigger); // Listen for click events
 
@@ -22566,34 +21233,21 @@
 	};
 
 	var unbind$1 = function unbind(el) {
-	  var oldProp = el[PROPERTY] || {};
-	  var trigger = oldProp.trigger;
-	  var handler = oldProp.handler;
+	  var trigger = getTriggerElement(el);
+	  var handler = el ? el[HANDLER] : null;
 
 	  if (trigger && handler) {
 	    eventOff(trigger, 'click', handler, EVENT_OPTS);
 	    eventOff(trigger, 'keydown', handler, EVENT_OPTS);
-	    eventOff(el, 'click', handler, EVENT_OPTS);
-	    eventOff(el, 'keydown', handler, EVENT_OPTS);
 	  }
 
-	  delete el[PROPERTY];
+	  delete el[HANDLER];
 	};
 
 	var componentUpdated$1 = function componentUpdated(el, binding, vnode) {
-	  var oldProp = el[PROPERTY] || {};
-	  var target = getTarget(binding);
-	  var trigger = getTriggerElement(el);
-
-	  if (target !== oldProp.target || trigger !== oldProp.trigger) {
-	    // We bind and rebind if the target or trigger changes
-	    unbind$1(el);
-	    bind$1(el, binding, vnode);
-	  } // If trigger element is not a button, ensure `role="button"`
-	  // is still set for accessibility
-
-
-	  setRole(trigger);
+	  // We bind and rebind just in case target changes
+	  unbind$1(el);
+	  bind$1(el, binding, vnode);
 	};
 
 	var updated = function updated() {};
@@ -22615,21 +21269,21 @@
 
 	function _createClass$4(Constructor, protoProps, staticProps) { if (protoProps) { _defineProperties$4(Constructor.prototype, protoProps); } if (staticProps) { _defineProperties$4(Constructor, staticProps); } return Constructor; }
 
-	function ownKeys$B(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$A(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$B(target) {
+	function _objectSpread$A(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$B(Object(source), true).forEach(function (key) { _defineProperty$P(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$B(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$A(source, true).forEach(function (key) { _defineProperty$O(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$A(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$P(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$O(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	function _toConsumableArray$6(arr) { return _arrayWithoutHoles$6(arr) || _iterableToArray$6(arr) || _nonIterableSpread$6(); }
+	function _toConsumableArray$5(arr) { return _arrayWithoutHoles$5(arr) || _iterableToArray$5(arr) || _nonIterableSpread$5(); }
 
-	function _nonIterableSpread$6() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+	function _nonIterableSpread$5() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
 
-	function _iterableToArray$6(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); } }
+	function _iterableToArray$5(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); } }
 
-	function _arrayWithoutHoles$6(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+	function _arrayWithoutHoles$5(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 	var PROP_NAME$2 = '$bvModal';
 	var PROP_NAME_PRIV = '_bv__modal'; // Base modal props that are allowed
@@ -22637,7 +21291,7 @@
 	// Prop ID is allowed, but really only should be used for testing
 	// We need to add it in explicitly as it comes from the `idMixin`
 
-	var BASE_PROPS = ['id'].concat(_toConsumableArray$6(keys$2(omit(props$H, ['busy', 'lazy', 'noStacking', "static", 'visible'])))); // Fallback event resolver (returns undefined)
+	var BASE_PROPS = ['id'].concat(_toConsumableArray$5(keys$2(omit(props$H, ['busy', 'lazy', 'noStacking', "static", 'visible'])))); // Fallback event resolver (returns undefined)
 
 	var defaultResolver = function defaultResolver(bvModalEvt) {}; // Map prop names to modal slot names
 
@@ -22724,7 +21378,7 @@
 	      // And it helps to ensure `BMsgBox` is destroyed when parent is destroyed
 	      parent: $parent,
 	      // Preset the prop values
-	      propsData: _objectSpread$B({}, filterOptions(getComponentConfig('BModal') || {}), {
+	      propsData: _objectSpread$A({}, filterOptions(getComponentConfig('BModal') || {}), {
 	        // Defaults that user can override
 	        hideHeaderClose: true,
 	        hideHeader: !(props.title || props.titleHtml)
@@ -22782,7 +21436,7 @@
 	      return;
 	    }
 
-	    return asyncMsgBox($parent, _objectSpread$B({}, filterOptions(options), {
+	    return asyncMsgBox($parent, _objectSpread$A({}, filterOptions(options), {
 	      msgBoxContent: content
 	    }), resolver);
 	  }; // BvModal instance class
@@ -22849,7 +21503,7 @@
 	        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
 	        // Pick the modal props we support from options
-	        var props = _objectSpread$B({}, options, {
+	        var props = _objectSpread$A({}, options, {
 	          // Add in overrides and our content prop
 	          okOnly: true,
 	          okDisabled: false,
@@ -22870,7 +21524,7 @@
 	        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
 	        // Set the modal props we support from options
-	        var props = _objectSpread$B({}, options, {
+	        var props = _objectSpread$A({}, options, {
 	          // Add in overrides and our content prop
 	          okOnly: false,
 	          okDisabled: false,
@@ -22904,7 +21558,7 @@
 	      get: function get() {
 	        /* istanbul ignore next */
 	        if (!this || !this[PROP_NAME_PRIV]) {
-	          warn("\"".concat(PROP_NAME$2, "\" must be accessed from a Vue instance \"this\" context."), 'BModal');
+	          warn("'".concat(PROP_NAME$2, "' must be accessed from a Vue instance 'this' context"));
 	        }
 
 	        return this[PROP_NAME_PRIV];
@@ -22936,7 +21590,7 @@
 	  }
 	});
 
-	function _defineProperty$Q(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$P(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	var props$I = {
 	  tag: {
@@ -23007,18 +21661,18 @@
 	        'flex-column': props.vertical,
 	        'nav-fill': !props.vertical && props.fill,
 	        'nav-justified': !props.vertical && props.justified
-	      }, _defineProperty$Q(_class, computeJustifyContent(props.align), !props.vertical && props.align), _defineProperty$Q(_class, "small", props.small), _class)
+	      }, _defineProperty$P(_class, computeJustifyContent(props.align), !props.vertical && props.align), _defineProperty$P(_class, "small", props.small), _class)
 	    }), children);
 	  }
 	});
 
-	function ownKeys$C(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$B(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$C(target) {
+	function _objectSpread$B(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$C(Object(source), true).forEach(function (key) { _defineProperty$R(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$C(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$B(source, true).forEach(function (key) { _defineProperty$Q(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$B(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$R(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$Q(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$J = propsFactory(); // @vue/component
 
 	var BNavItem =
@@ -23026,7 +21680,7 @@
 	Vue.extend({
 	  name: 'BNavItem',
 	  functional: true,
-	  props: _objectSpread$C({}, props$J, {
+	  props: _objectSpread$B({}, props$J, {
 	    linkAttrs: {
 	      type: Object,
 	      default: function _default() {}
@@ -23073,14 +21727,14 @@
 	  }
 	});
 
-	function ownKeys$D(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$C(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$D(target) {
+	function _objectSpread$C(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$D(Object(source), true).forEach(function (key) { _defineProperty$S(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$D(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$C(source, true).forEach(function (key) { _defineProperty$R(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$C(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$S(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var props$L = _objectSpread$D({}, omit(props$o, ['inline']), {
+	function _defineProperty$R(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	var props$L = _objectSpread$C({}, omit(props$o, ['inline']), {
 	  formClass: {
 	    type: [String, Array, Object],
 	    default: null
@@ -23106,7 +21760,7 @@
 	    data.on = {};
 	    var $form = h(BForm, {
 	      class: props.formClass,
-	      props: _objectSpread$D({}, props, {
+	      props: _objectSpread$C({}, props, {
 	        inline: true
 	      }),
 	      attrs: attrs,
@@ -23163,9 +21817,8 @@
 	        'aria-expanded': this.visible ? 'true' : 'false'
 	      },
 	      on: {
-	        mousedown: this.onMousedown,
 	        click: this.toggle,
-	        keydown: this.toggle // Handle ENTER, SPACE and DOWN
+	        keydown: this.toggle // space, enter, down
 
 	      }
 	    }, [this.$slots['button-content'] || this.$slots.text || h('span', {
@@ -23180,7 +21833,7 @@
 	        'aria-labelledby': this.safeId('_BV_button_')
 	      },
 	      on: {
-	        keydown: this.onKeydown // Handle UP, DOWN and ESC
+	        keydown: this.onKeydown // up, down, esc
 
 	      }
 	    }, !this.lazy || this.visible ? this.normalizeSlot('default', {
@@ -23214,8 +21867,8 @@
 	  }
 	});
 
-	function _defineProperty$T(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var NAME$n = 'BNavbar';
+	function _defineProperty$S(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	var NAME$j = 'BNavbar';
 	var props$N = {
 	  tag: {
 	    type: String,
@@ -23228,7 +21881,7 @@
 	  variant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$n, 'variant');
+	      return getComponentConfig(NAME$j, 'variant');
 	    }
 	  },
 	  toggleable: {
@@ -23251,46 +21904,38 @@
 	var BNavbar =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$n,
-	  mixins: [normalizeSlotMixin],
+	  name: NAME$j,
+	  functional: true,
 	  props: props$N,
-	  provide: function provide() {
-	    return {
-	      bvNavbar: this
-	    };
-	  },
-	  computed: {
-	    breakpointClass: function breakpointClass() {
-	      var breakpoint = null;
-	      var xs = getBreakpoints()[0];
-	      var toggleable = this.toggleable;
+	  render: function render(h, _ref) {
+	    var _class;
 
-	      if (toggleable && isString(toggleable) && toggleable !== xs) {
-	        breakpoint = "navbar-expand-".concat(toggleable);
-	      } else if (toggleable === false) {
-	        breakpoint = 'navbar-expand';
-	      }
+	    var props = _ref.props,
+	        data = _ref.data,
+	        children = _ref.children;
+	    var breakpoint = '';
+	    var xs = getBreakpoints()[0];
 
-	      return breakpoint;
+	    if (props.toggleable && isString(props.toggleable) && props.toggleable !== xs) {
+	      breakpoint = "navbar-expand-".concat(props.toggleable);
+	    } else if (props.toggleable === false) {
+	      breakpoint = 'navbar-expand';
 	    }
-	  },
-	  render: function render(h) {
-	    var _ref;
 
-	    return h(this.tag, {
+	    return h(props.tag, a(data, {
 	      staticClass: 'navbar',
-	      class: [(_ref = {
-	        'd-print': this.print,
-	        'sticky-top': this.sticky
-	      }, _defineProperty$T(_ref, "navbar-".concat(this.type), this.type), _defineProperty$T(_ref, "bg-".concat(this.variant), this.variant), _defineProperty$T(_ref, "fixed-".concat(this.fixed), this.fixed), _ref), this.breakpointClass],
+	      class: (_class = {
+	        'd-print': props.print,
+	        'sticky-top': props.sticky
+	      }, _defineProperty$S(_class, "navbar-".concat(props.type), Boolean(props.type)), _defineProperty$S(_class, "bg-".concat(props.variant), Boolean(props.variant)), _defineProperty$S(_class, "fixed-".concat(props.fixed), Boolean(props.fixed)), _defineProperty$S(_class, "".concat(breakpoint), Boolean(breakpoint)), _class),
 	      attrs: {
-	        role: this.tag === 'nav' ? null : 'navigation'
+	        role: props.tag === 'nav' ? null : 'navigation'
 	      }
-	    }, [this.normalizeSlot('default')]);
+	    }), children);
 	  }
 	});
 
-	function _defineProperty$U(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$T(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	var props$O = pluckProps(['tag', 'fill', 'justified', 'align', 'small'], props$I); // -- Utils --
 
@@ -23318,22 +21963,22 @@
 	      class: (_class = {
 	        'nav-fill': props.fill,
 	        'nav-justified': props.justified
-	      }, _defineProperty$U(_class, computeJustifyContent$1(props.align), props.align), _defineProperty$U(_class, "small", props.small), _class)
+	      }, _defineProperty$T(_class, computeJustifyContent$1(props.align), props.align), _defineProperty$T(_class, "small", props.small), _class)
 	    }), children);
 	  }
 	});
 
-	function ownKeys$E(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$D(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$E(target) {
+	function _objectSpread$D(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$E(Object(source), true).forEach(function (key) { _defineProperty$V(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$E(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$D(source, true).forEach(function (key) { _defineProperty$U(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$D(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$V(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$U(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var linkProps$3 = propsFactory();
 	linkProps$3.href.default = undefined;
 	linkProps$3.to.default = undefined;
-	var props$P = _objectSpread$E({}, linkProps$3, {
+	var props$P = _objectSpread$D({}, linkProps$3, {
 	  tag: {
 	    type: String,
 	    default: 'div'
@@ -23350,7 +21995,7 @@
 	    var props = _ref.props,
 	        data = _ref.data,
 	        children = _ref.children;
-	    var isLink = props.to || props.href;
+	    var isLink = Boolean(props.to || props.href);
 	    var tag = isLink ? BLink : props.tag;
 	    return h(tag, a(data, {
 	      staticClass: 'navbar-brand',
@@ -23359,7 +22004,7 @@
 	  }
 	});
 
-	var NAME$o = 'BNavbarToggle'; // TODO: Switch to using VBToggle directive, will reduce code footprint
+	var NAME$k = 'BNavbarToggle'; // TODO: Switch to using VBToggle directive, will reduce code footprint
 	// Events we emit on $root
 
 	var EVENT_TOGGLE$2 = 'bv::toggle::collapse'; // Events we listen to on $root
@@ -23371,13 +22016,13 @@
 	var BNavbarToggle =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$o,
+	  name: NAME$k,
 	  mixins: [listenOnRootMixin, normalizeSlotMixin],
 	  props: {
 	    label: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$o, 'label');
+	        return getComponentConfig(NAME$k, 'label');
 	      }
 	    },
 	    target: {
@@ -23453,14 +22098,12 @@
 	  });
 	};
 
-	// for `<b-pagination>` and `<b-pagination-nav>`
-	// --- Constants ---
+	// for <b-pagination> and <b-pagination-nav>
 	// Threshold of limit size when we start/stop showing ellipsis
 
 	var ELLIPSIS_THRESHOLD = 3; // Default # of buttons limit
 
-	var DEFAULT_LIMIT = 5; // --- Helper methods ---
-	// Make an array of N to N+X
+	var DEFAULT_LIMIT = 5; // Make an array of N to N+X
 
 	var makePageArray = function makePageArray(startNumber, numberOfPages) {
 	  return range(numberOfPages).map(function (val, i) {
@@ -23473,13 +22116,13 @@
 
 
 	var sanitizeLimit = function sanitizeLimit(val) {
-	  var limit = toInteger(val) || 1;
+	  var limit = parseInt(val, 10) || 1;
 	  return limit < 1 ? DEFAULT_LIMIT : limit;
 	}; // Sanitize the provided current page number (converting to a number)
 
 
 	var sanitizeCurrentPage = function sanitizeCurrentPage(val, numberOfPages) {
-	  var page = toInteger(val) || 1;
+	  var page = parseInt(val, 10) || 1;
 	  return page > numberOfPages ? numberOfPages : page < 1 ? 1 : page;
 	}; // Links don't normally respond to SPACE, so we add that
 	// functionality via this handler
@@ -23495,8 +22138,7 @@
 	    evt.currentTarget.click();
 	    return false;
 	  }
-	}; // --- Props ---
-
+	};
 
 	var props$Q = {
 	  disabled: {
@@ -23509,10 +22151,10 @@
 	    validator: function validator(value)
 	    /* istanbul ignore next */
 	    {
-	      var number = toInteger(value);
+	      var num = parseInt(value, 10);
 
-	      if (!isNull(value) && (isNaN(number) || number < 1)) {
-	        warn('"v-model" value must be a number greater than "0"', 'BPagination');
+	      if (!isNull(value) && (isNaN(num) || num < 1)) {
+	        warn('pagination: v-model value must be a number greater than 0');
 	        return false;
 	      }
 
@@ -23525,10 +22167,10 @@
 	    validator: function validator(value)
 	    /* istanbul ignore next */
 	    {
-	      var number = toInteger(value);
+	      var num = parseInt(value, 10);
 
-	      if (isNaN(number) || number < 1) {
-	        warn('Prop "limit" must be a number greater than "0"', 'BPagination');
+	      if (isNaN(num) || num < 1) {
+	        warn('pagination: prop "limit" must be a number greater than 0');
 	        return false;
 	      }
 
@@ -23560,14 +22202,6 @@
 	    default: "\xAB" // '«'
 
 	  },
-	  firstNumber: {
-	    type: Boolean,
-	    default: false
-	  },
-	  firstClass: {
-	    type: [String, Array, Object],
-	    default: null
-	  },
 	  labelPrevPage: {
 	    type: String,
 	    default: 'Go to previous page'
@@ -23576,10 +22210,6 @@
 	    type: String,
 	    default: "\u2039" // '‹'
 
-	  },
-	  prevClass: {
-	    type: [String, Array, Object],
-	    default: null
 	  },
 	  labelNextPage: {
 	    type: String,
@@ -23590,10 +22220,6 @@
 	    default: "\u203A" // '›'
 
 	  },
-	  nextClass: {
-	    type: [String, Array, Object],
-	    default: null
-	  },
 	  labelLastPage: {
 	    type: String,
 	    default: 'Go to last page'
@@ -23603,21 +22229,9 @@
 	    default: "\xBB" // '»'
 
 	  },
-	  lastNumber: {
-	    type: Boolean,
-	    default: false
-	  },
-	  lastClass: {
-	    type: [String, Array, Object],
-	    default: null
-	  },
 	  labelPage: {
 	    type: [String, Function],
 	    default: 'Go to page'
-	  },
-	  pageClass: {
-	    type: [String, Array, Object],
-	    default: null
 	  },
 	  hideEllipsis: {
 	    type: Boolean,
@@ -23627,10 +22241,6 @@
 	    type: String,
 	    default: "\u2026" // '…'
 
-	  },
-	  ellipsisClass: {
-	    type: [String, Array, Object],
-	    default: null
 	  }
 	}; // @vue/component
 
@@ -23642,7 +22252,7 @@
 	  },
 	  props: props$Q,
 	  data: function data() {
-	    var curr = toInteger(this.value);
+	    var curr = parseInt(this.value, 10);
 	    return {
 	      // -1 signifies no page initially selected
 	      currentPage: curr > 0 ? curr : -1,
@@ -23662,8 +22272,8 @@
 	      } else if (align === 'end' || align === 'right') {
 	        return 'justify-content-end';
 	      } else if (align === 'fill') {
-	        // The page-items will also have 'flex-fill' added
-	        // We add text centering to make the button appearance better in fill mode
+	        // The page-items will also have 'flex-fill' added.
+	        // We ad text centering to make the button appearance better in fill mode.
 	        return 'text-center';
 	      }
 
@@ -23677,80 +22287,50 @@
 	    },
 	    paginationParams: function paginationParams() {
 	      // Determine if we should show the the ellipsis
-	      var limit = this.localLimit;
+	      var limit = this.limit;
 	      var numberOfPages = this.localNumberOfPages;
 	      var currentPage = this.computedCurrentPage;
 	      var hideEllipsis = this.hideEllipsis;
-	      var firstNumber = this.firstNumber;
-	      var lastNumber = this.lastNumber;
 	      var showFirstDots = false;
 	      var showLastDots = false;
 	      var numberOfLinks = limit;
 	      var startNumber = 1;
 
 	      if (numberOfPages <= limit) {
-	        // Special case: Less pages available than the limit of displayed pages
+	        // Special Case: Less pages available than the limit of displayed pages
 	        numberOfLinks = numberOfPages;
 	      } else if (currentPage < limit - 1 && limit > ELLIPSIS_THRESHOLD) {
-	        if (!hideEllipsis || lastNumber) {
+	        // We are near the beginning of the page list
+	        if (!hideEllipsis) {
 	          showLastDots = true;
-	          numberOfLinks = limit - (firstNumber ? 0 : 1);
+	          numberOfLinks = limit - 1;
 	        }
-
-	        numberOfLinks = Math.min(numberOfLinks, limit);
 	      } else if (numberOfPages - currentPage + 2 < limit && limit > ELLIPSIS_THRESHOLD) {
-	        if (!hideEllipsis || firstNumber) {
+	        // We are near the end of the list
+	        if (!hideEllipsis) {
+	          numberOfLinks = limit - 1;
 	          showFirstDots = true;
-	          numberOfLinks = limit - (lastNumber ? 0 : 1);
 	        }
 
 	        startNumber = numberOfPages - numberOfLinks + 1;
 	      } else {
 	        // We are somewhere in the middle of the page list
-	        if (limit > ELLIPSIS_THRESHOLD) {
+	        if (limit > ELLIPSIS_THRESHOLD && !hideEllipsis) {
 	          numberOfLinks = limit - 2;
-	          showFirstDots = !!(!hideEllipsis || firstNumber);
-	          showLastDots = !!(!hideEllipsis || lastNumber);
+	          showFirstDots = showLastDots = true;
 	        }
 
 	        startNumber = currentPage - Math.floor(numberOfLinks / 2);
 	      } // Sanity checks
 
-	      /* istanbul ignore if */
-
 
 	      if (startNumber < 1) {
+	        /* istanbul ignore next */
 	        startNumber = 1;
-	        showFirstDots = false;
 	      } else if (startNumber > numberOfPages - numberOfLinks) {
 	        startNumber = numberOfPages - numberOfLinks + 1;
-	        showLastDots = false;
 	      }
 
-	      if (showFirstDots && firstNumber && startNumber < 4) {
-	        numberOfLinks = numberOfLinks + 2;
-	        startNumber = 1;
-	        showFirstDots = false;
-	      }
-
-	      var lastPageNumber = startNumber + numberOfLinks - 1;
-
-	      if (showLastDots && lastNumber && lastPageNumber > numberOfPages - 3) {
-	        numberOfLinks = numberOfLinks + (lastPageNumber === numberOfPages - 2 ? 2 : 3);
-	        showLastDots = false;
-	      } // Special handling for lower limits (where ellipsis are never shown)
-
-
-	      if (limit <= ELLIPSIS_THRESHOLD) {
-	        if (firstNumber && startNumber === 1) {
-	          numberOfLinks = Math.min(numberOfLinks + 1, numberOfPages, limit + 1);
-	        } else if (lastNumber && numberOfPages === startNumber + numberOfLinks - 1) {
-	          startNumber = Math.max(startNumber - 1, 1);
-	          numberOfLinks = Math.min(numberOfPages - startNumber + 1, numberOfPages, limit + 1);
-	        }
-	      }
-
-	      numberOfLinks = Math.min(numberOfLinks, numberOfPages - startNumber + 1);
 	      return {
 	        showFirstDots: showFirstDots,
 	        showLastDots: showLastDots,
@@ -23832,15 +22412,15 @@
 	  },
 	  methods: {
 	    handleKeyNav: function handleKeyNav(evt) {
-	      var keyCode = evt.keyCode,
-	          shiftKey = evt.shiftKey;
+	      var keyCode = evt.keyCode;
+	      var shift = evt.shiftKey;
 
 	      if (keyCode === KEY_CODES.LEFT || keyCode === KEY_CODES.UP) {
 	        evt.preventDefault();
-	        shiftKey ? this.focusFirst() : this.focusPrev();
+	        shift ? this.focusFirst() : this.focusPrev();
 	      } else if (keyCode === KEY_CODES.RIGHT || keyCode === KEY_CODES.DOWN) {
 	        evt.preventDefault();
-	        shiftKey ? this.focusLast() : this.focusNext();
+	        shift ? this.focusLast() : this.focusNext();
 	      }
 	    },
 	    getButtons: function getButtons() {
@@ -23855,10 +22435,10 @@
 	    focusCurrent: function focusCurrent() {
 	      var _this2 = this;
 
-	      // We do this in `$nextTick()` to ensure buttons have finished rendering
+	      // We do this in next tick to ensure buttons have finished rendering
 	      this.$nextTick(function () {
 	        var btn = _this2.getButtons().find(function (el) {
-	          return toInteger(getAttr(el, 'aria-posinset')) === _this2.computedCurrentPage;
+	          return parseInt(getAttr(el, 'aria-posinset'), 10) === _this2.computedCurrentPage;
 	        });
 
 	        if (btn && btn.focus) {
@@ -23872,7 +22452,7 @@
 	    focusFirst: function focusFirst() {
 	      var _this3 = this;
 
-	      // We do this in `$nextTick()` to ensure buttons have finished rendering
+	      // We do this in next tick to ensure buttons have finished rendering
 	      this.$nextTick(function () {
 	        var btn = _this3.getButtons().find(function (el) {
 	          return !isDisabled(el);
@@ -23886,7 +22466,7 @@
 	    focusLast: function focusLast() {
 	      var _this4 = this;
 
-	      // We do this in `$nextTick()` to ensure buttons have finished rendering
+	      // We do this in next tick to ensure buttons have finished rendering
 	      this.$nextTick(function () {
 	        var btn = _this4.getButtons().reverse().find(function (el) {
 	          return !isDisabled(el);
@@ -23900,7 +22480,7 @@
 	    focusPrev: function focusPrev() {
 	      var _this5 = this;
 
-	      // We do this in `$nextTick()` to ensure buttons have finished rendering
+	      // We do this in next tick to ensure buttons have finished rendering
 	      this.$nextTick(function () {
 	        var buttons = _this5.getButtons();
 
@@ -23914,7 +22494,7 @@
 	    focusNext: function focusNext() {
 	      var _this6 = this;
 
-	      // We do this in `$nextTick()` to ensure buttons have finished rendering
+	      // We do this in next tick to ensure buttons have finished rendering
 	      this.$nextTick(function () {
 	        var buttons = _this6.getButtons();
 
@@ -23932,9 +22512,6 @@
 
 	    var buttons = [];
 	    var numberOfPages = this.localNumberOfPages;
-	    var pageNumbers = this.pageList.map(function (p) {
-	      return p.number;
-	    });
 	    var disabled = this.disabled;
 	    var _this$paginationParam2 = this.paginationParams,
 	        showFirstDots = _this$paginationParam2.showFirstDots,
@@ -23946,10 +22523,10 @@
 	      return pageNum === currentPage;
 	    };
 
-	    var noCurrentPage = this.currentPage < 1; // Factory function for prev/next/first/last buttons
+	    var noCurrPage = this.currentPage < 1; // Factory function for prev/next/first/last buttons
 
-	    var makeEndBtn = function makeEndBtn(linkTo, ariaLabel, btnSlot, btnText, btnClass, pageTest, key) {
-	      var isDisabled = disabled || isActivePage(pageTest) || noCurrentPage || linkTo < 1 || linkTo > numberOfPages;
+	    var makeEndBtn = function makeEndBtn(linkTo, ariaLabel, btnSlot, btnText, pageTest, key) {
+	      var isDisabled = disabled || isActivePage(pageTest) || noCurrPage || linkTo < 1 || linkTo > numberOfPages;
 	      var pageNum = linkTo < 1 ? 1 : linkTo > numberOfPages ? numberOfPages : linkTo;
 	      var scope = {
 	        disabled: isDisabled,
@@ -23977,10 +22554,10 @@
 	      return h('li', {
 	        key: key,
 	        staticClass: 'page-item',
-	        class: [{
+	        class: {
 	          disabled: isDisabled,
 	          'flex-fill': fill
-	        }, btnClass],
+	        },
 	        attrs: {
 	          role: 'presentation',
 	          'aria-hidden': isDisabled ? 'true' : null
@@ -23993,20 +22570,26 @@
 	      return h('li', {
 	        key: "ellipsis-".concat(isLast ? 'last' : 'first'),
 	        staticClass: 'page-item',
-	        class: ['disabled', 'bv-d-xs-down-none', fill ? 'flex-fill' : '', _this7.ellipsisClass],
+	        class: ['disabled', 'bv-d-xs-down-none', fill ? 'flex-fill' : ''],
 	        attrs: {
 	          role: 'separator'
 	        }
 	      }, [h('span', {
 	        staticClass: 'page-link'
 	      }, [_this7.normalizeSlot('ellipsis-text') || toString$3(_this7.ellipsisText) || h()])]);
-	    }; // Page button factory
+	    }; // Goto First Page button bookend
 
 
-	    var makePageButton = function makePageButton(page, idx) {
-	      var active = isActivePage(page.number) && !noCurrentPage; // Active page will have tabindex of 0, or if no current page and first page button
+	    buttons.push(this.hideGotoEndButtons ? h() : makeEndBtn(1, this.labelFirstPage, 'first-text', this.firstText, 1, 'bookend-goto-first')); // Goto Previous page button bookend
 
-	      var tabIndex = disabled ? null : active || noCurrentPage && idx === 0 ? '0' : '-1';
+	    buttons.push(makeEndBtn(currentPage - 1, this.labelPrevPage, 'prev-text', this.prevText, 1, 'bookend-goto-prev')); // First Ellipsis Bookend
+
+	    buttons.push(showFirstDots ? makeEllipsis(false) : h()); // Individual Page links
+
+	    this.pageList.forEach(function (page, idx) {
+	      var active = isActivePage(page.number) && !noCurrPage; // Active page will have tabindex of 0, or if no current page and first page button
+
+	      var tabIndex = disabled ? null : active || noCurrPage && idx === 0 ? '0' : '-1';
 	      var attrs = {
 	        role: 'menuitemradio',
 	        'aria-disabled': disabled ? 'true' : null,
@@ -24037,61 +22620,27 @@
 	          keydown: onSpaceKey
 	        }
 	      }, [_this7.normalizeSlot('page', scope) || btnContent]);
-	      return h('li', {
+	      buttons.push(h('li', {
 	        key: "page-".concat(page.number),
 	        staticClass: 'page-item',
 	        class: [{
 	          disabled: disabled,
 	          active: active,
 	          'flex-fill': fill
-	        }, page.classes, _this7.pageClass],
+	        }, page.classes],
 	        attrs: {
 	          role: 'presentation'
 	        }
-	      }, [inner]);
-	    }; // Goto first page button
-	    // Don't render button when `hideGotoEndButtons` or `firstNumber` is set
+	      }, [inner]));
+	    }); // Last Ellipsis Bookend
 
+	    buttons.push(showLastDots ? makeEllipsis(true) : h()); // Goto Next page button bookend
 
-	    var $firstPageBtn = h();
+	    buttons.push(makeEndBtn(currentPage + 1, this.labelNextPage, 'next-text', this.nextText, numberOfPages, 'bookend-goto-next')); // Goto Last Page button bookend
 
-	    if (!this.firstNumber && !this.hideGotoEndButtons) {
-	      $firstPageBtn = makeEndBtn(1, this.labelFirstPage, 'first-text', this.firstText, this.firstClass, 1, 'pagination-goto-first');
-	    }
+	    buttons.push(this.hideGotoEndButtons ? h() : makeEndBtn(numberOfPages, this.labelLastPage, 'last-text', this.lastText, numberOfPages, 'bookend-goto-last')); // Assemble the pagination buttons
 
-	    buttons.push($firstPageBtn); // Goto previous page button
-
-	    buttons.push(makeEndBtn(currentPage - 1, this.labelPrevPage, 'prev-text', this.prevText, this.prevClass, 1, 'pagination-goto-prev')); // Show first (1) button?
-
-	    buttons.push(this.firstNumber && pageNumbers[0] !== 1 ? makePageButton({
-	      number: 1
-	    }, 0) : h()); // First ellipsis
-
-	    buttons.push(showFirstDots ? makeEllipsis(false) : h()); // Individual page links
-
-	    this.pageList.forEach(function (page, idx) {
-	      var offset = showFirstDots && _this7.firstNumber && pageNumbers[0] !== 1 ? 1 : 0;
-	      buttons.push(makePageButton(page, idx + offset));
-	    }); // Last ellipsis
-
-	    buttons.push(showLastDots ? makeEllipsis(true) : h()); // Show last page button?
-
-	    buttons.push(this.lastNumber && pageNumbers[pageNumbers.length - 1] !== numberOfPages ? makePageButton({
-	      number: numberOfPages
-	    }, -1) : h()); // Goto next page button
-
-	    buttons.push(makeEndBtn(currentPage + 1, this.labelNextPage, 'next-text', this.nextText, this.nextClass, numberOfPages, 'pagination-goto-next')); // Goto last page button
-	    // Don't render button when `hideGotoEndButtons` or `lastNumber` is set
-
-	    var $lastPageBtn = h();
-
-	    if (!this.lastNumber && !this.hideGotoEndButtons) {
-	      $lastPageBtn = makeEndBtn(numberOfPages, this.labelLastPage, 'last-text', this.lastText, this.lastClass, numberOfPages, 'pagination-goto-last');
-	    }
-
-	    buttons.push($lastPageBtn); // Assemble the pagination buttons
-
-	    var $pagination = h('ul', {
+	    var pagination = h('ul', {
 	      ref: 'ul',
 	      staticClass: 'pagination',
 	      class: ['b-pagination', this.btnSize, this.alignment, this.styleClass],
@@ -24103,7 +22652,7 @@
 	      on: {
 	        keydown: this.handleKeyNav
 	      }
-	    }, buttons); // If we are `<b-pagination-nav>`, wrap in `<nav>` wrapper
+	    }, buttons); // if we are pagination-nav, wrap in '<nav>' wrapper
 
 	    if (this.isNav) {
 	      return h('nav', {
@@ -24111,21 +22660,21 @@
 	          'aria-disabled': disabled ? 'true' : null,
 	          'aria-hidden': disabled ? 'true' : 'false'
 	        }
-	      }, [$pagination]);
+	      }, [pagination]);
+	    } else {
+	      return pagination;
 	    }
-
-	    return $pagination;
 	  }
 	};
 
-	var NAME$p = 'BPagination';
+	var NAME$l = 'BPagination';
 	var DEFAULT_PER_PAGE = 20;
 	var DEFAULT_TOTAL_ROWS = 0;
 	var props$R = {
 	  size: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$p, 'size');
+	      return getComponentConfig(NAME$l, 'size');
 	    }
 	  },
 	  perPage: {
@@ -24144,13 +22693,13 @@
 	// Sanitize the provided per page number (converting to a number)
 
 	var sanitizePerPage = function sanitizePerPage(val) {
-	  var perPage = toInteger(val) || DEFAULT_PER_PAGE;
+	  var perPage = parseInt(val, 10) || DEFAULT_PER_PAGE;
 	  return perPage < 1 ? 1 : perPage;
 	}; // Sanitize the provided total rows number (converting to a number)
 
 
 	var sanitizeTotalRows = function sanitizeTotalRows(val) {
-	  var totalRows = toInteger(val) || DEFAULT_TOTAL_ROWS;
+	  var totalRows = parseInt(val, 10) || DEFAULT_TOTAL_ROWS;
 	  return totalRows < 0 ? 0 : totalRows;
 	}; // The render function is brought in via the `paginationMixin`
 	// @vue/component
@@ -24159,7 +22708,7 @@
 	var BPagination =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$p,
+	  name: NAME$l,
 	  mixins: [paginationMixin],
 	  props: props$R,
 	  computed: {
@@ -24198,7 +22747,7 @@
 	    // Set the initial page count
 	    this.localNumberOfPages = this.numberOfPages; // Set the initial page value
 
-	    var currentPage = toInteger(this.value) || 0;
+	    var currentPage = parseInt(this.value, 10) || 0;
 
 	    if (currentPage > 0) {
 	      this.currentPage = currentPage;
@@ -24264,17 +22813,17 @@
 	  }
 	});
 
-	var NAME$q = 'BPaginationNav'; // Sanitize the provided number of pages (converting to a number)
+	var NAME$m = 'BPaginationNav'; // Sanitize the provided number of pages (converting to a number)
 
 	var sanitizeNumberOfPages = function sanitizeNumberOfPages(value) {
-	  var numberOfPages = toInteger(value) || 1;
+	  var numberOfPages = parseInt(value, 10) || 1;
 	  return numberOfPages < 1 ? 1 : numberOfPages;
 	};
 	var props$S = {
 	  size: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$q, 'size');
+	      return getComponentConfig(NAME$m, 'size');
 	    }
 	  },
 	  numberOfPages: {
@@ -24283,10 +22832,10 @@
 	    validator: function validator(value)
 	    /* istanbul ignore next */
 	    {
-	      var num = toInteger(value);
+	      var num = parseInt(value, 10);
 
 	      if (isNaN(num) || num < 1) {
-	        warn('Prop "number-of-pages" must be a number greater than "0"', NAME$q);
+	        warn('b-pagination: prop "number-of-pages" must be a number greater than 0');
 	        return false;
 	      }
 
@@ -24343,7 +22892,7 @@
 	var BPaginationNav =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$q,
+	  name: NAME$m,
 	  mixins: [paginationMixin],
 	  props: props$S,
 	  computed: {
@@ -24353,7 +22902,7 @@
 	    },
 	    computedValue: function computedValue() {
 	      // Returns the value prop as a number or `null` if undefined or < 1
-	      var val = toInteger(this.value);
+	      var val = parseInt(this.value, 10);
 	      return isNaN(val) || val < 1 ? null : val;
 	    }
 	  },
@@ -24617,7 +23166,7 @@
 	});
 
 	// Base on-demand component for tooltip / popover templates
-	var NAME$r = 'BVPopper';
+	var NAME$n = 'BVPopper';
 	var AttachmentMap$1 = {
 	  AUTO: 'auto',
 	  TOP: 'top',
@@ -24652,7 +23201,7 @@
 	var BVPopper =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$r,
+	  name: NAME$n,
 	  props: {
 	    target: {
 	      // Element that the tooltip/popover is positioned relative to
@@ -24867,19 +23416,19 @@
 	  }
 	});
 
-	function ownKeys$F(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$E(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$F(target) {
+	function _objectSpread$E(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$F(Object(source), true).forEach(function (key) { _defineProperty$W(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$F(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$E(source, true).forEach(function (key) { _defineProperty$V(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$E(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$W(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var NAME$s = 'BVTooltipTemplate'; // @vue/component
+	function _defineProperty$V(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	var NAME$o = 'BVTooltipTemplate'; // @vue/component
 
 	var BVTooltipTemplate =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$s,
+	  name: NAME$o,
 	  extends: BVPopper,
 	  mixins: [scopedStyleAttrsMixin],
 	  props: {
@@ -24901,8 +23450,7 @@
 	      title: '',
 	      content: '',
 	      variant: null,
-	      customClass: null,
-	      interactive: true
+	      customClass: null
 	    };
 	  },
 	  computed: {
@@ -24912,14 +23460,10 @@
 	    templateClasses: function templateClasses() {
 	      var _ref;
 
-	      return [(_ref = {
-	        // Disables pointer events to hide the tooltip when the user
-	        // hovers over its content
-	        noninteractive: !this.interactive
-	      }, _defineProperty$W(_ref, "b-".concat(this.templateType, "-").concat(this.variant), this.variant), _defineProperty$W(_ref, "bs-".concat(this.templateType, "-").concat(this.attachment), this.attachment), _ref), this.customClass];
+	      return [(_ref = {}, _defineProperty$V(_ref, "b-".concat(this.templateType, "-").concat(this.variant), this.variant), _defineProperty$V(_ref, "bs-".concat(this.templateType, "-").concat(this.attachment), this.attachment), _ref), this.customClass];
 	    },
 	    templateAttributes: function templateAttributes() {
-	      return _objectSpread$F({
+	      return _objectSpread$E({
 	        id: this.id,
 	        role: 'tooltip',
 	        tabindex: '-1'
@@ -24973,14 +23517,14 @@
 	  }
 	});
 
-	function ownKeys$G(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$F(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$G(target) {
+	function _objectSpread$F(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$G(Object(source), true).forEach(function (key) { _defineProperty$X(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$G(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$F(source, true).forEach(function (key) { _defineProperty$W(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$F(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$X(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var NAME$t = 'BVTooltip'; // Modal container selector for appending tooltip/popover
+	function _defineProperty$W(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	var NAME$p = 'BVTooltip'; // Modal container selector for appending tooltip/popover
 
 	var MODAL_SELECTOR = '.modal-content'; // Modal `$root` hidden event
 
@@ -25031,8 +23575,6 @@
 	  // Arrow of Tooltip/popover will try and stay away from
 	  // the edge of tooltip/popover edge by this many pixels
 	  arrowPadding: 6,
-	  // Interactive state (Boolean)
-	  interactive: true,
 	  // Disabled state (Boolean)
 	  disabled: false,
 	  // ID to use for tooltip/popover
@@ -25044,11 +23586,11 @@
 	var BVTooltip =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$t,
+	  name: NAME$p,
 	  props: {// None
 	  },
 	  data: function data() {
-	    return _objectSpread$G({}, templateData, {
+	    return _objectSpread$F({}, templateData, {
 	      // State management data
 	      activeTrigger: {
 	        // manual: false,
@@ -25103,8 +23645,7 @@
 	        content: this.content,
 	        variant: this.variant,
 	        customClass: this.customClass,
-	        noFade: this.noFade,
-	        interactive: this.interactive
+	        noFade: this.noFade
 	      };
 	    }
 	  },
@@ -25151,7 +23692,9 @@
 	    this.$_hoverState = '';
 	    this.$_visibleInterval = null;
 	    this.$_enabled = !this.disabled;
-	    this.$_noop = noop.bind(this); // Destroy ourselves when the parent is destroyed
+
+	    this.$_noop = function () {}; // Destroy ourselves when the parent is destroyed
+
 
 	    if (this.$parent) {
 	      this.$parent.$once('hook:beforeDestroy', this.$destroy);
@@ -25167,7 +23710,7 @@
 	        _this2.listen();
 	      } else {
 	        /* istanbul ignore next */
-	        warn('Unable to find target element in document.', _this2.templateType);
+	        warn("".concat(_this2.templateType, " unable to find target element in document"));
 	      }
 	    });
 	  },
@@ -25189,15 +23732,17 @@
 	  {
 	    // Remove all handler/listeners
 	    this.unListen();
-	    this.setWhileOpenListeners(false); // Clear any timeouts/intervals
+	    this.setWhileOpenListeners(false); // Clear any timeouts/Timers
 
-	    this.clearHoverTimeout();
-	    this.clearVisibilityInterval(); // Destroy the template
-
+	    clearTimeout(this.$_hoverTimeout);
+	    this.$_hoverTimeout = null;
 	    this.destroyTemplate();
+	    this.restoreTitle();
 	  },
 	  methods: {
-	    // --- Methods for creating and destroying the template ---
+	    //
+	    // Methods for creating and destroying the template
+	    //
 	    getTemplate: function getTemplate() {
 	      // Overridden by BVPopover
 	      return BVTooltipTemplate;
@@ -25228,6 +23773,7 @@
 	    },
 	    createTemplateAndShow: function createTemplateAndShow() {
 	      // Creates the template instance and show it
+	      // this.destroyTemplate()
 	      var container = this.getContainer();
 	      var Template = this.getTemplate();
 	      var $tip = this.$_tip = new Template({
@@ -25275,16 +23821,13 @@
 	      // The template will emit the `hide` event after this and
 	      // then emit the `hidden` event once it is fully hidden
 	      // The `hook:destroyed` will also be called (safety measure)
-	      this.$_tip && this.$_tip.hide(); // Clear out any stragging active triggers
-
-	      this.clearActiveTriggers(); // Reset the hover state
-
-	      this.$_hoverState = '';
+	      this.$_tip && this.$_tip.hide();
 	    },
-	    // Destroy the template instance and reset state
 	    destroyTemplate: function destroyTemplate() {
+	      // Destroy the template instance and reset state
 	      this.setWhileOpenListeners(false);
-	      this.clearHoverTimeout();
+	      clearTimeout(this.$_hoverTimeout);
+	      this.$_hoverTimout = null;
 	      this.$_hoverState = '';
 	      this.clearActiveTriggers();
 	      this.localPlacementTarget = null;
@@ -25294,8 +23837,6 @@
 	      } catch (_unused) {}
 
 	      this.$_tip = null;
-	      this.removeAriaDescribedby();
-	      this.restoreTitle();
 	      this.localShow = false;
 	    },
 	    getTemplateElement: function getTemplateElement() {
@@ -25309,7 +23850,7 @@
 	      var $tip = this.$_tip;
 
 	      if ($tip) {
-	        var props = ['title', 'content', 'variant', 'customClass', 'noFade', 'interactive']; // Only update the values if they have changed
+	        var props = ['title', 'content', 'variant', 'customClass', 'noFade']; // Only update the values if they have changed
 
 	        props.forEach(function (prop) {
 	          if ($tip[prop] !== _this4[prop]) {
@@ -25318,9 +23859,11 @@
 	        });
 	      }
 	    },
-	    // --- Show/Hide handlers ---
-	    // Show the tooltip
+	    //
+	    // Show and Hide handlers
+	    //
 	    show: function show() {
+	      // Show the tooltip
 	      var target = this.getTarget();
 
 	      if (!target || !contains(document.body, target) || !isVisible(target) || this.dropdownOpen() || (isUndefinedOrNull(this.title) || this.title === '') && (isUndefinedOrNull(this.content) || this.content === '')) {
@@ -25328,10 +23871,11 @@
 	        // is on an open dropdown toggle, or has no content, then
 	        // we exit without showing
 	        return;
-	      } // If tip already exists, exit early
-
+	      }
 
 	      if (this.$_tip || this.localShow) {
+	        // If tip already exists, exit early
+
 	        /* istanbul ignore next */
 	        return;
 	      } // In the process of showing
@@ -25342,15 +23886,19 @@
 	      var showEvt = this.buildEvent('show', {
 	        cancelable: true
 	      });
-	      this.emitEvent(showEvt); // Don't show if event cancelled
-
+	      this.emitEvent(showEvt);
 	      /* istanbul ignore next: ignore for now */
 
 	      if (showEvt.defaultPrevented) {
+	        // Don't show if event cancelled
 	        // Destroy the template (if for some reason it was created)
 
 	        /* istanbul ignore next */
-	        this.destroyTemplate();
+	        this.destroyTemplate(); // Clear the localShow flag
+
+	        /* istanbul ignore next */
+
+	        this.localShow = false;
 	        /* istanbul ignore next */
 
 	        return;
@@ -25392,7 +23940,12 @@
 	      } // Tell the template to hide
 
 
-	      this.hideTemplate();
+	      this.hideTemplate(); // TODO: The following could be added to `hideTemplate()`
+	      // Clear out any stragging active triggers
+
+	      this.clearActiveTriggers(); // Reset the hover state
+
+	      this.$_hoverState = '';
 	    },
 	    forceHide: function forceHide() {
 	      // Forcefully hides/destroys the template, regardless of any active triggers
@@ -25407,7 +23960,8 @@
 
 	      this.setWhileOpenListeners(false); // Clear any hover enter/leave event
 
-	      this.clearHoverTimeout();
+	      clearTimeout(this.hoverTimeout);
+	      this.$_hoverTimeout = null;
 	      this.$_hoverState = '';
 	      this.clearActiveTriggers(); // Disable the fade animation on the template
 
@@ -25421,21 +23975,23 @@
 	    enable: function enable() {
 	      this.$_enabled = true; // Create a non-cancelable BvEvent
 
-	      this.emitEvent(this.buildEvent('enabled'));
+	      this.emitEvent(this.buildEvent('enabled', {}));
 	    },
 	    disable: function disable() {
 	      this.$_enabled = false; // Create a non-cancelable BvEvent
 
-	      this.emitEvent(this.buildEvent('disabled'));
+	      this.emitEvent(this.buildEvent('disabled', {}));
 	    },
-	    // --- Handlers for template events ---
-	    // When template is inserted into DOM, but not yet shown
+	    //
+	    // Handlers for template events
+	    //
 	    onTemplateShow: function onTemplateShow() {
+	      // When template is inserted into DOM, but not yet shown
 	      // Enable while open listeners/watchers
 	      this.setWhileOpenListeners(true);
 	    },
-	    // When template show transition completes
 	    onTemplateShown: function onTemplateShown() {
+	      // When template show transition completes
 	      var prevHoverState = this.$_hoverState;
 	      this.$_hoverState = '';
 
@@ -25444,21 +24000,26 @@
 	      } // Emit a non-cancelable BvEvent 'shown'
 
 
-	      this.emitEvent(this.buildEvent('shown'));
+	      this.emitEvent(this.buildEvent('shown', {}));
 	    },
-	    // When template is starting to hide
 	    onTemplateHide: function onTemplateHide() {
+	      // When template is starting to hide
 	      // Disable while open listeners/watchers
 	      this.setWhileOpenListeners(false);
 	    },
-	    // When template has completed closing (just before it self destructs)
 	    onTemplateHidden: function onTemplateHidden() {
-	      // Destroy the template
+	      // When template has completed closing (just before it self destructs)
+	      // TODO:
+	      //   The next two lines could be moved into `destroyTemplate()`
+	      this.removeAriaDescribedby();
+	      this.restoreTitle();
 	      this.destroyTemplate(); // Emit a non-cancelable BvEvent 'shown'
 
 	      this.emitEvent(this.buildEvent('hidden', {}));
 	    },
-	    // --- Utility methods ---
+	    //
+	    // Utility methods
+	    //
 	    getTarget: function getTarget() {
 	      // Handle case where target may be a component ref
 	      var target = this.target ? this.target.$el || this.target : null; // If an ID
@@ -25514,18 +24075,6 @@
 	      var target = this.getTarget();
 	      return this.isDropdown() && target && select(DROPDOWN_OPEN_SELECTOR, target);
 	    },
-	    clearHoverTimeout: function clearHoverTimeout() {
-	      if (this.$_hoverTimeout) {
-	        clearTimeout(this.$_hoverTimeout);
-	        this.$_hoverTimeout = null;
-	      }
-	    },
-	    clearVisibilityInterval: function clearVisibilityInterval() {
-	      if (this.$_visibleInterval) {
-	        clearInterval(this.$_visibleInterval);
-	        this.$_visibleInterval = null;
-	      }
-	    },
 	    clearActiveTriggers: function clearActiveTriggers() {
 	      for (var trigger in this.activeTrigger) {
 	        this.activeTrigger[trigger] = false;
@@ -25577,11 +24126,13 @@
 	        removeAttr(target, 'data-original-title');
 	      }
 	    },
-	    // --- BvEvent helpers ---
+	    //
+	    // BvEvent helpers
+	    //
 	    buildEvent: function buildEvent(type) {
 	      var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	      // Defaults to a non-cancellable event
-	      return new BvEvent(type, _objectSpread$G({
+	      return new BvEvent(type, _objectSpread$F({
 	        cancelable: false,
 	        target: this.getTarget(),
 	        relatedTarget: this.getTemplateElement() || null,
@@ -25601,7 +24152,9 @@
 
 	      this.$emit(evtName, bvEvt);
 	    },
-	    // --- Event handler setup methods ---
+	    //
+	    // Event handler setup methods
+	    //
 	    listen: function listen() {
 	      var _this6 = this;
 
@@ -25673,16 +24226,17 @@
 
 	      this.setOnTouchStartListener(on);
 	    },
-	    // Handler for periodic visibility check
 	    visibleCheck: function visibleCheck(on) {
 	      var _this8 = this;
 
-	      this.clearVisibilityInterval();
+	      // Handler for periodic visibility check
+	      clearInterval(this.$_visibleInterval);
+	      this.$_visibleInterval = null;
 	      var target = this.getTarget();
 	      var tip = this.getTemplateElement();
 
 	      if (on) {
-	        this.$_visibleInterval = setInterval(function () {
+	        this.visibleInterval = setInterval(function () {
 	          if (tip && _this8.localShow && (!target.parentNode || !isVisible(target))) {
 	            // Target element is no longer visible or not in DOM, so force-hide the tooltip
 	            _this8.forceHide();
@@ -25718,7 +24272,7 @@
 
 	      if (!target || !this.$root || !this.isDropdown) {
 	        return;
-	      } // We can listen for dropdown shown events on its instance
+	      } // We can listen for dropdown shown events on it's instance
 	      // TODO:
 	      //   We could grab the ID from the dropdown, and listen for
 	      //   $root events for that particular dropdown id
@@ -25731,7 +24285,9 @@
 	        target.__vue__[on ? '$on' : '$off']('shown', this.forceHide);
 	      }
 	    },
-	    // --- Event handlers ---
+	    //
+	    // Event handlers
+	    //
 	    handleEvent: function handleEvent(evt) {
 	      // General trigger event handler
 	      // target is the trigger element
@@ -25862,7 +24418,7 @@
 	        return;
 	      }
 
-	      this.clearHoverTimeout();
+	      clearTimeout(this.hoverTimeout);
 	      this.$_hoverState = 'in';
 
 	      if (!this.computedDelay.show) {
@@ -25870,7 +24426,7 @@
 	      } else {
 	        // Hide any title attribute while enter delay is active
 	        this.fixTitle();
-	        this.$_hoverTimeout = setTimeout(function () {
+	        this.hoverTimeout = setTimeout(function () {
 	          /* istanbul ignore else */
 	          if (_this10.$_hoverState === 'in') {
 	            _this10.show();
@@ -25904,13 +24460,13 @@
 	        return;
 	      }
 
-	      this.clearHoverTimeout();
+	      clearTimeout(this.hoverTimeout);
 	      this.$_hoverState = 'out';
 
 	      if (!this.computedDelay.hide) {
 	        this.hide();
 	      } else {
-	        this.$_hoverTimeout = setTimeout(function () {
+	        this.$hoverTimeout = setTimeout(function () {
 	          if (_this11.$_hoverState === 'out') {
 	            _this11.hide();
 	          }
@@ -25920,12 +24476,12 @@
 	  }
 	});
 
-	var NAME$u = 'BTooltip'; // @vue/component
+	var NAME$q = 'BTooltip'; // @vue/component
 
 	var BTooltip =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$u,
+	  name: NAME$q,
 	  props: {
 	    title: {
 	      type: String // default: undefined
@@ -25963,19 +24519,19 @@
 	    variant: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$u, 'variant');
+	        return getComponentConfig(NAME$q, 'variant');
 	      }
 	    },
 	    customClass: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$u, 'customClass');
+	        return getComponentConfig(NAME$q, 'customClass');
 	      }
 	    },
 	    delay: {
 	      type: [Number, Object, String],
 	      default: function _default() {
-	        return getComponentConfig(NAME$u, 'delay');
+	        return getComponentConfig(NAME$q, 'delay');
 	      }
 	    },
 	    boundary: {
@@ -25984,13 +24540,13 @@
 	      // Object: Vue component
 	      type: [String, HTMLElement$1, Object],
 	      default: function _default() {
-	        return getComponentConfig(NAME$u, 'boundary');
+	        return getComponentConfig(NAME$q, 'boundary');
 	      }
 	    },
 	    boundaryPadding: {
 	      type: [Number, String],
 	      default: function _default() {
-	        return getComponentConfig(NAME$u, 'boundaryPadding');
+	        return getComponentConfig(NAME$q, 'boundaryPadding');
 	      }
 	    },
 	    offset: {
@@ -26009,10 +24565,6 @@
 
 	    },
 	    show: {
-	      type: Boolean,
-	      default: false
-	    },
-	    noninteractive: {
 	      type: Boolean,
 	      default: false
 	    },
@@ -26054,7 +24606,6 @@
 	        delay: this.delay,
 	        offset: this.offset,
 	        noFade: this.noFade,
-	        interactive: !this.noninteractive,
 	        disabled: this.disabled,
 	        id: this.id
 	      };
@@ -26265,12 +24816,12 @@
 	  }
 	});
 
-	var NAME$v = 'BVPopoverTemplate'; // @vue/component
+	var NAME$r = 'BVPopoverTemplate'; // @vue/component
 
 	var BVPopoverTemplate =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$v,
+	  name: NAME$r,
 	  extends: BVTooltipTemplate,
 	  computed: {
 	    templateType: function templateType() {
@@ -26309,12 +24860,12 @@
 	});
 
 	// Popover "Class" (Built as a renderless Vue instance)
-	var NAME$w = 'BVPopover'; // @vue/component
+	var NAME$s = 'BVPopover'; // @vue/component
 
 	var BVPopover =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$w,
+	  name: NAME$s,
 	  extends: BVTooltip,
 	  computed: {
 	    // Overwrites BVTooltip
@@ -26330,11 +24881,11 @@
 	  }
 	});
 
-	var NAME$x = 'BPopover';
+	var NAME$t = 'BPopover';
 	var BPopover =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$x,
+	  name: NAME$t,
 	  extends: BTooltip,
 	  inheritAttrs: false,
 	  props: {
@@ -26357,19 +24908,19 @@
 	    variant: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$x, 'variant');
+	        return getComponentConfig(NAME$t, 'variant');
 	      }
 	    },
 	    customClass: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$x, 'customClass');
+	        return getComponentConfig(NAME$t, 'customClass');
 	      }
 	    },
 	    delay: {
 	      type: [Number, Object, String],
 	      default: function _default() {
-	        return getComponentConfig(NAME$x, 'delay');
+	        return getComponentConfig(NAME$t, 'delay');
 	      }
 	    },
 	    boundary: {
@@ -26378,13 +24929,13 @@
 	      // Object: Vue component
 	      type: [String, HTMLElement$1, Object],
 	      default: function _default() {
-	        return getComponentConfig(NAME$x, 'boundary');
+	        return getComponentConfig(NAME$t, 'boundary');
 	      }
 	    },
 	    boundaryPadding: {
 	      type: [Number, String],
 	      default: function _default() {
-	        return getComponentConfig(NAME$x, 'boundaryPadding');
+	        return getComponentConfig(NAME$t, 'boundaryPadding');
 	      }
 	    }
 	  },
@@ -26405,13 +24956,13 @@
 
 	});
 
-	function ownKeys$H(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$G(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$H(target) {
+	function _objectSpread$G(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$H(Object(source), true).forEach(function (key) { _defineProperty$Y(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$H(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$G(source, true).forEach(function (key) { _defineProperty$X(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$G(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$Y(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$X(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	var BV_POPOVER = '__BV_Popover__'; // Default trigger
 
@@ -26433,8 +24984,7 @@
 	var delayShowRE = /^ds\d+$/i;
 	var delayHideRE = /^dh\d+$/i;
 	var offsetRE = /^o-?\d+$/i;
-	var variantRE = /^v-.+$/i;
-	var spacesRE = /\s+/; // Build a Popover config based on bindings (if any)
+	var variantRE = /^v-.+$/i; // Build a Popover config based on bindings (if any)
 	// Arguments and modifiers take precedence over passed value config object
 
 	var parseBindings = function parseBindings(bindings, vnode)
@@ -26471,7 +25021,7 @@
 	    config.content = bindings.value;
 	  } else if (isPlainObject(bindings.value)) {
 	    // Value is config object, so merge
-	    config = _objectSpread$H({}, config, {}, bindings.value);
+	    config = _objectSpread$G({}, config, {}, bindings.value);
 	  } // If argument, assume element ID of container element
 
 
@@ -26534,7 +25084,7 @@
 
 	  var selectedTriggers = {}; // Parse current config object trigger
 
-	  concat(config.trigger || '').filter(identity).join(' ').trim().toLowerCase().split(spacesRE).forEach(function (trigger) {
+	  concat(config.trigger || '').filter(Boolean).join(' ').trim().toLowerCase().split(/\s+/).forEach(function (trigger) {
 	    if (validTriggers[trigger]) {
 	      selectedTriggers[trigger] = true;
 	    }
@@ -26685,12 +25235,12 @@
 	  }
 	});
 
-	var NAME$y = 'BProgressBar'; // @vue/component
+	var NAME$u = 'BProgressBar'; // @vue/component
 
 	var BProgressBar =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$y,
+	  name: NAME$u,
 	  mixins: [normalizeSlotMixin],
 	  inject: {
 	    bvProgress: {
@@ -26703,7 +25253,7 @@
 	  },
 	  props: {
 	    value: {
-	      type: [Number, String],
+	      type: Number,
 	      default: 0
 	    },
 	    label: {
@@ -26716,17 +25266,17 @@
 	    // $parent (this.bvProgress) prop values may take precedence over the following props
 	    // Which is why they are defaulted to null
 	    max: {
-	      type: [Number, String],
+	      type: Number,
 	      default: null
 	    },
 	    precision: {
-	      type: [Number, String],
+	      type: Number,
 	      default: null
 	    },
 	    variant: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$y, 'variant');
+	        return getComponentConfig(NAME$u, 'variant');
 	      }
 	    },
 	    striped: {
@@ -26752,30 +25302,24 @@
 	    },
 	    progressBarStyles: function progressBarStyles() {
 	      return {
-	        width: 100 * (this.computedValue / this.computedMax) + '%'
+	        width: 100 * (this.value / this.computedMax) + '%'
 	      };
 	    },
-	    computedValue: function computedValue() {
-	      return toFloat(this.value) || 0;
+	    computedProgress: function computedProgress() {
+	      var p = Math.pow(10, this.computedPrecision);
+	      return Math.round(100 * p * this.value / this.computedMax) / p;
 	    },
 	    computedMax: function computedMax() {
 	      // Prefer our max over parent setting
-	      var max = toFloat(this.max);
-	      return isNaN(max) ? toFloat(this.bvProgress.max) || 100 : max;
-	    },
-	    computedPrecision: function computedPrecision() {
-	      // Prefer our precision over parent setting
-	      var precision = toInteger(this.precision);
-	      return isNaN(precision) ? toInteger(this.bvProgress.precision) || 0 : precision;
-	    },
-	    computedProgress: function computedProgress() {
-	      var precision = this.computedPrecision;
-	      var p = Math.pow(10, precision);
-	      return toFixed(100 * p * this.computedValue / this.computedMax / p, precision);
+	      return isNumber(this.max) ? this.max : this.bvProgress.max || 100;
 	    },
 	    computedVariant: function computedVariant() {
 	      // Prefer our variant over parent setting
 	      return this.variant || this.bvProgress.variant;
+	    },
+	    computedPrecision: function computedPrecision() {
+	      // Prefer our precision over parent setting
+	      return isNumber(this.precision) ? this.precision : this.bvProgress.precision || 0;
 	    },
 	    computedStriped: function computedStriped() {
 	      // Prefer our striped over parent setting
@@ -26804,9 +25348,9 @@
 	        domProps: htmlOrText(this.labelHtml, this.label)
 	      });
 	    } else if (this.computedShowProgress) {
-	      childNodes = this.computedProgress;
+	      childNodes = this.computedProgress.toFixed(this.computedPrecision);
 	    } else if (this.computedShowValue) {
-	      childNodes = toFixed(this.computedValue, this.computedPrecision);
+	      childNodes = this.value.toFixed(this.computedPrecision);
 	    }
 
 	    return h('div', {
@@ -26816,19 +25360,19 @@
 	      attrs: {
 	        role: 'progressbar',
 	        'aria-valuemin': '0',
-	        'aria-valuemax': toString$3(this.computedMax),
-	        'aria-valuenow': toFixed(this.computedValue, this.computedPrecision)
+	        'aria-valuemax': this.computedMax.toString(),
+	        'aria-valuenow': this.value.toFixed(this.computedPrecision)
 	      }
 	    }, [childNodes]);
 	  }
 	});
 
-	var NAME$z = 'BProgress'; // @vue/component
+	var NAME$v = 'BProgress'; // @vue/component
 
 	var BProgress =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$z,
+	  name: NAME$v,
 	  mixins: [normalizeSlotMixin],
 	  provide: function provide() {
 	    return {
@@ -26840,7 +25384,7 @@
 	    variant: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$z, 'variant');
+	        return getComponentConfig(NAME$v, 'variant');
 	      }
 	    },
 	    striped: {
@@ -26856,7 +25400,7 @@
 	      default: null
 	    },
 	    precision: {
-	      type: [Number, String],
+	      type: Number,
 	      default: 0
 	    },
 	    showProgress: {
@@ -26868,12 +25412,12 @@
 	      default: false
 	    },
 	    max: {
-	      type: [Number, String],
+	      type: Number,
 	      default: 100
 	    },
 	    // This prop is not inherited by child b-progress-bar(s)
 	    value: {
-	      type: [Number, String],
+	      type: Number,
 	      default: 0
 	    }
 	  },
@@ -26918,13 +25462,13 @@
 	  }
 	});
 
-	function _defineProperty$Z(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	var NAME$A = 'BSpinner'; // @vue/component
+	function _defineProperty$Y(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	var NAME$w = 'BSpinner'; // @vue/component
 
 	var BSpinner =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$A,
+	  name: NAME$w,
 	  functional: true,
 	  props: {
 	    type: {
@@ -26939,7 +25483,7 @@
 	    variant: {
 	      type: String,
 	      default: function _default() {
-	        return getComponentConfig(NAME$A, 'variant');
+	        return getComponentConfig(NAME$w, 'variant');
 	      }
 	    },
 	    small: {
@@ -26977,7 +25521,7 @@
 	        role: label ? props.role || 'status' : null,
 	        'aria-hidden': label ? null : 'true'
 	      },
-	      class: (_class = {}, _defineProperty$Z(_class, "spinner-".concat(props.type), props.type), _defineProperty$Z(_class, "spinner-".concat(props.type, "-sm"), props.small), _defineProperty$Z(_class, "text-".concat(props.variant), props.variant), _class)
+	      class: (_class = {}, _defineProperty$Y(_class, "spinner-".concat(props.type), Boolean(props.type)), _defineProperty$Y(_class, "spinner-".concat(props.type, "-sm"), props.small), _defineProperty$Y(_class, "text-".concat(props.variant), Boolean(props.variant)), _class)
 	    }), [label || h()]);
 	  }
 	});
@@ -26989,24 +25533,6 @@
 	    BSpinner: BSpinner
 	  }
 	});
-
-	// Mixin to determine if an event listener has been registered
-
-	var hasListenerMixin = {
-	  methods: {
-	    hasListener: function hasListener(name) {
-	      // Only includes listeners registerd via `v-on:name`
-	      var $listeners = this.$listeners || {}; // Includes `v-on:name` and `this.$on('name')` registerd listeners
-	      // Note this property is not part of the public Vue API, but it is
-	      // the only way to determine if a listener was added via `vm.$on`
-
-	      var $events = this._events || {}; // Registered listeners in `this._events` are always an array,
-	      // but might be zero length
-
-	      return !isUndefined($listeners[name]) || isArray($events[name]) && $events[name].length > 0;
-	    }
-	  }
-	};
 
 	/**
 	 * Converts a string, including strings in camelCase or snake_case, into Start Case (a variant
@@ -27027,15 +25553,10 @@
 	 * @param {String} str
 	 * @returns {String}
 	 */
-	// Precompile regular expressions for performance
-	var RX_UNDERSCORE = /_/g;
-	var RX_LOWER_UPPER = /([a-z])([A-Z])/g;
-	var RX_START_SPACE_WORD = /(\s|^)(\w)/g;
-
 	var startCase = function startCase(str) {
-	  return str.replace(RX_UNDERSCORE, ' ').replace(RX_LOWER_UPPER, function (str, $1, $2) {
+	  return str.replace(/_/g, ' ').replace(/([a-z])([A-Z])/g, function (str, $1, $2) {
 	    return $1 + ' ' + $2;
-	  }).replace(RX_START_SPACE_WORD, function (str, $1, $2) {
+	  }).replace(/(\s|^)(\w)/g, function (str, $1, $2) {
 	    return $1 + $2.toUpperCase();
 	  });
 	};
@@ -27091,7 +25612,9 @@
 
 	  if (isArray(origFields)) {
 	    // Normalize array Form
-	    origFields.filter(identity).forEach(function (f) {
+	    origFields.filter(function (f) {
+	      return f;
+	    }).forEach(function (f) {
 	      if (isString(f)) {
 	        fields.push({
 	          key: f,
@@ -27230,7 +25753,7 @@
 	      if (isArray(newItems)) {
 	        // Set `localItems`/`filteredItems` to a copy of the provided array
 	        this.localItems = newItems.slice();
-	      } else if (isUndefinedOrNull(newItems)) {
+	      } else if (isUndefined(newItems) || isNull(newItems)) {
 	        /* istanbul ignore next */
 	        this.localItems = [];
 	      }
@@ -27262,7 +25785,7 @@
 	  }
 	};
 
-	function _defineProperty$_(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$Z(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	// Mixin for providing stacked tables
 	var stackedMixin = {
@@ -27281,7 +25804,7 @@
 	      return this.isStacked === true;
 	    },
 	    stackedTableClasses: function stackedTableClasses() {
-	      return _defineProperty$_({
+	      return _defineProperty$Z({
 	        'b-table-stacked': this.isStackedAlways
 	      }, "b-table-stacked-".concat(this.stacked), !this.isStackedAlways && this.isStacked);
 	    }
@@ -27337,7 +25860,7 @@
 	    }).join(' ');
 	  }
 
-	  return toString$3(val);
+	  return String(val);
 	};
 
 	// TODO: Add option to stringify `scopedSlot` items
@@ -27346,8 +25869,7 @@
 	  return isObject(row) ? stringifyObjectValues(sanitizeRow(row, ignoreFields, includeFields, fieldsObj)) : '';
 	};
 
-	var DEBOUNCE_DEPRECATED_MSG = 'Prop "filter-debounce" is deprecated. Use the debounce feature of "<b-form-input>" instead.';
-	var RX_SPACES$1 = /[\s\uFEFF\xA0]+/g;
+	var DEPRECATED_DEBOUNCE = 'b-table: Prop "filter-debounce" is deprecated. Use the debounce feature of <b-form-input> instead';
 	var filteringMixin = {
 	  props: {
 	    filter: {
@@ -27368,7 +25890,7 @@
 	    },
 	    filterDebounce: {
 	      type: [Number, String],
-	      deprecated: DEBOUNCE_DEPRECATED_MSG,
+	      deprecated: DEPRECATED_DEBOUNCE,
 	      default: 0,
 	      validator: function validator(val) {
 	        return /^\d+/.test(String(val));
@@ -27392,11 +25914,11 @@
 	      return this.filterIncludedFields ? concat(this.filterIncludedFields).filter(Boolean) : null;
 	    },
 	    computedFilterDebounce: function computedFilterDebounce() {
-	      var ms = toInteger(this.filterDebounce) || 0;
+	      var ms = parseInt(this.filterDebounce, 10) || 0;
 	      /* istanbul ignore next */
 
 	      if (ms > 0) {
-	        warn(DEBOUNCE_DEPRECATED_MSG, 'BTable');
+	        warn(DEPRECATED_DEBOUNCE);
 	      }
 
 	      return ms;
@@ -27561,18 +26083,18 @@
 	      if (!criteria || !(isString(criteria) || isRegExp(criteria))) {
 	        // Built in filter can only support strings or RegExp criteria (at the moment)
 	        return null;
-	      } // Build the RegExp needed for filtering
+	      } // Build the regexp needed for filtering
 
 
-	      var regExp = criteria;
+	      var regexp = criteria;
 
-	      if (isString(regExp)) {
-	        // Escape special RegExp characters in the string and convert contiguous
-	        // whitespace to \s+ matches
-	        var pattern = escapeRegExp(criteria).replace(RX_SPACES$1, '\\s+'); // Build the RegExp (no need for global flag, as we only need
+	      if (isString(regexp)) {
+	        // Escape special `RegExp` characters in the string and convert contiguous
+	        // whitespace to `\s+` matches
+	        var pattern = criteria.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&').replace(/[\s\uFEFF\xA0]+/g, '\\s+'); // Build the `RegExp` (no need for global flag, as we only need
 	        // to find the value once in the string)
 
-	        regExp = new RegExp(".*".concat(pattern, ".*"), 'i');
+	        regexp = new RegExp(".*".concat(pattern, ".*"), 'i');
 	      } // Generate the wrapped filter test function to use
 
 
@@ -27588,10 +26110,9 @@
 	        //
 	        // Generated function returns true if the criteria matches part of
 	        // the serialized data, otherwise false
-	        //
 	        // We set `lastIndex = 0` on the `RegExp` in case someone specifies the `/g` global flag
-	        regExp.lastIndex = 0;
-	        return regExp.test(stringifyRecordValues(item, _this3.computedFilterIgnored, _this3.computedFilterIncluded, _this3.computedFieldsObj));
+	        regexp.lastIndex = 0;
+	        return regexp.test(stringifyRecordValues(item, _this3.computedFilterIgnored, _this3.computedFilterIncluded, _this3.computedFieldsObj));
 	      }; // Return the generated function
 
 
@@ -27667,13 +26188,13 @@
 	  return stringifyObjectValues(aa).localeCompare(stringifyObjectValues(bb), locale, localeOpts);
 	};
 
-	function ownKeys$I(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$H(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$I(target) {
+	function _objectSpread$H(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$I(Object(source), true).forEach(function (key) { _defineProperty$$(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$I(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$H(source, true).forEach(function (key) { _defineProperty$_(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$H(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$$(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$_(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var sortingMixin = {
 	  props: {
 	    sortBy: {
@@ -27778,7 +26299,7 @@
 	      var sortCompare = this.sortCompare;
 	      var localSorting = this.localSorting;
 
-	      var sortOptions = _objectSpread$I({}, this.sortCompareOptions, {
+	      var sortOptions = _objectSpread$H({}, this.sortCompareOptions, {
 	        usage: 'sort'
 	      });
 
@@ -27923,50 +26444,55 @@
 	        return {};
 	      }
 
-	      var sortable = field.sortable; // Assemble the aria-sort attribute value
+	      var sortable = field.sortable;
+	      var ariaLabel = '';
 
-	      var ariaSort = sortable && this.localSortBy === key ? this.localSortDesc ? 'descending' : 'ascending' : sortable ? 'none' : null; // Return the attribute
+	      if ((!field.label || !field.label.trim()) && !field.headerTitle) {
+	        // In case field's label and title are empty/blank, we need to
+	        // add a hint about what the column is about for non-sighted users.
+	        // This is duplicated code from tbody-row mixin, but we need it
+	        // here as well, since we overwrite the original aria-label.
 
-	      return {
-	        'aria-sort': ariaSort
-	      };
-	    },
-	    sortTheadThLabel: function sortTheadThLabel(key, field, isFoot) {
-	      // A label to be placed in an `.sr-only` element in the header cell
-	      if (!this.isSortable || isFoot && this.noFooterSorting) {
-	        // No label if not a sortable table
-	        return null;
-	      }
+	        /* istanbul ignore next */
+	        ariaLabel = startCase(key);
+	      } // The correctness of these labels is very important for screen-reader users.
 
-	      var sortable = field.sortable; // The correctness of these labels is very important for screen-reader users.
 
-	      var labelSorting = '';
+	      var ariaLabelSorting = '';
 
 	      if (sortable) {
 	        if (this.localSortBy === key) {
 	          // currently sorted sortable column.
-	          labelSorting = this.localSortDesc ? this.labelSortAsc : this.labelSortDesc;
+	          ariaLabelSorting = this.localSortDesc ? this.labelSortAsc : this.labelSortDesc;
 	        } else {
 	          // Not currently sorted sortable column.
 	          // Not using nested ternary's here for clarity/readability
 	          // Default for ariaLabel
-	          labelSorting = this.localSortDesc ? this.labelSortDesc : this.labelSortAsc; // Handle sortDirection setting
+	          ariaLabelSorting = this.localSortDesc ? this.labelSortDesc : this.labelSortAsc; // Handle sortDirection setting
 
 	          var sortDirection = this.sortDirection || field.sortDirection;
 
 	          if (sortDirection === 'asc') {
-	            labelSorting = this.labelSortAsc;
+	            ariaLabelSorting = this.labelSortAsc;
 	          } else if (sortDirection === 'desc') {
-	            labelSorting = this.labelSortDesc;
+	            ariaLabelSorting = this.labelSortDesc;
 	          }
 	        }
 	      } else if (!this.noSortReset) {
 	        // Non sortable column
-	        labelSorting = this.localSortBy ? this.labelSortClear : '';
-	      } // Return the sr-only sort label or null if no label
+	        ariaLabelSorting = this.localSortBy ? this.labelSortClear : '';
+	      } // Assemble the aria-label attribute value
 
 
-	      return trim$1(labelSorting) || null;
+	      ariaLabel = [ariaLabel.trim(), ariaLabelSorting.trim()].filter(Boolean).join(': '); // Assemble the aria-sort attribute value
+
+	      var ariaSort = sortable && this.localSortBy === key ? this.localSortDesc ? 'descending' : 'ascending' : sortable ? 'none' : null; // Return the attributes
+	      // (All the above just to get these two values)
+
+	      return {
+	        'aria-label': ariaLabel || null,
+	        'aria-sort': ariaSort
+	      };
 	    }
 	  }
 	};
@@ -28123,13 +26649,13 @@
 	  return sel && sel.toString().trim() !== '' && sel.containsNode && isElement(el) ? sel.containsNode(el, true) : false;
 	};
 
-	function ownKeys$J(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$I(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$J(target) {
+	function _objectSpread$I(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$J(Object(source), true).forEach(function (key) { _defineProperty$10(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$J(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$I(source, true).forEach(function (key) { _defineProperty$$(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$I(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$10(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$$(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$T = {
 	  headVariant: {
 	    // Also sniffed by <b-tr> / <b-td> / <b-th>
@@ -28199,7 +26725,7 @@
 	      return [this.headVariant ? "thead-".concat(this.headVariant) : null];
 	    },
 	    theadAttrs: function theadAttrs() {
-	      return _objectSpread$J({
+	      return _objectSpread$I({
 	        role: 'rowgroup'
 	      }, this.$attrs);
 	    }
@@ -28214,13 +26740,13 @@
 	  }
 	});
 
-	function ownKeys$K(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$J(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$K(target) {
+	function _objectSpread$J(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$K(Object(source), true).forEach(function (key) { _defineProperty$11(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$K(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$J(source, true).forEach(function (key) { _defineProperty$10(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$J(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$11(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$10(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$U = {
 	  footVariant: {
 	    type: String,
@@ -28291,7 +26817,7 @@
 	      return [this.footVariant ? "thead-".concat(this.footVariant) : null];
 	    },
 	    tfootAttrs: function tfootAttrs() {
-	      return _objectSpread$K({
+	      return _objectSpread$J({
 	        role: 'rowgroup'
 	      }, this.$attrs);
 	    }
@@ -28306,13 +26832,13 @@
 	  }
 	});
 
-	function ownKeys$L(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$K(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$L(target) {
+	function _objectSpread$K(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$L(Object(source), true).forEach(function (key) { _defineProperty$12(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$L(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$K(source, true).forEach(function (key) { _defineProperty$11(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$K(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$12(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$11(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$V = {
 	  variant: {
 	    type: String,
@@ -28398,7 +26924,7 @@
 	      return [this.variant ? "".concat(this.isRowDark ? 'bg' : 'table', "-").concat(this.variant) : null];
 	    },
 	    trAttrs: function trAttrs() {
-	      return _objectSpread$L({
+	      return _objectSpread$K({
 	        role: 'row'
 	      }, this.$attrs);
 	    }
@@ -28413,13 +26939,13 @@
 	  }
 	});
 
-	function ownKeys$M(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$L(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$M(target) {
+	function _objectSpread$L(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$M(Object(source), true).forEach(function (key) { _defineProperty$13(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$M(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$L(source, true).forEach(function (key) { _defineProperty$12(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$L(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$13(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$12(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var digitsRx = /^\d+$/; // Parse a rowspan or colspan into a digit (or null if < 1 or NaN)
 
 	var parseSpan = function parseSpan(val) {
@@ -28576,7 +27102,7 @@
 	        scope = rowspan > 0 ? 'rowgroup' : 'row';
 	      }
 
-	      return _objectSpread$M({
+	      return _objectSpread$L({
 	        colspan: colspan,
 	        rowspan: rowspan,
 	        role: role,
@@ -28611,21 +27137,21 @@
 	  }
 	});
 
-	function _toConsumableArray$7(arr) { return _arrayWithoutHoles$7(arr) || _iterableToArray$7(arr) || _nonIterableSpread$7(); }
+	function _toConsumableArray$6(arr) { return _arrayWithoutHoles$6(arr) || _iterableToArray$6(arr) || _nonIterableSpread$6(); }
 
-	function _nonIterableSpread$7() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+	function _nonIterableSpread$6() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
 
-	function _iterableToArray$7(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); } }
+	function _iterableToArray$6(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); } }
 
-	function _arrayWithoutHoles$7(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+	function _arrayWithoutHoles$6(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
-	function ownKeys$N(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$M(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$N(target) {
+	function _objectSpread$M(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$N(Object(source), true).forEach(function (key) { _defineProperty$14(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$N(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$M(source, true).forEach(function (key) { _defineProperty$13(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$M(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$14(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$13(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var theadMixin = {
 	  props: {
 	    headVariant: {
@@ -28700,8 +27226,7 @@
 	          ariaLabel = startCase(field.key);
 	        }
 
-	        var hasHeadClickListener = _this.hasListener('head-clicked') || _this.isSortable;
-
+	        var hasHeadClickListener = _this.$listeners['head-clicked'] || _this.isSortable;
 	        var handlers = {};
 
 	        if (hasHeadClickListener) {
@@ -28720,7 +27245,6 @@
 
 	        var sortAttrs = _this.isSortable ? _this.sortTheadThAttrs(field.key, field, isFoot) : {};
 	        var sortClass = _this.isSortable ? _this.sortTheadThClasses(field.key, field, isFoot) : null;
-	        var sortLabel = _this.isSortable ? _this.sortTheadThLabel(field.key, field, isFoot) : null;
 	        var data = {
 	          key: field.key,
 	          class: [_this.fieldClasses(field), sortClass],
@@ -28729,12 +27253,12 @@
 	            stickyColumn: field.stickyColumn
 	          },
 	          style: field.thStyle || {},
-	          attrs: _objectSpread$N({
+	          attrs: _objectSpread$M({
 	            // We only add a tabindex of 0 if there is a head-clicked listener
 	            tabindex: hasHeadClickListener ? '0' : null,
 	            abbr: field.headerAbbr || null,
 	            title: field.headerTitle || null,
-	            'aria-colindex': colIndex + 1,
+	            'aria-colindex': String(colIndex + 1),
 	            'aria-label': ariaLabel
 	          }, _this.getThValues(null, field.key, field.thAttr, isFoot ? 'foot' : 'head', {}), {}, sortAttrs),
 	          on: handlers
@@ -28748,30 +27272,34 @@
 
 	        if (isFoot) {
 	          // Footer will fallback to header slot names
-	          slotNames = ["foot(".concat(field.key, ")"), "foot(".concat(field.key.toLowerCase(), ")"), 'foot()'].concat(_toConsumableArray$7(slotNames));
+	          slotNames = ["foot(".concat(field.key, ")"), "foot(".concat(field.key.toLowerCase(), ")"), 'foot()'].concat(_toConsumableArray$6(slotNames));
 	        }
 
-	        var scope = {
-	          label: field.label,
-	          column: field.key,
-	          field: field,
-	          isFoot: isFoot,
-	          // Add in row select methods
-	          selectAllRows: selectAllRows,
-	          clearSelected: clearSelected
-	        };
-	        var content = _this.normalizeSlot(slotNames, scope) || (field.labelHtml ? h('div', {
-	          domProps: htmlOrText(field.labelHtml)
-	        }) : field.label);
-	        var srLabel = sortLabel ? h('span', {
-	          staticClass: 'sr-only'
-	        }, " (".concat(sortLabel, ")")) : null; // Return the header cell
+	        var hasSlot = _this.hasNormalizedSlot(slotNames);
 
-	        return h(BTh, data, [content, srLabel].filter(identity));
+	        var slot = field.label;
+
+	        if (hasSlot) {
+	          slot = _this.normalizeSlot(slotNames, {
+	            label: field.label,
+	            column: field.key,
+	            field: field,
+	            isFoot: isFoot,
+	            // Add in row select methods
+	            selectAllRows: selectAllRows,
+	            clearSelected: clearSelected
+	          });
+	        } else {
+	          data.domProps = htmlOrText(field.labelHtml);
+	        }
+
+	        return h(BTh, data, slot);
 	      }; // Generate the array of <th> cells
 
 
-	      var $cells = fields.map(makeCell).filter(identity); // Genrate the row(s)
+	      var $cells = fields.map(makeCell).filter(function (th) {
+	        return th;
+	      }); // Genrate the row(s)
 
 	      var $trs = [];
 
@@ -28867,13 +27395,13 @@
 	  }
 	};
 
-	function ownKeys$O(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$N(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$O(target) {
+	function _objectSpread$N(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$O(Object(source), true).forEach(function (key) { _defineProperty$15(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$O(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$N(source, true).forEach(function (key) { _defineProperty$14(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$N(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$15(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$14(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var props$X = {
 	  tbodyTransitionProps: {
 	    type: Object // default: undefined
@@ -28945,12 +27473,12 @@
 	      return this.tbodyTransitionProps || this.tbodyTransitionHandlers;
 	    },
 	    tbodyAttrs: function tbodyAttrs() {
-	      return _objectSpread$O({
+	      return _objectSpread$N({
 	        role: 'rowgroup'
 	      }, this.$attrs);
 	    },
 	    tbodyProps: function tbodyProps() {
-	      return this.tbodyTransitionProps ? _objectSpread$O({}, this.tbodyTransitionProps, {
+	      return this.tbodyTransitionProps ? _objectSpread$N({}, this.tbodyTransitionProps, {
 	        tag: 'tbody'
 	      }) : {};
 	    }
@@ -28975,22 +27503,18 @@
 	  }
 	});
 
-	function ownKeys$P(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$O(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$P(target) {
+	function _objectSpread$O(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$P(Object(source), true).forEach(function (key) { _defineProperty$16(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$P(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$O(source, true).forEach(function (key) { _defineProperty$15(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$O(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$16(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$15(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var detailsSlotName = 'row-details';
 	var tbodyRowMixin = {
 	  props: {
 	    tbodyTrClass: {
 	      type: [String, Array, Object, Function],
-	      default: null
-	    },
-	    tbodyTrAttr: {
-	      type: [Object, Function],
 	      default: null
 	    },
 	    detailsTdClass: {
@@ -29097,7 +27621,7 @@
 	        key: "row-".concat(rowIndex, "-cell-").concat(colIndex, "-").concat(key),
 	        class: [field.class ? field.class : '', this.getTdValues(item, key, field.tdClass, '')],
 	        props: {},
-	        attrs: _objectSpread$P({
+	        attrs: _objectSpread$O({
 	          'aria-colindex': String(colIndex + 1)
 	        }, field.isRowHeader ? this.getThValues(item, key, field.thAttr, 'row', {}) : this.getTdValues(item, key, field.tdAttr, {}))
 	      };
@@ -29171,7 +27695,7 @@
 	      var fields = this.computedFields;
 	      var tableStriped = this.striped;
 	      var hasDetailsSlot = this.hasNormalizedSlot(detailsSlotName);
-	      var rowShowDetails = item._showDetails && hasDetailsSlot;
+	      var rowShowDetails = Boolean(item._showDetails && hasDetailsSlot);
 	      var hasRowClickHandler = this.$listeners['row-clicked'] || this.hasSelectableRowClick; // We can return more than one TR if rowDetails enabled
 
 	      var $rows = []; // Details ID needed for `aria-details` when details showing
@@ -29196,29 +27720,24 @@
 
 	      var primaryKey = this.primaryKey;
 	      var primaryKeyValue = toString$3(get$1(item, primaryKey)) || null;
-	      var rowKey = primaryKeyValue || toString$3(rowIndex); // If primary key is provided, use it to generate a unique ID on each tbody > tr
+	      var rowKey = primaryKeyValue || String(rowIndex); // If primary key is provided, use it to generate a unique ID on each tbody > tr
 	      // In the format of '{tableId}__row_{primaryKeyValue}'
 
 	      var rowId = primaryKeyValue ? this.safeId("_row_".concat(primaryKeyValue)) : null; // Selectable classes and attributes
 
 	      var selectableClasses = this.selectableRowClasses ? this.selectableRowClasses(rowIndex) : {};
-	      var selectableAttrs = this.selectableRowAttrs ? this.selectableRowAttrs(rowIndex) : {}; // Additional classes and attributes
-
-	      var userTrClasses = isFunction(this.tbodyTrClass) ? this.tbodyTrClass(item, 'row') : this.tbodyTrClass;
-	      var userTrAttrs = isFunction(this.tbodyTrAttr) ? this.tbodyTrAttr(item, 'row') : this.tbodyTrAttr; // Add the item row
+	      var selectableAttrs = this.selectableRowAttrs ? this.selectableRowAttrs(rowIndex) : {}; // Add the item row
 
 	      $rows.push(h(BTr, {
 	        key: "__b-table-row-".concat(rowKey, "__"),
 	        ref: 'itemRows',
 	        refInFor: true,
-	        class: [userTrClasses, selectableClasses, rowShowDetails ? 'b-table-has-details' : ''],
+	        class: [isFunction(this.tbodyTrClass) ? this.tbodyTrClass(item, 'row') : this.tbodyTrClass, selectableClasses, rowShowDetails ? 'b-table-has-details' : ''],
 	        props: {
 	          variant: item._rowVariant || null
 	        },
-	        attrs: _objectSpread$P({
-	          id: rowId
-	        }, userTrAttrs, {
-	          // Users cannot override the following attributes
+	        attrs: _objectSpread$O({
+	          id: rowId,
 	          tabindex: hasRowClickHandler ? '0' : null,
 	          'data-pk': primaryKeyValue || null,
 	          'aria-details': detailsId,
@@ -29275,20 +27794,17 @@
 	        } // Add the actual details row
 
 
-	        var userDetailsTrClasses = isFunction(this.tbodyTrClass) ? this.tbodyTrClass(item, detailsSlotName) : this.tbodyTrClass;
-	        var userDetailsTrAttrs = isFunction(this.tbodyTrAttr) ? this.tbodyTrAttr(item, detailsSlotName) : this.tbodyTrAttr;
 	        $rows.push(h(BTr, {
 	          key: "__b-table-details__".concat(rowKey),
 	          staticClass: 'b-table-details',
-	          class: [userDetailsTrClasses],
+	          class: [isFunction(this.tbodyTrClass) ? this.tbodyTrClass(item, detailsSlotName) : this.tbodyTrClass],
 	          props: {
 	            variant: item._rowVariant || null
 	          },
-	          attrs: _objectSpread$P({}, userDetailsTrAttrs, {
-	            // Users cannot override the following attributes
+	          attrs: {
 	            id: detailsId,
 	            tabindex: '-1'
-	          })
+	          }
 	        }, [$details]));
 	      } else if (hasDetailsSlot) {
 	        // Only add the placeholder if a the table has a row-details slot defined (but not shown)
@@ -29306,15 +27822,15 @@
 	  }
 	};
 
-	function ownKeys$Q(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$P(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$Q(target) {
+	function _objectSpread$P(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$Q(Object(source), true).forEach(function (key) { _defineProperty$17(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$Q(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$P(source, true).forEach(function (key) { _defineProperty$16(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$P(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$17(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$16(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	var props$Y = _objectSpread$Q({}, props$X, {
+	var props$Y = _objectSpread$P({}, props$X, {
 	  tbodyClass: {
 	    type: [String, Array, Object] // default: undefined
 
@@ -29331,14 +27847,17 @@
 	      // `this.$refs.itemRows` is an array of item TR components/elements
 	      // Rows should all be B-TR components, but we map to TR elements
 	      // Also note that `this.$refs.itemRows` may not always be in document order
-	      var refs = this.$refs || {};
-	      var tbody = refs.tbody ? refs.tbody.$el || refs.tbody : null;
-	      var trs = (refs.itemRows || []).map(function (tr) {
+	      var tbody = this.$refs.tbody.$el || this.$refs.tbody;
+	      var trs = (this.$refs.itemRows || []).map(function (tr) {
 	        return tr.$el || tr;
-	      });
-	      return tbody && tbody.children && tbody.children.length > 0 && trs && trs.length > 0 ? from(tbody.children).filter(function (tr) {
+	      }); // TODO: This may take time for tables many rows, so we may want to cache
+	      //       the result of this during each render cycle on a non-reactive
+	      //       property. We clear out the cache as each render starts, and
+	      //       populate it on first access of this method if null
+
+	      return from(tbody.children).filter(function (tr) {
 	        return arrayIncludes(trs, tr);
-	      }) : [];
+	      });
 	    },
 	    getTbodyTrIndex: function getTbodyTrIndex(el) {
 	      // Returns index of a particular TBODY item TR
@@ -29354,7 +27873,7 @@
 	    },
 	    emitTbodyRowEvent: function emitTbodyRowEvent(type, evt) {
 	      // Emits a row event, with the item object, row index and original event
-	      if (type && this.hasListener(type) && evt && evt.target) {
+	      if (type && evt && evt.target) {
 	        var rowIndex = this.getTbodyTrIndex(evt.target);
 
 	        if (rowIndex > -1) {
@@ -29448,7 +27967,7 @@
 	      var items = this.computedItems; // Shortcut to `createElement` (could use `this._c()` instead)
 
 	      var h = this.$createElement;
-	      var hasRowClickHandler = this.hasListener('row-clicked') || this.hasSelectableRowClick; // Prepare the tbody rows
+	      var hasRowClickHandler = this.$listeners['row-clicked'] || this.hasSelectableRowClick; // Prepare the tbody rows
 
 	      var $rows = []; // Add the item data rows or the busy slot
 
@@ -29487,20 +28006,20 @@
 	        // as we can't control `data-label` attr)
 
 	        $rows.push(this.renderBottomRow ? this.renderBottomRow() : h());
-	      } // Note: these events will only emit if a listener is registered
-
+	      }
 
 	      var handlers = {
+	        // TODO: We may want to to only instantiate these handlers
+	        //       if there is an event listener registered
 	        auxclick: this.onTbodyRowMiddleMouseRowClicked,
-	        // TODO:
-	        //   Perhaps we do want to automatically prevent the
-	        //   default context menu from showing if there is a
-	        //   `row-contextmenu` listener registered
+	        // TODO: Perhaps we do want to automatically prevent the
+	        //       default context menu from showing if there is
+	        //       a `row-contextmenu` listener registered.
 	        contextmenu: this.onTbodyRowContextmenu,
 	        // The following event(s) is not considered A11Y friendly
-	        dblclick: this.onTbodyRowDblClicked // Hover events (`mouseenter`/`mouseleave`) are handled by `tbody-row` mixin
+	        dblclick: this.onTbodyRowDblClicked // hover events (mouseenter/mouseleave) ad handled by tbody-row mixin
 
-	      }; // Add in click/keydown listeners if needed
+	      };
 
 	      if (hasRowClickHandler) {
 	        handlers.click = this.onTBodyRowClicked;
@@ -29583,8 +28102,7 @@
 	        $empty = h(BTr, {
 	          key: this.isFiltered ? 'b-empty-filtered-row' : 'b-empty-row',
 	          staticClass: 'b-table-empty-row',
-	          class: [isFunction(this.tbodyTrClass) ? this.tbodyTrClass(null, 'row-empty') : this.tbodyTrClass],
-	          attrs: isFunction(this.tbodyTrAttr) ? this.tbodyTrAttr(null, 'row-empty') : this.tbodyTrAttr
+	          class: [isFunction(this.tbodyTrClass) ? this.tbodyTrClass(null, 'row-empty') : this.tbodyTrClass]
 	        }, [$empty]);
 	      }
 
@@ -29608,8 +28126,7 @@
 	      return h(BTr, {
 	        key: 'b-top-row',
 	        staticClass: 'b-table-top-row',
-	        class: [isFunction(this.tbodyTrClass) ? this.tbodyTrClass(null, 'row-top') : this.tbodyTrClass],
-	        attrs: isFunction(this.tbodyTrAttr) ? this.tbodyTrAttr(null, 'row-top') : this.tbodyTrAttr
+	        class: [isFunction(this.tbodyTrClass) ? this.tbodyTrClass(null, 'row-top') : this.tbodyTrClass]
 	      }, [this.normalizeSlot(slotName, {
 	        columns: fields.length,
 	        fields: fields
@@ -29633,8 +28150,7 @@
 	      return h(BTr, {
 	        key: 'b-bottom-row',
 	        staticClass: 'b-table-bottom-row',
-	        class: [isFunction(this.tbodyTrClass) ? this.tbodyTrClass(null, 'row-bottom') : this.tbodyTrClass],
-	        attrs: isFunction(this.tbodyTrAttr) ? this.tbodyTrAttr(null, 'row-bottom') : this.tbodyTrAttr
+	        class: [isFunction(this.tbodyTrClass) ? this.tbodyTrClass(null, 'row-bottom') : this.tbodyTrClass]
 	      }, this.normalizeSlot(slotName$1, {
 	        columns: fields.length,
 	        fields: fields
@@ -29689,8 +28205,7 @@
 	        return h(BTr, {
 	          key: 'table-busy-slot',
 	          staticClass: 'b-table-busy-slot',
-	          class: [isFunction(this.tbodyTrClass) ? this.tbodyTrClass(null, busySlotName) : this.tbodyTrClass],
-	          attrs: isFunction(this.tbodyTrAttr) ? this.tbodyTrAttr(null, busySlotName) : this.tbodyTrAttr
+	          class: [isFunction(this.tbodyTrClass) ? this.tbodyTrClass(null, busySlotName) : this.tbodyTrClass]
 	        }, [h(BTd, {
 	          props: {
 	            colspan: this.computedFields.length || null
@@ -29705,7 +28220,7 @@
 	  }
 	};
 
-	function _defineProperty$18(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$17(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	var selectableMixin = {
 	  props: {
 	    selectable: {
@@ -29748,7 +28263,7 @@
 	      return true;
 	    },
 	    selectableHasSelection: function selectableHasSelection() {
-	      return this.isSelectable && this.selectedRows && this.selectedRows.length > 0 && this.selectedRows.some(identity);
+	      return this.isSelectable && this.selectedRows && this.selectedRows.length > 0 && this.selectedRows.some(Boolean);
 	    },
 	    selectableIsMultiSelect: function selectableIsMultiSelect() {
 	      return this.isSelectable && arrayIncludes(['range', 'multi'], this.selectMode);
@@ -29758,7 +28273,7 @@
 
 	      return _ref = {
 	        'b-table-selectable': this.isSelectable
-	      }, _defineProperty$18(_ref, "b-table-select-".concat(this.selectMode), this.isSelectable), _defineProperty$18(_ref, 'b-table-selecting', this.selectableHasSelection), _defineProperty$18(_ref, 'b-table-selectable-no-click', this.isSelectable && !this.hasSelectableRowClick), _ref;
+	      }, _defineProperty$17(_ref, "b-table-select-".concat(this.selectMode), this.isSelectable), _defineProperty$17(_ref, 'b-table-selecting', this.selectableHasSelection), _defineProperty$17(_ref, 'b-table-selectable-no-click', this.isSelectable && !this.hasSelectableRowClick), _ref;
 	    },
 	    selectableTableAttrs: function selectableTableAttrs() {
 	      return {
@@ -29853,7 +28368,7 @@
 	    },
 	    isRowSelected: function isRowSelected(index) {
 	      // Determine if a row is selected (indexed based on `computedItems`)
-	      return !!(isNumber(index) && this.selectedRows[index]);
+	      return Boolean(isNumber(index) && this.selectedRows[index]);
 	    },
 	    clearSelected: function clearSelected() {
 	      // Clear any active selected row(s)
@@ -29864,7 +28379,7 @@
 	    selectableRowClasses: function selectableRowClasses(index) {
 	      if (this.isSelectable && this.isRowSelected(index)) {
 	        var variant = this.selectedVariant;
-	        return _defineProperty$18({
+	        return _defineProperty$17({
 	          'b-table-row-selected': true
 	        }, "".concat(this.dark ? 'bg' : 'table', "-").concat(variant), variant);
 	      } else {
@@ -30095,7 +28610,7 @@
 	              // busy state as most likely there was an error in the provider function
 
 	              /* istanbul ignore next */
-	              warn("Provider function didn't request callback and did not return a promise or data.", 'BTable');
+	              warn("b-table provider function didn't request callback and did not return a promise or data");
 	              _this2.localBusy = false;
 	            }
 	          }
@@ -30104,7 +28619,7 @@
 	        {
 	          // Provider function borked on us, so we spew out a warning
 	          // and clear the busy state
-	          warn("Provider function error [".concat(e.name, "] ").concat(e.message, "."), 'BTable');
+	          warn("b-table provider function error [".concat(e.name, "] ").concat(e.message));
 	          _this2.localBusy = false;
 
 	          _this2.$off('refreshed', _this2.refresh);
@@ -30114,13 +28629,13 @@
 	  }
 	};
 
-	function ownKeys$R(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$Q(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$R(target) {
+	function _objectSpread$Q(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$R(Object(source), true).forEach(function (key) { _defineProperty$19(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$R(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$Q(source, true).forEach(function (key) { _defineProperty$18(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$Q(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$19(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$18(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	// Includes all main table styling options
 
 	var tableRendererMixin = {
@@ -30202,7 +28717,7 @@
 	      return this.isStacked ? false : stickyHeader;
 	    },
 	    wrapperClasses: function wrapperClasses() {
-	      return [this.isStickyHeader ? 'b-table-sticky-header' : '', this.isResponsive === true ? 'table-responsive' : this.isResponsive ? "table-responsive-".concat(this.responsive) : ''].filter(identity);
+	      return [this.isStickyHeader ? 'b-table-sticky-header' : '', this.isResponsive === true ? 'table-responsive' : this.isResponsive ? "table-responsive-".concat(this.responsive) : ''].filter(Boolean);
 	    },
 	    wrapperStyles: function wrapperStyles() {
 	      return this.isStickyHeader && !isBoolean(this.isStickyHeader) ? {
@@ -30231,18 +28746,18 @@
 	    },
 	    tableAttrs: function tableAttrs() {
 	      // Preserve user supplied aria-describedby, if provided in `$attrs`
-	      var adb = [(this.$attrs || {})['aria-describedby'], this.captionId].filter(identity).join(' ') || null;
+	      var adb = [(this.$attrs || {})['aria-describedby'], this.captionId].filter(Boolean).join(' ') || null;
 	      var items = this.computedItems;
 	      var filteredItems = this.filteredItems;
 	      var fields = this.computedFields;
 	      var selectableAttrs = this.selectableTableAttrs || {};
 	      var ariaAttrs = this.isTableSimple ? {} : {
 	        'aria-busy': this.computedBusy ? 'true' : 'false',
-	        'aria-colcount': toString$3(fields.length),
+	        'aria-colcount': String(fields.length),
 	        'aria-describedby': adb
 	      };
-	      var rowCount = items && filteredItems && filteredItems.length > items.length ? toString$3(filteredItems.length) : null;
-	      return _objectSpread$R({
+	      var rowCount = items && filteredItems && filteredItems.length > items.length ? String(filteredItems.length) : null;
+	      return _objectSpread$Q({
 	        // We set `aria-rowcount` before merging in `$attrs`,
 	        // in case user has supplied their own
 	        'aria-rowcount': rowCount
@@ -30277,7 +28792,7 @@
 	      staticClass: 'table b-table',
 	      class: this.tableClasses,
 	      attrs: this.tableAttrs
-	    }, $content.filter(identity)); // Add responsive/sticky wrapper if needed and return table
+	    }, $content.filter(Boolean)); // Add responsive/sticky wrapper if needed and return table
 
 	    return this.wrapperClasses.length > 0 ? h('div', {
 	      key: 'wrap',
@@ -30296,7 +28811,7 @@
 	  // Order of mixins is important!
 	  // They are merged from first to last, followed by this component.
 	  mixins: [// Required Mixins
-	  hasListenerMixin, idMixin, normalizeSlotMixin, itemsMixin, tableRendererMixin, stackedMixin, theadMixin, tfootMixin, tbodyMixin, // Features Mixins
+	  idMixin, normalizeSlotMixin, itemsMixin, tableRendererMixin, stackedMixin, theadMixin, tfootMixin, tbodyMixin, // Features Mixins
 	  stackedMixin, filteringMixin, sortingMixin, paginationMixin$1, captionMixin, colgroupMixin, selectableMixin, emptyMixin, topRowMixin, bottomRowMixin, busyMixin, providerMixin] // render function provided by table-renderer mixin
 
 	});
@@ -30310,7 +28825,7 @@
 	  // Order of mixins is important!
 	  // They are merged from first to last, followed by this component.
 	  mixins: [// Required mixins
-	  hasListenerMixin, idMixin, normalizeSlotMixin, itemsMixin, tableRendererMixin, stackedMixin, theadMixin, tfootMixin, tbodyMixin, // Features Mixins
+	  idMixin, normalizeSlotMixin, itemsMixin, tableRendererMixin, stackedMixin, theadMixin, tfootMixin, tbodyMixin, // Features Mixins
 	  // These are pretty lightweight, and are useful for lightweight tables
 	  captionMixin, colgroupMixin] // render function provided by table-renderer mixin
 
@@ -30369,13 +28884,13 @@
 	  }
 	});
 
-	function ownKeys$S(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$R(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$S(target) {
+	function _objectSpread$R(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$S(Object(source), true).forEach(function (key) { _defineProperty$1a(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$S(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$R(source, true).forEach(function (key) { _defineProperty$19(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$R(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$1a(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$19(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	var navProps = omit(props$I, ['tabs', 'isNavBar', 'cardHeader']); // -- Utils --
 	// Filter function to filter out disabled tabs
@@ -30540,7 +29055,7 @@
 	    prop: 'value',
 	    event: 'input'
 	  },
-	  props: _objectSpread$S({}, navProps, {
+	  props: _objectSpread$R({}, navProps, {
 	    tag: {
 	      type: String,
 	      default: 'div'
@@ -30828,7 +29343,7 @@
 	        }).join(', ');
 	        order = selectAll(selector, this.$el).map(function (el) {
 	          return el.id;
-	        }).filter(identity);
+	        }).filter(Boolean);
 	      } // Stable sort keeps the original order if not found in the
 	      // `order` array, which will be an empty array before mount.
 
@@ -30886,7 +29401,7 @@
 	        return btn.tab === tab;
 	      });
 	    },
-	    // Force a button to re-render its content, given a <b-tab> instance
+	    // Force a button to re-render it's content, given a <b-tab> instance
 	    // Called by <b-tab> on `update()`
 	    updateButton: function updateButton(tab) {
 	      var button = this.getButtonForTab(tab);
@@ -30942,7 +29457,7 @@
 
 	      return false;
 	    },
-	    // Focus a tab button given its <b-tab> instance
+	    // Focus a tab button given it's <b-tab> instance
 	    focusButton: function focusButton(tab) {
 	      var _this8 = this;
 
@@ -31129,7 +29644,10 @@
 	  inject: {
 	    bvTabs: {
 	      default: function _default() {
-	        return {};
+	        return {
+	          // Don't set a tab index if not rendered inside <b-tabs>
+	          noKeyNav: true
+	        };
 	      }
 	    }
 	  },
@@ -31290,6 +29808,7 @@
 	      attrs: {
 	        role: 'tabpanel',
 	        id: this.safeId(),
+	        tabindex: this.localActive && !this.bvTabs.noKeyNav ? '-1' : null,
 	        'aria-hidden': this.localActive ? 'false' : 'true',
 	        'aria-labelledby': this.controlledBy || null
 	      }
@@ -31327,11 +29846,11 @@
 	  return _typeof$4(obj);
 	}
 
-	function _toConsumableArray$8(arr) {
-	  return _arrayWithoutHoles$8(arr) || _iterableToArray$8(arr) || _nonIterableSpread$8();
+	function _toConsumableArray$7(arr) {
+	  return _arrayWithoutHoles$7(arr) || _iterableToArray$7(arr) || _nonIterableSpread$7();
 	}
 
-	function _arrayWithoutHoles$8(arr) {
+	function _arrayWithoutHoles$7(arr) {
 	  if (Array.isArray(arr)) {
 	    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; }
 
@@ -31339,11 +29858,11 @@
 	  }
 	}
 
-	function _iterableToArray$8(iter) {
+	function _iterableToArray$7(iter) {
 	  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); }
 	}
 
-	function _nonIterableSpread$8() {
+	function _nonIterableSpread$7() {
 	  throw new TypeError("Invalid attempt to spread non-iterable instance");
 	}
 
@@ -31589,7 +30108,7 @@
 	        var transport = {
 	          from: this.name,
 	          to: this.to,
-	          passengers: _toConsumableArray$8(slotContent),
+	          passengers: _toConsumableArray$7(slotContent),
 	          order: this.order
 	        };
 	        wormhole.open(transport);
@@ -31893,7 +30412,7 @@
 	});
 	//# sourceMappingURL=portal-vue.esm.js.map
 
-	var NAME$B = 'BToaster';
+	var NAME$x = 'BToaster';
 	var props$Z = {
 	  name: {
 	    type: String,
@@ -31902,13 +30421,13 @@
 	  ariaLive: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$B, 'ariaLive');
+	      return getComponentConfig(NAME$x, 'ariaLive');
 	    }
 	  },
 	  ariaAtomic: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$B, 'ariaAtomic');
+	      return getComponentConfig(NAME$x, 'ariaAtomic');
 	    } // Allowed: 'true' or 'false' or null
 
 	  },
@@ -31916,7 +30435,7 @@
 	    // Aria role
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$B, 'role');
+	      return getComponentConfig(NAME$x, 'role');
 	    }
 	  }
 	  /*
@@ -31965,7 +30484,7 @@
 	var BToaster =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$B,
+	  name: NAME$x,
 	  props: props$Z,
 	  data: function data() {
 	    return {
@@ -31983,7 +30502,7 @@
 	    /* istanbul ignore if */
 
 	    if (wormhole.hasTarget(this.staticName)) {
-	      warn("A \"<portal-target>\" with name \"".concat(this.name, "\" already exists in the document."), 'BToaster');
+	      warn("b-toaster: A <portal-target> with name '".concat(this.name, "' already exists in the document."));
 	      this.dead = true;
 	    } else {
 	      this.doRender = true;
@@ -32038,15 +30557,15 @@
 	  }
 	});
 
-	function ownKeys$T(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$S(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$T(target) {
+	function _objectSpread$S(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$T(Object(source), true).forEach(function (key) { _defineProperty$1b(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$T(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$S(source, true).forEach(function (key) { _defineProperty$1a(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$S(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$1b(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$1a(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	var NAME$C = 'BToast';
+	var NAME$y = 'BToast';
 	var MIN_DURATION = 1000;
 	var EVENT_OPTIONS = {
 	  passive: true,
@@ -32067,7 +30586,7 @@
 	  toaster: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$C, 'toaster');
+	      return getComponentConfig(NAME$y, 'toaster');
 	    }
 	  },
 	  visible: {
@@ -32077,7 +30596,7 @@
 	  variant: {
 	    type: String,
 	    default: function _default() {
-	      return getComponentConfig(NAME$C, 'variant');
+	      return getComponentConfig(NAME$y, 'variant');
 	    }
 	  },
 	  isStatus: {
@@ -32096,7 +30615,7 @@
 	  autoHideDelay: {
 	    type: [Number, String],
 	    default: function _default() {
-	      return getComponentConfig(NAME$C, 'autoHideDelay');
+	      return getComponentConfig(NAME$y, 'autoHideDelay');
 	    }
 	  },
 	  noCloseButton: {
@@ -32118,19 +30637,19 @@
 	  toastClass: {
 	    type: [String, Object, Array],
 	    default: function _default() {
-	      return getComponentConfig(NAME$C, 'toastClass');
+	      return getComponentConfig(NAME$y, 'toastClass');
 	    }
 	  },
 	  headerClass: {
 	    type: [String, Object, Array],
 	    default: function _default() {
-	      return getComponentConfig(NAME$C, 'headerClass');
+	      return getComponentConfig(NAME$y, 'headerClass');
 	    }
 	  },
 	  bodyClass: {
 	    type: [String, Object, Array],
 	    default: function _default() {
-	      return getComponentConfig(NAME$C, 'bodyClass');
+	      return getComponentConfig(NAME$y, 'bodyClass');
 	    }
 	  },
 	  href: {
@@ -32151,7 +30670,7 @@
 	var BToast =
 	/*#__PURE__*/
 	Vue.extend({
-	  name: NAME$C,
+	  name: NAME$y,
 	  mixins: [idMixin, listenOnRootMixin, normalizeSlotMixin, scopedStyleAttrsMixin],
 	  inheritAttrs: false,
 	  model: {
@@ -32174,7 +30693,7 @@
 	  },
 	  computed: {
 	    bToastClasses: function bToastClasses() {
-	      return _defineProperty$1b({
+	      return _defineProperty$1a({
 	        'b-toast-solid': this.solid,
 	        'b-toast-append': this.appendToast,
 	        'b-toast-prepend': !this.appendToast
@@ -32187,7 +30706,7 @@
 	    },
 	    computedDuration: function computedDuration() {
 	      // Minimum supported duration is 1 second
-	      return Math.max(toInteger(this.autoHideDelay) || 0, MIN_DURATION);
+	      return Math.max(parseInt(this.autoHideDelay, 10) || 0, MIN_DURATION);
 	    },
 	    computedToaster: function computedToaster() {
 	      return String(this.toaster);
@@ -32213,8 +30732,12 @@
 	    toaster: function toaster(newVal)
 	    /* istanbul ignore next */
 	    {
+	      var _this = this;
+
 	      // If toaster target changed, make sure toaster exists
-	      this.$nextTick(this.ensureToaster);
+	      this.$nextTick(function () {
+	        return _this.ensureToaster;
+	      });
 	    },
 	    static: function _static(newVal)
 	    /* istanbul ignore next */
@@ -32227,26 +30750,26 @@
 	    }
 	  },
 	  mounted: function mounted() {
-	    var _this = this;
+	    var _this2 = this;
 
 	    this.isMounted = true;
 	    this.$nextTick(function () {
-	      if (_this.visible) {
+	      if (_this2.visible) {
 	        requestAF(function () {
-	          _this.show();
+	          _this2.show();
 	        });
 	      }
 	    }); // Listen for global $root show events
 
 	    this.listenOnRoot('bv::show::toast', function (id) {
-	      if (id === _this.safeId()) {
-	        _this.show();
+	      if (id === _this2.safeId()) {
+	        _this2.show();
 	      }
 	    }); // Listen for global $root hide events
 
 	    this.listenOnRoot('bv::hide::toast', function (id) {
-	      if (!id || id === _this.safeId()) {
-	        _this.hide();
+	      if (!id || id === _this2.safeId()) {
+	        _this2.hide();
 	      }
 	    }); // Make sure we hide when toaster is destroyed
 
@@ -32254,9 +30777,9 @@
 
 	    this.listenOnRoot('bv::toaster::destroyed', function (toaster) {
 	      /* istanbul ignore next */
-	      if (toaster === _this.computedToaster) {
+	      if (toaster === _this2.computedToaster) {
 	        /* istanbul ignore next */
-	        _this.hide();
+	        _this2.hide();
 	      }
 	    });
 	  },
@@ -32265,7 +30788,7 @@
 	  },
 	  methods: {
 	    show: function show() {
-	      var _this2 = this;
+	      var _this3 = this;
 
 	      if (!this.localShow) {
 	        this.ensureToaster();
@@ -32279,13 +30802,13 @@
 	          // We show the toast after we have rendered the portal and b-toast wrapper
 	          // so that screen readers will properly announce the toast
 	          requestAF(function () {
-	            _this2.localShow = true;
+	            _this3.localShow = true;
 	          });
 	        });
 	      }
 	    },
 	    hide: function hide() {
-	      var _this3 = this;
+	      var _this4 = this;
 
 	      if (this.localShow) {
 	        var hideEvt = this.buildEvent('hide');
@@ -32295,13 +30818,13 @@
 	        this.clearDismissTimer();
 	        this.isHiding = true;
 	        requestAF(function () {
-	          _this3.localShow = false;
+	          _this4.localShow = false;
 	        });
 	      }
 	    },
 	    buildEvent: function buildEvent(type) {
 	      var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-	      return new BvEvent(type, _objectSpread$T({
+	      return new BvEvent(type, _objectSpread$S({
 	        cancelable: false,
 	        target: this.$el || null,
 	        relatedTarget: null
@@ -32374,13 +30897,13 @@
 	      this.startDismissTimer();
 	    },
 	    onLinkClick: function onLinkClick() {
-	      var _this4 = this;
+	      var _this5 = this;
 
 	      // We delay the close to allow time for the
 	      // browser to process the link click
 	      this.$nextTick(function () {
 	        requestAF(function () {
-	          _this4.hide();
+	          _this5.hide();
 	        });
 	      });
 	    },
@@ -32406,7 +30929,7 @@
 	      this.doRender = false;
 	    },
 	    makeToast: function makeToast(h) {
-	      var _this5 = this;
+	      var _this6 = this;
 
 	      // Render helper for generating the toast
 	      // Assemble the header content
@@ -32426,7 +30949,7 @@
 	          staticClass: 'ml-auto mb-1',
 	          on: {
 	            click: function click(evt) {
-	              _this5.hide();
+	              _this6.hide();
 	            }
 	          }
 	        }));
@@ -32461,7 +30984,7 @@
 	        ref: 'toast',
 	        staticClass: 'toast',
 	        class: this.toastClass,
-	        attrs: _objectSpread$T({}, this.$attrs, {
+	        attrs: _objectSpread$S({}, this.$attrs, {
 	          tabindex: '0',
 	          id: this.safeId()
 	        })
@@ -32491,7 +31014,7 @@
 	      ref: 'b-toast',
 	      staticClass: 'b-toast',
 	      class: this.bToastClasses,
-	      attrs: _objectSpread$T({}, scopedStyleAttrs, {
+	      attrs: _objectSpread$S({}, scopedStyleAttrs, {
 	        id: this.safeId('_toast_outer'),
 	        role: this.isHiding ? null : this.isStatus ? 'status' : 'alert',
 	        'aria-live': this.isHiding ? null : this.isStatus ? 'polite' : 'assertive',
@@ -32512,21 +31035,21 @@
 
 	function _createClass$5(Constructor, protoProps, staticProps) { if (protoProps) { _defineProperties$5(Constructor.prototype, protoProps); } if (staticProps) { _defineProperties$5(Constructor, staticProps); } return Constructor; }
 
-	function ownKeys$U(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$T(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$U(target) {
+	function _objectSpread$T(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$U(Object(source), true).forEach(function (key) { _defineProperty$1c(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$U(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$T(source, true).forEach(function (key) { _defineProperty$1b(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$T(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$1c(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$1b(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	function _toConsumableArray$9(arr) { return _arrayWithoutHoles$9(arr) || _iterableToArray$9(arr) || _nonIterableSpread$9(); }
+	function _toConsumableArray$8(arr) { return _arrayWithoutHoles$8(arr) || _iterableToArray$8(arr) || _nonIterableSpread$8(); }
 
-	function _nonIterableSpread$9() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+	function _nonIterableSpread$8() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
 
-	function _iterableToArray$9(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); } }
+	function _iterableToArray$8(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") { return Array.from(iter); } }
 
-	function _arrayWithoutHoles$9(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+	function _arrayWithoutHoles$8(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 	var PROP_NAME$3 = '$bvToast';
 	var PROP_NAME_PRIV$1 = '_bv__toast'; // Base toast props that are allowed
@@ -32534,7 +31057,7 @@
 	// Prop ID is allowed, but really only should be used for testing
 	// We need to add it in explicitly as it comes from the `idMixin`
 
-	var BASE_PROPS$1 = ['id'].concat(_toConsumableArray$9(keys$2(omit(props$_, ['static', 'visible'])))); // Map prop names to toast slot names
+	var BASE_PROPS$1 = ['id'].concat(_toConsumableArray$8(keys$2(omit(props$_, ['static', 'visible'])))); // Map prop names to toast slot names
 
 	var propsToSlots$1 = {
 	  toastContent: 'default',
@@ -32609,7 +31132,7 @@
 	      // We set parent as the local VM so these toasts can emit events on the
 	      // app `$root`, and it ensures `BToast` is destroyed when parent is destroyed
 	      parent: $parent,
-	      propsData: _objectSpread$U({}, filterOptions$1(getComponentConfig('BToast') || {}), {}, omit(props, keys$2(propsToSlots$1)), {
+	      propsData: _objectSpread$T({}, filterOptions$1(getComponentConfig('BToast') || {}), {}, omit(props, keys$2(propsToSlots$1)), {
 	        // Props that can't be overridden
 	        static: false,
 	        visible: true
@@ -32668,7 +31191,7 @@
 	          return;
 	        }
 
-	        makeToast(_objectSpread$U({}, filterOptions$1(options), {
+	        makeToast(_objectSpread$T({}, filterOptions$1(options), {
 	          toastContent: content
 	        }), this._vm);
 	      } // shows a `<b-toast>` component with the specified ID
@@ -32709,7 +31232,7 @@
 	      get: function get() {
 	        /* istanbul ignore next */
 	        if (!this || !this[PROP_NAME_PRIV$1]) {
-	          warn("\"".concat(PROP_NAME$3, "\" must be accessed from a Vue instance \"this\" context."), 'BToast');
+	          warn("'".concat(PROP_NAME$3, "' must be accessed from a Vue instance 'this' context"));
 	        }
 
 	        return this[PROP_NAME_PRIV$1];
@@ -32739,13 +31262,13 @@
 	  }
 	});
 
-	function ownKeys$V(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$U(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$V(target) {
+	function _objectSpread$U(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$V(Object(source), true).forEach(function (key) { _defineProperty$1d(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$V(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$U(source, true).forEach(function (key) { _defineProperty$1c(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$U(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$1d(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$1c(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	var BV_TOOLTIP = '__BV_Tooltip__'; // Default trigger
 
@@ -32760,7 +31283,6 @@
 	}; // Directive modifier test regular expressions. Pre-compile for performance
 
 	var htmlRE$1 = /^html$/i;
-	var noninteractiveRE = /^noninteractive$/i;
 	var noFadeRE$1 = /^nofade$/i;
 	var placementRE$1 = /^(auto|top(left|right)?|bottom(left|right)?|left(top|bottom)?|right(top|bottom)?)$/i;
 	var boundaryRE$1 = /^(window|viewport|scrollParent)$/i;
@@ -32768,8 +31290,7 @@
 	var delayShowRE$1 = /^ds\d+$/i;
 	var delayHideRE$1 = /^dh\d+$/i;
 	var offsetRE$1 = /^o-?\d+$/i;
-	var variantRE$1 = /^v-.+$/i;
-	var spacesRE$1 = /\s+/; // Build a Tooltip config based on bindings (if any)
+	var variantRE$1 = /^v-.+$/i; // Build a Tooltip config based on bindings (if any)
 	// Arguments and modifiers take precedence over passed value config object
 
 	var parseBindings$1 = function parseBindings(bindings, vnode)
@@ -32790,7 +31311,6 @@
 	    offset: 0,
 	    id: null,
 	    html: false,
-	    interactive: true,
 	    disabled: false,
 	    delay: getComponentConfig(NAME, 'delay'),
 	    boundary: String(getComponentConfig(NAME, 'boundary')),
@@ -32807,7 +31327,7 @@
 	    config.title = bindings.value;
 	  } else if (isPlainObject(bindings.value)) {
 	    // Value is config object, so merge
-	    config = _objectSpread$V({}, config, {}, bindings.value);
+	    config = _objectSpread$U({}, config, {}, bindings.value);
 	  } // If title is not provided, try title attribute
 
 
@@ -32837,9 +31357,6 @@
 	    if (htmlRE$1.test(mod)) {
 	      // Title allows HTML
 	      config.html = true;
-	    } else if (noninteractiveRE.test(mod)) {
-	      // Noninteractive
-	      config.interactive = false;
 	    } else if (noFadeRE$1.test(mod)) {
 	      // No animation
 	      config.animation = false;
@@ -32873,7 +31390,7 @@
 
 	  var selectedTriggers = {}; // Parse current config object trigger
 
-	  concat(config.trigger || '').filter(identity).join(' ').trim().toLowerCase().split(spacesRE$1).forEach(function (trigger) {
+	  concat(config.trigger || '').filter(Boolean).join(' ').trim().toLowerCase().split(/\s+/).forEach(function (trigger) {
 	    if (validTriggers$1[trigger]) {
 	      selectedTriggers[trigger] = true;
 	    }
@@ -32946,7 +31463,6 @@
 	    offset: config.offset,
 	    noFade: !config.animation,
 	    id: config.id,
-	    interactive: config.interactive,
 	    disabled: config.disabled,
 	    html: config.html
 	  };
@@ -33036,7 +31552,6 @@
 	    FormCheckboxPlugin: FormCheckboxPlugin,
 	    FormRadioPlugin: FormRadioPlugin,
 	    FormInputPlugin: FormInputPlugin,
-	    FormTagsPlugin: FormTagsPlugin,
 	    FormTextareaPlugin: FormTextareaPlugin,
 	    FormFilePlugin: FormFilePlugin,
 	    FormSelectPlugin: FormSelectPlugin,
@@ -33070,13 +31585,13 @@
 	  }
 	});
 
-	function ownKeys$W(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+	function ownKeys$V(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
-	function _objectSpread$W(target) {
+	function _objectSpread$V(target) {
 	var arguments$1 = arguments;
-	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$W(Object(source), true).forEach(function (key) { _defineProperty$1e(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$W(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+	 for (var i = 1; i < arguments.length; i++) { var source = arguments$1[i] != null ? arguments$1[i] : {}; if (i % 2) { ownKeys$V(source, true).forEach(function (key) { _defineProperty$1d(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$V(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-	function _defineProperty$1e(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _defineProperty$1d(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	function _classCallCheck$7(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -33087,7 +31602,7 @@
 	 * Constants / Defaults
 	 */
 
-	var NAME$D = 'v-b-scrollspy';
+	var NAME$z = 'v-b-scrollspy';
 	var ACTIVATE_EVENT = 'bv::scrollspy::activate';
 	var Default = {
 	  element: 'body',
@@ -33202,7 +31717,7 @@
 	        this.$scroller = null;
 	      }
 
-	      var cfg = _objectSpread$W({}, this.constructor.Default, {}, config);
+	      var cfg = _objectSpread$V({}, this.constructor.Default, {}, config);
 
 	      if ($root) {
 	        this.$root = $root;
@@ -33498,7 +32013,7 @@
 	      .join(','), this.$el);
 	      links.forEach(function (link) {
 	        if (hasClass(link, ClassName.DROPDOWN_ITEM)) {
-	          // This is a dropdown item, so find the .dropdown-toggle and set its state
+	          // This is a dropdown item, so find the .dropdown-toggle and set it's state
 	          var dropdown = closest(Selector$2.DROPDOWN, link);
 
 	          if (dropdown) {
@@ -33570,7 +32085,7 @@
 	  }], [{
 	    key: "Name",
 	    get: function get() {
-	      return NAME$D;
+	      return NAME$z;
 	    }
 	  }, {
 	    key: "Default",
@@ -33587,10 +32102,7 @@
 	  return ScrollSpy;
 	}();
 
-	var BV_SCROLLSPY = '__BV_ScrollSpy__'; // Pre-compiled regular expressions
-
-	var onlyDigitsRE = /^\d+$/;
-	var offsetRE$2 = /^(auto|position|offset)$/; // Build a ScrollSpy config based on bindings (if any)
+	var BV_SCROLLSPY = '__BV_ScrollSpy__'; // Build a ScrollSpy config based on bindings (if any)
 	// Arguments and modifiers take precedence over passed value config object
 
 	/* istanbul ignore next: not easy to test */
@@ -33608,10 +32120,10 @@
 
 
 	  keys$2(bindings.modifiers).forEach(function (mod) {
-	    if (onlyDigitsRE.test(mod)) {
+	    if (/^\d+$/.test(mod)) {
 	      // Offset value
 	      config.offset = parseInt(mod, 10);
-	    } else if (offsetRE$2.test(mod)) {
+	    } else if (/^(auto|position|offset)$/.test(mod)) {
 	      // Offset method
 	      config.method = mod;
 	    }
@@ -33627,7 +32139,7 @@
 	    // Value is config object
 	    // Filter the object based on our supported config options
 	    keys$2(bindings.value).filter(function (k) {
-	      return !!ScrollSpy.DefaultType[k];
+	      return Boolean(ScrollSpy.DefaultType[k]);
 	    }).forEach(function (k) {
 	      config[k] = bindings.value[k];
 	    });
@@ -33741,15 +32253,17 @@
 	});
 
 	/*!
-	 * BootstrapVue 2.4.0
+	 * BoostrapVue 2.1.0
 	 *
 	 * @link https://bootstrap-vue.js.org
 	 * @source https://github.com/bootstrap-vue/bootstrap-vue
-	 * @copyright (c) 2016-2020 BootstrapVue
+	 * @copyright (c) 2016-2019 BootstrapVue
 	 * @license MIT
 	 * https://github.com/bootstrap-vue/bootstrap-vue/blob/master/LICENSE
 	 */
-	var NAME$E = 'BootstrapVue'; // --- BootstrapVue installer ---
+	var NAME$A = 'BootstrapVue'; //
+	// BootstrapVue installer
+	//
 
 	var install =
 	/*#__PURE__*/
@@ -33758,14 +32272,16 @@
 	    componentsPlugin: componentsPlugin,
 	    directivesPlugin: directivesPlugin
 	  }
-	}); // --- BootstrapVue plugin ---
+	}); //
+	// BootstrapVue plugin
+	//
 
 	var BootstrapVue =
 	/*#__PURE__*/
 	{
 	  install: install,
-	  NAME: NAME$E
-	}; // --- Named exports for BvConfigPlugin ---
+	  NAME: NAME$A
+	}; //
 
 	var vue2Filters = createCommonjsModule(function (module, exports) {
 	(function webpackUniversalModuleDefinition(root, factory) {
@@ -34877,7 +33393,7 @@
 	    return ntick(cb, ctx);
 	}
 
-	function trim$2(str) {
+	function trim$1(str) {
 	    return str ? str.replace(/^\s*|\s*$/g, '') : '';
 	}
 
@@ -35608,10 +34124,10 @@
 	                var response = request.respondWith(
 	                'response' in xhr ? xhr.response : xhr.responseText, {
 	                    status: xhr.status === 1223 ? 204 : xhr.status, // IE9 status bug
-	                    statusText: xhr.status === 1223 ? 'No Content' : trim$2(xhr.statusText)
+	                    statusText: xhr.status === 1223 ? 'No Content' : trim$1(xhr.statusText)
 	                });
 
-	                each(trim$2(xhr.getAllResponseHeaders()).split('\n'), function (row) {
+	                each(trim$1(xhr.getAllResponseHeaders()).split('\n'), function (row) {
 	                    response.headers.append(row.slice(0, row.indexOf(':')), row.slice(row.indexOf(':') + 1));
 	                });
 
@@ -35691,7 +34207,7 @@
 
 	            var response = request.respondWith(resp.body, {
 	                status: resp.statusCode,
-	                statusText: trim$2(resp.statusMessage)
+	                statusText: trim$1(resp.statusMessage)
 	            });
 
 	            each(resp.headers, function (value, name) {
@@ -35794,7 +34310,7 @@
 	};
 
 	Headers.prototype.set = function set (name, value) {
-	    this.map[normalizeName(getName(this.map, name) || name)] = [trim$2(value)];
+	    this.map[normalizeName(getName(this.map, name) || name)] = [trim$1(value)];
 	};
 
 	Headers.prototype.append = function append (name, value) {
@@ -35802,7 +34318,7 @@
 	    var list = this.map[getName(this.map, name)];
 
 	    if (list) {
-	        list.push(trim$2(value));
+	        list.push(trim$1(value));
 	    } else {
 	        this.set(name, value);
 	    }
@@ -35836,7 +34352,7 @@
 	        throw new TypeError('Invalid character in header field name');
 	    }
 
-	    return trim$2(name);
+	    return trim$1(name);
 	}
 
 	/**
@@ -40850,7 +39366,7 @@
 	})(commonjsGlobal$1);
 	});
 
-	function _defineProperty$1f(obj, key, value) {
+	function _defineProperty$1e(obj, key, value) {
 	  if (key in obj) {
 	    Object.defineProperty(obj, key, {
 	      value: value,
@@ -40865,7 +39381,7 @@
 	  return obj;
 	}
 
-	function ownKeys$X(object, enumerableOnly) {
+	function ownKeys$W(object, enumerableOnly) {
 	  var keys = Object.keys(object);
 
 	  if (Object.getOwnPropertySymbols) {
@@ -40886,13 +39402,13 @@
 	    var source = arguments$1[i] != null ? arguments$1[i] : {};
 
 	    if (i % 2) {
-	      ownKeys$X(Object(source), true).forEach(function (key) {
-	        _defineProperty$1f(target, key, source[key]);
+	      ownKeys$W(Object(source), true).forEach(function (key) {
+	        _defineProperty$1e(target, key, source[key]);
 	      });
 	    } else if (Object.getOwnPropertyDescriptors) {
 	      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
 	    } else {
-	      ownKeys$X(Object(source)).forEach(function (key) {
+	      ownKeys$W(Object(source)).forEach(function (key) {
 	        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
 	      });
 	    }
@@ -40964,7 +39480,29 @@
 	    };
 	  },
 	  mounted: function mounted() {
-	    this.init();
+	    var elm = this.toElement;
+
+	    if (elm == null) {
+	      if (this.to) {
+	        elm = document.querySelector("[name='".concat(this.to, "']"));
+	      } else if (this.toSelector) {
+	        elm = document.querySelector(this.toSelector);
+	      } else {
+	        elm = this.$refs.trigger;
+	      }
+	    }
+
+	    this.tip = tippy(elm, this.getOptions());
+	    this.$emit("onCreate", this.tip);
+	    this.$emit("init", this.tip);
+
+	    if (this.enabled === false) {
+	      this.tip.disable();
+	    }
+
+	    if (this.isManualTrigger && this.visible === true) {
+	      this.tip.show();
+	    }
 	  },
 	  watch: {
 	    content: function content() {
@@ -41007,59 +39545,6 @@
 	    }
 	  },
 	  methods: {
-	    init: function init() {
-	      if (this.tip) {
-	        try {
-	          this.tip.destroy();
-	        } catch (error) {}
-
-	        this.tip = null;
-	      }
-
-	      var elm = this.toElement;
-
-	      if (elm == null) {
-	        if (this.to) {
-	          elm = document.querySelector("[name='".concat(this.to, "']"));
-	        } else if (this.toSelector) {
-	          elm = document.querySelector(this.toSelector);
-	        } else if (this.$refs.trigger && this.$refs.trigger.childElementCount > 0) {
-	          elm = this.$refs.trigger;
-	        } else {
-	          elm = this.$el.parentElement;
-	        }
-	      }
-
-	      if (!elm) {
-	        return;
-	      }
-
-	      var tip = tippy(elm, this.getOptions());
-
-	      if (!tip) {
-	        return;
-	      }
-
-	      if (Array.isArray(tip)) {
-	        if (tip.length > 0) {
-	          this.tip = tip[0];
-	        } else {
-	          return;
-	        }
-	      }
-
-	      this.tip = tip;
-	      this.$emit("onCreate", this.tip);
-	      this.$emit("init", this.tip);
-
-	      if (this.enabled === false) {
-	        this.tip.disable();
-	      }
-
-	      if (this.isManualTrigger && this.visible === true) {
-	        this.tip.show();
-	      }
-	    },
 	    tippy: function tippy() {
 	      return this.tip;
 	    },
@@ -41090,7 +39575,7 @@
 	    getOptions: function getOptions() {
 	      var _this = this;
 
-	      Object.assign(this.options, humps.camelizeKeys(this.$attrs));
+	      this.options = humps.camelizeKeys(this.$attrs);
 	      this.filterOptions();
 
 	      if (!this.options.onShow && this.$listeners && this.$listeners["show"]) {
@@ -41244,9 +39729,9 @@
 
 	  var _c = _vm._self._c || _h;
 
-	  return _c("div", [_c("div", {
+	  return _c("span", [_c("span", {
 	    ref: "trigger"
-	  }, [_vm._t("trigger")], 2), _vm._v(" "), _c("div", {
+	  }, [_vm._t("trigger")], 2), _vm._v(" "), _c("span", {
 	    ref: "content"
 	  }, [_vm._t("default")], 2)]);
 	};
@@ -44545,43 +43030,7 @@
 	  }
 	};
 
-	function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-	  try {
-	    var info = gen[key](arg);
-	    var value = info.value;
-	  } catch (error) {
-	    reject(error);
-	    return;
-	  }
-
-	  if (info.done) {
-	    resolve(value);
-	  } else {
-	    Promise.resolve(value).then(_next, _throw);
-	  }
-	}
-
-	function _asyncToGenerator(fn) {
-	  return function () {
-	    var self = this,
-	        args = arguments;
-	    return new Promise(function (resolve, reject) {
-	      var gen = fn.apply(self, args);
-
-	      function _next(value) {
-	        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-	      }
-
-	      function _throw(err) {
-	        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-	      }
-
-	      _next(undefined);
-	    });
-	  };
-	}
-
-	function _defineProperty$1g(obj, key, value) {
+	function _defineProperty$1f(obj, key, value) {
 	  if (key in obj) {
 	    Object.defineProperty(obj, key, {
 	      value: value,
@@ -44596,7 +43045,7 @@
 	  return obj;
 	}
 
-	function ownKeys$Y(object, enumerableOnly) {
+	function ownKeys$X(object, enumerableOnly) {
 	  var keys = Object.keys(object);
 
 	  if (Object.getOwnPropertySymbols) {
@@ -44615,13 +43064,13 @@
 	    var source = arguments[i] != null ? arguments[i] : {};
 
 	    if (i % 2) {
-	      ownKeys$Y(Object(source), true).forEach(function (key) {
-	        _defineProperty$1g(target, key, source[key]);
+	      ownKeys$X(Object(source), true).forEach(function (key) {
+	        _defineProperty$1f(target, key, source[key]);
 	      });
 	    } else if (Object.getOwnPropertyDescriptors) {
 	      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
 	    } else {
-	      ownKeys$Y(Object(source)).forEach(function (key) {
+	      ownKeys$X(Object(source)).forEach(function (key) {
 	        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
 	      });
 	    }
@@ -44666,11 +43115,11 @@
 	  return target;
 	}
 
-	function _toConsumableArray$a(arr) {
-	  return _arrayWithoutHoles$a(arr) || _iterableToArray$a(arr) || _nonIterableSpread$a();
+	function _toConsumableArray$9(arr) {
+	  return _arrayWithoutHoles$9(arr) || _iterableToArray$9(arr) || _nonIterableSpread$9();
 	}
 
-	function _arrayWithoutHoles$a(arr) {
+	function _arrayWithoutHoles$9(arr) {
 	  if (Array.isArray(arr)) {
 	    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
 
@@ -44678,11 +43127,11 @@
 	  }
 	}
 
-	function _iterableToArray$a(iter) {
+	function _iterableToArray$9(iter) {
 	  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
 	}
 
-	function _nonIterableSpread$a() {
+	function _nonIterableSpread$9() {
 	  throw new TypeError("Invalid attempt to spread non-iterable instance");
 	}
 
@@ -44701,7 +43150,7 @@
 	  install: function install(Vue, options) {
 	    if (options && options.name) {
 	      Vue[options.name] = lodash__default;
-	      Object.defineProperties(Vue.prototype, _defineProperty$1g({}, options.name, {
+	      Object.defineProperties(Vue.prototype, _defineProperty$1f({}, options.name, {
 	        get: function get() {
 	          return lodash__default;
 	        }
@@ -44713,8 +43162,8 @@
 	};
 
 	/**
-	  * vee-validate v3.2.4
-	  * (c) 2020 Abdelrahman Awad
+	  * vee-validate v3.2.0
+	  * (c) 2019 Abdelrahman Awad
 	  * @license MIT
 	  */
 
@@ -44933,6 +43382,10 @@
 	        passed: false,
 	        failed: false
 	    };
+	}
+
+	function identity$1(x) {
+	    return x;
 	}
 	function debounce$2(fn, wait, token) {
 	    if (wait === void 0) { wait = 0; }
@@ -45421,12 +43874,13 @@
 	                            }];
 	                    }
 	                    if (!isObject$2(result)) {
-	                        result = { valid: result };
+	                        result = { valid: result, data: {} };
 	                    }
 	                    return [2 /*return*/, {
 	                            valid: result.valid,
 	                            required: result.required,
-	                            error: result.valid ? undefined : _generateFieldError(field, value, ruleSchema, rule.name, params)
+	                            data: result.data || {},
+	                            error: result.valid ? undefined : _generateFieldError(field, value, ruleSchema, rule.name, params, result.data)
 	                        }];
 	            }
 	        });
@@ -45435,12 +43889,11 @@
 	/**
 	 * Generates error messages.
 	 */
-	function _generateFieldError(field, value, ruleSchema, ruleName, params) {
-	    var _a;
-	    var message = (_a = field.customMessages[ruleName], (_a !== null && _a !== void 0 ? _a : ruleSchema.message));
+	function _generateFieldError(field, value, ruleSchema, ruleName, params, data) {
+	    var message = field.customMessages[ruleName] || ruleSchema.message;
 	    var ruleTargets = _getRuleTargets(field, ruleSchema, ruleName);
-	    var _b = _getUserTargets(field, ruleSchema, ruleName, message), userTargets = _b.userTargets, userMessage = _b.userMessage;
-	    var values = __assign(__assign(__assign(__assign({}, (params || {})), { _field_: field.name, _value_: value, _rule_: ruleName }), ruleTargets), userTargets);
+	    var _a = _getUserTargets(field, ruleSchema, ruleName, message), userTargets = _a.userTargets, userMessage = _a.userMessage;
+	    var values = __assign(__assign(__assign(__assign(__assign({}, (params || {})), (data || {})), { _field_: field.name, _value_: value, _rule_: ruleName }), ruleTargets), userTargets);
 	    return {
 	        msg: function () { return _normalizeMessage(userMessage || getConfig().defaultMessage, field.name, values); },
 	        rule: ruleName
@@ -45464,14 +43917,19 @@
 	    }
 	    for (var index = 0; index < params.length; index++) {
 	        var param = params[index];
-	        var key = ruleConfig[index];
-	        if (!isLocator(key)) {
+	        if (!param.isTarget) {
 	            continue;
 	        }
-	        key = key.__locatorRef;
+	        var key = ruleConfig[index];
+	        if (isLocator(key)) {
+	            key = key.__locatorRef;
+	        }
 	        var name_1 = field.names[key] || key;
-	        names[param.name] = name_1;
-	        names["_" + param.name + "_"] = field.crossTable[key];
+	        if (numTargets === 1) {
+	            names._target_ = name_1;
+	            break;
+	        }
+	        names["_" + param.name + "Target_"] = name_1;
 	    }
 	    return names;
 	}
@@ -45497,8 +43955,14 @@
 	        }
 	        // grab the name of the target
 	        var name = rule.__locatorRef;
-	        userTargets[param.name] = field.names[name] || name;
-	        userTargets["_" + param.name + "_"] = field.crossTable[name];
+	        var placeholder = "_" + name + "Target_";
+	        userTargets[placeholder] = field.names[name] || name;
+	        userTargets[name] = field.names[name] || name;
+	        // update template if it's a string
+	        if (typeof userMessage === 'string') {
+	            var rx = new RegExp("{" + param.name + "}", 'g');
+	            userMessage = userMessage.replace(rx, "{" + placeholder + "}");
+	        }
 	    });
 	    return {
 	        userTargets: userTargets,
@@ -45807,9 +44271,6 @@
 	    }
 	    return 'change';
 	}
-	function isHTMLNode(node) {
-	    return includes$2(['input', 'select', 'textarea'], node.tag);
-	}
 	function resolveTextualRules(vnode) {
 	    var _a;
 	    var attrs = (_a = vnode.data) === null || _a === void 0 ? void 0 : _a.attrs;
@@ -45840,7 +44301,7 @@
 	}
 	function resolveRules(vnode) {
 	    var _a;
-	    var htmlTags = ['input', 'select', 'textarea'];
+	    var htmlTags = ['input', 'select'];
 	    var attrs = (_a = vnode.data) === null || _a === void 0 ? void 0 : _a.attrs;
 	    if (!includes$2(htmlTags, vnode.tag) || !attrs) {
 	        return {};
@@ -45912,12 +44373,7 @@
 	    if (!validateNow) {
 	        return;
 	    }
-	    var validate = function () {
-	        if (vm.immediate || vm.flags.validated) {
-	            return triggerThreadSafeValidation(vm);
-	        }
-	        vm.validateSilent();
-	    };
+	    var validate = function () { return vm.validateSilent().then(vm.immediate || vm.flags.validated ? vm.applyResult : identity$1); };
 	    if (vm.initialized) {
 	        validate();
 	        return;
@@ -45927,18 +44383,6 @@
 	function computeModeSetting(ctx) {
 	    var compute = (isCallable(ctx.mode) ? ctx.mode : modes[ctx.mode]);
 	    return compute(ctx);
-	}
-	function triggerThreadSafeValidation(vm) {
-	    var pendingPromise = vm.validateSilent();
-	    // avoids race conditions between successive validations.
-	    vm._pendingValidation = pendingPromise;
-	    return pendingPromise.then(function (result) {
-	        if (pendingPromise === vm._pendingValidation) {
-	            vm.applyResult(result);
-	            vm._pendingValidation = undefined;
-	        }
-	        return result;
-	    });
 	}
 	// Creates the common handlers for a validatable context.
 	function createCommonHandlers(vm) {
@@ -45962,10 +44406,15 @@
 	    if (!onValidate || vm.$veeDebounce !== vm.debounce) {
 	        onValidate = debounce$2(function () {
 	            vm.$nextTick(function () {
-	                if (!vm._pendingReset) {
-	                    triggerThreadSafeValidation(vm);
-	                }
-	                vm._pendingReset = false;
+	                var pendingPromise = vm.validateSilent();
+	                // avoids race conditions between successive validations.
+	                vm._pendingValidation = pendingPromise;
+	                pendingPromise.then(function (result) {
+	                    if (pendingPromise === vm._pendingValidation) {
+	                        vm.applyResult(result);
+	                        vm._pendingValidation = undefined;
+	                    }
+	                });
 	            });
 	        }, mode.debounce || vm.debounce);
 	        // Cache the handler so we don't create it each time.
@@ -45995,7 +44444,6 @@
 	var PROVIDER_COUNTER = 0;
 	function data$1() {
 	    var errors = [];
-	    var fieldName = '';
 	    var defaultValues = {
 	        errors: errors,
 	        value: undefined,
@@ -46004,7 +44452,6 @@
 	        flags: createFlags(),
 	        failedRules: {},
 	        isActive: true,
-	        fieldName: fieldName,
 	        id: ''
 	    };
 	    return defaultValues;
@@ -46120,7 +44567,7 @@
 	            return normalizeRules(this.rules);
 	        }
 	    },
-	    mounted: function () {
+	    created: function () {
 	        var _this = this;
 	        var onLocaleChanged = function () {
 	            if (!_this.flags.validated) {
@@ -46152,16 +44599,12 @@
 	        var children = normalizeChildren(this, ctx);
 	        // Handle single-root slot.
 	        extractVNodes(children).forEach(function (input) {
-	            var _a, _b, _c, _d;
 	            // resolved rules are not reactive because it has a new reference each time.
 	            // causing infinite render-loops.
 	            // So we are comparing them manually to decide if we need to validate or not.
 	            var resolved = getConfig().useConstraintAttrs ? resolveRules(input) : {};
 	            if (!isEqual(_this._resolvedRules, resolved)) {
 	                _this._needsValidation = true;
-	            }
-	            if (isHTMLNode(input)) {
-	                _this.fieldName = ((_b = (_a = input.data) === null || _a === void 0 ? void 0 : _a.attrs) === null || _b === void 0 ? void 0 : _b.name) || ((_d = (_c = input.data) === null || _c === void 0 ? void 0 : _c.attrs) === null || _d === void 0 ? void 0 : _d.id);
 	            }
 	            _this._resolvedRules = resolved;
 	            addListeners(_this, input);
@@ -46170,7 +44613,7 @@
 	    },
 	    beforeDestroy: function () {
 	        // cleanup reference.
-	        this.$_veeObserver.unobserve(this.id);
+	        this.$_veeObserver.unsubscribe(this.id);
 	    },
 	    activated: function () {
 	        this.isActive = true;
@@ -46191,19 +44634,12 @@
 	            this.flags.changed = this.initialValue !== value;
 	        },
 	        reset: function () {
-	            var _this = this;
 	            this.errors = [];
 	            this.initialValue = this.value;
 	            var flags = createFlags();
 	            flags.required = this.isRequired;
 	            this.setFlags(flags);
-	            this.failedRules = {};
 	            this.validateSilent();
-	            this._pendingValidation = undefined;
-	            this._pendingReset = true;
-	            setTimeout(function () {
-	                _this._pendingReset = false;
-	            }, this.debounce);
 	        },
 	        validate: function () {
 	            var arguments$1 = arguments;
@@ -46213,11 +44649,19 @@
 	                args[_i] = arguments$1[_i];
 	            }
 	            return __awaiter(this, void 0, void 0, function () {
+	                var result;
 	                return __generator(this, function (_a) {
-	                    if (args.length > 0) {
-	                        this.syncValue(args[0]);
+	                    switch (_a.label) {
+	                        case 0:
+	                            if (args.length > 0) {
+	                                this.syncValue(args[0]);
+	                            }
+	                            return [4 /*yield*/, this.validateSilent()];
+	                        case 1:
+	                            result = _a.sent();
+	                            this.applyResult(result);
+	                            return [2 /*return*/, result];
 	                    }
-	                    return [2 /*return*/, triggerThreadSafeValidation(this)];
 	                });
 	            });
 	        },
@@ -46235,7 +44679,7 @@
 	                                enumerable: false,
 	                                configurable: false
 	                            });
-	                            return [4 /*yield*/, validate(this.value, rules, __assign(__assign({ name: this.name || this.fieldName }, createLookup(this)), { bails: this.bails, skipIfEmpty: this.skipIfEmpty, isInitial: !this.initialized, customMessages: this.customMessages }))];
+	                            return [4 /*yield*/, validate(this.value, rules, __assign(__assign({ name: this.name }, createLookup(this)), { bails: this.bails, skipIfEmpty: this.skipIfEmpty, isInitial: !this.initialized, customMessages: this.customMessages }))];
 	                        case 1:
 	                            result = _a.sent();
 	                            this.setFlags({
@@ -46323,9 +44767,6 @@
 	    if (vm.id) {
 	        return vm.id;
 	    }
-	    if (vm.fieldName) {
-	        return vm.fieldName;
-	    }
 	    PROVIDER_COUNTER++;
 	    return "_vee_" + PROVIDER_COUNTER;
 	}
@@ -46338,18 +44779,18 @@
 	    }
 	    // vid was changed.
 	    if (id !== providedId && vm.$_veeObserver.refs[id] === vm) {
-	        vm.$_veeObserver.unobserve(id);
+	        vm.$_veeObserver.unsubscribe(id);
 	    }
 	    vm.id = providedId;
-	    vm.$_veeObserver.observe(vm);
+	    vm.$_veeObserver.subscribe(vm);
 	}
 	function createObserver() {
 	    return {
 	        refs: {},
-	        observe: function (vm) {
+	        subscribe: function (vm) {
 	            this.refs[vm.id] = vm;
 	        },
-	        unobserve: function (id) {
+	        unsubscribe: function (id) {
 	            delete this.refs[id];
 	        }
 	    };
@@ -46455,7 +44896,30 @@
 	            _this.flags = flags;
 	            _this.fields = fields;
 	        }, 16);
-	        this.$watch(computeObserverState, onChange);
+	        this.$watch(function () {
+	            var vms = __spreadArrays(values$1(_this.refs), _this.observers);
+	            var errors = {};
+	            var flags = createObserverFlags();
+	            var fields = {};
+	            var length = vms.length;
+	            for (var i = 0; i < length; i++) {
+	                var vm = vms[i];
+	                // validation provider
+	                if (Array.isArray(vm.errors)) {
+	                    errors[vm.id] = vm.errors;
+	                    fields[vm.id] = __assign({ id: vm.id, name: vm.name, failedRules: vm.failedRules }, vm.flags);
+	                    continue;
+	                }
+	                // Nested observer, merge errors and fields
+	                errors = __assign(__assign({}, errors), vm.errors);
+	                fields = __assign(__assign({}, fields), vm.fields);
+	            }
+	            FLAGS_STRATEGIES.forEach(function (_a) {
+	                var flag = _a[0], method = _a[1];
+	                flags[flag] = vms[method](function (vm) { return vm.flags[flag]; });
+	            });
+	            return { errors: errors, flags: flags, fields: fields };
+	        }, onChange);
 	    },
 	    activated: function () {
 	        register(this);
@@ -46471,7 +44935,7 @@
 	        return this.slim && children.length <= 1 ? children[0] : h(this.tag, { on: this.$listeners }, children);
 	    },
 	    methods: {
-	        observe: function (subscriber, kind) {
+	        subscribe: function (subscriber, kind) {
 	            var _a;
 	            if (kind === void 0) { kind = 'provider'; }
 	            if (kind === 'observer') {
@@ -46480,7 +44944,7 @@
 	            }
 	            this.refs = __assign(__assign({}, this.refs), (_a = {}, _a[subscriber.id] = subscriber, _a));
 	        },
-	        unobserve: function (id, kind) {
+	        unsubscribe: function (id, kind) {
 	            if (kind === void 0) { kind = 'provider'; }
 	            if (kind === 'provider') {
 	                var provider = this.refs[id];
@@ -46536,9 +45000,7 @@
 	                var provider = _this.refs[key];
 	                if (!provider)
 	                    { return; }
-	                var errorArr = errors[key] || [];
-	                errorArr = typeof errorArr === 'string' ? [errorArr] : errorArr;
-	                provider.setErrors(errorArr);
+	                provider.setErrors(errors[key] || []);
 	            });
 	            this.observers.forEach(function (observer) {
 	                observer.setErrors(errors);
@@ -46548,12 +45010,12 @@
 	});
 	function unregister(vm) {
 	    if (vm.$_veeObserver) {
-	        vm.$_veeObserver.unobserve(vm.id, 'observer');
+	        vm.$_veeObserver.unsubscribe(vm.id, 'observer');
 	    }
 	}
 	function register(vm) {
 	    if (vm.$_veeObserver) {
-	        vm.$_veeObserver.observe(vm, 'observer');
+	        vm.$_veeObserver.subscribe(vm, 'observer');
 	    }
 	}
 	function prepareSlotProps(vm) {
@@ -46562,30 +45024,6 @@
 	// Creates a modified version of validation flags
 	function createObserverFlags() {
 	    return __assign(__assign({}, createFlags()), { valid: true, invalid: false });
-	}
-	function computeObserverState() {
-	    var vms = __spreadArrays(values$1(this.refs), this.observers);
-	    var errors = {};
-	    var flags = createObserverFlags();
-	    var fields = {};
-	    var length = vms.length;
-	    for (var i = 0; i < length; i++) {
-	        var vm = vms[i];
-	        // validation provider
-	        if (Array.isArray(vm.errors)) {
-	            errors[vm.id] = vm.errors;
-	            fields[vm.id] = __assign({ id: vm.id, name: vm.name, failedRules: vm.failedRules }, vm.flags);
-	            continue;
-	        }
-	        // Nested observer, merge errors and fields
-	        errors = __assign(__assign({}, errors), vm.errors);
-	        fields = __assign(__assign({}, fields), vm.fields);
-	    }
-	    FLAGS_STRATEGIES.forEach(function (_a) {
-	        var flag = _a[0], method = _a[1];
-	        flags[flag] = vms[method](function (vm) { return vm.flags[flag]; });
-	    });
-	    return { errors: errors, flags: flags, fields: fields };
 	}
 
 	var code = "vi";
@@ -46599,10 +45037,10 @@
 		digits: "Trường {_field_} chỉ có thể chứa các kí tự số và bắt buộc phải có độ dài là {length}",
 		dimensions: "{_field_} phải có chiều rộng {width} pixels và chiều cao {height} pixels",
 		email: "{_field_} phải là một địa chỉ email hợp lệ",
-		excluded: "{_field_} không phải là một giá trị hợp lệ",
+		excluded: "{_field_} phải chứa một giá trị hợp lệ",
 		ext: "{_field_} phải là một tệp",
 		image: "Trường {_field_} phải là một ảnh",
-		oneOf: "{_field_} không phải là một giá trị hợp lệ",
+		oneOf: "{_field_} phải là một giá trị",
 		max: "{_field_} không thể có nhiều hơn {length} kí tự",
 		max_value: "{_field_} phải nhỏ hơn hoặc bằng {max}",
 		mimes: "{_field_} phải chứa kiểu tệp phù hợp",
@@ -46620,8 +45058,8 @@
 	};
 
 	/**
-	  * vee-validate v3.2.4
-	  * (c) 2020 Abdelrahman Awad
+	  * vee-validate v3.2.0
+	  * (c) 2019 Abdelrahman Awad
 	  * @license MIT
 	  */
 	/**
@@ -49712,7 +48150,7 @@
 	        arr = [{
 	          text: label,
 	          value: null
-	        }].concat(_toConsumableArray$a(arr));
+	        }].concat(_toConsumableArray$9(arr));
 	      }
 
 	      return arr;
@@ -50552,7 +48990,7 @@
 	  },
 	  mutations: {
 	    PREPEND_XACMINHS: function PREPEND_XACMINHS(state, payload) {
-	      state.items = [].concat(_toConsumableArray$a(payload), _toConsumableArray$a(state.items));
+	      state.items = [].concat(_toConsumableArray$9(payload), _toConsumableArray$9(state.items));
 	    },
 	    ADD_XM: function ADD_XM(state) {
 	      state.items.push({
@@ -51320,14 +49758,7 @@
 	                2
 	              ),
 	              _vm._v(" "),
-	              ((k + 1) % 2 != 0 || ((k + 1) % 2 == 0 && v.is_diachi == 1)) &&
-	              !(
-	                k == 0 &&
-	                v.is_benhnhan !== null &&
-	                v.is_benhnhan == 0 &&
-	                v.is_diachi !== null &&
-	                v.is_diachi == 0
-	              )
+	              (k + 1) % 2 != 0 || ((k + 1) % 2 == 0 && v.is_diachi == 1)
 	                ? _c(
 	                    "div",
 	                    [
@@ -52992,16 +51423,12 @@
 	        this.parentContainer.addLayer(this);
 	      }
 	    },
-	    setVisible: function setVisible(isVisible) {
+	    setVisible: function setVisible(newVal) {
 	      if (this.mapObject) {
-	        if (isVisible) {
+	        if (newVal) {
 	          this.parentContainer.addLayer(this);
 	        } else {
-	          if (this.parentContainer.hideLayer) {
-	            this.parentContainer.hideLayer(this);
-	          } else {
-	            this.parentContainer.removeLayer(this);
-	          }
+	          this.parentContainer.hideLayer(this);
 	        }
 	      }
 	    },
@@ -53486,7 +51913,9 @@
 	      }
 	    },
 	    hideLayer: function hideLayer(layer) {
-	      this.mapObject.removeLayer(layer.mapObject);
+	      if (layer.layerType !== undefined) {
+	        this.mapObject.removeLayer(layer.mapObject);
+	      }
 	    },
 	    removeLayer: function removeLayer(layer, alreadyRemoved) {
 	      if (layer.layerType !== undefined) {
@@ -53715,7 +52144,7 @@
 	  /* style */
 	  var __vue_inject_styles__$d = function (inject) {
 	    if (!inject) { return }
-	    inject("data-v-6d02d6c3_0", { source: ".vue2leaflet-map{height:100%;width:100%}", map: undefined, media: undefined });
+	    inject("data-v-4d388c28_0", { source: ".vue2leaflet-map{height:100%;width:100%}", map: undefined, media: undefined });
 
 	  };
 	  /* scoped */
@@ -53892,16 +52321,12 @@
 	        this.parentContainer.addLayer(this);
 	      }
 	    },
-	    setVisible: function setVisible(isVisible) {
+	    setVisible: function setVisible(newVal) {
 	      if (this.mapObject) {
-	        if (isVisible) {
+	        if (newVal) {
 	          this.parentContainer.addLayer(this);
 	        } else {
-	          if (this.parentContainer.hideLayer) {
-	            this.parentContainer.hideLayer(this);
-	          } else {
-	            this.parentContainer.removeLayer(this);
-	          }
+	          this.parentContainer.hideLayer(this);
 	        }
 	      }
 	    },
@@ -54257,16 +52682,12 @@
 	        this.parentContainer.addLayer(this);
 	      }
 	    },
-	    setVisible: function setVisible(isVisible) {
+	    setVisible: function setVisible(newVal) {
 	      if (this.mapObject) {
-	        if (isVisible) {
+	        if (newVal) {
 	          this.parentContainer.addLayer(this);
 	        } else {
-	          if (this.parentContainer.hideLayer) {
-	            this.parentContainer.hideLayer(this);
-	          } else {
-	            this.parentContainer.removeLayer(this);
-	          }
+	          this.parentContainer.hideLayer(this);
 	        }
 	      }
 	    },
@@ -54627,16 +53048,12 @@
 	        this.parentContainer.addLayer(this);
 	      }
 	    },
-	    setVisible: function setVisible(isVisible) {
+	    setVisible: function setVisible(newVal) {
 	      if (this.mapObject) {
-	        if (isVisible) {
+	        if (newVal) {
 	          this.parentContainer.addLayer(this);
 	        } else {
-	          if (this.parentContainer.hideLayer) {
-	            this.parentContainer.hideLayer(this);
-	          } else {
-	            this.parentContainer.removeLayer(this);
-	          }
+	          this.parentContainer.hideLayer(this);
 	        }
 	      }
 	    },
@@ -56669,7 +55086,7 @@
 	    'l-map': __vue_component__$d,
 	    'l-tile-layer': __vue_component__$f,
 	    'l-wms-tile-layer': __vue_component__$g
-	  }, _defineProperty$1g(_components, __vue_component__$h.name, __vue_component__$h), _defineProperty$1g(_components, 'l-marker', __vue_component__$e), _defineProperty$1g(_components, 'l-control-layers', __vue_component__$b), _defineProperty$1g(_components, 'l-feature-group', __vue_component__$c), _defineProperty$1g(_components, __vue_component__$i.name, __vue_component__$i), _defineProperty$1g(_components, __vue_component__$j.name, __vue_component__$j), _components),
+	  }, _defineProperty$1f(_components, __vue_component__$h.name, __vue_component__$h), _defineProperty$1f(_components, 'l-marker', __vue_component__$e), _defineProperty$1f(_components, 'l-control-layers', __vue_component__$b), _defineProperty$1f(_components, 'l-feature-group', __vue_component__$c), _defineProperty$1f(_components, __vue_component__$i.name, __vue_component__$i), _defineProperty$1f(_components, __vue_component__$j.name, __vue_component__$j), _components),
 	  computed: {
 	    layerItems: function layerItems() {
 	      var vueLeaflet = {
@@ -56809,7 +55226,7 @@
 	  /* style */
 	  var __vue_inject_styles__$k = undefined;
 	  /* scoped */
-	  var __vue_scope_id__$k = "data-v-6eed6370";
+	  var __vue_scope_id__$k = "data-v-1aafce11";
 	  /* module identifier */
 	  var __vue_module_identifier__$k = undefined;
 	  /* functional template */
@@ -56939,73 +55356,60 @@
 	      }
 	    },
 	    getPost: function getPost() {
-	      var _this2 = this;
+	      var SxhForm, url, search_params, id, data, _ref2, resp;
 
-	      return _asyncToGenerator(
-	      /*#__PURE__*/
-	      regeneratorRuntime.mark(function _callee() {
-	        var SxhForm, url, search_params, id, data, _ref2, resp;
-
-	        return regeneratorRuntime.wrap(function _callee$(_context) {
-	          while (1) {
-	            switch (_context.prev = _context.next) {
-	              case 0:
-	                SxhForm = $('#sxh-form').serializeObject();
-	                url = new URL(window.location.href), search_params = new URLSearchParams(url.search), id = search_params.get('id');
-	                data = _defineProperty$1g({
-	                  SxhForm: _objectSpread2$1({}, SxhForm, {
-	                    loai_xm_cb: _this2.loai_xm_cb
-	                  }),
-	                  status: {
-	                    is_dieutra: _this2.shownDieutra,
-	                    is_chuyenca: _this2.shownChuyenca
-	                  }
-	                }, window.appData.csrf.param, window.appData.csrf.token);
-
-	                _this2.$store.commit('LOADING');
-
-	                _this2.resetMessages();
-
-	                _context.prev = 5;
-	                _context.next = 8;
-	                return _this2.$http.post("/sxh/default/save?id=" + (id ? id : ''), data);
-
-	              case 8:
-	                _ref2 = _context.sent;
-	                resp = _ref2.body;
-
-	                if (lodash.isPlainObject(resp)) {
-	                  _this2.setMessages(resp);
-
-	                  _this2.$store.commit('UPDATE_FORM', resp.model);
+	      return regeneratorRuntime.async(function getPost$(_context) {
+	        while (1) {
+	          switch (_context.prev = _context.next) {
+	            case 0:
+	              SxhForm = $('#sxh-form').serializeObject();
+	              url = new URL(window.location.href), search_params = new URLSearchParams(url.search), id = search_params.get('id');
+	              data = _defineProperty$1f({
+	                SxhForm: _objectSpread2$1({}, SxhForm, {
+	                  loai_xm_cb: this.loai_xm_cb
+	                }),
+	                status: {
+	                  is_dieutra: this.shownDieutra,
+	                  is_chuyenca: this.shownChuyenca
 	                }
+	              }, window.appData.csrf.param, window.appData.csrf.token);
+	              this.$store.commit('LOADING');
+	              this.resetMessages();
+	              _context.prev = 5;
+	              _context.next = 8;
+	              return regeneratorRuntime.awrap(this.$http.post("/sxh/default/save?id=" + (id ? id : ''), data));
 
-	                if (lodash.isString(resp)) {
-	                  _this2.respHtml = resp;
-	                } else {
-	                  _this2.respHtml = '';
-	                }
+	            case 8:
+	              _ref2 = _context.sent;
+	              resp = _ref2.body;
 
-	                _this2.$store.commit('LOADED');
+	              if (lodash.isPlainObject(resp)) {
+	                this.setMessages(resp);
+	                this.$store.commit('UPDATE_FORM', resp.model);
+	              }
 
-	                _context.next = 19;
-	                break;
+	              if (lodash.isString(resp)) {
+	                this.respHtml = resp;
+	              } else {
+	                this.respHtml = '';
+	              }
 
-	              case 15:
-	                _context.prev = 15;
-	                _context.t0 = _context["catch"](5);
+	              this.$store.commit('LOADED');
+	              _context.next = 19;
+	              break;
 
-	                _this2.$store.commit('LOADED');
+	            case 15:
+	              _context.prev = 15;
+	              _context.t0 = _context["catch"](5);
+	              this.$store.commit('LOADED');
+	              console.log(_context.t0);
 
-	                console.log(_context.t0);
-
-	              case 19:
-	              case "end":
-	                return _context.stop();
-	            }
+	            case 19:
+	            case "end":
+	              return _context.stop();
 	          }
-	        }, _callee, null, [[5, 15]]);
-	      }))();
+	        }
+	      }, null, this, [[5, 15]]);
 	    }
 	  }
 	};

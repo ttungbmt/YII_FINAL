@@ -1,45 +1,34 @@
 <?php
-namespace modules\pcd\import\controllers;
+namespace pcd\modules\import\controllers;
 
 use common\controllers\BackendController;
 use common\controllers\ImportTrait;
-
-use pcd\modules\benh_tn\models\BenhTn;
-use pcd\models\DmPhuong;
 use pcd\models\DmQuan;
 use yii\base\Model;
 
-class DichbenhController extends BackendController {
+class XnHuyetthanhController extends BackendController {
     use ImportTrait;
     public $enableCsrfValidation = false;
-    protected $modelImportClass = 'modules\pcd\import\forms\DichbenhImportForm';
-    protected $modelClass = 'pcd\modules\benh_tn\models\BenhTn';
+    protected $modelImportClass = 'pcd\modules\import\forms\XnHuyetthanhImportForm';
+    protected $modelClass = 'pcd\models\XnHuyetthanh';
 
     protected function options()
     {
         return [
-            'header' => ['bv', 'icd', 't_benh', 'shs', 'ho_ten', 'phai', 'tuoi', 'dia_chi', 'nghe_nghiep', 'me', 'dt', 'qh', 'px', 'ng_nv', 'ng_bc', 'nam_nv', 'thang_nv', 'tuan_nv', 'nam_bc', 'thang_bc', 'tuan_bc', 'hinh_thuc_dieu_tri', 'lat', 'lng'],
-            'sample' => '/gsnc/storage/samples/vt-khaosat-import.xlsx',
+            'header' => ['maso', 'hoten', 'ngaynhanmau', 'ngaykhoibenh', 'ngaylay_bp', 'ngaynhan_bp', 'phai', 'namsinh', 'maquan', 'maphuong', 'diachi', 'donvi_gui', 'duan', 'yeucau_xn', 'ketqua', 'phantip_virut', 'ketluan'],
+            'sample' => '/pcd/storage/samples/MAU_HUYETTHANH.xlsx',
             'startDataRow' => 1
         ];
     }
 
-
     protected function prepareData()
     {
         $this->data['dm_quan'] = DmQuan::find()->select(['tenquan' => 'ten_qh', 'maquan' => 'ma_quan'])->asArray()->indexBy('maquan')->all();
-        $this->data['dm_phuong'] = DmPhuong::find()->select([
-            'maquan' => 'ma_quan',
-            'tenquan' => 'ten_qh',
-            'maphuong' => 'ma_phuong',
-            'tenphuong' => 'ten_px'
-        ])->asArray()->indexBy('maphuong')->all();
     }
 
     protected function rules(&$model)
     {
         $model->dm_quan = $this->data_get('dm_quan');
-        $model->dm_phuong = $this->data_get('dm_phuong');
     }
 
     protected function validateModels($excelModels)
@@ -49,11 +38,9 @@ class DichbenhController extends BackendController {
 
         foreach ($excelModels as $k => $i) {
             $data[$k] = $i->toArray();
-            $data[$k]['maquan'] = $data[$k]['qh'];
-            $data[$k]['maphuong'] = $data[$k]['px'];
-
-            $models[$k] = new BenhTn();
+            $models[$k] = new $this->modelClass;
         }
+
 
         // Validate model and relation 2rd
         if (
@@ -83,7 +70,5 @@ class DichbenhController extends BackendController {
         foreach ($models as $m) {
             $m->save();
         }
-//
-//        $connection->createCommand()->batchInsert('ql_chitieu', ['chitieu_id', 'giatri', 'entity_type', 'entity_id'], $chitieus)->execute();
     }
 }

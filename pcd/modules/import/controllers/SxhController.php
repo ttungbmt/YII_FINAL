@@ -1,5 +1,5 @@
 <?php
-namespace modules\pcd\import\controllers;
+namespace pcd\modules\import\controllers;
 
 use common\actions\ImportAction;
 use common\controllers\BackendController;
@@ -23,7 +23,7 @@ class SxhController extends BackendController {
 
     use ImportTrait;
     public $enableCsrfValidation = false;
-    protected $modelImportClass = 'modules\pcd\import\forms\SxhImportForm';
+    protected $modelImportClass = 'pcd\modules\import\forms\SxhImportForm';
     protected $modelClass = 'pcd\models\CabenhSxh';
 
     protected function options()
