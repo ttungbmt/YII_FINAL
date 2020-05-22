@@ -129,7 +129,7 @@ class SxhSearch extends \pcd\models\CabenhSxh {
                 if (!$lastXm) return '';
                 return collect([$lastXm->sonha, $lastXm->duong])->filter()->implode(' ');
             }],
-            ['label' => 'Tổ', 'value' => 'to_dp'],
+            ['label' => 'Tổ', 'attribute' => 'to_dp'],
             ['label' => 'Khu phố', 'attribute' => 'khupho', 'value' => 'khupho'],
             [
                 'label'     => 'Quận',

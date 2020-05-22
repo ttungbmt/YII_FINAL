@@ -27,3 +27,11 @@ if (! function_exists('array_first')) {
         return Arr::first($array, $callback, $default);
     }
 }
+
+if (! function_exists('array_last')) {
+    function array_last(...$args)
+    {
+        return Arr::last(...$args);
+    }
+}
+

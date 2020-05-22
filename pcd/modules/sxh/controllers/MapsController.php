@@ -68,10 +68,6 @@ class MapsController extends AppController {
 
         ];
 
-
-
-
-
         return $this->asJson($data);
     }
 

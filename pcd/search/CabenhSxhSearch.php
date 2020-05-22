@@ -1,6 +1,7 @@
 <?php
 namespace pcd\search;
 
+use Carbon\Carbon;
 use pcd\models\CabenhSxh;
 use pcd\models\Chuyenca;
 use pcd\supports\RoleHc;
@@ -78,11 +79,11 @@ class CabenhSxhSearch extends CabenhSxh
         ]);
 
         if($this->date_from){
-            $query->andWhere("COALESCE(ngaymacbenh, ngaynhapvien) >= '{$this->date_from}'");
+            $query->andFilterWhere(['>=', 'COALESCE(ngaymacbenh, ngaynhapvien)', dateToDb($this->date_from)]);
         }
 
         if($this->date_to){
-            $query->andWhere("COALESCE(ngaymacbenh, ngaynhapvien) <= '{$this->date_to}'");
+            $query->andFilterWhere(['<=', 'COALESCE(ngaymacbenh, ngaynhapvien)', dateToDb($this->date_to)]);
         }
 
         $query->andFilterDate(['>=', 'ngaybaocao', '2019-01-01']);
@@ -123,6 +124,9 @@ class CabenhSxhSearch extends CabenhSxh
         }
 
         $roles->filterChuyenCa($this->loaica, $query);
+
+//        dd($query->createCommand()->getRawSql());
+
         return $dataProvider;
     }
 

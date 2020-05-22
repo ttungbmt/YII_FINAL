@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use common\libs\activitylog\ActivityLogger;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
@@ -7,6 +8,12 @@ use yii\helpers\Url;
 if (!function_exists('opt')) {
     function opt($item) {
         return is_array($item) ? optional((object)$item) : optional($item);
+    }
+}
+
+if (!function_exists('dateToDb')) {
+    function dateToDb($date) {
+        return Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d');
     }
 }
 
