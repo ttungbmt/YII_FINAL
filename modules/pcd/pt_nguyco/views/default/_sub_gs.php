@@ -5,8 +5,9 @@ use yii\bootstrap\Html;
 $dm_mucdich_gs = api('dm_mucdich_gs');
 $yn = [1 => 'Có', 0 => 'Không'];
 $template = '{label}<span class="text-danger">*</span>{input}';
+
 ?>
-<div id="gs-wrapper">
+<div class="gs-wrapper">
     <h6 class="bg-dark py-1 px-2 rounded header-elements-inline">
         Giám sát lần <?= $i + 1 ?>
         <div class="header-elements">
@@ -33,13 +34,32 @@ $template = '{label}<span class="text-danger">*</span>{input}';
     </div>
     <div class="row">
         <div class="col-md-6">
-            <?= $form->field($model, "[{$i}]dexuat_xp")->radioList($yn, ['itemOptions' => ['id' => 'dxxp'], 'options' => ['onclick' => 'alert(1)']]) ?>
+            <?= $form->field($model, "[{$i}]dexuat_xp")->radioList($yn) ?>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 clx-xuphat-<?=$i?>">
             <?= $form->field($model, "[{$i}]xuphat")->radioList($yn) ?>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 clx-xuphat-<?=$i?>">
             <?= $form->field($model, "[{$i}]ngayxuphat")->widget(\kartik\widgets\DatePicker::className()) ?>
         </div>
     </div>
 </div>
+
+<script>
+    $(function () {
+        let dexuat_xp = '<?=$model->dexuat_xp?>'
+        toggleDexuatXp(dexuat_xp)
+
+        $('input[name="PhieuGs[<?=$i?>][dexuat_xp]"]').change(function () {
+            toggleDexuatXp($(this).val())
+        })
+        
+        function toggleDexuatXp(val) {
+            if(val === '1') {
+                $('.clx-xuphat-<?=$i?>').show()
+            } else {
+                $('.clx-xuphat-<?=$i?>').hide()
+            }
+        }
+    })
+</script>

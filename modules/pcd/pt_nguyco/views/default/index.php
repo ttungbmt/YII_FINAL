@@ -46,8 +46,6 @@ $exportMenu = ExportMenu::widget([
                     Html::a('<i class="icon-reload-alt"></i>', [''],
                         ['data-pjax' => 0, 'class' => 'btn btn-default', 'title' => lang('Reset Grid')]) .
                     '{toggleData}'.$exportMenu
-
-//                    '{export}'
                 ],
             ],
             'striped' => true,

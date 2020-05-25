@@ -14,7 +14,7 @@ $db = [
 ];
 
 if(Str::of(explode('.', $HOST)[1])->startsWith('local')){
-    $db['dsn'] = 'pgsql:host=192.168.1.40;dbname=yte_dichte_test;port=5432;';
+//    $db['dsn'] = 'pgsql:host=192.168.1.40;dbname=yte_dichte_test;port=5432;';
 }
 
 if($DOMAIN === 'pcd-test'){

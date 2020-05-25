@@ -100,6 +100,7 @@ return [
             'rules'           => [
                 'api/pt_nguyco/dm/loaihinh' => 'pt_nguyco/api/dm/loaihinh',
                 'api/pt_nguyco/dm/nhom'     => 'pt_nguyco/api/dm/nhom',
+                'maps/configs'     => 'sxh/maps/configs',
             ]
         ],
     ],

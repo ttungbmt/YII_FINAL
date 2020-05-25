@@ -94,7 +94,6 @@ class ThongkeController extends AppController
 
     public function actionCabenh()
     {
-
         $request = Yii::$app->request;
         $thang = (int)$request->post('thang');
         $nam = (int)$request->post('nam');
@@ -118,8 +117,6 @@ class ThongkeController extends AppController
                 } else {
 
                 }
-                // Tạo dữ liệu ảo
-//                if()
 
                 $numday = cal_days_in_month(CAL_GREGORIAN, 9, 2015);
 

@@ -23,6 +23,7 @@ class TkForm extends MyModel
     public $ma_phuong;
     public $loaitk;
     public $chuandoan;
+    public $date_cat;
     public $date_from;
     public $date_to;
 
@@ -39,7 +40,7 @@ class TkForm extends MyModel
     public function rules(){
         $roles = array_keys(auth()->getRolesByUser(null));
         return [
-            [['captk'], 'safe'],
+            [['captk', 'date_cat'], 'safe'],
             [['date_from', 'date_to'], 'date'],
             [['tinh', 'ma_quan', 'loaitk', 'chuandoan', 'date_to'], 'required'],
 //            [['date_to'], 'compare', 'compareAttribute' => 'date_from', 'operator' => '>='],
@@ -60,6 +61,7 @@ class TkForm extends MyModel
             'chuandoan' => 'Chẩn đoán',
             'date_from' => 'Từ ngày',
             'date_to' => 'Đến ngày',
+            'date_cat' => 'Thời gian',
         ];
     }
 
@@ -82,8 +84,9 @@ class TkForm extends MyModel
             'cdc_kbn_qhk' => new Expression("SUM(CASE WHEN cb.loai_xm_cb = 4 THEN 1 ELSE 0 END)"),
             'cdc_kbn_pxk' => new Expression("SUM(CASE WHEN cb.loai_xm_cb = 5 THEN 1 ELSE 0 END)"),
             'cdc_kbn_tk' => new Expression("SUM(CASE WHEN cb.loai_xm_cb = 6 THEN 1 ELSE 0 END)"),
-            'cdc_cbn_ksxh' => new Expression("SUM(CASE WHEN cb.loai_xm_cb = 7 THEN 1 ELSE 0 END)"),
-            'cdc_cbn_sxh' => new Expression("SUM(CASE WHEN cb.loai_xm_cb = 8 THEN 1 ELSE 0 END)"),
+            'cdc_cbn_khac' => new Expression("SUM(CASE WHEN cb.chuandoan = '3' THEN 1 ELSE 0 END)"),
+            'cdc_cbn_ssv' => new Expression("SUM(CASE WHEN cb.chuandoan = '2' THEN 1 ELSE 0 END)"),
+            'cdc_cbn_sxh' => new Expression("SUM(CASE WHEN cb.chuandoan = '1' THEN 1 ELSE 0 END)"),
         ])
             ->from(['cb' => CabenhSxh::tableName()])
             ->leftJoin(['px' => HcPhuong::tableName()], 'px.maphuong = cb.px')
@@ -102,12 +105,14 @@ class TkForm extends MyModel
             $query->addSelect(['khupho1' => 'cb.khupho'])->addGroupBy(new Expression('cb.khupho'));
         }
 
+        $date_field = $this->date_cat ? $this->date_cat : new Expression("COALESCE(cb.ngaymacbenh, cb.ngaynhapvien)");
+
         if($this->date_to){
-            $query->andFilterWhere(['<=', new Expression("COALESCE(cb.ngaymacbenh, cb.ngaynhapvien)"), $this->date_to]);
+            $query->andFilterWhere(['<=', $date_field , $this->date_to]);
         }
 
         if($this->date_from){
-            $query->andFilterWhere(['>=', new Expression("COALESCE(cb.ngaymacbenh, cb.ngaynhapvien)"), $this->date_from]);
+            $query->andFilterWhere(['>=', $date_field, $this->date_from]);
         }
 
         $this->dataTK['tk_kpa'] = $query->all();

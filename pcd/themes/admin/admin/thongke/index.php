@@ -6,6 +6,13 @@ use yii\widgets\ActiveForm;
 $this->title = 'Thống kê';
 $maquan = userInfo()->ma_quan;
 $maphuong = userInfo()->ma_phuong;
+$date_cat = [
+    'ngaymacbenh' => 'Ngày mắc bệnh',
+    'ngaynhapvien' => 'Ngày nhập viện',
+    'ngaybaocao' => 'Ngày báo cáo',
+];
+$month = date('m')-3;
+$month = $month > 10 ? "$month": "0".$month;
 ?>
 
 <div id="thongke" xmlns="http://www.w3.org/1999/html">
@@ -33,10 +40,10 @@ $maphuong = userInfo()->ma_phuong;
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <?= $form->field($model, 'tinh')->dropDownList(['hcm' => 'Hồ Chí Minh']); ?>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <?= $form->field($model, 'ma_quan')->dropDownList(api('/dm/quan?role=true'), [
                         'prompt'  => 'Chọn quận huyện...',
                         'id'      => 'drop-quan',
@@ -45,7 +52,7 @@ $maphuong = userInfo()->ma_phuong;
                         ]
                     ]) ?>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <?= $form->field($model, 'ma_phuong')->widget(DepDrop::className(), [
                         'options'       => ['prompt' => 'Chọn phường...'],
                         'pluginOptions' => [
@@ -59,16 +66,24 @@ $maphuong = userInfo()->ma_phuong;
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <?= $form->field($model, 'loaitk')->dropDownList(['sxh' => 'Sốt xuất huyết']); ?>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <?= $form->field($model, 'chuandoan')->dropDownList(['sxh' => 'Sốt xuất huyết']); ?>
                 </div>
-                <div class="col-md-2">
-                    <?= $form->field($model, 'date_from')->widget(DatePicker::classname()); ?>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <?= $form->field($model, 'date_cat')->dropDownList($date_cat, ['prompt' => 'Chọn thời gian...']); ?>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
+                    <?= $form->field($model, 'date_from')->widget(DatePicker::classname(), [
+                        'options' => ['placeholder' => 'DD/MM/YYYY', 'value' => '01/'.$month.'/'.date('Y')],
+                    ]); ?>
+                </div>
+                <div class="col-md-3">
                     <?= $form->field($model, 'date_to')->widget(DatePicker::classname(), [
                         'options' => ['placeholder' => 'DD/MM/YYYY', 'value' => date('d/m/Y')],
                     ]); ?>

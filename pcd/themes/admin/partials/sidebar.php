@@ -107,7 +107,6 @@ $header = function ($title){
 
                 <?php if(role('admin')):?>
                     <?=$header('Kiểm tra')?>
-                    <li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">Kiểm tra</div> <i class="icon-menu" title="Kiểm tra"></i></li>
                     <?=$li('Thông tin ca bệnh', '/admin/kiemtra-cabenh', 'icon-stack')?>
                 <?php endif; ?>
 
