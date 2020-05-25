@@ -3,6 +3,7 @@
 namespace pcd\modules\sxh\controllers;
 
 use pcd\controllers\AppController;
+use pcd\models\OdichSxh;
 use pcd\modules\sxh\forms\SxhForm;
 
 
@@ -16,9 +17,21 @@ class DefaultController extends AppController {
             'getData'  => [$this, 'getDataDieutra'],
         ];
 
+        $actions['export-xuphat'] = [
+            'class'    => 'common\actions\ExportWordAction',
+            'fileName' => 'BienBanXuLyOdich',
+            'view' => 'template-word-xuphat',
+            'getData'  => [$this, 'getDataXuphat'],
+        ];
+
         return $actions;
     }
 
+    public function getDataXuphat(){
+        $id = request('id');
+        $model = new OdichSxh();
+        return ['m' => $model];
+    }
 
 
     public function actionIndex() {

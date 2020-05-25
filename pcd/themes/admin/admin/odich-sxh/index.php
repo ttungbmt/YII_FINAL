@@ -106,6 +106,9 @@ if($is_partial){
                             <?= Html::a('<span class="icon-pencil7"></span>', ['/admin/odich-sxh/update', 'id' => $m->id], ['class' => 'list-icons-item text-primary', 'data-toggle' => 'tooltip', 'title' => lang('Update'), 'data' => [
                                 'pjax' => 0, 'target' => $is_partial ? '_blank' : '_self'
                             ]]) ?>
+                            <?= Html::a('<span class="icon-download4"></span>', ['/sxh/default/export-xuphat', 'id' => $m->id], ['class' => 'list-icons-item text-primary', 'data-toggle' => 'tooltip', 'title' => lang('Update'), 'data' => [
+                                'pjax' => 0, 'target' => '_blank'
+                            ]]) ?>
                             <?= Html::a('<span class="icon-list-ordered"></span>', ['/admin/odich-sxh/xuly', 'id' => $m->id, ''], ['class' => 'list-icons-item text-info', 'data-toggle' => 'tooltip', 'title' => 'Xử lý', 'role' => 'modal-remote']) ?>
                             <?php if (role('admin')): ?>
                                 <?= Html::a('<span class="icon-trash"></span>', ['/admin/odich-sxh/delete', 'id' => $m->id, ''], ['class'                => 'list-icons-item text-danger', 'data-toggle' => 'tooltip', 'title' => lang('Delete'), 'role' => 'modal-remote', 'data-request-method' => 'post', 'data-confirm-ok' => 'Chấp nhận', 'data-confirm-cancel' => 'Đóng',
@@ -172,6 +175,9 @@ if($is_partial){
                                             'item' => $data
                                         ]]) ?>
                                         <?= Html::a('<span class="icon-pencil7"></span>', ['/admin/odich-sxh/update', 'id' => $m->id], ['class' => 'list-icons-item text-primary', 'data-toggle' => 'tooltip', 'title' => lang('Update'), 'data-pjax' => 0, 'target' => $is_partial ? '_blank' : '_self']) ?>
+                                        <?= Html::a('<span class="icon-download4"></span>', ['/sxh/default/export-xuphat', 'id' => $m->id], ['class' => 'list-icons-item text-primary', 'data-toggle' => 'tooltip', 'title' => lang('Update'), 'data' => [
+                                            'pjax' => 0, 'target' => '_blank'
+                                        ]]) ?>
                                         <?= Html::a('<span class="icon-list-ordered"></span>', ['/admin/odich-sxh/xuly', 'id' => $m->id, ''], ['class' => 'list-icons-item text-info', 'data-toggle' => 'tooltip', 'title' => 'Xử lý', 'role' => 'modal-remote']) ?>
                                         <?php if (role('admin')): ?>
                                             <?= Html::a('<span class="icon-trash"></span>', ['/admin/odich-sxh/delete', 'id' => $m->id, ''], ['class'                => 'list-icons-item text-danger', 'data-toggle' => 'tooltip', 'title' => lang('Delete'), 'role' => 'modal-remote', 'data-request-method' => 'post', 'data-confirm-ok' => 'Chấp nhận', 'data-confirm-cancel' => 'Đóng',
