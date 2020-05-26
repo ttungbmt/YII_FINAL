@@ -150,23 +150,30 @@ class SiteController extends AppController {
             ->select([
                 'year'   => "date_part('year', {$date})",
                 'weekly' => "date_part('week', {$date})",
-                'count'  => "COUNT(*)",
+                'count'  => "COUNT(CASE WHEN tpbv <> 0 THEN 1 END)",
             ])
-            ->from('cabenh_sxh')
+            ->from(['cb' => 'cabenh_sxh'])
+            ->leftJoin(['dt' => 'dieutra_sxh'], 'cb.gid = dt.cabenh_id')
             ->where(new Expression("date_part('year', {$date}) BETWEEN date_part('year', NOW())-1 AND date_part('year', NOW())"))
             ->groupBy('year, weekly')
             ->orderBy('weekly, year');
 
         if ($type == 1) {
-            $q->andWhere(['tp_guive' => 1, 'ht_dieutri' => '1']);
+            $q->andWhere(['ht_dieutri' => '1']);
         } elseif ($type == 2) {
-            $q->andWhere(['tp_guive' => 1]);
+
         } elseif ($type == 3) {
-            $q->andWhere(['ht_dieutri' => 1]);
-            $q->andWhere(['<>', 'is_trave', 1]);
+            $q->andWhere([
+                'ht_dieutri' => 1,
+                'chuandoan' => 1
+            ]);
         } elseif ($type == 4) {
-            $q->andWhere(['<>', 'is_trave', 1]);
+            $q->andWhere([
+                'chuandoan' => 1
+            ]);
         }
+
+//        dd($q->createCommand()->getRawSql());
 
         $role->filterCabenhSxh($q);
 

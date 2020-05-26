@@ -58,8 +58,8 @@ $data['dm_phai'] = [
 ];
 
 $data['dm_chuandoan'] = [
-    1 => 'Bệnh SXH',
-    2 => 'Sốt/Nhiễm siêu vi/Nghi ngờ sốt xuất huyết',
+    1 => 'Bệnh SXH/ Theo dõi SXH/ Nghi ngờ sốt xuất huyết',
+    2 => 'Sốt/Nhiễm siêu vi',
     3 => 'Bệnh khác',
 ];
 

@@ -56,7 +56,7 @@
                     <td class="font-weight-semibold">{{ cdc_cbn }}</td>
                 </tr>
                 <tr>
-                    <td>Bệnh SXH/ Theo dõi SXH</td>
+                    <td>Bệnh SXH/ Theo dõi SXH/ Nghi ngờ SXH</td>
                     <td v-for="item in tk_kpa">{{item.cdc_cbn_sxh}}</td>
                     <td>{{sumCols('cdc_cbn_sxh')}}</td>
                 </tr>
