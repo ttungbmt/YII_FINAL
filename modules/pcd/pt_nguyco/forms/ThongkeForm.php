@@ -6,9 +6,13 @@ use yii\base\DynamicModel;
 class ThongkeForm extends DynamicModel {
     public $loai_tk = 'loaihinh';
     public $year;
+    public $month;
+    public $maquan;
+    public $maphuong;
 
     public function init() {
         parent::init();
+        $this->month = date('m/Y');
     }
 
 
@@ -18,7 +22,8 @@ class ThongkeForm extends DynamicModel {
 
     public function rules() {
         return [
-            [['loai_tk', 'year'], 'safe']
+            [['loai_tk', 'year', 'maquan', 'maphuong'], 'safe'],
+            [['month'], 'date', 'format' => 'php:d/m/Y'],
         ];
     }
 
@@ -26,6 +31,9 @@ class ThongkeForm extends DynamicModel {
         return [
             'loai_tk' => 'Thống kê',
             'year' => 'Năm',
+            'month' => 'Tháng',
+            'maquan' => 'Quận',
+            'maphuong' => 'Phường',
         ];
     }
 }

@@ -3,12 +3,15 @@ $this->title = 'Thống kê xử phạt ĐNC';
 
 use kartik\form\ActiveForm;
 use yii\helpers\Html;
+use kartik\depdrop\DepDrop;
 
 $model->year = $model->year ? $model->year : date('Y');
 $dm_loaitk = [
     'loaihinh' => 'Loại hình',
     'xuphat'   => 'Xử phạt',
 ];
+$maquan = userInfo()->ma_quan;
+$maphuong = userInfo()->ma_phuong;
 ?>
 <style>
     tfoot td {font-weight: bold}
@@ -19,21 +22,47 @@ $dm_loaitk = [
         <div class="card-body">
             <?php $form = ActiveForm::begin([
                 'id' => 'formTK',
+                'method' => 'POST'
             ]); ?>
             <div class="row">
                 <div class="col-md-6">
                     <?= $form->field($model, 'loai_tk')->dropDownList($dm_loaitk); ?>
                 </div>
                 <div class="col-md-6">
-                    <?= $form->field($model, 'year')->widget(\kartik\widgets\DatePicker::className(), [
+                    <?= $form->field($model, 'month')->widget(\kartik\widgets\DatePicker::className(), [
                         'pluginOptions' => [
                             'autoclose'   => true,
-                            'minViewMode' => 2,
-                            'format'      => 'yyyy'
+                            'minViewMode' => 1,
+                            'format'      => 'mm/yyyy'
                         ],
                     ]); ?>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <?= $form->field($model, 'maquan')->dropDownList(api('/dm/quan?role=true'), [
+                        'prompt'  => 'Chọn quận huyện...',
+                        'id'      => 'drop-quan',
+                        'options' => [
+                            userInfo()->ma_quan => ['Selected' => true],
+                        ]
+                    ]); ?>
+                </div>
+                <div class="col-md-6">
+                    <?= $form->field($model, 'maphuong')->widget(DepDrop::className(), [
+                        'options'       => ['prompt' => 'Chọn phường...'],
+                        'pluginOptions' => [
+                            'depends'      => ['drop-quan'],
+                            'url'          => url(['/api/dm/phuong?role=true']),
+                            'initialize'   => $maquan == true,
+                            'placeholder'  => 'Chọn phường...',
+                            'ajaxSettings' => ['data' => ['value' => $maphuong]],
+                        ],
+                    ]) ?>
+                </div>
+            </div>
+
 
             <?= Html::submitButton('Thống kê', ['class' => 'btn btn-success']) ?>
             <?php ActiveForm::end(); ?>
@@ -76,6 +105,12 @@ $dm_loaitk = [
                 list_url: {
                     loaihinh: '/pt_nguyco/thongke/loaihinh',
                     xuphat: '/pt_nguyco/thongke/xuphat'
+                }
+            },
+            filters: {
+                number: function (value) {
+                    if(_.isNull(value)) return  0
+                    return value
                 }
             },
             computed: {
