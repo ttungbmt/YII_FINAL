@@ -46,7 +46,7 @@ class ThongkeController extends MyApiController
 
         $model = (new Query())
             ->select('count(*), loaidieutra')
-            ->where(['not', ['is_trave' => 1]])
+            ->andWhere(['>=', new Expression("ngaybaocao"), '2019-01-01'])
             ->from($tbThongke)
             ->groupBy('loaidieutra');
 
@@ -89,8 +89,8 @@ class ThongkeController extends MyApiController
 
         $model2 = (new Query())
             ->select('loaicabenh, count(*)')
-            ->where(['not', ['is_trave' => 1]])
             ->from($tbThongke)
+            ->andWhere(['>=', new Expression("ngaybaocao"), '2019-01-01'])
             ->groupBy('loaicabenh');
 
         $model2->addSelect($fieldGroup)->addGroupBy($fieldGroup);
@@ -122,57 +122,39 @@ class ThongkeController extends MyApiController
             });
 
         $model3 = (new Query())
-//            ->addSelect('sum(cdc_cbn_sxh) cdc_cbn_sxh, sum(cdc_cbn_ksxh) cdc_cbn_ksxh')
-//            ->addSelect('sum(cdc_kbn_pxk) cdc_kbn_pxk, sum(cdc_kbn_qhk) cdc_kbn_qhk, sum(cdc_kbn_tk) cdc_kbn_tk')
-//            ->addSelect('sum(kdc_pxk) kdc_pxk, sum(kdc_qhk) kdc_qhk, sum(kdc_tk) kdc_tk')
-//            ->where(['not', ['is_trave' => 1]])
             ->select('count(*), loai_xm')
             ->from('v_xacminh_cb')
+            ->andWhere(['>=', 'ngaybaocao', '2019-01-01'])
             ->groupBy('loai_xm');
+
 
         $model3->addSelect($fieldGroup)->addGroupBy($fieldGroup);
         $role->filterCabenh($model3, 0);
 
-        $data3 = collect($model3->all())
-            ->groupBy($fieldGroup)
-            ->map(function ($item, $k) {
-                $item = $item->all();
-                $xm = [
-                    'kdc_kbn' => 0,
-                    'cdc_kbn' => 0,
-                    'cdc_cbn' => 0,
-                ];
-                foreach($item as $i){
-                    if(in_array($i['loai_xm'], [null, 1, 2, 3])) {
-                        $xm['kdc_kbn'] += $i['count'];
-                    } elseif(in_array($i['loai_xm'], [4, 5, 6])){
-                        $xm['cdc_kbn'] += $i['count'];
-                    } elseif(in_array($i['loai_xm'], [7, 8])){
-                        $xm['cdc_cbn'] += $i['count'];
-                    }
-                }
-                return [
-//                    'cdc_cbn' => $item->sum('cdc_cbn_sxh') + $item->sum('cdc_cbn_ksxh'),
-//                    'cdc_kbn' => $item->sum('cdc_kbn_pxk') + $item->sum('cdc_kbn_qhk') + $item->sum('cdc_kbn_tk'),
-//                    'kdc_kbn' => $item->sum('kdc_pxk') + $item->sum('kdc_qhk') + $item->sum('kdc_tk'),
-                    'kdc_kbn' => $xm['kdc_kbn'],
-                    'cdc_kbn' => $xm['cdc_kbn'],
-                    'cdc_cbn' => $xm['cdc_cbn'],
-                ];
-            });
 
-        $tk_xacminh = $dm
-            ->map(function ($item, $k) use ($data3, $fieldGroup) {
-                $val = $data3->get($k);
-                return [
-                    'field' => $fieldGroup,
-                    'ten' => $item,
-                    'cdc_cbn' => $cdc_cbn = data_get($val, 'cdc_cbn', 0),
-                    'cdc_kbn' => $cdc_kbn = data_get($val, 'cdc_kbn', 0),
-                    'kdc_kbn' => $kdc_kbn = data_get($val, 'kdc_kbn', 0),
-                    'total' => $cdc_cbn + $cdc_kbn + $kdc_kbn,
-                ];
-            });
+        $data3 = (new Query())->select([
+            'cdc_cbn' => 'COUNT(CASE WHEN loai_xm_cb IN(7,8) THEN 1 END)',
+            'cdc_kbn' => 'COUNT(CASE WHEN loai_xm_cb IN(4,5,6) THEN 1 END)',
+            'kdc_kbn' => 'COUNT(CASE WHEN loai_xm_cb IN(1,2,3) THEN 1 END)',
+        ])
+            ->from('cabenh_sxh')
+            ->andWhere(['>=', 'ngaybaocao', '2019-01-01'])
+            ->addSelect($fieldGroup)->addGroupBy($fieldGroup)
+        ;
+        $role->filterCabenh($data3, 0);
+        $data3 = collect($data3->all());
+
+        $tk_xacminh = collect($dm)->map(function ($name, $k) use($data3, $fieldGroup){
+            $val = $data3->firstWhere($fieldGroup, $k);
+            return [
+                'field' => $fieldGroup,
+                'ten' => $name,
+                'cdc_cbn' => $cdc_cbn = data_get($val, 'cdc_cbn', 0),
+                'cdc_kbn' => $cdc_kbn = data_get($val, 'cdc_kbn', 0),
+                'kdc_kbn' => $kdc_kbn = data_get($val, 'kdc_kbn', 0),
+                'total' => $cdc_cbn + $cdc_kbn + $kdc_kbn,
+            ];
+        });
 
         if($type == 'dieutra') {
             return $this->renderPartial('_dieutra', [
