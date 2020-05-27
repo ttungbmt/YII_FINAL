@@ -43,6 +43,7 @@ class PtNguyco extends App {
     public $dates = [
         'ngaycapnhat',
         'ngayxoa',
+        'ngayky_ck'
     ];
 
     /**

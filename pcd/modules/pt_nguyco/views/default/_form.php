@@ -166,7 +166,7 @@ $url_phuong = url(['/api/dm/phuong']);
             computed: {
                 shownTenLH(){
                     let khac = _.chain(this.dm_loaihinh).filter({ten_lh: 'Khác'}).map(v => _.toString(v.id)).value()
-                    return _.includes(khac, (string)this.m.loaihinh_id)
+                    return _.includes(khac, this.m.loaihinh_id+'')
                 },
                 shownKyCamket(){
                     let id = _.toInteger(this.m.loaihinh_id),
