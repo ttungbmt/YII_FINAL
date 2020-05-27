@@ -16,6 +16,7 @@ class AppAsset extends AssetBundle
     public $jsOptions = ['position' => View::POS_HEAD];
 
     public $css = [
+        'https://cdn.jsdelivr.net/npm/@neos21/bootstrap3-glyphicons@1.0.1/dist/css/bootstrap3-glyphicons.min.css',
         'themes/admin/main/css/bootstrap.min.css',
         'themes/admin/main/css/bootstrap_limitless.min.css',
         'themes/admin/main/css/layout.min.css',

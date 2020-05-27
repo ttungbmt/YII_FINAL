@@ -75,10 +75,10 @@ $header = function ($title){
                     <ul class="nav nav-group-sub" data-submenu-title="Lược sử">
                         <?=$li('Danh sách ĐNC', '/pt_nguyco', null, 'dnc')?>
                         <?=$li('Danh sách giám sát', ['/pt_nguyco/phieu-gs'], null, 'dnc')?>
-                        <?=$li('Kết quả giám sát', '/pt_nguyco/default/ketqua-gs', null, 'dnc')?>
                         <?=$li('Thống kê', ['/pt_nguyco/thongke'], null, 'dnc.thongke')?>
-                        <?=$li('Nhập Excel', ['/import/dnc'], null, 'dnc.import')?>
-
+                        <?php if(role('admin')):?>
+                            <?=$li('Nhập Excel', ['/import/dnc'], null, 'dnc.import')?>
+                        <?php endif; ?>
                     </ul>
                 </li>
 

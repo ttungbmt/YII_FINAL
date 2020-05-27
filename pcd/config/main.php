@@ -24,7 +24,7 @@ return [
             'class' => 'modules\pcd\thongke\Module',
         ],
         'pt_nguyco' => [
-            'class' => 'modules\pcd\pt_nguyco\Module',
+            'class' => 'pcd\modules\pt_nguyco\Module',
         ],
         'import'    => [
             'class' => 'pcd\modules\import\Module',
