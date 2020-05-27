@@ -7,6 +7,7 @@ $maquan = userInfo()->ma_quan;
 $maphuong = userInfo()->ma_phuong;
 $model->maquan = $model->maquan ? $model->maquan : $maquan;
 $year = $model->year;
+$dm_loaihinh = api('pt_nguyco/dm/loaihinh');
 ?>
 
 <?php $form = ActiveForm::begin([
@@ -32,8 +33,11 @@ $year = $model->year;
             ],
         ])->label(false) ?>
     </div>
+    <div class="col-md-2">
+        <?= $form->field($model, 'loaihinh_id')->dropDownList($dm_loaihinh, ['prompt' => 'Chọn loại hình...'])->label(false) ?>
+    </div>
     <?php if($year):?>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <?= $form->field($model, 'year')
                 ->widget(DatePicker::classname(), [
                     'options' => ['placeholder' => 'Năm'],
@@ -45,7 +49,7 @@ $year = $model->year;
                 ])->label(false); ?>
         </div>
     <?php else:?>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <?= $form->field($model, 'date_from')
                 ->widget(DatePicker::classname(), ['options' => ['placeholder' => 'Từ ngày cập nhật']])->label(false); ?>
         </div>

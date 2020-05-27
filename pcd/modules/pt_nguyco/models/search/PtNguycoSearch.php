@@ -18,7 +18,7 @@ class PtNguycoSearch extends PtNguyco
     public function rules()
     {
         return [
-            [['gid'], 'integer'],
+            [['gid', 'loaihinh_id'], 'integer'],
             [['dienthoai', 'maso', 'ten_cs', 'sonha', 'tenduong', 'khupho', 'to_dp', 'maphuong', 'maquan', 'nhom', 'loaihinh', 'tochuc_gs', 'ngaycapnhat', 'ngayxoa', 'ghichu', 'phancap_ql', 'thuchien', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'safe'],
             [['date_from', 'date_to'], 'date', 'format' => 'php:d/m/Y'],
         ];
@@ -50,6 +50,7 @@ class PtNguycoSearch extends PtNguyco
         $query->andFilterWhere([
             'maquan' => $this->maquan,
             'maphuong' => $this->maphuong,
+            'loaihinh_id' => $this->loaihinh_id,
         ]);
 
         $query->andFilterSearch(['ilike', 'dienthoai', $this->dienthoai]);

@@ -69,7 +69,7 @@ return [
         'attribute' => 'loaihinh',
         'contentOptions' => ['style' => 'max-width:250px;'],
         'value' => function($model){
-            return $model->loaihinh_id ? data_get($model->dm_loaihinh, 'ten_lh') : $model->loaihinh;
+            return data_get($model->dm_loaihinh, 'ten_lh');
         }
     ],
     [
