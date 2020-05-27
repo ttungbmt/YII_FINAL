@@ -62,6 +62,7 @@ class PtNguyco extends App {
             [['maphuong', 'maquan', 'khupho', 'to_dp', 'dienthoai', 'sonha', 'tenduong', 'nhom',], 'safe'],
             [['maso', 'ten_cs', 'loaihinh', 'tochuc_gs', 'ghichu', 'phancap_ql', 'thuchien',], 'string', 'max' => 255],
             [['ngaycapnhat', 'ngayky_ck'], 'date', 'format' => 'php:d/m/Y'],
+            [['maphuong', 'maquan'], 'required'],
 //            [['lat', 'lng', 'ten_cs', 'tenduong','loaihinh_id', 'ngaycapnhat'], 'required'],
             [['lat', 'lng'], 'safe'],
             [['ky_ck'], 'required', 'when' => function ($model) {

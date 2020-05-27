@@ -43,10 +43,10 @@ $url_phuong = url(['/api/dm/phuong']);
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <?= $form->field($model, 'lat', ['template' => $template])->textInput(['maxlength' => true]) ?>
+                            <?= $form->field($model, 'lat', ['template' => $template])->textInput(['class' => 'form-control pt-lat', 'maxlength' => true]) ?>
                         </div>
                         <div class="col-md-6">
-                            <?= $form->field($model, 'lng', ['template' => $template])->textInput(['maxlength' => true]) ?>
+                            <?= $form->field($model, 'lng', ['template' => $template])->textInput(['class' => 'form-control pt-lng', 'maxlength' => true]) ?>
                         </div>
                     </div>
 
