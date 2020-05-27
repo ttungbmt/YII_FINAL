@@ -72,6 +72,7 @@ class DefaultController extends BackendController
 
     public function saveData(&$model, &$giamsats)
     {
+
         $model->save();
 
         $ms = collect(request('PhieuGs'))->map(function ($i){$m = DateTime::createFromFormat("d/m/Y", data_get($i, 'ngay_gs'))->format('m');return intval($m);});
@@ -103,6 +104,7 @@ class DefaultController extends BackendController
 
         $data = collect($giamsats)->map(function ($i) {
             return array_merge($i->toArray(), [
+                'xuphat' => $i->xuphat === '' ? null : $i->xuphat,
                 'ngay_gs' =>  $i->ngay_gs ? Carbon::createFromFormat('d/m/Y', $i->ngay_gs)->format('Y-m-d') : null,
                 'ngayxuphat' =>  $i->ngayxuphat ? Carbon::createFromFormat('d/m/Y', $i->ngayxuphat)->format('Y-m-d') : null,
             ]);

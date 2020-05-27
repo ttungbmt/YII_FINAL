@@ -3,11 +3,9 @@
         <thead>
         <tr>
             <th><?=role('admin') ? 'Quận/huyện' : (role('quan') ? 'Phường/xã' : 'Khu phố')?></th>
-            <th>Ca TP</th>
             <th>Ca Nhận</th>
             <th>Ca chuyển</th>
             <th>Ca PHCĐ</th>
-            <th>Tổng</th>
         </tr>
         </thead>
         <tbody>
