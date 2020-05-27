@@ -60,10 +60,13 @@ class PtNguycoSearch extends PtNguyco
             return $dataProvider;
         }
 
-        $filter_lh = request()->get('filter_lh');
-        if($filter_lh === '0'){
+        $filter = request()->get('filter_dnc');
+        if($filter === '0'){
             $query->andWhere('loaihinh_id IS NULL');
+        } elseif ($filter === '1'){
+            $query->andWhere('updated_at IS NULL');
         }
+
 
 
         $query->andFilterWhere([
