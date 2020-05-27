@@ -29,6 +29,20 @@ class PtNguycoSearch extends PtNguyco
         return Model::scenarios();
     }
 
+    public function init()
+    {
+        parent::init();
+        if(role('quan') && !$this->maquan){
+            $this->maquan = userInfo()->maquan;
+        }
+
+        if(role('phuong') && !$this->maphuong){
+            $this->maquan = userInfo()->maquan;
+            $this->maphuong = userInfo()->maphuong;
+        }
+    }
+
+
     public function search($params)
     {
         $roles = RoleHc::init();
@@ -44,6 +58,11 @@ class PtNguycoSearch extends PtNguyco
         if (!$this->validate()) {
             $query->where('0=1');
             return $dataProvider;
+        }
+
+        $filter_lh = request()->get('filter_lh');
+        if($filter_lh === '0'){
+            $query->andWhere('loaihinh_id IS NULL');
         }
 
 

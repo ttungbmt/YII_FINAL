@@ -19,8 +19,15 @@ $exportMenu = ExportMenu::widget([
         'label' => '<i class="icon-database-export"></i>',
         'class' => 'btn btn-default'
     ]
-])
+]);
+$null_lh = \pcd\models\PtNguyco::find()
+    ->andWhere('loaihinh_id IS NULL')
+    ->andFilterWhere(['maquan' => $searchModel->maquan, 'maphuong' => $searchModel->maphuong])
+    ->count()
+;
+
 ?>
+
 <div class="pt-nguyco-index">
     <div id="ajaxCrudDatatable">
         <?= $this->render('_search_gs', ['model' => $searchModel]) ?>
@@ -55,6 +62,9 @@ $exportMenu = ExportMenu::widget([
             'panel' => [
                 'type' => 'primary',
                 'heading' => 'Danh sách Điểm nguy cơ',
+                'before'  =>  Html::tag('div', (
+                    $null_lh > 0 ? '<a href="'.url(['', 'filter_lh' => 0]).'" class="badge bg-warning-400 align-self-center ml-auto" target="_blank" data-pjax="0">'.$null_lh.' DNC chưa cập nhật loại hình</a>' : ''
+                ), ['class' => 'btn-group'])
             ],
             'floatHeader' => false,
             'tableOptions' => ['style' => 'width: 2000px;'],
