@@ -25,8 +25,6 @@ if (method_exists($this, 'beginPage')) {
 }
 ?>
 
-
-
 <?php
 \common\assets\AppAsset::register($this);
 ?>
