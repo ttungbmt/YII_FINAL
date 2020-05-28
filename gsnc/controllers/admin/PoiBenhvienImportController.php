@@ -31,9 +31,8 @@ class PoiBenhvienImportController extends GsncController
 
     protected function options()
     {
-
         return [
-            'header' => ['stt', 'donvilaymau', 'ten', 'maquan', 'maphuong', 'diachi', 'loaimau_id', 'ngaylaymau', 'onhiem_id', 'dienthoai', 'website', 'gioithieu', 'loaibv_id', 'mamau', 'vs', 'hl_xn', 'hl_mt', 'hl_vs', 'lat', 'lng'],
+            'header' => ['stt', 'donvilaymau', 'ma_bv', 'maquan', 'maphuong', 'diachi', 'loaimau_id', 'ngaylaymau', 'onhiem_id', 'dienthoai', 'website', 'gioithieu', 'loaibv_id', 'mamau', 'vs', 'hl_xn', 'hl_mt', 'hl_vs', 'lat', 'lng'],
             'sample' => '/projects/gsnc/storage/samples/benhvien-import.xlsx'
         ];
     }
@@ -48,7 +47,7 @@ class PoiBenhvienImportController extends GsncController
         $this->data['dm_quan'] = api('dm/quan-en');
         $this->data['dm_phuong'] = api('dm/phuong-en');
         $this->data['dm_loaibv'] = DmLoaibv::pluck('maloai', 'id');
-        $this->data['dm_bv'] = PoiBenhvien::pluck('ten', 'gid');
+        $this->data['dm_bv'] = PoiBenhvien::pluck('ma_bv', 'gid');
         $this->data['dm_maunc'] = api('dm/maunc');
         $this->data['dm_chitieu'] = DmChitieu::find()->orderBy('id ASC')->where(['qcvn_id' => request('qcvn_id')])->pluck('ma', 'id')->all();
     }
@@ -68,6 +67,7 @@ class PoiBenhvienImportController extends GsncController
     {
         $data = [];
         $models = [];
+        $dm_bv = PoiBenhvien::pluck('ten', 'ma_bv');
 
         foreach ($exModels as $k => $i) {
             $data[$k] = $i->toArray();
@@ -76,6 +76,7 @@ class PoiBenhvienImportController extends GsncController
             $models[$k] = new Benhvien();
             $models[$k]->data_cts = data_get($data[$k], 'chitieus', []);
             $models[$k]->bv_id = data_get($data[$k], 'loaibv_id');
+            $models[$k]->ten = $dm_bv->get($i->ma_bv);
         }
 
         // Validate model and relation 2rd

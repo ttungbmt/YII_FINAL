@@ -1,4 +1,5 @@
 <?php
+
 $db = [
     'class'    => 'yii\db\Connection',
 //    'dsn'      => 'pgsql:host=localhost;dbname=gsnc_2019;port=5433;',
@@ -7,5 +8,6 @@ $db = [
     'password' => 'postgres',
     'charset'  => 'utf8',
 ];
+
 
 return $db;

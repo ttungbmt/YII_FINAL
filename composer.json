@@ -40,7 +40,7 @@
         "bower-asset/noty": "^3.1",
         "nepstor/yii2-datetime-compare-validator": "^2.0",
         "webzop/yii2-notifications": "*",
-        "phpoffice/phpspreadsheet": "^1.1",
+        "phpoffice/phpspreadsheet": "*",
         "softark/yii2-dual-listbox": "dev-master",
         "frostealth/yii2-relation-behavior": "@stable",
         "cornernote/yii2-linkall": "*",
@@ -94,6 +94,5 @@
             "type": "path",
             "url": "./packages/ttungbmt/*"
         }
-
     ]
 }

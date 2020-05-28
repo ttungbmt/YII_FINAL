@@ -8,13 +8,19 @@ use kartik\depdrop\DepDrop;
 $model->year = $model->year ? $model->year : date('Y');
 $dm_loaitk = [
     'loaihinh' => 'Loại hình',
-    'xuphat'   => 'Xử phạt',
+    'xuphat' => 'Xử phạt',
 ];
 $maquan = userInfo()->ma_quan;
 $maphuong = userInfo()->ma_phuong;
 ?>
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
 <style>
-    tfoot td {font-weight: bold}
+    tfoot td {
+        font-weight: bold
+    }
 </style>
 
 <div id="tkApp">
@@ -31,9 +37,9 @@ $maphuong = userInfo()->ma_phuong;
                 <div class="col-md-6">
                     <?= $form->field($model, 'month')->widget(\kartik\widgets\DatePicker::className(), [
                         'pluginOptions' => [
-                            'autoclose'   => true,
+                            'autoclose' => true,
                             'minViewMode' => 1,
-                            'format'      => 'mm/yyyy'
+                            'format' => 'mm/yyyy'
                         ],
                     ]); ?>
                 </div>
@@ -42,8 +48,8 @@ $maphuong = userInfo()->ma_phuong;
             <div class="row">
                 <div class="col-md-6">
                     <?= $form->field($model, 'maquan')->dropDownList(api('/dm/quan?role=true'), [
-                        'prompt'  => 'Chọn quận huyện...',
-                        'id'      => 'drop-quan',
+                        'prompt' => 'Chọn quận huyện...',
+                        'id' => 'drop-quan',
                         'options' => [
                             userInfo()->ma_quan => ['Selected' => true],
                         ]
@@ -51,12 +57,12 @@ $maphuong = userInfo()->ma_phuong;
                 </div>
                 <div class="col-md-6">
                     <?= $form->field($model, 'maphuong')->widget(DepDrop::className(), [
-                        'options'       => ['prompt' => 'Chọn phường...'],
+                        'options' => ['prompt' => 'Chọn phường...'],
                         'pluginOptions' => [
-                            'depends'      => ['drop-quan'],
-                            'url'          => url(['/api/dm/phuong?role=true']),
-                            'initialize'   => $maquan == true,
-                            'placeholder'  => 'Chọn phường...',
+                            'depends' => ['drop-quan'],
+                            'url' => url(['/api/dm/phuong?role=true']),
+                            'initialize' => $maquan == true,
+                            'placeholder' => 'Chọn phường...',
                             'ajaxSettings' => ['data' => ['value' => $maphuong]],
                         ],
                     ]) ?>
@@ -68,6 +74,7 @@ $maphuong = userInfo()->ma_phuong;
             <?php ActiveForm::end(); ?>
         </div>
     </div>
+
 
     <div id="resp-html">
         <div class="text-right mb-2">
@@ -82,16 +89,20 @@ $maphuong = userInfo()->ma_phuong;
             <div class="table-responsive" v-if="shownResp">
 
                 <div v-if="loai_tk=='loaihinh'">
-                    <?=$this->render('_loaihinh')?>
+                    <?= $this->render('_loaihinh') ?>
                 </div>
                 <div v-if="loai_tk=='xuphat'">
-                    <?=$this->render('_xuphat')?>
+                    <?= $this->render('_xuphat') ?>
                 </div>
             </div>
         </div>
+
+<!--        <div id="chartdiv" style="height: 1000px; width: 100%"></div>-->
+
     </div>
+
 </div>
-<script src="<?=asset('assets/vue/vue-component/dist/library.js')?>"></script>
+<script src="<?= asset('assets/vue/vue-component/dist/library.js') ?>"></script>
 <script>
     $(function () {
         let thongkeMixin = VueCore.mixins.thongke
@@ -105,30 +116,70 @@ $maphuong = userInfo()->ma_phuong;
                 list_url: {
                     loaihinh: '/pt_nguyco/thongke/loaihinh',
                     xuphat: '/pt_nguyco/thongke/xuphat'
-                }
+                },
+                chartData: {
+                    labels: ['January', 'February'],
+                    datasets: [
+                        {
+                            label: 'Data One',
+                            backgroundColor: '#f87979',
+                            data: [40, 20]
+                        }
+                    ]
+                },
             },
+            components: {},
             filters: {
                 number: function (value) {
-                    if(_.isNull(value)) return  0
+                    if (_.isNull(value)) return 0
                     return value
                 }
             },
             computed: {
-                postUrl(){
+                postUrl() {
                     return this.list_url[this.loai_tk]
                 }
             },
             methods: {
-                beforePost({loai_tk}){
+                beforePost({loai_tk}) {
                     this.loai_tk = loai_tk
                 },
-                afterPost(resp){
+                afterPost(resp) {
                     this.resp = resp.data
                 },
+
+                renderChart(){
+                    am4core.useTheme(am4themes_animated);
+
+                    let chart = am4core.create("chartdiv", am4charts.XYChart);
+
+                    chart.data = this.resp;
+
+                    let categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+                    categoryAxis.dataFields.category = "ten_lh";
+                    categoryAxis.renderer.inversed = true;
+
+                    let label = categoryAxis.renderer.labels.template;
+                    label.wrap = true;
+                    label.maxWidth = 400;
+                    label.textAlign = 'end';
+
+                    //create value axis for income and expenses
+                    let valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+                    valueAxis.renderer.opposite = true;
+
+                    let series = chart.series.push(new am4charts.ColumnSeries());
+                    series.dataFields.categoryY = "ten_lh";
+                    series.dataFields.valueX = "dauthang";
+                    series.name = "DNC";
+                    series.columns.template.fillOpacity = 0.5;
+                    series.columns.template.strokeOpacity = 0;
+                    series.columns.template.tooltipText = "{valueX.value}";
+                    chart.legend = new am4charts.Legend();
+                }
             }
         })
     })
-
 
 
 </script>

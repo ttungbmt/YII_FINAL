@@ -18,7 +18,7 @@ class BenhvienImportForm extends DynamicImportForm {
     public function attributeLabels() {
         return [
             'diachi'   => 'Địa chỉ (diachi)',
-            'ten'      => 'Tên (ten)',
+            'ma_bv'      => 'Tên (ten)',
             'maquan'   => 'Mã quận (maquan)',
             'maphuong' => 'Mã phường (maphuong)',
         ];
@@ -26,10 +26,10 @@ class BenhvienImportForm extends DynamicImportForm {
 
     public function rules() {
         return [
-            [['donvilaymau', 'ten', 'diachi', 'maquan', 'maphuong', 'loaimau_id', 'mamau'], 'filter', 'filter' => 'trim'],
+            [['donvilaymau', 'ma_bv', 'diachi', 'maquan', 'maphuong', 'loaimau_id', 'mamau'], 'filter', 'filter' => 'trim'],
             [['maquan'], 'in', 'range' => $this->dm_quan],
             [['maphuong'], 'in', 'range' => $this->dm_phuong],
-            [['ten'], 'in', 'range' => $this->dm_bv],
+            [['ma_bv'], 'in', 'range' => $this->dm_bv],
             [['ngaylaymau'], 'date', 'format' => 'DD/MM/YYYY'],
             [$this->dm_chitieu, 'filter', 'filter' => function ($v) {
                 return $this->filterChitieu($v);
@@ -89,14 +89,13 @@ class BenhvienImportForm extends DynamicImportForm {
             'bv_id'   => $this->dm_bv,
         ])->map(function ($dm, $k) {
             return function ($model, $field) use ($dm, $k) {
-                $val = $this->arr_where($dm, 'ten');
-                dd($val, $dm, $this->$field);
+                $val = $this->arr_where($dm, 'ma_bv');
                 return in_array($k, ['dm_bv']) ? (string)$val : $val;
             };
         })->all();
 
         $data->push([
-            'ten',
+            'ma_bv',
             'qcvn_id',
             'ngaylaymau',
             'diachi',

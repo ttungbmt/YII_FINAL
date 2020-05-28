@@ -12,9 +12,9 @@ return [
             return url([$action, 'id' => $key]);
         },
         'visibleButtons' => [
-            'delete'   => function ($model) {
-                return role('quan|admin');
-            },
+//            'delete'   => function ($model) {
+//                return role('quan|admin');
+//            },
         ],
         'viewOptions' => ['role' => 'modal-remote', 'title' => lang('View'), 'data-toggle' => 'tooltip'],
         'updateOptions' => ['data-pjax' => 0, 'title' => lang('Update'), 'data-toggle' => 'tooltip'],

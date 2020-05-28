@@ -17,7 +17,7 @@ class PoiBenhvienBenhvienSearch extends PoiBenhvien
     public function rules()
     {
         return [
-            [['gid', 'onhiem_id', 'loaibv_id', 'status', 'vs', 'hl', 'hl_vs', 'qcvn_id', 'loaimau_id', 'hl_xn', 'hl_mt'], 'integer'],
+            [['gid', 'loaibv_id', 'status'], 'integer'],
             [['ten', 'diachi', 'sonha', 'tenduong', 'maquan', 'maphuong', 'lat', 'lng', 'loaibv', 'dienthoai', 'website', 'lichlamviec', 'thamkhao', 'gioithieu', 'check', 'geom', 'created_at', 'updated_at', 'ngaylaymau', 'mamau'], 'safe'],
         ];
     }
@@ -59,19 +59,10 @@ class PoiBenhvienBenhvienSearch extends PoiBenhvien
         // grid filtering conditions
         $query->andFilterWhere([
             'gid' => $this->gid,
-            'onhiem_id' => $this->onhiem_id,
             'loaibv_id' => $this->loaibv_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'status' => $this->status,
-            'vs' => $this->vs,
-            'hl' => $this->hl,
-            'hl_vs' => $this->hl_vs,
-            'qcvn_id' => $this->qcvn_id,
-            'ngaylaymau' => $this->ngaylaymau,
-            'loaimau_id' => $this->loaimau_id,
-            'hl_xn' => $this->hl_xn,
-            'hl_mt' => $this->hl_mt,
         ]);
 
         $query->andFilterWhere(['ilike', 'ten', $this->ten])
@@ -89,8 +80,7 @@ class PoiBenhvienBenhvienSearch extends PoiBenhvien
             ->andFilterWhere(['ilike', 'thamkhao', $this->thamkhao])
             ->andFilterWhere(['ilike', 'gioithieu', $this->gioithieu])
             ->andFilterWhere(['ilike', 'check', $this->check])
-            ->andFilterWhere(['ilike', 'geom', $this->geom])
-            ->andFilterWhere(['ilike', 'mamau', $this->mamau]);
+        ;
 
         return $dataProvider;
     }

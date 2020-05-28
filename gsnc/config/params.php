@@ -1,5 +1,4 @@
 <?php
-
 return [
     'adminEmail' => 'ttungbmt@gmail.com',
     'author'     => 'Trương Thanh Tùng',

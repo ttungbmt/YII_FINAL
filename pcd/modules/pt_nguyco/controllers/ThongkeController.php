@@ -75,12 +75,29 @@ class ThongkeController extends BackendController
             ;
 
 
+            $data0 = collect($q2->all())->map(function ($i){
+                return array_merge($i, [
+                    'luot_gs' => is_string($i['luot_gs']) ? (float)$i['luot_gs'] : $i['luot_gs']
+                ]);
+            });
+
+            $data1 = $data0->whereNotIn('id', [20, 21, 22]);
+            $data2 = $data0->whereIn('id', [20, 21, 22]);
+            $data3 = collect([
+                'ten_lh' => 'Khác',
+                'dauthang' => $data2->sum('dauthang'),
+                'daxoa' => $data2->sum('daxoa'),
+                'moi' => $data2->sum('moi'),
+                'gs' => $data2->sum('gs'),
+                'luot_gs' => $data2->sum('luot_gs'),
+                'lq' => $data2->sum('lq'),
+                'dx_xp' => $data2->sum('dx_xp'),
+                'xp' => $data2->sum('xp'),
+            ]);
+
+
             return $this->asJson([
-                'data' => collect($q2->all())->map(function ($i){
-                    return array_merge($i, [
-                        'luot_gs' => is_string($i['luot_gs']) ? (float)$i['luot_gs'] : $i['luot_gs']
-                    ]);
-                })->all()
+                'data' => $data1->push($data3)->all()
             ]);
         }
 

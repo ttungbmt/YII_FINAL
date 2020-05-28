@@ -65,11 +65,11 @@ class SiteController extends GsncController
             ->groupBy('hl_vs')
             ->all();
 
-        $q_benhvien = (new Query)
-            ->select('COUNT(*) as count, hl_vs')
-            ->from('poi_benhvien')
-            ->groupBy('hl_vs')
-            ->all();
+//        $q_benhvien = (new Query)
+//            ->select('COUNT(*) as count, hl_vs')
+//            ->from('poi_benhvien')
+//            ->groupBy('hl_vs')
+//            ->all();
 
         $dataProvider = [];
 
@@ -93,13 +93,14 @@ class SiteController extends GsncController
             'dat'       => 0,
             'khongdat'  => 0,
         ];
-        foreach($q_benhvien as $value) {
-            if($value['hl_vs'] == 1) {
-                $data_bv['dat'] += $value['count'];
-            } else {
-               $data_bv['khongdat'] += $value['count'];
-            }
-        }
+
+//        foreach($q_benhvien as $value) {
+//            if($value['hl_vs'] == 1) {
+//                $data_bv['dat'] += $value['count'];
+//            } else {
+//               $data_bv['khongdat'] += $value['count'];
+//            }
+//        }
 
         array_push($dataProvider, $data_bv);
 
