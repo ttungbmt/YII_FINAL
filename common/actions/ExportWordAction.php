@@ -17,7 +17,7 @@ class ExportWordAction extends Action {
         $data = call_user_func($this->getData);
         try {
             $this->addHeaders();
-            $content = $this->controller->renderPartial($this->view, $data);
+            $content = $this->controller->renderAjax($this->view, $data);
             return $content;
         } catch (ViewNotFoundException $e) {
             dump($e);

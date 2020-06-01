@@ -1,0 +1,38 @@
+{
+    "name": "ttungbmt/yii2-leaflet",
+    "description": "Leaflet Interactive Maps Extension Library for Yii2.",
+    "type": "yii2-extension",
+    "keywords": [
+        "yii",
+        "yii2",
+        "extension",
+        "widget",
+        "maps",
+        "leaflet"
+    ],
+    "homepage": "https://github.com/ttungbmt/yii2-leaflet",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Truong Thanh Tung",
+            "email": "ttungbmt@gmail.com"
+        }
+    ],
+    "require": {
+        "nanson/yii2-postgis": "*",
+        "bower-asset/leaflet": "^1.6",
+        "bower-asset/leaflet.locatecontrol": "^0.72.0",
+        "bower-asset/leaflet.draw": "^1.0",
+        "npm-asset/leaflet-extra-markers": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "ttungbmt\\leaflet\\": "src"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

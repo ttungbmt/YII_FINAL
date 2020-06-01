@@ -7,13 +7,15 @@ use common\controllers\ImportTrait;
 use pcd\modules\benh_tn\models\BenhTn;
 use pcd\models\DmPhuong;
 use pcd\models\DmQuan;
+use pcd\modules\pt_nguyco\models\PtNguyco;
+use Yii;
 use yii\base\Model;
 
 class DncController extends BackendController {
     use ImportTrait;
     public $enableCsrfValidation = false;
     protected $modelImportClass = 'pcd\modules\import\forms\DncImportForm';
-    protected $modelClass = 'modules\pcd\pt_nguyco\models\PtNguyco';
+    protected $modelClass = 'pcd\modules\pt_nguyco\models\PtNguyco';
 
     protected function options()
     {
@@ -52,7 +54,6 @@ class DncController extends BackendController {
             $models[$k] = new $this->modelClass();
         }
 
-
         // Validate model and relation 2rd
         if (
             Model::loadMultiple($models, $data, '') &&
@@ -63,6 +64,8 @@ class DncController extends BackendController {
             $transaction = $connection->beginTransaction();
             try {
                 $this->saveModels($models, $data, $connection);
+                $id = PtNguyco::find()->select(['gid'=>'MAX(gid)'])->one()->gid;
+                $connection->createCommand("UPDATE pt_nguyco SET geom = ST_SetSRID(ST_MakePoint(lng::float, lat::float), 4326) WHERE gid > {$id}")->execute();
                 $transaction->commit();
                 return true;
             } catch (\Exception $e) {

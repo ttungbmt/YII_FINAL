@@ -2,10 +2,10 @@
 use pcd\modules\pt_nguyco\models\DmLoaihinh;
 use pcd\modules\pt_nguyco\models\KehoachGs;
 use kartik\widgets\DepDrop;
+use ttungbmt\leaflet\widgets\MiniMap;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\widgets\DatePicker;
-use ttungbmt\map\Map;
 
 /* @var $this yii\web\View */
 /* @var $model pcd\models\PtNguyco */
@@ -23,7 +23,10 @@ $yesno = [1 => 'Có', 0 => 'Không'];
 $template = '{label}<span class="text-danger">*</span>{input}';
 $dm_quan = api('/dm/quan?role=true');
 $url_phuong = url(['/api/dm/phuong']);
+
 ?>
+    <?= MiniMap::widget(['model' => $model])?>
+
     <div id="vueApp">
         <div class="pt-nguyco-form">
             <?php $form = ActiveForm::begin([
@@ -36,17 +39,14 @@ $url_phuong = url(['/api/dm/phuong']);
             ])?>
 
             <div class="card">
-                <?= Map::widget([
-                    'model' => $model,
-                ]) ?>
 
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <?= $form->field($model, 'lat', ['template' => $template])->textInput(['class' => 'form-control pt-lat', 'maxlength' => true]) ?>
+                            <?= $form->field($model, 'lat', ['template' => $template])->textInput(['id' => 'inpLat', 'class' => 'form-control pt-lat', 'maxlength' => true]) ?>
                         </div>
                         <div class="col-md-6">
-                            <?= $form->field($model, 'lng', ['template' => $template])->textInput(['class' => 'form-control pt-lng', 'maxlength' => true]) ?>
+                            <?= $form->field($model, 'lng', ['template' => $template])->textInput(['id' => 'inpLng', 'class' => 'form-control pt-lng', 'maxlength' => true]) ?>
                         </div>
                     </div>
 

@@ -26,7 +26,7 @@ $null_lh = \pcd\models\PtNguyco::find()
     ->count()
 ;
 $null_updated = \pcd\models\PtNguyco::find()
-    ->andWhere('updated_at IS NULL')
+    ->andWhere('updated_by = 1')
     ->andFilterWhere(['maquan' => $searchModel->maquan, 'maphuong' => $searchModel->maphuong])
     ->count();
 
@@ -67,8 +67,8 @@ $null_updated = \pcd\models\PtNguyco::find()
                 'type' => 'primary',
                 'heading' => 'Danh sách Điểm nguy cơ',
                 'before'  =>  Html::tag('div', (
-                    ($null_lh > 0 ? '<a href="'.url(['', 'filter_dnc' => 0]).'" class="badge bg-warning-400" target="_blank" data-pjax="0">'.$null_lh.' DNC chưa cập nhật loại hình</a>' : '').
-                    (role('admin') && $null_updated > 0 ? '<a href="'.url(['', 'filter_dnc' => 1]).'" class="ml-1 badge bg-danger-400" target="_blank" data-pjax="0">'.$null_updated.' DNC chưa cập nhật</a>' : '')
+                    ($null_lh > 0 ? '<a href="'.url(['', 'filter_dnc' => 0]).'" class="badge bg-warning-400" target="_blank" data-pjax="0">'.$null_lh.' DNC chưa nhập loại hình</a>' : '').
+                    ($null_updated > 0 ? '<a href="'.url(['', 'filter_dnc' => 1]).'" class="ml-1 badge bg-danger-400" target="_blank" data-pjax="0">'.$null_updated.' DNC cập nhập dữ liệu</a>' : '')
                 ), ['class' => 'btn-group'])
             ],
             'floatHeader' => false,

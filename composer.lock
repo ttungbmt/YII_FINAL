@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d80965a5144543d48ee170a34a02d11",
+    "content-hash": "c0ed32aad38e44c652271f7a1400e53e",
     "packages": [
         {
             "name": "2amigos/yii2-ckeditor-widget",
@@ -167,6 +167,21 @@
             "license": [
                 "MIT"
             ]
+        },
+        {
+            "name": "bower-asset/leaflet",
+            "version": "v1.6.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Leaflet/Leaflet.git",
+                "reference": "0c81bdf904d864fd12a286e3d1979f47aba17991"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Leaflet/Leaflet/zipball/0c81bdf904d864fd12a286e3d1979f47aba17991",
+                "reference": "0c81bdf904d864fd12a286e3d1979f47aba17991"
+            },
+            "type": "bower-asset"
         },
         {
             "name": "bower-asset/moment",
@@ -4945,16 +4960,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.34.2",
+            "version": "2.35.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "3e87404329b8072295ea11d548b47a1eefe5a162"
+                "reference": "4b9bd835261ef23d36397a46a76b496a458305e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/3e87404329b8072295ea11d548b47a1eefe5a162",
-                "reference": "3e87404329b8072295ea11d548b47a1eefe5a162",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/4b9bd835261ef23d36397a46a76b496a458305e5",
+                "reference": "4b9bd835261ef23d36397a46a76b496a458305e5",
                 "shasum": ""
             },
             "require": {
@@ -5024,7 +5039,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-05-19T22:14:16+00:00"
+            "time": "2020-05-24T18:27:52+00:00"
         },
         {
             "name": "npm-asset/bootstrap",
@@ -5037,6 +5052,15 @@
             "license": [
                 "MIT"
             ]
+        },
+        {
+            "name": "npm-asset/leaflet-extra-markers",
+            "version": "1.2.1",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/leaflet-extra-markers/-/leaflet-extra-markers-1.2.1.tgz"
+            },
+            "type": "npm-asset"
         },
         {
             "name": "nterms/yii2-pagesize-widget",
@@ -7511,6 +7535,47 @@
             }
         },
         {
+            "name": "ttungbmt/yii2-leaflet",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "./packages/ttungbmt/yii2-leaflet",
+                "reference": "d2aa822e21283ece8241caaf08b765075194742b"
+            },
+            "require": {
+                "bower-asset/leaflet": "^1.6",
+                "nanson/yii2-postgis": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "ttungbmt\\leaflet\\": "src"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Truong Thanh Tung",
+                    "email": "ttungbmt@gmail.com"
+                }
+            ],
+            "description": "Leaflet Interactive Maps Extension Library for Yii2.",
+            "homepage": "https://github.com/ttungbmt/yii2-leaflet",
+            "keywords": [
+                "extension",
+                "leaflet",
+                "maps",
+                "widget",
+                "yii",
+                "yii2"
+            ],
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "tuyakhov/yii2-notifications",
             "version": "v1.2.0",
             "source": {
@@ -8905,6 +8970,45 @@
                 "parser"
             ],
             "time": "2020-03-17T14:03:26+00:00"
+        },
+        {
+            "name": "bower-asset/leaflet.draw",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Leaflet/Leaflet.draw.git",
+                "reference": "65d7866b14e926b72465d0077809683a77344019"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Leaflet/Leaflet.draw/zipball/65d7866b14e926b72465d0077809683a77344019",
+                "reference": "65d7866b14e926b72465d0077809683a77344019"
+            },
+            "require": {
+                "bower-asset/leaflet": ">=0.7.0"
+            },
+            "type": "bower-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
+            "name": "bower-asset/leaflet.locatecontrol",
+            "version": "v0.72.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/domoritz/leaflet-locatecontrol.git",
+                "reference": "8ebc5ca11e532cd2aa2ec6cf2b6e7343e7635c2b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/domoritz/leaflet-locatecontrol/zipball/8ebc5ca11e532cd2aa2ec6cf2b6e7343e7635c2b",
+                "reference": "8ebc5ca11e532cd2aa2ec6cf2b6e7343e7635c2b"
+            },
+            "type": "bower-asset",
+            "license": [
+                "MIT"
+            ]
         },
         {
             "name": "codeception/codeception",
@@ -11215,7 +11319,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "softark/yii2-dual-listbox": 20,
-        "frostealth/yii2-relation-behavior": 0
+        "frostealth/yii2-relation-behavior": 0,
+        "ttungbmt/yii2-leaflet": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
