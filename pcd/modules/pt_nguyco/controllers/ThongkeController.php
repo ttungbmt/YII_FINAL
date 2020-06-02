@@ -4,7 +4,9 @@ namespace pcd\modules\pt_nguyco\controllers;
 
 use Carbon\Carbon;
 use common\controllers\BackendController;
+use Mpdf\Tag\Q;
 use pcd\modules\pt_nguyco\forms\ThongkeForm;
+use pcd\modules\pt_nguyco\models\PtNguyco;
 use yii\db\Expression;
 use yii\db\Query;
 
@@ -69,12 +71,11 @@ class ThongkeController extends BackendController
             ])
                 ->from(['lh' => 'dm_loaihinh'])
                 ->leftJoin(['dnc_gs' => $q1], 'dnc_gs.loaihinh_id = lh.id')
-                ->orderBy('id')
-//                ->andWhere(['NOT IN', 'id', [20, 21, 22]])
+                ->orderBy('id')//                ->andWhere(['NOT IN', 'id', [20, 21, 22]])
             ;
 
 
-            $data0 = collect($q2->all())->map(function ($i){
+            $data0 = collect($q2->all())->map(function ($i) {
                 return array_merge($i, [
                     'luot_gs' => is_string($i['luot_gs']) ? (float)$i['luot_gs'] : $i['luot_gs']
                 ]);
@@ -114,11 +115,9 @@ class ThongkeController extends BackendController
             ->select(['pt_nguyco_id', 'thang' => new Expression('date_part(\'month\', ngayxuphat)')])
             ->from('phieu_gs')
             ->andWhere('ngayxuphat IS NOT NULL')
-            ->andWhere('date_part(\'year\', ngayxuphat) = \'' . $year . '\'');
-
-
+            ->andWhere('date_part(\'year\', ngayxuphat) = \'' . $year . '\'')
+        ;
         $q2 = (new Query)->select([
-            'maquan' => 'dnc.maquan',
             'thang1' => 'SUM(CASE  WHEN thang = 1 THEN 1 END)::int',
             'thang2' => 'SUM(CASE  WHEN thang = 2 THEN 1 END)::int',
             'thang3' => 'SUM(CASE  WHEN thang = 3 THEN 1 END)::int',
@@ -134,36 +133,52 @@ class ThongkeController extends BackendController
         ])
             ->from(['gs' => $q1])
             ->leftJoin(['dnc' => 'pt_nguyco'], 'gs.pt_nguyco_id = dnc.gid')
-            ->groupBy('dnc.maquan');
+            ->groupBy('code');
 
         $q3 = (new Query);
 
-        if($maquan = request()->post('maquan')){
-            if($maphuong = request()->post('maphuong')){
+        if ($maquan = request()->post('maquan')) {
+            if ($maphuong = request()->post('maphuong')) {
+                $field = [
+                    'table' => (new Query())->select('maphuong, khupho')->from(PtNguyco::tableName())->groupBy(new Expression('1,2')),
+                    'name' => 'khupho', 'code' => 'khupho', 'label' => 'Khu phố'
+                ];
+                $q2
+                    ->addSelect([ 'code' => "dnc.{$field['code']}"])
+                    ->andWhere(['maphuong' => $maphuong]);
+                $q3
+                    ->orderBy('hc.'.$field['code'])
+                    ->andWhere(['maphuong' => $maphuong]);
 
             } else {
-                $field = ['table' => 'hc_phuong', 'name' => 'tenphuong', 'code' => 'maphuong'];
-
+                $field = ['table' => 'hc_phuong', 'name' => 'tenphuong', 'code' => 'maphuong', 'label' => 'Phường xã'];
+                $q2
+                    ->addSelect([ 'code' => "dnc.{$field['code']}"])
+                    ->andWhere(['maquan' => $maquan]);
+                $q3
+                    ->orderBy('hc.order')
+                    ->andWhere(['maquan' => $maquan]);
             }
 
         } else {
-            $field = ['table' => 'hc_quan', 'name' => 'tenquan', 'code' => 'maquan'];
+            $field = ['table' => 'hc_quan', 'name' => 'tenquan', 'code' => 'maquan', 'label' => 'Quận huyện'];
 
-            $q3 = $q3
-                ->addSelect([
-                    "hc.{$field['name']}",
-                    "hc.{$field['code']}",
-                ])
-                ->select('xp.thang1, xp.thang2, xp.thang3, xp.thang4, xp.thang5, xp.thang6, xp.thang7, xp.thang8, xp.thang9, xp.thang10, xp.thang11, xp.thang12')
-                ->from(['hc' => 'hc_quan'])
-                ->leftJoin(['xp' => $q2], 'xp.maquan = hc.maquan')
-                ->orderBy('hc.order');
+            $q3 = $q3->orderBy('hc.order');
         }
 
+        $q3
+            ->select([
+                'ten' => "hc.{$field['name']}",
+                'code' => "hc.{$field['code']}",
+            ])
+            ->from(['hc' => $field['table']])
+            ->leftJoin(['xp' => $q2], "xp.code = hc.{$field['code']}")
+            ->addSelect('xp.thang1, xp.thang2, xp.thang3, xp.thang4, xp.thang5, xp.thang6, xp.thang7, xp.thang8, xp.thang9, xp.thang10, xp.thang11, xp.thang12');
 
 
         return $this->asJson([
-            'data' => $q3->all()
+            'data' => $q3->all(),
+            'field' => $field
         ]);
     }
 }

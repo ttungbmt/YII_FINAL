@@ -48,7 +48,6 @@ if ($model->geom) {
 }
 ?>
 
-<button class="btn btn-primary mb-2" onclick="<?=$cluster->panToMarkerId(1)?>">Zoom to point</button>
 
 <?= $leaflet->widget() ?>
 

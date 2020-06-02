@@ -32,14 +32,23 @@ $maphuong = userInfo()->ma_phuong;
             ]); ?>
             <div class="row">
                 <div class="col-md-6">
-                    <?= $form->field($model, 'loai_tk')->dropDownList($dm_loaitk); ?>
+                    <?= $form->field($model, 'loai_tk')->dropDownList($dm_loaitk, ['v-model' => 'loai_tk']); ?>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" v-show="loai_tk=='loaihinh'">
                     <?= $form->field($model, 'month')->widget(\kartik\widgets\DatePicker::className(), [
                         'pluginOptions' => [
                             'autoclose' => true,
                             'minViewMode' => 1,
                             'format' => 'mm/yyyy'
+                        ],
+                    ]); ?>
+                </div>
+                <div class="col-md-6" v-show="loai_tk=='xuphat'">
+                    <?= $form->field($model, 'year')->widget(\kartik\widgets\DatePicker::className(), [
+                        'pluginOptions' => [
+                            'autoclose' => true,
+                            'minViewMode' => 2,
+                            'format' => 'yyyy'
                         ],
                     ]); ?>
                 </div>
@@ -127,6 +136,7 @@ $maphuong = userInfo()->ma_phuong;
                         }
                     ]
                 },
+                field: {}
             },
             components: {},
             filters: {
@@ -146,6 +156,7 @@ $maphuong = userInfo()->ma_phuong;
                 },
                 afterPost(resp) {
                     this.resp = resp.data
+                    this.field = resp.field
                 },
 
                 renderChart(){

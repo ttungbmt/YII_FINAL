@@ -6,7 +6,7 @@
         <th rowspan="2">Tổng</th>
     </tr>
     <tr>
-        <th>Quận, huyện</th>
+        <th>{{field.label}}</th>
         <th>T1</th>
         <th>T2</th>
         <th>T3</th>
@@ -23,7 +23,7 @@
     </thead>
     <tbody>
     <tr v-for="v in resp">
-        <td>{{v.tenquan}}</td>
+        <td>{{v.ten}}</td>
         <td>{{v.thang1 ? v.thang1 : 0}}</td>
         <td>{{v.thang2 ? v.thang2 : 0}}</td>
         <td>{{v.thang3 ? v.thang3 : 0}}</td>
