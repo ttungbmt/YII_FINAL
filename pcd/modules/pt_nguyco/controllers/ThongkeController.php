@@ -23,13 +23,13 @@ class ThongkeController extends BackendController
         $model = new ThongkeForm();
         if (request()->isPost && $model->load(request()->all())) {
             $month = $model->month;
-            $month1ago = Carbon::createFromFormat('m/Y', $month)->sub('1 month');
+            $date = Carbon::createFromFormat('m/Y', $month)->setDay(1)->format('Y-m-d');
 
             $q0 = (new Query())->select([
                 'pt.gid',
                 'pt.loaihinh_id',
-                'mo_xoa' => new Expression("TO_CHAR(ngayxoa, 'MM/YYYY')"),
-                'mo_capnhat' => new Expression("TO_CHAR(ngaycapnhat, 'MM/YYYY')"),
+                'ngayxoa',
+                'ngaycapnhat',
                 'gs' => new Expression("MAX(CASE WHEN TO_CHAR(ngay_gs, 'MM/YYYY') = '{$month}' THEN 1 END)"),
                 'luot_gs' => new Expression("COUNT(CASE WHEN TO_CHAR(ngay_gs, 'MM/YYYY') = '{$month}' THEN 1 END)"),
                 'lq' => new Expression("MAX(CASE WHEN (TO_CHAR(ngay_gs, 'MM/YYYY') = '{$month}' AND vc_lq = 1) THEN 1 END)"),
@@ -50,11 +50,12 @@ class ThongkeController extends BackendController
             }
 
 
+            $e_moi = "COUNT(CASE WHEN TO_CHAR(ngaycapnhat, 'MM/YYYY') = '{$month}' THEN 1 END)";
             $q1 = (new Query())->select([
                 'loaihinh_id',
-                'dauthang' => new Expression("(COUNT(*) - COUNT(CASE WHEN mo_xoa = '{$month1ago}' THEN 1 END))"),
-                'daxoa' => new Expression("COUNT(CASE WHEN mo_xoa = '{$month}' THEN 1 END)"),
-                'moi' => new Expression("COUNT(CASE WHEN mo_capnhat = '{$month}' THEN 1 END)"),
+                'dauthang' => new Expression("(COUNT(*) - {$e_moi} - COUNT(CASE WHEN ngayxoa < '{$date}' THEN 1 END))"),
+                'daxoa' => new Expression("COUNT(CASE WHEN TO_CHAR(ngayxoa, 'MM/YYYY') = '{$month}' THEN 1 END)"),
+                'moi' => new Expression($e_moi),
                 'gs' => new Expression("SUM(gs)"),
                 'luot_gs' => new Expression("SUM(luot_gs)"),
                 'lq' => new Expression("SUM(lq)"),

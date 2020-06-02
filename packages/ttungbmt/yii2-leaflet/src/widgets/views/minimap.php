@@ -32,7 +32,7 @@ $cluster = new \ttungbmt\leaflet\plugins\markercluster\MarkerCluster([
 ]);
 $leaflet->installPlugin($cluster);
 
-if ($model->geom) {
+if ($model->geom && count($model->geom) == 2 && is_numeric($model->geom[0]) && is_numeric($model->geom[1])) {
     $latlng = [$model->geom[1], $model->geom[0]];
     $leaflet->clientOptions['bounds'] = [
         $latlng, $latlng

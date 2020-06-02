@@ -23,6 +23,7 @@ $yesno = [1 => 'Có', 0 => 'Không'];
 $template = '{label}<span class="text-danger">*</span>{input}';
 $dm_quan = api('/dm/quan?role=true');
 $url_phuong = url(['/api/dm/phuong']);
+//dd(0);
 
 ?>
     <?= MiniMap::widget(['model' => $model])?>
@@ -78,7 +79,7 @@ $url_phuong = url(['/api/dm/phuong']);
                                 'options'       => ['prompt' => 'Chọn phường xã...'],
                                 'pluginOptions' => [
                                     'depends' => ["drop-quan-khac"],
-                                    'initialize' => $model->maquan ? true: false,
+                                    'initialize' => $model->maquan ? true : false,
                                     'ajaxSettings' => ['data' => ['value' => $model->maphuong, 'role' => 'true']],
                                     'url'     => $url_phuong,
                                 ],

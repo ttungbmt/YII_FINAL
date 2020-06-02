@@ -45,3 +45,21 @@ $template = '{label}<span class="text-danger">*</span>{input}';
     </div>
 </div>
 
+<script>
+    $(function () {
+        let dexuat_xp = '<?=$model->dexuat_xp?>'
+        toggleDexuatXp(dexuat_xp)
+
+        $('input[name="PhieuGs[<?=$i?>][dexuat_xp]"]').change(function () {
+            toggleDexuatXp($(this).val())
+        })
+        
+        function toggleDexuatXp(val) {
+            if(val === '1') {
+                $('.clx-xuphat-<?=$i?>').show()
+            } else {
+                $('.clx-xuphat-<?=$i?>').hide()
+            }
+        }
+    })
+</script>
