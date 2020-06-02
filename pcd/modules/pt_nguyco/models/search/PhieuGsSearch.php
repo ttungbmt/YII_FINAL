@@ -70,7 +70,8 @@ class PhieuGsSearch extends PhieuGs
         }
 
         $query->andFilterWhere([
-            'maphuong' => $this->maphuong
+            'maquan' => $this->maquan,
+            'maphuong' => $this->maphuong,
         ]);
 
         $query->andFilterDate(['ngay_gs' => [$this->date_from, $this->date_to]]);
