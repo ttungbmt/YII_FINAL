@@ -49,14 +49,6 @@ class PhieuGsSearch extends PhieuGs
             ->alias('ph')
             ->leftJoin(['pt' => 'pt_nguyco'], 'pt.gid = ph.pt_nguyco_id')
         ;
-//        $query = PhieuGs::find()->with([
-//            'dnc',
-//            'dnc.quan' => function ($query) use($roles){
-//
-//            },
-//            'dnc.phuong' => function ($query) use($roles){
-//
-//            }]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

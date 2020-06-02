@@ -81,11 +81,11 @@ return [
         }
     ],
     [
-        'class'     => '\kartik\grid\BooleanColumn',
+        'class'     => '\kartik\grid\DataColumn',
         'attribute' => 'vc_nc',
     ],
     [
-        'class'     => '\kartik\grid\BooleanColumn',
+        'class'     => '\kartik\grid\DataColumn',
         'attribute' => 'vc_lq',
     ],
     [
