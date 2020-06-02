@@ -144,7 +144,6 @@ class ThongkeController extends BackendController
                     'name' => 'khupho', 'code' => 'khupho', 'label' => 'Khu phố'
                 ];
                 $q2
-                    ->addSelect([ 'code' => "dnc.{$field['code']}"])
                     ->andWhere(['maphuong' => $maphuong]);
                 $q3
                     ->orderBy('hc.'.$field['code'])
@@ -153,7 +152,6 @@ class ThongkeController extends BackendController
             } else {
                 $field = ['table' => 'hc_phuong', 'name' => 'tenphuong', 'code' => 'maphuong', 'label' => 'Phường xã'];
                 $q2
-                    ->addSelect([ 'code' => "dnc.{$field['code']}"])
                     ->andWhere(['maquan' => $maquan]);
                 $q3
                     ->orderBy('hc.order')
@@ -165,6 +163,9 @@ class ThongkeController extends BackendController
 
             $q3 = $q3->orderBy('hc.order');
         }
+
+        $q2
+            ->addSelect([ 'code' => "dnc.{$field['code']}"]);
 
         $q3
             ->select([
