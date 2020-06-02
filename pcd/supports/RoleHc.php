@@ -48,7 +48,7 @@ class TpAction extends BaseObject{
     public function filterCabenhSxh(&$query){
         $maquans = data_get($this->data, 'maquans');
         if($maquans){
-            return $query->andFilterWhere(['maquan' => $maquans]);
+            return $query->andFilterWhere(['maquan' => (string)$maquans]);
         }
         return $query;
     }
@@ -107,7 +107,7 @@ class QuanAction extends TpAction
     }
 
     public function filterCabenh(&$query, $type = null){
-        return $query->andFilterWhere([($type ? 'ma_quan' : 'maquan') => $this->maquan]);
+        return $query->andFilterWhere([($type ? 'ma_quan' : 'maquan') => (string)$this->maquan]);
     }
 
     public function filterCabenhSxh(&$query){
@@ -188,7 +188,7 @@ class QuanAction extends TpAction
 class PhuongAction extends QuanAction
 {
     public function filterCabenh(&$query, $type = null){
-        return $query->andFilterWhere([($type ? 'ma_phuong' : 'maphuong') => $this->maphuong]);
+        return $query->andFilterWhere([($type ? 'ma_phuong' : 'maphuong') => (string)$this->maphuong]);
     }
 
     public function filterCabenhSxh(&$query){

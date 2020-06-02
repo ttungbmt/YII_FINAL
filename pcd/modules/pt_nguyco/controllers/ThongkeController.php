@@ -47,7 +47,6 @@ class ThongkeController extends BackendController
                 $q0->andFilterWhere(['maquan' => $model->maquan]);
             }
 
-//            dd($q0->createCommand()->getRawSql());
 
             $q1 = (new Query())->select([
                 'loaihinh_id',
@@ -116,6 +115,8 @@ class ThongkeController extends BackendController
             ->from('phieu_gs')
             ->andWhere('ngayxuphat IS NOT NULL')
             ->andWhere('date_part(\'year\', ngayxuphat) = \'' . $year . '\'');
+
+
         $q2 = (new Query)->select([
             'maquan' => 'dnc.maquan',
             'thang1' => 'SUM(CASE  WHEN thang = 1 THEN 1 END)::int',
@@ -134,9 +135,32 @@ class ThongkeController extends BackendController
             ->from(['gs' => $q1])
             ->leftJoin(['dnc' => 'pt_nguyco'], 'gs.pt_nguyco_id = dnc.gid')
             ->groupBy('dnc.maquan');
-        $q3 = (new Query)->select('tenquan, hc.maquan, xp.thang1, xp.thang2, xp.thang3, xp.thang4, xp.thang5, xp.thang6, xp.thang7, xp.thang8, xp.thang9, xp.thang10, xp.thang11, xp.thang12')->from(['hc' => 'hc_quan'])
-            ->leftJoin(['xp' => $q2], 'xp.maquan = hc.maquan')
-            ->orderBy('hc.order');
+
+        $q3 = (new Query);
+
+        if($maquan = request()->post('maquan')){
+            if($maphuong = request()->post('maphuong')){
+
+            } else {
+                $field = ['table' => 'hc_phuong', 'name' => 'tenphuong', 'code' => 'maphuong'];
+
+            }
+
+        } else {
+            $field = ['table' => 'hc_quan', 'name' => 'tenquan', 'code' => 'maquan'];
+
+            $q3 = $q3
+                ->addSelect([
+                    "hc.{$field['name']}",
+                    "hc.{$field['code']}",
+                ])
+                ->select('xp.thang1, xp.thang2, xp.thang3, xp.thang4, xp.thang5, xp.thang6, xp.thang7, xp.thang8, xp.thang9, xp.thang10, xp.thang11, xp.thang12')
+                ->from(['hc' => 'hc_quan'])
+                ->leftJoin(['xp' => $q2], 'xp.maquan = hc.maquan')
+                ->orderBy('hc.order');
+        }
+
+
 
         return $this->asJson([
             'data' => $q3->all()

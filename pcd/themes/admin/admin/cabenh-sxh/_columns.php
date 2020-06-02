@@ -88,14 +88,6 @@ return [
     ],
     [
         'class' => '\kartik\grid\DataColumn',
-        'attribute' => 'loaibaocao',
-        'filter' => Html::activeDropDownList($searchModel, 'loaibaocao', $dm_loaibaocao, $s_options),
-        'value' => function ($model, $key, $index) use ($dm_loaibaocao) {
-            return data_get($dm_loaibaocao, is_null($model->loaibaocao) ? '' : $model->loaibaocao);
-        },
-    ],
-    [
-        'class' => '\kartik\grid\DataColumn',
         'attribute' => 'chuandoan_bd',
         'filter' => Html::activeDropDownList($searchModel, 'chuandoan_bd', $dm_benh, $s_options),
     ],

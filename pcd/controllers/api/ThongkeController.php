@@ -37,10 +37,10 @@ class ThongkeController extends MyApiController
             $listKP = (new Query())
                 ->select('DISTINCT(khupho)')
                 ->from($tbThongke)
-                ->where(['maphuong' => userInfo()->ma_phuong])
+                ->where(['maphuong' => (string)userInfo()->ma_phuong])
                 ->orderBy('khupho')
-                ->all();
-            $dm = collect($listKP)->forget(null)->pluck('khupho', 'khupho');
+            ;
+            $dm = collect($listKP->all())->forget(null)->pluck('khupho', 'khupho');
             $fieldGroup = 'khupho';
         }
 
@@ -53,8 +53,10 @@ class ThongkeController extends MyApiController
         $model->addSelect($fieldGroup)->addGroupBy($fieldGroup);
 
         $role->filterCabenh($model, 0);
+//        dd($model->createCommand()->getRawSql());
 
         $model = collect($model->all());
+
 
         $data = $model->map(function($item) use ($fieldGroup){
             $name = trim($item[$fieldGroup]);
@@ -73,6 +75,7 @@ class ThongkeController extends MyApiController
                     });
             });
 
+
         $tk_dieutra = $dm
             ->map(function ($item, $k) use ($data, $fieldGroup) {
                 $val = $data->get($k);
@@ -86,6 +89,9 @@ class ThongkeController extends MyApiController
                     'total' => $dadt + $dangdt + $chuaxv + $chuadt,
                 ];
             });
+
+//        dd($tk_dieutra, $data, $dm);
+
 
         $model2 = (new Query())
             ->select('loaicabenh, count(*)')

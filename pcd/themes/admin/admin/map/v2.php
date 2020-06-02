@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8"/>
     <link rel="icon" href="/favicon.ico"/>
@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#000000"/>
     <meta name="description" content="Web site created using create-react-app"/>
     <link rel="manifest" href="<?= asset('/assets/map/v2/manifest.json') ?>"/>
-    <title>React App</title>
+    <title>Hệ thống quản lý bệnh truyền nhiễm</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
