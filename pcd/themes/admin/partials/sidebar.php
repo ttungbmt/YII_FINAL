@@ -124,18 +124,19 @@ $header = function ($title){
                     <?=$li('Bệnh viện', '/admin/benhvien', 'icon-office')?>
                     <?=$li('Loại hình ĐNC', '/pt_nguyco/dm-loaihinh', 'icon-file-text')?>
 
-                    <?=$header('Quản trị hệ thống')?>
-                    <?=$li('Người dùng', '/auth/user', 'icon-user-tie')?>
-                    <?=$li('Phân quyền người dùng', '/auth/role', 'icon-people')?>
-                    <?=$li('Phân quyền truy cập', '/auth/permission', 'icon-lock')?>
+
 
                     <?=$li('Ranh tổ', '/dm/ranhto', 'icon-file-text')?>
                 <?php endif; ?>
                 <?=$li('Khu phố', '/dm/khupho', 'icon-file-text')?>
                 <?=$li('Tổ dân phố', '/dm/to-dp', 'icon-file-text')?>
 
-                <?=$header('Khác')?>
                 <?php if(role('admin')):?>
+                    <?=$header('Quản trị hệ thống')?>
+                    <?=$li('Người dùng', '/auth/user', 'icon-user-tie')?>
+                    <?=$li('Phân quyền người dùng', '/auth/role', 'icon-people')?>
+                    <?=$li('Phân quyền truy cập', '/auth/permission', 'icon-lock')?>
+
                     <li class="nav-item nav-item-submenu">
                         <a href="#" class="nav-link"><i class="icon-history"></i> <span>Lược sử </span></a>
                         <ul class="nav nav-group-sub" data-submenu-title="Lược sử">
@@ -145,6 +146,7 @@ $header = function ($title){
                     </li>
                 <?php endif;?>
 
+                <?=$header('Khác')?>
                 <li class="nav-item nav-item-submenu">
                     <a href="#" class="nav-link"><i class="icon-book"></i> <span>Hướng dẫn sử dụng</span></a>
                     <ul class="nav nav-group-sub" data-submenu-title="Hướng dẫn sử dụng">
