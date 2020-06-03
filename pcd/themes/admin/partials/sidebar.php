@@ -128,8 +128,11 @@ $header = function ($title){
                     <?=$li('Người dùng', '/auth/user', 'icon-user-tie')?>
                     <?=$li('Phân quyền người dùng', '/auth/role', 'icon-people')?>
                     <?=$li('Phân quyền truy cập', '/auth/permission', 'icon-lock')?>
+
+                    <?=$li('Ranh tổ', '/dm/ranhto', 'icon-file-text')?>
                 <?php endif; ?>
-                <?=$li('Ranh tổ', '/dm/ranhto', 'icon-file-text')?>
+                <?=$li('Khu phố', '/dm/khupho', 'icon-file-text')?>
+                <?=$li('Tổ dân phố', '/dm/to-dp', 'icon-file-text')?>
 
                 <?=$header('Khác')?>
                 <?php if(role('admin')):?>

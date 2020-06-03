@@ -5,11 +5,13 @@ use Carbon\Carbon;
 use common\components\Access;
 use common\controllers\BackendController;
 use common\events\AccessEvent;
+use common\supports\ModelNotFoundException;
 use DateTime;
 use kartik\widgets\ActiveForm;
 use pcd\modules\pt_nguyco\models\PhieuGs;
 use pcd\modules\pt_nguyco\models\PtNguyco;
 use pcd\modules\pt_nguyco\models\search\PtNguycoSearch;
+use yii\web\NotFoundHttpException;
 
 /**
  * Default controller for the `pt_nguyco` module
@@ -58,6 +60,10 @@ class DefaultController extends BackendController
     public function actionUpdate($id)
     {
         $model = PtNguyco::find()->where(['gid' => $id])->with('giamsats')->one();
+        if(!$model){
+            throw new ModelNotFoundException('Model not found');
+        }
+
 
         $giamsats = $model->giamsats;
         if ($_POST && $model->loadDNC(request()->all(), $giamsats)) {

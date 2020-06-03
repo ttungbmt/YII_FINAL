@@ -26,4 +26,7 @@ tfoot tr {
 .invalid-feedback {
   font-size: 90%; }
 
+
+.modal-content h4.modal-title{position: absolute}
+
 /*# sourceMappingURL=app.css.map */

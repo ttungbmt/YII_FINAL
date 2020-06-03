@@ -6,6 +6,7 @@ use common\controllers\ApiController;
 use pcd\models\HcPhuong;
 use pcd\models\HcQuan;
 use pcd\models\Loaibenh;
+use pcd\modules\dm\models\DmKhupho;
 use pcd\supports\RoleHc;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBasicAuth;
@@ -42,9 +43,10 @@ class DmController extends ApiController
         $maquan = data_get(app('request')->post('depdrop_parents'), '0');
         $query = HcPhuong::find()->where(['maquan' => $maquan]);
         if(role('phuong') && request('role') === 'true'){
-            $value = $value ? $value : userInfo()->ma_phuong;
+            $value = is_numeric($value) ? $value : userInfo()->maphuong;
             $query->andFilterWhere(['maphuong' => $value]);
         }
+
         $list_phuong = $query->orderBy('tenphuong')->map(function ($item) {
             return ['id' => $item->maphuong, 'name' => $item->tenphuong];
         });
@@ -53,12 +55,31 @@ class DmController extends ApiController
         ];
     }
 
+    public function actionKhupho()
+    {
+        $value = app('request')->post('value');
+        $value = $value ? $value : request('depdrop_params.0');
+        $maphuong = data_get(app('request')->post('depdrop_parents'), '0');
+        $query = DmKhupho::find()->where(['maphuong' => $maphuong]);
+        if(role('phuong') && request('role') === 'true'){
+            $value = is_numeric($value) ? $value : userInfo()->maphuong;
+            $query->andFilterWhere(['khupho' => $value]);
+        }
+        $list = $query->orderBy('khupho')->map(function ($item) {
+            return ['id' => $item->khupho, 'name' => $item->khupho];
+        });
+        return [
+            'output' => $list, 'selected' => $value
+        ];
+    }
+
     public function actionQuan()
     {
         $query = HcQuan::find()->orderBy('order');
         if(request('role') === 'true'){
-            RoleHc::init()->filterMahc($query);
+            $query->andFilterWhere(['maquan' => (string)userInfo()->maquan]);
         }
+
 
         return $query->pluck('tenquan', 'maquan');
     }

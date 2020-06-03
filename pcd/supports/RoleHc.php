@@ -103,7 +103,7 @@ class TpAction extends BaseObject{
 class QuanAction extends TpAction
 {
     public function filterMahc(&$query, $field = 'maquan'){
-        return $query->andFilterWhere([$field => $this->{$field}]);
+        return $query->andFilterWhere([$field => (string)$this->{$field}]);
     }
 
     public function filterCabenh(&$query, $type = null){
@@ -187,6 +187,10 @@ class QuanAction extends TpAction
 
 class PhuongAction extends QuanAction
 {
+    public function filterMahc(&$query, $field = 'maphuong'){
+        return $query->andFilterWhere([$field => (string)$this->{$field}]);
+    }
+
     public function filterCabenh(&$query, $type = null){
         return $query->andFilterWhere([($type ? 'ma_phuong' : 'maphuong') => (string)$this->maphuong]);
     }
