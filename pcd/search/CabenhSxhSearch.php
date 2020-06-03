@@ -112,16 +112,13 @@ class CabenhSxhSearch extends CabenhSxh
             }
         }
 
-//        if ($kp = $this->khupho) {
-//            if($kp == "" || $kp == null){
-//                $query->andWhere(['or', ['khupho' => null], ['khupho' => ""]]);
-//            }
-//        }
+
         if($et = $this->excepted_tv){
             if($et == 1){
                 $query->andWhere(['not', ['is_trave' => 1]]);
             }
         }
+
 
         $roles->filterChuyenCa($this->loaica, $query);
 
