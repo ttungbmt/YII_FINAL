@@ -2,7 +2,7 @@
 namespace pcd\controllers\api;
 
 use common\controllers\MyApiController;
-use modules\pcd\pt_nguyco\models\PtNguyco;
+use pcd\modules\pt_nguyco\models\PtNguyco;
 use pcd\models\CabenhSxh;
 use pcd\models\CabenhSxhNn;
 use yii\db\Query;
