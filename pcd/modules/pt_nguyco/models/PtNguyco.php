@@ -174,6 +174,10 @@ class PtNguyco extends App {
         $giamsats = $n;
         if($this->lat && $this->lng){$this->geom = [$this->lng, $this->lat];}
 
+        if($this->loaihinh_id){
+            $this->nhom = data_get(DmLoaihinh::findOne($this->loaihinh_id), 'nhom');
+        }
+
         Model::loadMultiple($giamsats, $data);
 
 
@@ -209,8 +213,10 @@ class PtNguyco extends App {
             'maquan',
             'khupho',
             'to_dp',
-            'nhom',
-            'loaihinh',
+            'nhom' ,
+            'loaihinh' => function ($model) {
+                return data_get($model->dm_loaihinh, 'ten_lh');
+            },
             'ngaycapnhat',
             'geometry'  => function ($model) {
                 return $model->toGeometry();

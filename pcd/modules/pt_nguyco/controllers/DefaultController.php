@@ -64,7 +64,6 @@ class DefaultController extends BackendController
             throw new ModelNotFoundException('Model not found');
         }
 
-
         $giamsats = $model->giamsats;
         if ($_POST && $model->loadDNC(request()->all(), $giamsats)) {
             $this->accessHook->beforeUpdate($this);

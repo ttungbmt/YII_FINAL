@@ -5,7 +5,7 @@ use pcd\models\Cabenh;
 use pcd\models\CabenhSxh;
 use pcd\models\OdichSxh;
 use pcd\models\OdichSxhPoly;
-use modules\pcd\pt_nguyco\models\PtNguyco;
+use pcd\modules\pt_nguyco\models\PtNguyco;
 use pcd\models\KehoachXulyOdsxh;
 use pcd\models\XulyOdsxh;
 use pcd\search\OdichSxhSearch;

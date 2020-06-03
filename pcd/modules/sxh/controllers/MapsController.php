@@ -3,7 +3,7 @@ namespace pcd\modules\sxh\controllers;
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use modules\pcd\pt_nguyco\models\PtNguyco;
+use pcd\modules\pt_nguyco\models\PtNguyco;
 use pcd\controllers\AppController;
 use pcd\models\CabenhSxh;
 use pcd\models\HcPhuong;
