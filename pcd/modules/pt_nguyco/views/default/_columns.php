@@ -69,7 +69,11 @@ return [
         'attribute' => 'loaihinh',
         'contentOptions' => ['style' => 'max-width:250px;'],
         'value' => function($model){
-            return data_get($model->dm_loaihinh, 'ten_lh');
+            $suffix = '';
+            if(in_array($model->loaihinh_id, [20, 21, 22])){
+                $suffix = " ($model->loaihinh)";
+            }
+            return data_get($model->dm_loaihinh, 'ten_lh').$suffix;
         }
     ],
     [
