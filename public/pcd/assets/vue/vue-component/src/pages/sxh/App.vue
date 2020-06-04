@@ -92,6 +92,22 @@
                 )
             }
         },
+        watch: {
+            'form.cachidiem': function (val) {
+                if(val == 0) {
+                    this.setNullFormAttrs(['dietlangquang', 'giamsattheodoi', 'xulyonho', 'xulyorong'])
+                    this.form.cathuphat = 1
+                } else {
+                    this.form.cathuphat = 0
+                }
+            },
+            'form.cathuphat': function (val) {
+                if(val == 0) {
+                    console.log(1111)
+                    this.setNullFormAttrs(['odichmoi', 'odichcu', 'xuly', 'xuly_ngay'])
+                }
+            },
+        },
         data() {
             return {
                 respHtml: '',
@@ -120,13 +136,15 @@
                         this.$store.dispatch('onChangeXacminh', {after, before})
                     }
                 },
-                // {immediate: true}
             );
         },
         mounted() {
-            console.log('OK');
         },
         methods: {
+            setNullFormAttrs(attrs) {
+                attrs.map(name => {this.form[name] = null})
+            },
+
             makeToast(variant = null) {
                 this.$bvToast.toast('Toast body content', {
                     title: `Variant ${variant || 'default'}`,

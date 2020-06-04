@@ -31,7 +31,7 @@
                 </b-col>
 
             </b-row>
-            <b-row>
+            <b-row v-if="form.xulyonho == 0">
                 <b-col md="4">
                     {{_.get(schema, 'xulyorong.labelInline')}}
                 </b-col>
@@ -54,11 +54,11 @@
                     <b-col md="3">
                         Ổ dịch mới
                     </b-col>
-                    <b-col  md="9">
+                    <b-col md="9">
                         <field-sxh name="odichmoi"/>
                     </b-col>
                 </b-row>
-                <b-row>
+                <b-row v-if="form.odichmoi == 0">
                     <b-col md="3">
                         Ổ dịch cũ đã xác định
                     </b-col>

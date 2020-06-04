@@ -16,13 +16,15 @@ use pcd\notifications\ChuyencaNoty;
 use yii\base\Arrayable;
 use yii\helpers\ArrayHelper;
 
-class SxhForm extends MyForm {
+class SxhForm extends MyForm
+{
     use SxhTrait, SxhMapTrait, SxhAttrTrait;
 
     const SCENARIO_XACMINH = 'xacminh';
     const SCENARIO_DIEUTRA = 'dieutra';
 
-    public function xacminhValidator($attribute, $params, $validator) {
+    public function xacminhValidator($attribute, $params, $validator)
+    {
         $xacminh = $this->{$attribute};
 
         if (is_array($xacminh)) {
@@ -57,7 +59,8 @@ class SxhForm extends MyForm {
         }
     }
 
-    public function rules() {
+    public function rules()
+    {
         return [
             [['loaidieutra', 'xacminh', 'loai_xm_cb', 'ngaymacbenh_nv', 'loaicabenh', 'list_chuyenca', 'is_chuyenca'], 'safe'],
             [['chuandoan_bd', 'chuandoan_bd_khac', 'me', 'ngaybaocao', 'ma_icd', 'shs', 'ht_dieutri', 'ngaynhanthongbao', 'ngaydieutra', 'maso', 'hoten', 'phai', 'ngaysinh', 'tuoi', 'vitri', 'to_dp', 'khupho', 'px', 'qh', 'tinh', 'tinh_dc_khac', 'benhnoikhac', 'sonhakhac', 'duongkhac', 'tokhac', 'khuphokhac', 'tinhkhac', 'qhkhac', 'pxkhac', 'tinhnoikhac', 'songuoicutru', 'cutruduoi15', 'tpbv', 'tpbv_bv', 'phcd', 'nhapvien', 'nhapvien_bv', 'ngaymacbenh', 'ngaynhapvien', 'nghenghiep', 'xetnghiem', 'ngaylaymau', 'loai_xn', 'ketqua_xn', 'dclamviec', 'dclamviec_tinh', 'dclamviecqh', 'dclamviecpx', 'noilamviec_sxh', 'nhacobnsxh', 'nhaconguoibenh', 'bvpk', 'nhatho', 'dinh', 'congvien', 'noihoihop', 'noixd', 'cafe', 'noichannuoi', 'noibancay', 'vuaphelieu', 'noikhac', 'noikhac_ghichu', 'diemden_px', 'diemden_pxkhac', 'diemden_qhkhac', 'gdcosxh', 'gdsonguoisxh', 'gdso15t', 'gdthuocsxh', 'gdthuocsxhsonguoi', 'gdthuocsxh15t', 'bi', 'ci', 'cachidiem', 'dietlangquang', 'giamsattheodoi', 'xulyonho', 'xulyorong', 'cathuphat', 'odichmoi', 'odichcu', 'odichcu_xuly', 'xuly', 'xuly_ngay', 'xuatvien', 'ngayxuatvien', 'chuandoan', 'chuandoan_khac', 'nguoidieutra', 'nguoidieutra_sdt'], 'safe'],
@@ -99,20 +102,20 @@ class SxhForm extends MyForm {
             [['tpbv'], 'required', 'on' => ['dieutra']],
             [['tpbv_bv'], 'required', 'when' => function () {
                 return $this->tpbv == 1;
-            }, 'on'                          => ['dieutra']],
+            }, 'on' => ['dieutra']],
             [['phcd'], 'required', 'when' => function () {
                 return $this->tpbv == 0;
-            }, 'on'                       => ['dieutra']],
+            }, 'on' => ['dieutra']],
             [['nhapvien'], 'required', 'when' => function () {
                 return $this->phcd == 1;
-            }, 'on'                           => ['dieutra']],
+            }, 'on' => ['dieutra']],
             [['nhapvien_bv'], 'required', 'when' => function () {
                 return $this->nhapvien == 1;
-            }, 'on'                              => ['dieutra']],
+            }, 'on' => ['dieutra']],
 
             [['ngaynhapvien'], 'required', 'when' => function () {
                 return $this->tpbv == 1 || $this->nhapvien == 1;
-            }, 'on'                               => ['dieutra']],
+            }, 'on' => ['dieutra']],
             [['ngaymacbenh'], 'required', 'on' => ['dieutra']],
             [['nghenghiep', 'dclamviec', 'noilamviec_sxh'], 'required', 'on' => ['dieutra']],
 
@@ -120,42 +123,49 @@ class SxhForm extends MyForm {
             [['nhacobnsxh', 'nhaconguoibenh', 'bvpk', 'nhatho', 'dinh', 'congvien', 'noihoihop', 'noixd', 'cafe', 'noichannuoi', 'noibancay', 'vuaphelieu', 'noikhac'], 'integer', 'on' => ['dieutra']],
             [['noikhac'], 'required', 'when' => function () {
                 return $this->noikhac == 1;
-            }, 'on'                          => ['dieutra']],
+            }, 'on' => ['dieutra']],
             [['noikhac_ghichu'], 'required', 'when' => function () {
                 return $this->noikhac == 1;
-            }, 'on'                                 => ['dieutra']],
+            }, 'on' => ['dieutra']],
 
             [['diemden_px', 'diemden_pxkhac', 'diemden_qhkhac'], 'required', 'on' => ['dieutra']],
 
             [['gdcosxh'], 'required', 'on' => ['dieutra']],
             [['gdsonguoisxh', 'gdso15t'], 'required', 'when' => function () {
                 return $this->gdcosxh == 1;
-            }, 'on'                                          => ['dieutra']],
+            }, 'on' => ['dieutra']],
             [['gdthuocsxh'], 'required', 'on' => ['dieutra']],
             [['gdthuocsxhsonguoi', 'gdthuocsxh15t'], 'required', 'when' => function () {
                 return $this->gdthuocsxh == 1;
-            }, 'on'                                                     => ['dieutra']],
+            }, 'on' => ['dieutra']],
 
             // 4. HƯỚNG XỬ LÝ
+            [['bi', 'ci'], 'required', 'on' => ['dieutra']],
             [['cachidiem'], 'required', 'on' => ['dieutra']],
-            [['dietlangquang', 'giamsattheodoi', 'xulyonho', 'xulyorong'], 'required', 'when' => function () {
+            [['dietlangquang', 'giamsattheodoi', 'xulyonho'], 'required', 'when' => function () {
                 return $this->cachidiem == 1;
-            }, 'on'                                                                           => ['dieutra']],
+            }, 'on' => ['dieutra']],
+            [['xulyorong'], 'required', 'when' => function () {
+                return $this->xulyonho === '0';
+            }, 'on' => ['dieutra']],
             [['cathuphat'], 'required', 'when' => function () {
                 return $this->cachidiem === '0';
-            }, 'on'                            => ['dieutra']],
-            [['odichmoi', 'odichcu'], 'required', 'when' => function () {
+            }, 'on' => ['dieutra']],
+            [['odichmoi'], 'required', 'when' => function () {
                 return $this->cathuphat == 1;
-            }, 'on'                                      => ['dieutra']],
+            }, 'on' => ['dieutra']],
+            [['odichcu'], 'required', 'when' => function () {
+                return $this->odichmoi === '0';
+            }, 'on' => ['dieutra']],
             [['odichcu_xuly'], 'required', 'when' => function () {
                 return $this->odichcu == 1;
-            }, 'on'                               => ['dieutra']],
+            }, 'on' => ['dieutra']],
             [['xuly'], 'required', 'when' => function () {
                 return $this->cathuphat == 1;
-            }, 'on'                       => ['dieutra']],
+            }, 'on' => ['dieutra']],
             [['xuly_ngay'], 'required', 'when' => function () {
                 return $this->xuly == 3;
-            }, 'on'                            => ['dieutra']],
+            }, 'on' => ['dieutra']],
 
             // 5. KẾT LUẬN
             [['xuatvien'], 'required', 'on' => ['dieutra'], 'when' => function () {
@@ -166,17 +176,18 @@ class SxhForm extends MyForm {
             }], // => Chú ý
             [['ngayxuatvien'], 'required', 'when' => function () {
                 return $this->xuatvien == 1;
-            }, 'on'                               => ['dieutra'], 'whenClient' => "function (attribute, value) { return false; }"],
+            }, 'on' => ['dieutra'], 'whenClient' => "function (attribute, value) { return false; }"],
             [['chuandoan'], 'required', 'when' => function () {
                 return $this->xuatvien == 1;
-            }, 'on'                            => ['dieutra']],
+            }, 'on' => ['dieutra']],
             [['chuandoan_khac'], 'required', 'when' => function () {
                 return $this->chuandoan == 3;
-            }, 'on'                                 => ['dieutra']],
+            }, 'on' => ['dieutra']],
         ];
     }
 
-    protected function loadDcCuoi($formData) {
+    protected function loadDcCuoi($formData)
+    {
         $lastXm = optional((object)(last($this->xacminh)));
 
         $this->to_dp = $lastXm->to_dp;
@@ -190,7 +201,8 @@ class SxhForm extends MyForm {
         $this->tinh_dc_khac = $lastXm->tinh_dc_khac;
     }
 
-    public function loadForm($id) {
+    public function loadForm($id)
+    {
         $this->scenario = SxhForm::SCENARIO_XACMINH;
 
         $this->id = $id;
@@ -217,8 +229,9 @@ class SxhForm extends MyForm {
         $this->xacminh = $this->getListXacminh($xacminh);
     }
 
-    protected function updateXacminh($cb, &$formData) {
-        if($cb->isNewRecord) return null;
+    protected function updateXacminh($cb, &$formData)
+    {
+        if ($cb->isNewRecord) return null;
 
         $dbXacminh = $this->getListXacminh($cb->xacminhCbs);
 
@@ -231,7 +244,8 @@ class SxhForm extends MyForm {
 
     }
 
-    public function validateForm($id, &$data) {
+    public function validateForm($id, &$data)
+    {
         $formData = request('SxhForm');
         $is_dieutra = request('status.is_dieutra');
         $is_chuyenca = request('status.is_chuyenca');
@@ -255,10 +269,18 @@ class SxhForm extends MyForm {
         $data->put('errors', $errors);
 
         if ($is_dieutra) {
-
             $this->scenario = self::SCENARIO_DIEUTRA;
+
+            $emptyData = array_fill_keys([
+                'dietlangquang', 'giamsattheodoi', 'xulyonho', 'xulyorong',
+                'cathuphat', 'odichmoi', 'odichcu', 'xuly', 'xuly_ngay',
+                'xuatvien', 'ngayxuatvien'
+            ], null); // ------------ fix load dữ liệu cũ
+            $this->load($emptyData, '');
+
             $this->load($formData, '') && $this->validate();
             $warnings = $this->getErrors();
+
             $data->put('warnings', $warnings);
 
             if (empty($warnings)) {
@@ -266,10 +288,6 @@ class SxhForm extends MyForm {
             } else {
                 $this->loaidieutra = 1;
             }
-
-            // if($_SERVER['SERVER_NAME'] !== 'pcd.hcmgis.vn'){
-                
-            // }
 
             return true;
         }
@@ -282,7 +300,8 @@ class SxhForm extends MyForm {
 
     }
 
-    public function saveForm($id, $data) {
+    public function saveForm($id, $data)
+    {
 
         if ($data->get('errors')) return false;
         $is_chuyenca = request('status.is_chuyenca');
@@ -323,20 +342,21 @@ class SxhForm extends MyForm {
         $cb->syncOne('xacminhCbs', $this->xacminh);
     }
 
-    protected function doChuyenca($cb, $dt, $data) {
+    protected function doChuyenca($cb, $dt, $data)
+    {
         $ch = new Chuyenca();
         $lastXm = opt(last($this->xacminh));
         $preLastXm = opt(head(array_slice($this->xacminh, -2)));
 
         $ch->setAttributes([
-            'qh_chuyen'     => $preLastXm->qh,
-            'px_chuyen'     => $preLastXm->px,
-            'hoten_chuyen'  => $this->nguoidieutra,
-            'sdt_chuyen'    => $this->nguoidieutra_sdt,
-            'qh_nhan'       => $lastXm->qh,
-            'px_nhan'       => $lastXm->px,
-            'nguoinhan'     => null,
-            'sdt_nhan'      => null,
+            'qh_chuyen' => $preLastXm->qh,
+            'px_chuyen' => $preLastXm->px,
+            'hoten_chuyen' => $this->nguoidieutra,
+            'sdt_chuyen' => $this->nguoidieutra_sdt,
+            'qh_nhan' => $lastXm->qh,
+            'px_nhan' => $lastXm->px,
+            'nguoinhan' => null,
+            'sdt_nhan' => null,
             'is_chuyentiep' => $this->checkIsChuyenTiep($cb),
         ]);
 
@@ -366,35 +386,37 @@ class SxhForm extends MyForm {
 //        }
     }
 
-    protected function checkIsChuyenTiep($cb) {
+    protected function checkIsChuyenTiep($cb)
+    {
         if (!$cb->chuyenCas) return 1;
 
         $existCh = collect($cb->chuyenCas)->pluck('px_chuyen')->contains($this->px);
         return $existCh ? 0 : 1;
     }
 
-    public function getListChuyenca($chCas) {
+    public function getListChuyenca($chCas)
+    {
         return $chCas ? ArrayHelper::toArray($chCas, [
             Chuyenca::className() => [
-                'chuyen'   => function ($model) {
+                'chuyen' => function ($model) {
                     $chuyen = opt($model->chuyen);
                     return [
-                        'hoten'     => $model->hoten_chuyen,
-                        'sdt'       => $model->sdt_chuyen,
-                        'maquan'    => $model->qh_chuyen,
-                        'maphuong'  => $model->px_chuyen,
-                        'tenquan'   => $chuyen->tenquan,
+                        'hoten' => $model->hoten_chuyen,
+                        'sdt' => $model->sdt_chuyen,
+                        'maquan' => $model->qh_chuyen,
+                        'maphuong' => $model->px_chuyen,
+                        'tenquan' => $chuyen->tenquan,
                         'tenphuong' => $chuyen->tenphuong,
                     ];
                 },
-                'nhan'     => function ($model) {
+                'nhan' => function ($model) {
                     $nhan = opt($model->nhan);
                     return [
-                        'hoten'     => $model->hoten_nhan,
-                        'sdt'       => $model->sdt_nhan,
-                        'maquan'    => $model->qh_nhan,
-                        'maphuong'  => $model->px_nhan,
-                        'tenquan'   => $nhan->tenquan,
+                        'hoten' => $model->hoten_nhan,
+                        'sdt' => $model->sdt_nhan,
+                        'maquan' => $model->qh_nhan,
+                        'maphuong' => $model->px_nhan,
+                        'tenquan' => $nhan->tenquan,
                         'tenphuong' => $nhan->tenphuong,
                     ];
                 },
@@ -405,7 +427,8 @@ class SxhForm extends MyForm {
         ]) : [];
     }
 
-    public function getListXacminh($xacminh) {
+    public function getListXacminh($xacminh)
+    {
         $is_phuong = role('phuong');
         $maphuong = userInfo()->maphuong;
 
@@ -422,16 +445,16 @@ class SxhForm extends MyForm {
         $fields = [
             'id', 'is_diachi', 'is_benhnhan', 'dienthoai', 'sonha', 'duong', 'to_dp', 'khupho', 'tinh', 'tinh_dc_khac', 'px', 'qh',
             'disabled' => function ($model, $key, $index) use ($xacminh, $is_phuong, $maphuong) {
-                if($index == 0) {
-                    if($is_phuong && $this->px && $this->px !== $maphuong){
+                if ($index == 0) {
+                    if ($is_phuong && $this->px && $this->px !== $maphuong) {
                         return true;
                     }
 
                     return false;
                 };
                 $lastIndex = count($xacminh) - 1;
-                if($index == $lastIndex) {
-                    $preLastXm = $xacminh[$index-1];
+                if ($index == $lastIndex) {
+                    $preLastXm = $xacminh[$index - 1];
                     $lastXm = $model;
                     if ($lastXm->tinh == 'HCM' && ($lastXm->qh != $preLastXm->qh || $lastXm->px != $preLastXm->px)) {
                         return true;
@@ -480,7 +503,7 @@ class SxhForm extends MyForm {
                         if (is_int($key)) {
                             $result[$name] = $object->$name;
                         } else {
-                            $result[$key] = ArrayHelper::getValue($object, function ($value, $defaultValue) use($name, $key, $index){
+                            $result[$key] = ArrayHelper::getValue($object, function ($value, $defaultValue) use ($name, $key, $index) {
                                 return $name($value, $key, $index);
                             });
                         }

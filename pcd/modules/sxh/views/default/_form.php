@@ -15,6 +15,7 @@ $dm = [
     'chuandoan_bd' => Loaibenh::pluck('tenbenh', 'mabenh'),
     'phai'         => api('dm_phai'),
     'yesno'        => [1 => 'Có', 0 => 'Không'],
+    'yes'        => [1 => 'Có'],
     'yesnonull'    => [1 => 'Có', 0 => 'Không', 9 => 'Không rõ'],
     'ht_dieutri'   => api('dm_ht_dieutri'),
     'loaidieutra'  => api('dm_loaidieutra'),

@@ -491,7 +491,7 @@ trait SxhTrait {
             ],
             [
                 'name'      => 'cathuphat',
-                'component' => 'field-radio', 'labelInline' => '2. Ca bệnh thứ phát', 'options' => 'yesno', 'disabled' => $disabled_px2,
+                'component' => 'field-radio', 'labelInline' => '2. Ca bệnh thứ phát', 'options' => 'yes', 'disabled' => $disabled_px2,
             ],
             [
                 'name'      => 'odichmoi',
