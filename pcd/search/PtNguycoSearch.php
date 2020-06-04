@@ -81,6 +81,7 @@ class PtNguycoSearch extends PtNguyco
 
         $roles->filterHc($query);
 
+
         return $dataProvider;
     }
 

@@ -55,7 +55,8 @@
         "machour/yii2-notifications": "*",
         "yii2tech/spreadsheet": "*",
         "kriss/yii2-link-pager-with-submit": "*",
-        "ttungbmt/yii2-leaflet": "*@dev"
+        "ttungbmt/yii2-leaflet": "*@dev",
+        "ttungbmt/yii2-alpine": "*@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

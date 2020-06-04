@@ -83,7 +83,7 @@ class MarkerCluster extends Plugin
             }
         }
 
-        $js[] = "$map.addLayer($name); console.log($name);";
+        $js[] = "$map.addLayer($name);";
 
         return new JsExpression(implode("\n", $js));
     }

@@ -53,8 +53,6 @@ $(function () {
             app.mounted = fnMounted
             app.init()
 
-            console.log(options)
-
             this.apps[name] = app
         },
 
