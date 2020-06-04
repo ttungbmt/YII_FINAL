@@ -6,7 +6,7 @@ use yii\web\AssetBundle;
 class AlpineAsset extends AssetBundle
 {
     public $publishOptions = [
-        'forceCopy' => true,  // pjax not working if true
+        'forceCopy' => false,  // pjax not working if true
     ];
 
     public function init()
