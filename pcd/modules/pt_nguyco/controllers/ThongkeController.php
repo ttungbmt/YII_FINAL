@@ -60,11 +60,12 @@ class ThongkeController extends BackendController
             if ($model->maphuong)  $q0->andFilterWhere(['maphuong' => $model->maphuong]);
             if ($model->maquan) $q0->andFilterWhere(['maquan' => $model->maquan]);
 
+            $e_current = "COUNT(CASE WHEN ngaycapnhat < '{$date}' THEN 1 END)";
             $e_moi = "COUNT(CASE WHEN TO_CHAR(ngaycapnhat, 'MM/YYYY') = '{$month}' THEN 1 END)";
 
             $q1 = (new Query())->select([
                 'code',
-                'dauthang' => new Expression("(COUNT(*) - {$e_moi} - COUNT(CASE WHEN ngayxoa < '{$date}' THEN 1 END))"),
+                'dauthang' => new Expression("({$e_current} - COUNT(CASE WHEN ngayxoa < '{$date}' THEN 1 END))"),
                 'daxoa' => new Expression("COUNT(CASE WHEN TO_CHAR(ngayxoa, 'MM/YYYY') = '{$month}' THEN 1 END)"),
                 'moi' => new Expression($e_moi),
                 'gs' => new Expression("SUM(gs)"),
@@ -90,6 +91,8 @@ class ThongkeController extends BackendController
                 if ($model->maquan)  $q2->andFilterWhere(['maquan' => $model->maquan]);
                 if ($model->maphuong)  $q2->andFilterWhere(['maphuong' => $model->maphuong]);
             }
+
+//            dd($q2->createCommand()->getRawSql());
 
 
             $data0 = collect($q2->all())->map(function ($i) {

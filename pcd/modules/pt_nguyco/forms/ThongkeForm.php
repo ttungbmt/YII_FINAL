@@ -1,6 +1,7 @@
 <?php
 namespace pcd\modules\pt_nguyco\forms;
 
+use pcd\supports\RoleHc;
 use yii\base\DynamicModel;
 
 class ThongkeForm extends DynamicModel {
@@ -13,8 +14,10 @@ class ThongkeForm extends DynamicModel {
     public function init() {
         parent::init();
         $this->month = date('m/Y');
-    }
 
+        $role = RoleHc::init();
+        $role->initFormHc($this);
+    }
 
     public function formName() {
         return '';

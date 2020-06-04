@@ -37,6 +37,10 @@ class TpAction extends BaseObject{
     public $qh;
     public $px;
 
+    public function initFormHc(&$obj){
+        return $obj;
+    }
+
     public function filterMahc(&$query, $field = ''){
         return $query;
     }
@@ -102,6 +106,12 @@ class TpAction extends BaseObject{
 
 class QuanAction extends TpAction
 {
+    public function initFormHc(&$obj){
+        if(!$obj->maquan) $obj->maquan = (string)$this->maquan;
+
+        return $obj;
+    }
+
     public function filterMahc(&$query, $field = 'maquan'){
         return $query->andFilterWhere([$field => (string)$this->{$field}]);
     }
@@ -187,6 +197,15 @@ class QuanAction extends TpAction
 
 class PhuongAction extends QuanAction
 {
+    public function initFormHc(&$obj){
+        if(!$obj->maphuong) {
+            $obj->maquan = (string)$this->maquan;
+            $obj->maphuong = (string)$this->maphuong;
+        }
+
+        return $obj;
+    }
+
     public function filterMahc(&$query, $field = 'maphuong'){
         return $query->andFilterWhere([$field => (string)$this->{$field}]);
     }
