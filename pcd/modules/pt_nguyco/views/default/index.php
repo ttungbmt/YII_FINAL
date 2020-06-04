@@ -36,6 +36,7 @@ $null_updated = \pcd\models\PtNguyco::find()
     <div id="ajaxCrudDatatable">
         <?= $this->render('_search_gs', ['model' => $searchModel]) ?>
 
+
         <?= GridView::widget([
             'id' => 'crud-datatable',
             'dataProvider' => $dataProvider,
@@ -53,7 +54,7 @@ $null_updated = \pcd\models\PtNguyco::find()
             'toolbar' => [
                 ['content' =>
                     Html::a('Thêm mới', ['create'],
-                        ['data-pjax' => 0, 'title' => 'Thêm mới Điểm nguy cơ', 'class' => 'btn btn-default',]) .
+                        ['data-pjax' => 0, 'title' => 'Thêm mới Điểm nguy cơ', 'class' => 'btn btn-primary',]) .
                     Html::a('<i class="icon-reload-alt"></i>', [''],
                         ['data-pjax' => 0, 'class' => 'btn btn-default', 'title' => lang('Reset Grid')]) .
                     '{toggleData}'.$exportMenu
@@ -67,8 +68,8 @@ $null_updated = \pcd\models\PtNguyco::find()
                 'type' => 'primary',
                 'heading' => 'Danh sách Điểm nguy cơ',
                 'before'  =>  Html::tag('div', (
-                    ($null_lh > 0 ? '<a href="'.url(['', 'filter_dnc' => 0]).'" class="badge bg-warning-400" target="_blank" data-pjax="0">'.$null_lh.' DNC chưa nhập loại hình</a>' : '').
-                    ($null_updated > 0 ? '<a href="'.url(['', 'filter_dnc' => 1]).'" class="ml-1 badge bg-danger-400" target="_blank" data-pjax="0">'.$null_updated.' DNC cập nhập dữ liệu</a>' : '')
+                    ($null_lh > 0 ? '<a href="'.url(array_merge(['', 'filter_dnc' => 0], request()->queryParams)).'" class="badge bg-warning-400" target="_blank" data-pjax="0">'.$null_lh.' DNC chưa nhập loại hình</a>' : '').
+                    ($null_updated > 0 ? '<a href="'.url(array_merge(['', 'filter_dnc' => 1], request()->queryParams)).'" class="ml-1 badge bg-danger-400" target="_blank" data-pjax="0">'.$null_updated.' DNC cập nhập dữ liệu</a>' : '')
                 ), ['class' => 'btn-group'])
             ],
             'floatHeader' => false,

@@ -1,8 +1,10 @@
 <?php
+
 use pcd\modules\pt_nguyco\models\DmLoaihinh;
 use pcd\modules\pt_nguyco\models\KehoachGs;
 use kartik\widgets\DepDrop;
 use ttungbmt\leaflet\widgets\MiniMap;
+use ttungbmt\yii\alpine\Alpine;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\widgets\DatePicker;
@@ -13,7 +15,7 @@ use kartik\widgets\DatePicker;
 
 $this->title = ($model->isNewRecord ? 'Thêm mới' : 'Cập nhật') . ' Điểm nguy cơ';
 $k1 = collect($model->kehoachs);
-$khs = collect(range(1,12))->map(function ($m) use ($k1){
+$khs = collect(range(1, 12))->map(function ($m) use ($k1) {
     $d = $k1->firstWhere('month', $m);
     return $d ? $d : new KehoachGs(['month' => $m]);
 });
@@ -23,21 +25,20 @@ $yesno = [1 => 'Có', 0 => 'Không'];
 $template = '{label}<span class="text-danger">*</span>{input}';
 $dm_quan = api('/dm/quan?role=true');
 $url_phuong = url(['/api/dm/phuong']);
-//dd(0);
 
+ttungbmt\yii\alpine\AlpineAsset::register($this);
 ?>
-    <?= MiniMap::widget(['model' => $model])?>
-
+<?= MiniMap::widget(['model' => $model]) ?>
     <div id="vueApp">
         <div class="pt-nguyco-form">
             <?php $form = ActiveForm::begin([
                 'enableClientValidation' => false,
             ]); ?>
 
-            <?=$form->errorSummary(array_merge([$model], $model->giamsats), [
+            <?= $form->errorSummary(array_merge([$model], $model->giamsats), [
                 'header' => '<span class="font-weight-semibold">Vui lòng điền các thông tin sau:</span>',
                 'class' => 'error-summary alert alert-danger border-0 alert-dismissible'
-            ])?>
+            ]) ?>
 
             <div class="card">
 
@@ -62,31 +63,35 @@ $url_phuong = url(['/api/dm/phuong']);
                             <?= $form->field($model, 'dienthoai')->textInput(['maxlength' => true]) ?>
                         </div>
                     </div>
-                    <h6 class="mb-0 font-weight-semibold mb-2">Địa chỉ: <?php if($model->diachi):?><span class="text-muted" style="font-size: 12px">(Địa chỉ cũ: <cite><?=$model->diachi?></cite>)</span> <?php endif; ?> </h6>
+                    <h6 class="mb-0 font-weight-semibold mb-2">Địa chỉ: <?php if ($model->diachi): ?><span
+                                class="text-muted" style="font-size: 12px">
+                            (Địa chỉ cũ: <cite><?= $model->diachi ?></cite>)</span> <?php endif; ?> </h6>
                     <div class="row">
                         <div class="col-md-3"><?= $form->field($model, 'sonha')->textInput(['maxlength' => true]) ?></div>
                         <div class="col-md-3"><?= $form->field($model, 'tenduong', ['template' => $template])->textInput(['maxlength' => true]) ?></div>
                         <div class="col-md-3"><?= $form->field($model, 'khupho')->textInput(['maxlength' => true]) ?></div>
                         <div class="col-md-3"><?= $form->field($model, 'to_dp')->textInput(['maxlength' => true]) ?></div>
                         <div class="col-md-6">
-                            <?=$form->field($model, "maquan")->dropDownList($dm_quan, [
+                            <?= $form->field($model, "maquan")->dropDownList($dm_quan, [
                                 'prompt' => 'Chọn quận huyện...',
-                                'id'      => "drop-quan-khac",
-                            ])->label("Quận huyện")?>
+                                'id' => "drop-quan-khac",
+                            ])->label("Quận huyện") ?>
                         </div>
                         <div class="col-md-6">
-                            <?=$form->field($model, "maphuong")->widget(DepDrop::className(), [
-                                'options'       => ['prompt' => 'Chọn phường xã...'],
+                            <?= $form->field($model, "maphuong")->widget(DepDrop::className(), [
+                                'options' => ['prompt' => 'Chọn phường xã...'],
                                 'pluginOptions' => [
                                     'depends' => ["drop-quan-khac"],
                                     'initialize' => $model->maquan ? true : false,
                                     'ajaxSettings' => ['data' => ['value' => $model->maphuong, 'role' => 'true']],
-                                    'url'     => $url_phuong,
+                                    'url' => $url_phuong,
                                 ],
-                            ])->label("Phường xã")?>
+                            ])->label("Phường xã") ?>
                         </div>
                     </div>
-                    <h6 class="mb-0 font-weight-semibold mb-2">Loại hình: <?php if($model->loaihinh):?><span class="text-muted" style="font-size: 12px">(LH cũ: <cite><?=$model->loaihinh?></cite>)</span> <?php endif; ?> </h6>
+                    <h6 class="mb-0 font-weight-semibold mb-2">Loại hình: <?php if ($model->loaihinh): ?><span
+                                class="text-muted" style="font-size: 12px">(LH cũ: <cite><?= $model->loaihinh ?></cite>)
+                            </span> <?php endif; ?> </h6>
                     <div class="row">
                         <div class="col-md-6">
                             <?= $form->field($model, 'loaihinh_id', ['template' => $template])->dropDownList($dm_loaihinh, ['prompt' => 'Chọn loại hình...', 'v-model' => 'm.loaihinh_id']) ?>
@@ -118,13 +123,16 @@ $url_phuong = url(['/api/dm/phuong']);
                                 class="badge badge-flat badge-pill border-primary">2</span> Kế hoạch kiểm soát ĐNC</h5>
                     <h6 class="font-weight-semibold text-primary-600 mt-3">Giám sát thực tế</h6>
 
-                    <?php foreach ($giamsats as $i => $gs):?>
-                        <?=$this->render('_sub_gs', ['form' => $form, 'model' => $gs, 'i' => $i])?>
-                    <?php endforeach;?>
+                    <?php foreach ($giamsats as $i => $gs): ?>
+                        <?= $this->render('_sub_gs', ['form' => $form, 'model' => $gs, 'i' => $i]) ?>
+                    <?php endforeach; ?>
 
                     <div id="resp-gs"></div>
                     <div class="text-right">
-                        <button type="button" @click="addItem" class="btn bg-success-400 btn-labeled btn-labeled-left legitRipple"><b><i class="icon-file-plus"></i></b> Thêm lần giám sát</button>
+                        <button type="button" @click="addItem"
+                                class="btn bg-success-400 btn-labeled btn-labeled-left legitRipple"><b><i
+                                        class="icon-file-plus"></i></b> Thêm lần giám sát
+                        </button>
                     </div>
 
                     <?php if (!request()->isAjax): ?>
@@ -145,17 +153,18 @@ $url_phuong = url(['/api/dm/phuong']);
         let app = new Vue({
             el: '#vueApp',
             data: {
+                message: 'Hello',
                 incre: <?=count($giamsats)?>,
                 items: [],
                 m: <?=json_encode($model->toArray())?>,
                 dm_loaihinh: <?=json_encode($loaihinh)?>
             },
-            mounted(){
+            mounted() {
                 this.setFnRemove()
             },
             watch: {
                 'm.ky_ck': function (value) {
-                    if(value === '1') {
+                    if (value === '1') {
                         this.$nextTick(() => {
                             let id = $('input[name="PtNguyco[ngayky_ck]"]').data('krajeeKvdatepicker')
                             $('#ptnguyco-ngayky_ck-kvdate').kvDatepicker(window[id]);
@@ -165,11 +174,11 @@ $url_phuong = url(['/api/dm/phuong']);
                 }
             },
             computed: {
-                shownTenLH(){
+                shownTenLH() {
                     let khac = _.chain(this.dm_loaihinh).filter({ten_lh: 'Khác'}).map(v => _.toString(v.id)).value()
-                    return _.includes(khac, this.m.loaihinh_id+'')
+                    return _.includes(khac, this.m.loaihinh_id + '')
                 },
-                shownKyCamket(){
+                shownKyCamket() {
                     let id = _.toInteger(this.m.loaihinh_id),
                         ob = _.find(this.dm_loaihinh, {id})
 
@@ -177,14 +186,16 @@ $url_phuong = url(['/api/dm/phuong']);
                 },
             },
             methods: {
-                addItem(){
-                    $.get(`/pt_nguyco/default/view-gs?i=`+this.incre++, res => {
+                addItem() {
+                    $.get(`/pt_nguyco/default/view-gs?i=` + this.incre++, res => {
                         $('#resp-gs').append(res)
-                        setTimeout(() => this.setFnRemove())
+                        setTimeout(() => {
+
+                            this.setFnRemove()
+                        })
                     })
                 },
-
-                setFnRemove(){
+                setFnRemove() {
                     $('.btn-remove-item').click(function () {
                         $(this).closest('.gs-wrapper').remove();
                     })

@@ -5,8 +5,12 @@ class AlpineInstance {
     }
 }
 
-function alpine(data) {
-    return new AlpineInstance(data)
+function alpine(options) {
+    // new AlpineInstance(data)
+    return {
+        ...options.data,
+        ...options.methods
+    }
 
 }
 

@@ -27,7 +27,7 @@ $dm_loaihinh = api('pt_nguyco/dm/loaihinh');
             'pluginOptions' => [
                 'depends'      => ['drop-quan1'],
                 'url'          => url(['/api/dm/phuong?role=true']),
-                'initialize'   => $maquan == true,
+                'initialize'   => $model->maquan == true,
                 'placeholder'  => 'Chọn phường...',
                 'ajaxSettings' => ['data' => ['value' => $maphuong]],
             ],

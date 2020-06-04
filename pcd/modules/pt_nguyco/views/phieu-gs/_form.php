@@ -89,8 +89,6 @@ $dm_mucdich_gs = api('dm_mucdich_gs');
                 }
             }
         })
-        console.log(vm);
-        // console.log(vm.$destroy(););
     })
 
 </script>
