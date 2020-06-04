@@ -12,7 +12,7 @@ return [
         },
         'visibleButtons' => [
             'delete'   => function ($model) {
-                return role('quan|admin');
+                return role('quan|admin') || userInfo()->maphuong == '76326845';
             },
             'view' => false,
         ],
