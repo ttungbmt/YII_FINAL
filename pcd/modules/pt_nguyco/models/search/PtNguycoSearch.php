@@ -80,9 +80,6 @@ class PtNguycoSearch extends PtNguyco
         $query->andFilterDate(['ngaycapnhat' => [$this->date_from, $this->date_to]]);
 
         $roles->filterHc($query);
-        $query->andWhere('ngayxoa < ngaycapnhat');
-
-//        dd($query->createCommand()->getRawSql());
 
         return $dataProvider;
     }
