@@ -753,20 +753,6 @@
                 "uppercase",
                 "words"
             ],
-            "funding": [
-                {
-                    "url": "https://www.doctrine-project.org/sponsorship.html",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://www.patreon.com/phpdoctrine",
-                    "type": "patreon"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Finflector",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-29T15:13:26+00:00"
         },
         {
@@ -828,20 +814,6 @@
                 "lexer",
                 "parser",
                 "php"
-            ],
-            "funding": [
-                {
-                    "url": "https://www.doctrine-project.org/sponsorship.html",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://www.patreon.com/phpdoctrine",
-                    "type": "patreon"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Flexer",
-                    "type": "tidelift"
-                }
             ],
             "time": "2020-05-25T17:44:05+00:00"
         },
@@ -1951,12 +1923,6 @@
                 "progress",
                 "upload"
             ],
-            "funding": [
-                {
-                    "url": "https://opencollective.com/bootstrap-fileinput",
-                    "type": "open_collective"
-                }
-            ],
             "time": "2020-06-02T11:45:44+00:00"
         },
         {
@@ -2204,16 +2170,16 @@
         },
         {
             "name": "kartik-v/yii2-builder",
-            "version": "v1.6.7",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-builder.git",
-                "reference": "9639b36959094500b1bd519b39b581def5d98e17"
+                "reference": "74843d777dc9cb1d6e04f73f82c471b6aadde037"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-builder/zipball/9639b36959094500b1bd519b39b581def5d98e17",
-                "reference": "9639b36959094500b1bd519b39b581def5d98e17",
+                "url": "https://api.github.com/repos/kartik-v/yii2-builder/zipball/74843d777dc9cb1d6e04f73f82c471b6aadde037",
+                "reference": "74843d777dc9cb1d6e04f73f82c471b6aadde037",
                 "shasum": ""
             },
             "require": {
@@ -2252,20 +2218,20 @@
                 "widget",
                 "yii2"
             ],
-            "time": "2019-06-18T13:41:07+00:00"
+            "time": "2020-02-19T04:10:14+00:00"
         },
         {
             "name": "kartik-v/yii2-date-range",
-            "version": "v1.7.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-date-range.git",
-                "reference": "fbc192c685c3c529a399d9a388036d08985401a6"
+                "reference": "697e4ee6fbf798765588190286ad649b268cf2a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-date-range/zipball/fbc192c685c3c529a399d9a388036d08985401a6",
-                "reference": "fbc192c685c3c529a399d9a388036d08985401a6",
+                "url": "https://api.github.com/repos/kartik-v/yii2-date-range/zipball/697e4ee6fbf798765588190286ad649b268cf2a9",
+                "reference": "697e4ee6fbf798765588190286ad649b268cf2a9",
                 "shasum": ""
             },
             "require": {
@@ -2306,20 +2272,20 @@
                 "widget",
                 "yii2"
             ],
-            "time": "2020-02-09T12:41:06+00:00"
+            "time": "2020-03-10T05:51:18+00:00"
         },
         {
             "name": "kartik-v/yii2-datecontrol",
-            "version": "v1.9.7",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-datecontrol.git",
-                "reference": "e095702e8bcd325a09f6a6e6b21f0b529b6965b9"
+                "reference": "0e7057f644fb178c9a949836c2b0dc7325d07e02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-datecontrol/zipball/e095702e8bcd325a09f6a6e6b21f0b529b6965b9",
-                "reference": "e095702e8bcd325a09f6a6e6b21f0b529b6965b9",
+                "url": "https://api.github.com/repos/kartik-v/yii2-datecontrol/zipball/0e7057f644fb178c9a949836c2b0dc7325d07e02",
+                "reference": "0e7057f644fb178c9a949836c2b0dc7325d07e02",
                 "shasum": ""
             },
             "require": {
@@ -2358,11 +2324,11 @@
                 "yii",
                 "yii2"
             ],
-            "time": "2018-09-23T07:29:23+00:00"
+            "time": "2020-02-03T06:37:57+00:00"
         },
         {
             "name": "kartik-v/yii2-detail-view",
-            "version": "v1.8.3",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-detail-view.git",
@@ -2579,16 +2545,16 @@
         },
         {
             "name": "kartik-v/yii2-export",
-            "version": "v1.4.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-export.git",
-                "reference": "7e8ff2d4ba2435ab6903692edd390ba8e84e3faa"
+                "reference": "9b4b026cf134de6636f31181675a32a6b0b0b73e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-export/zipball/7e8ff2d4ba2435ab6903692edd390ba8e84e3faa",
-                "reference": "7e8ff2d4ba2435ab6903692edd390ba8e84e3faa",
+                "url": "https://api.github.com/repos/kartik-v/yii2-export/zipball/9b4b026cf134de6636f31181675a32a6b0b0b73e",
+                "reference": "9b4b026cf134de6636f31181675a32a6b0b0b73e",
                 "shasum": ""
             },
             "require": {
@@ -2635,7 +2601,7 @@
                 "xlsx",
                 "yii2"
             ],
-            "time": "2019-05-25T07:08:54+00:00"
+            "time": "2020-05-29T17:01:27+00:00"
         },
         {
             "name": "kartik-v/yii2-field-range",
@@ -2750,16 +2716,16 @@
         },
         {
             "name": "kartik-v/yii2-helpers",
-            "version": "v1.3.9",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-helpers.git",
-                "reference": "0bec7a97bf9d0293d96be5c496fe9654c4dec94b"
+                "reference": "0cbfd0e23e81eaea2ab4595705b2bfa8b91bc36c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-helpers/zipball/0bec7a97bf9d0293d96be5c496fe9654c4dec94b",
-                "reference": "0bec7a97bf9d0293d96be5c496fe9654c4dec94b",
+                "url": "https://api.github.com/repos/kartik-v/yii2-helpers/zipball/0cbfd0e23e81eaea2ab4595705b2bfa8b91bc36c",
+                "reference": "0cbfd0e23e81eaea2ab4595705b2bfa8b91bc36c",
                 "shasum": ""
             },
             "require": {
@@ -2797,7 +2763,7 @@
                 "yii",
                 "yii2"
             ],
-            "time": "2018-10-09T08:03:44+00:00"
+            "time": "2019-05-25T07:24:13+00:00"
         },
         {
             "name": "kartik-v/yii2-krajee-base",
@@ -2853,7 +2819,7 @@
         },
         {
             "name": "kartik-v/yii2-mpdf",
-            "version": "v1.0.6",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-mpdf.git",
@@ -3010,16 +2976,16 @@
         },
         {
             "name": "kartik-v/yii2-tree-manager",
-            "version": "v1.1.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-tree-manager.git",
-                "reference": "e09c47108b51a42ba3dc3c54d5c82ba6907cd25b"
+                "reference": "35e907e5b60a59d1a1de3dee5ff6262221a6cb73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-tree-manager/zipball/e09c47108b51a42ba3dc3c54d5c82ba6907cd25b",
-                "reference": "e09c47108b51a42ba3dc3c54d5c82ba6907cd25b",
+                "url": "https://api.github.com/repos/kartik-v/yii2-tree-manager/zipball/35e907e5b60a59d1a1de3dee5ff6262221a6cb73",
+                "reference": "35e907e5b60a59d1a1de3dee5ff6262221a6cb73",
                 "shasum": ""
             },
             "require": {
@@ -3063,20 +3029,20 @@
                 "tree",
                 "treeview"
             ],
-            "time": "2019-03-13T17:21:14+00:00"
+            "time": "2019-10-10T16:35:58+00:00"
         },
         {
             "name": "kartik-v/yii2-validators",
-            "version": "v1.0.3",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-validators.git",
-                "reference": "756b4461d9409276c43f9574ceda597cab44e65b"
+                "reference": "bd5c771232b556fe7920a22e6705f03e6747b8f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-validators/zipball/756b4461d9409276c43f9574ceda597cab44e65b",
-                "reference": "756b4461d9409276c43f9574ceda597cab44e65b",
+                "url": "https://api.github.com/repos/kartik-v/yii2-validators/zipball/bd5c771232b556fe7920a22e6705f03e6747b8f5",
+                "reference": "bd5c771232b556fe7920a22e6705f03e6747b8f5",
                 "shasum": ""
             },
             "require": {
@@ -3118,7 +3084,7 @@
                 "validator",
                 "yii2"
             ],
-            "time": "2019-08-22T12:32:31+00:00"
+            "time": "2020-04-02T17:24:22+00:00"
         },
         {
             "name": "kartik-v/yii2-widget-activeform",
@@ -3494,16 +3460,16 @@
         },
         {
             "name": "kartik-v/yii2-widget-fileinput",
-            "version": "v1.0.9",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-widget-fileinput.git",
-                "reference": "fcf5bf41fac35363d3f24a01a34f228c2534c7b7"
+                "reference": "1530e293315bfb09661a50ed34bf1e8b57f92f69"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-widget-fileinput/zipball/fcf5bf41fac35363d3f24a01a34f228c2534c7b7",
-                "reference": "fcf5bf41fac35363d3f24a01a34f228c2534c7b7",
+                "url": "https://api.github.com/repos/kartik-v/yii2-widget-fileinput/zipball/1530e293315bfb09661a50ed34bf1e8b57f92f69",
+                "reference": "1530e293315bfb09661a50ed34bf1e8b57f92f69",
                 "shasum": ""
             },
             "require": {
@@ -3545,7 +3511,7 @@
                 "widget",
                 "yii2"
             ],
-            "time": "2019-04-19T11:45:08+00:00"
+            "time": "2020-06-02T17:24:23+00:00"
         },
         {
             "name": "kartik-v/yii2-widget-growl",
@@ -4081,16 +4047,16 @@
         },
         {
             "name": "kartik-v/yii2-widgets",
-            "version": "v3.4.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-widgets.git",
-                "reference": "e5a030d700243a90eccf96a070380bd3b76e17a3"
+                "reference": "0674838c869e5ccabc15756ee0c065ccecd09969"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-widgets/zipball/e5a030d700243a90eccf96a070380bd3b76e17a3",
-                "reference": "e5a030d700243a90eccf96a070380bd3b76e17a3",
+                "url": "https://api.github.com/repos/kartik-v/yii2-widgets/zipball/0674838c869e5ccabc15756ee0c065ccecd09969",
+                "reference": "0674838c869e5ccabc15756ee0c065ccecd09969",
                 "shasum": ""
             },
             "require": {
@@ -4144,7 +4110,7 @@
                 "widget",
                 "yii2"
             ],
-            "time": "2018-10-09T17:40:19+00:00"
+            "time": "2019-09-03T03:11:11+00:00"
         },
         {
             "name": "kop/yii2-scroll-pager",
@@ -4368,12 +4334,6 @@
                 "sftp",
                 "storage"
             ],
-            "funding": [
-                {
-                    "url": "https://offset.earth/frankdejonge",
-                    "type": "other"
-                }
-            ],
             "time": "2020-05-18T15:13:39+00:00"
         },
         {
@@ -4527,12 +4487,6 @@
             "keywords": [
                 "stream",
                 "zip"
-            ],
-            "funding": [
-                {
-                    "url": "https://opencollective.com/zipstream",
-                    "type": "open_collective"
-                }
             ],
             "time": "2020-05-30T13:11:16+00:00"
         },
@@ -4920,12 +4874,6 @@
                 "php",
                 "utf-8"
             ],
-            "funding": [
-                {
-                    "url": "https://www.paypal.me/mpdf",
-                    "type": "custom"
-                }
-            ],
             "time": "2020-05-25T09:08:39+00:00"
         },
         {
@@ -5187,16 +5135,6 @@
                 "date",
                 "datetime",
                 "time"
-            ],
-            "funding": [
-                {
-                    "url": "https://opencollective.com/Carbon",
-                    "type": "open_collective"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/nesbot/carbon",
-                    "type": "tidelift"
-                }
             ],
             "time": "2020-05-24T18:27:52+00:00"
         },
@@ -6636,20 +6574,6 @@
             ],
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-27T08:34:37+00:00"
         },
         {
@@ -6707,20 +6631,6 @@
             ],
             "description": "Symfony ErrorHandler Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-30T20:35:19+00:00"
         },
         {
@@ -6793,20 +6703,6 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-20T17:43:50+00:00"
         },
         {
@@ -6865,20 +6761,6 @@
                 "interoperability",
                 "standards"
             ],
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-20T17:43:50+00:00"
         },
         {
@@ -6928,20 +6810,6 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-20T17:43:50+00:00"
         },
         {
@@ -7003,20 +6871,6 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-24T12:18:07+00:00"
         },
         {
@@ -7116,20 +6970,6 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-31T06:14:18+00:00"
         },
         {
@@ -7192,20 +7032,6 @@
             "keywords": [
                 "mime",
                 "mime-type"
-            ],
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
             ],
             "time": "2020-05-25T12:33:44+00:00"
         },
@@ -7620,20 +7446,6 @@
                 "portable",
                 "shim"
             ],
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-12T16:47:27+00:00"
         },
         {
@@ -7712,20 +7524,6 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-30T20:35:19+00:00"
         },
         {
@@ -7782,20 +7580,6 @@
                 "interfaces",
                 "interoperability",
                 "standards"
-            ],
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
             ],
             "time": "2020-05-20T17:43:50+00:00"
         },
@@ -7873,20 +7657,6 @@
                 "debug",
                 "dump"
             ],
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-30T20:35:19+00:00"
         },
         {
@@ -7895,7 +7665,7 @@
             "dist": {
                 "type": "path",
                 "url": "./packages/ttungbmt/yii2-alpine",
-                "reference": "fe362183218c9e2611b07c91a5bbf05e9265a5a1"
+                "reference": "607e10da3b15010815a74d54d6af4bb2df61530b"
             },
             "type": "yii2-extension",
             "autoload": {
@@ -7912,40 +7682,37 @@
                     "email": "ttungbmt@gmail.com"
                 }
             ],
-            "description": "Alpine for Yii 2",
+            "description": "The Alpine extension for the Yii framework",
             "keywords": [
                 "PHP",
                 "extension",
                 "yii2"
-            ],
-            "transport-options": {
-                "relative": true
-            }
+            ]
         },
         {
             "name": "ttungbmt/yii2-core",
-            "version": "dev-master",
+            "version": "dev-4442d5a8f732db9761cd1f71129862e85d07b27a",
             "dist": {
                 "type": "path",
                 "url": "./packages/ttungbmt/yii2-core",
-                "reference": "93ef57401bd04544a5f3580f6ffc08cac65991e8"
+                "reference": "3807eb25d5c0ef437e632d1ca8f60c4bd87f0084"
             },
             "require": {
                 "codeonyii/yii2-at-least-validator": "*",
                 "guzzlehttp/guzzle": "^6.5",
                 "illuminate/http": "*",
-                "kartik-v/yii2-builder": "@dev",
-                "kartik-v/yii2-date-range": "@dev",
-                "kartik-v/yii2-datecontrol": "@dev",
-                "kartik-v/yii2-detail-view": "@dev",
-                "kartik-v/yii2-export": "@dev",
+                "kartik-v/yii2-builder": "dev-master",
+                "kartik-v/yii2-date-range": "dev-master",
+                "kartik-v/yii2-datecontrol": "dev-master",
+                "kartik-v/yii2-detail-view": "dev-master",
+                "kartik-v/yii2-export": "dev-master",
                 "kartik-v/yii2-field-range": "*",
-                "kartik-v/yii2-helpers": "@dev",
-                "kartik-v/yii2-mpdf": "@dev",
-                "kartik-v/yii2-tree-manager": "@dev",
-                "kartik-v/yii2-validators": "@dev",
-                "kartik-v/yii2-widget-fileinput": "@dev",
-                "kartik-v/yii2-widgets": "@dev",
+                "kartik-v/yii2-helpers": "dev-master",
+                "kartik-v/yii2-mpdf": "dev-master",
+                "kartik-v/yii2-tree-manager": "dev-master",
+                "kartik-v/yii2-validators": "dev-master",
+                "kartik-v/yii2-widget-fileinput": "dev-master",
+                "kartik-v/yii2-widgets": "dev-master",
                 "mdmsoft/yii2-admin": "dev-master",
                 "nanson/yii2-postgis": "^1.0",
                 "nepstor/yii2-datetime-compare-validator": "*",
@@ -7985,10 +7752,7 @@
                 "PHP",
                 "extension",
                 "yii2"
-            ],
-            "transport-options": {
-                "relative": true
-            }
+            ]
         },
         {
             "name": "ttungbmt/yii2-leaflet",
@@ -7996,7 +7760,7 @@
             "dist": {
                 "type": "path",
                 "url": "./packages/ttungbmt/yii2-leaflet",
-                "reference": "5c80f62e0aaa455646f86ef47348bfc1885baf86"
+                "reference": "0dfb87540c73e31c875e6e8d1ec8c7add8e40405"
             },
             "require": {
                 "bower-asset/leaflet": "^1.6",
@@ -8029,10 +7793,7 @@
                 "widget",
                 "yii",
                 "yii2"
-            ],
-            "transport-options": {
-                "relative": true
-            }
+            ]
         },
         {
             "name": "tuyakhov/yii2-notifications",
@@ -8150,16 +7911,6 @@
                 "env",
                 "environment"
             ],
-            "funding": [
-                {
-                    "url": "https://github.com/GrahamCampbell",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/vlucas/phpdotenv",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-23T09:43:32+00:00"
         },
         {
@@ -8207,24 +7958,6 @@
                 "ascii",
                 "clean",
                 "php"
-            ],
-            "funding": [
-                {
-                    "url": "https://www.paypal.me/moelleken",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/voku",
-                    "type": "github"
-                },
-                {
-                    "url": "https://www.patreon.com/voku",
-                    "type": "patreon"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/voku/portable-ascii",
-                    "type": "tidelift"
-                }
             ],
             "time": "2020-05-26T06:40:44+00:00"
         },
@@ -9113,12 +8846,6 @@
                 "search",
                 "yii2"
             ],
-            "funding": [
-                {
-                    "url": "https://opencollective.com/yiisoft",
-                    "type": "open_collective"
-                }
-            ],
             "time": "2020-06-01T20:50:33+00:00"
         },
         {
@@ -9513,12 +9240,6 @@
                 "functional testing",
                 "unit testing"
             ],
-            "funding": [
-                {
-                    "url": "https://opencollective.com/codeception",
-                    "type": "open_collective"
-                }
-            ],
             "time": "2020-05-24T13:58:47+00:00"
         },
         {
@@ -9774,20 +9495,6 @@
             "keywords": [
                 "constructor",
                 "instantiate"
-            ],
-            "funding": [
-                {
-                    "url": "https://www.doctrine-project.org/sponsorship.html",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://www.patreon.com/phpdoctrine",
-                    "type": "patreon"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Finstantiator",
-                    "type": "tidelift"
-                }
             ],
             "time": "2020-05-29T17:27:14+00:00"
         },
@@ -10548,16 +10255,6 @@
                 "testing",
                 "xunit"
             ],
-            "funding": [
-                {
-                    "url": "https://phpunit.de/donate.html",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/sebastianbergmann",
-                    "type": "github"
-                }
-            ],
             "time": "2020-05-22T13:51:52+00:00"
         },
         {
@@ -11232,20 +10929,6 @@
             ],
             "description": "Symfony BrowserKit Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-23T13:13:03+00:00"
         },
         {
@@ -11325,20 +11008,6 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-30T20:35:19+00:00"
         },
         {
@@ -11392,20 +11061,6 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-20T17:43:50+00:00"
         },
         {
@@ -11468,20 +11123,6 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-23T13:08:13+00:00"
         },
         {
@@ -11541,20 +11182,6 @@
                 "polyfill",
                 "portable",
                 "shim"
-            ],
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
             ],
             "time": "2020-05-12T16:47:27+00:00"
         },
@@ -11619,20 +11246,6 @@
                 "portable",
                 "shim"
             ],
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-12T16:14:59+00:00"
         },
         {
@@ -11690,20 +11303,6 @@
                 "interfaces",
                 "interoperability",
                 "standards"
-            ],
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
             ],
             "time": "2020-05-20T17:43:50+00:00"
         },
@@ -11776,20 +11375,6 @@
                 "utf-8",
                 "utf8"
             ],
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-20T17:43:50+00:00"
         },
         {
@@ -11853,20 +11438,6 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
             "time": "2020-05-20T17:43:50+00:00"
         },
         {
@@ -12076,6 +11647,5 @@
     "platform": {
         "php": "^7.4.0"
     },
-    "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "platform-dev": []
 }
