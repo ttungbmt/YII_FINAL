@@ -35,7 +35,7 @@ class PhieuGs extends App
             [['pt_nguyco_id'], 'default', 'value' => null],
             [['pt_nguyco_id', 'vc_nc', 'vc_lq', 'dexuat_xp', 'xuphat'], 'integer'],
             [[ 'ngay_gs', 'nguoi_gs', 'mucdich_gs'], 'string', 'max' => 255],
-            [['ngay_gs', 'nguoi_gs', 'vc_nc', 'vc_lq', 'mucdich_gs'], 'required'],
+            [['ngay_gs', 'nguoi_gs', 'vc_nc', 'vc_lq', 'mucdich_gs', 'dexuat_xp'], 'required'],
             [['vc_nc', 'vc_lq'], 'default', 'value' => null],
             [['vc_nc', 'vc_lq'], 'validateVatchua'],
             [['ngayxuphat'], 'date', 'format' => 'php:d/m/Y'],
@@ -45,6 +45,7 @@ class PhieuGs extends App
             [['ngayxuphat'], 'required', 'when' => function ($model) {
                 return $model->xuphat == '1';
             }],
+            ['ngay_gs', 'dateCompare', 'compareValue' => date('d/m/Y'), 'format' => 'd/m/Y', 'operator' => '<=']
         ];
     }
 

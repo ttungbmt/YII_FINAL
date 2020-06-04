@@ -13,7 +13,12 @@ if (!function_exists('opt')) {
 
 if (!function_exists('dateToDb')) {
     function dateToDb($date) {
-        return Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d');
+        try {
+            return Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d');
+        } catch (Exception $e){
+            return $date;
+        }
+
     }
 }
 

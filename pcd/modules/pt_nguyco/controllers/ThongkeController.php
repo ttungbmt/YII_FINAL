@@ -92,9 +92,6 @@ class ThongkeController extends BackendController
                 if ($model->maphuong)  $q2->andFilterWhere(['maphuong' => $model->maphuong]);
             }
 
-//            dd($q2->createCommand()->getRawSql());
-
-
             $data0 = collect($q2->all())->map(function ($i) {
                 return array_merge($i, [
                     'luot_gs' => is_string($i['luot_gs']) ? (float)$i['luot_gs'] : $i['luot_gs']

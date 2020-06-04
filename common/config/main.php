@@ -126,10 +126,10 @@ $config = [
                 'app*' => [
                     'class'    => 'yii\i18n\PhpMessageSource',
                     'basePath' => '@common/messages',
-//                    'fileMap' => [
-//                        'app' => 'app.php',
-//                        'app/error' => 'error.php',
-//                    ],
+                ],
+                'yii*' => [
+                    'class'    => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@common/messages',
                 ],
                 'noty' => [
                     'class'    => 'yii\i18n\PhpMessageSource',

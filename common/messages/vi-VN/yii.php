@@ -23,6 +23,14 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute} không được bằng "{compareValueOrAttribute}".',
+    '{attribute} must be less than "{compareValueOrAttribute}".' => '{attribute} phải nhỏ hơn "{compareValueOrAttribute}".',
+    '{attribute} must be less than or equal to "{compareValueOrAttribute}".' => '{attribute} phải nhỏ hơn hoặc bằng "{compareValueOrAttribute}".',
+    '{attribute} must be equal to "{compareValueOrAttribute}".' => '{attribute} phải bằng "{compareValueOrAttribute}".',
+    '{attribute} must be greater than "{compareValueOrAttribute}".' => '{attribute} phải lớn hơn "{compareValueOrAttribute}".',
+    '{attribute} must be greater than or equal to "{compareValueOrAttribute}".' => '{attribute} phải lớn hơn hoặc bằng "{compareValueOrAttribute}".',
+
+
     '(not set)' => '(không có)',
     'An internal server error occurred.' => 'Máy chủ đã gặp sự cố nội bộ.',
     'Are you sure you want to delete this item?' => 'Bạn có chắc là sẽ xóa mục này không?',

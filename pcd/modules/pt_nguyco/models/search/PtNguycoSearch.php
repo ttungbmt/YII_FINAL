@@ -32,14 +32,9 @@ class PtNguycoSearch extends PtNguyco
     public function init()
     {
         parent::init();
-        if(role('quan') && !$this->maquan){
-            $this->maquan = userInfo()->maquan;
-        }
 
-        if(role('phuong') && !$this->maphuong){
-            $this->maquan = userInfo()->maquan;
-            $this->maphuong = userInfo()->maphuong;
-        }
+        $role = RoleHc::init();
+        $role->initFormHc($this);
     }
 
 
@@ -85,6 +80,7 @@ class PtNguycoSearch extends PtNguyco
         $query->andFilterDate(['ngaycapnhat' => [$this->date_from, $this->date_to]]);
 
         $roles->filterHc($query);
+        $query->andWhere('ngayxoa < ngaycapnhat');
 
 //        dd($query->createCommand()->getRawSql());
 

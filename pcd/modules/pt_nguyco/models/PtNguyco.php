@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 /**
  * This is the model class for table "pt_nguyco".
  *
- * @property int    $gid         ID
+ * @property int $gid         ID
  * @property string $geom        Geom
  * @property string $maso        Mã ĐNC
  * @property string $ten_cs      Tên chủ đơn vị/ Người chịu trách nhiệm
@@ -37,7 +37,8 @@ use yii\helpers\ArrayHelper;
  * @property string $created_by  Người tạo
  * @property string $updated_by  Người cập nhật
  */
-class PtNguyco extends App {
+class PtNguyco extends App
+{
     public $timestamps = true;
     public $blameables = true;
     public $dates = [
@@ -49,23 +50,26 @@ class PtNguyco extends App {
     /**
      * {@inheritdoc}
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return 'pt_nguyco';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['loaihinh_id', 'ky_ck'], 'integer'],
             [['khupho', 'to_dp', 'ngaycapnhat', 'ngayxoa', 'created_at', 'updated_at', 'created_by', 'updated_by', 'diachi'], 'safe'],
             [['maphuong', 'maquan', 'khupho', 'to_dp', 'dienthoai', 'sonha', 'tenduong', 'nhom',], 'safe'],
             [['maso', 'ten_cs', 'loaihinh', 'tochuc_gs', 'ghichu', 'phancap_ql', 'thuchien',], 'string', 'max' => 255],
-            [['ngaycapnhat', 'ngayky_ck'], 'date', 'format' => 'php:d/m/Y'],
+            [['ngaycapnhat', 'ngayky_ck', 'ngayxoa'], 'date', 'format' => 'php:d/m/Y'],
             [['geom'], 'geom'],
             [['maphuong', 'maquan'], 'required'],
-//            [['lat', 'lng', 'ten_cs', 'tenduong','loaihinh_id', 'ngaycapnhat'], 'required'],
+            [['ngayxoa', 'ngaycapnhat', 'ngayky_ck'], 'dateCompare', 'compareValue' => date('d/m/Y'), 'format' => 'd/m/Y', 'operator' => '<='],
+            ['ngayxoa', 'dateCompare', 'compareAttribute' => 'ngaycapnhat', 'format' => 'd/m/Y', 'operator' => '>='],
             [['lat', 'lng'], 'safe'],
             [['ky_ck'], 'required', 'when' => function ($model) {
                 return $model->dm_loaihinh && $model->dm_loaihinh->nhom == '1';
@@ -77,7 +81,8 @@ class PtNguyco extends App {
         ];
     }
 
-    public function validateGiamsats() {
+    public function validateGiamsats()
+    {
         foreach ($this->giamsats as $gs) {
             if (!$gs->validate()) {
                 return;
@@ -89,82 +94,94 @@ class PtNguyco extends App {
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return [
-            'gid'         => 'ID',
-            'geom'        => 'Geom',
-            'maso'        => 'Mã ĐNC',
-            'ten_cs'      => 'Tên chủ đơn vị/ Người chịu trách nhiệm',
-            'sonha'       => 'Số nhà',
-            'tenduong'    => 'Đường',
-            'khupho'      => 'Khu phố/ ấp',
-            'to_dp'       => 'Tổ',
-            'maphuong'    => 'Phường xã',
-            'maquan'      => 'Quận huyện',
-            'nhom'        => 'Nhóm điểm nguy cơ',
-            'loaihinh'    => 'Tên loại hình',
-            'tochuc_gs'   => 'Cá nhân, tổ chức phụ trách giám sát',
+            'gid' => 'ID',
+            'geom' => 'Geom',
+            'maso' => 'Mã ĐNC',
+            'ten_cs' => 'Tên chủ đơn vị/ Người chịu trách nhiệm',
+            'sonha' => 'Số nhà',
+            'tenduong' => 'Đường',
+            'khupho' => 'Khu phố/ ấp',
+            'to_dp' => 'Tổ',
+            'maphuong' => 'Phường xã',
+            'maquan' => 'Quận huyện',
+            'nhom' => 'Nhóm điểm nguy cơ',
+            'loaihinh' => 'Tên loại hình',
+            'tochuc_gs' => 'Cá nhân, tổ chức phụ trách giám sát',
             'ngaycapnhat' => 'Ngày cập nhật',
-            'ngayxoa'     => 'Ngày xóa',
-            'ghichu'      => 'Ghi chú',
-            'phancap_ql'  => 'Phân cấp QL',
-            'thuchien'    => 'Thục hiện',
-            'created_at'  => 'Ngày tạo',
-            'updated_at'  => 'Ngày cập nhật',
-            'created_by'  => 'Người tạo',
-            'updated_by'  => 'Người cập nhật',
-            'dienthoai'   => 'Số điện thoại',
+            'ngayxoa' => 'Ngày xóa',
+            'ghichu' => 'Ghi chú',
+            'phancap_ql' => 'Phân cấp QL',
+            'thuchien' => 'Thục hiện',
+            'created_at' => 'Ngày tạo',
+            'updated_at' => 'Ngày cập nhật',
+            'created_by' => 'Người tạo',
+            'updated_by' => 'Người cập nhật',
+            'dienthoai' => 'Số điện thoại',
             'loaihinh_id' => 'Loại hình',
-            'ky_ck'       => 'Ký cam kết',
-            'ngayky_ck'   => 'Ngày ký cam kết',
+            'ky_ck' => 'Ký cam kết',
+            'ngayky_ck' => 'Ngày ký cam kết',
 
             'diachiText' => 'Địa chỉ',
         ];
     }
 
-    public function getGiamsats() {
+    public function getGiamsats()
+    {
         return $this->hasMany(PhieuGs::className(), ['pt_nguyco_id' => 'gid'])->orderBy('ngay_gs');
     }
 
-    public function getKehoachs() {
+    public function getKehoachs()
+    {
         return $this->hasMany(KehoachGs::className(), ['pt_nguyco_id' => 'gid'])->orderBy('year, month');
     }
 
-    public function getKhYear($y) {
+    public function getKhYear($y)
+    {
         return $this->hasOne(KehoachGs::className(), ['pt_nguyco_id' => 'gid'])->andFilterWhere(['year' => $y]);
     }
 
-    public function getGsYear($y) {
+    public function getGsYear($y)
+    {
         return $this->hasOne(VGiamsat::className(), ['pt_nguyco_id' => 'gid'])->andFilterWhere(['year' => $y]);
     }
 
 
-    public function getQuan() {
+    public function getQuan()
+    {
         return $this->hasOne(HcQuan::className(), ['maquan' => 'maquan']);
     }
 
-    public function getPhuong() {
+    public function getPhuong()
+    {
         return $this->hasOne(HcPhuong::className(), ['maphuong' => 'maphuong']);
     }
 
-    public function getDm_loaihinh() {
+    public function getDm_loaihinh()
+    {
         return $this->hasOne(DmLoaihinh::className(), ['id' => 'loaihinh_id']);
     }
 
-    public function getLoaihinh() {
+    public function getLoaihinh()
+    {
         return $this->hasOne(DmLoaihinh::className(), ['id' => 'loaihinh_id']);
     }
 
-    public function getDiachiText() {
+    public function getDiachiText()
+    {
         $addrs = collect([$this->sonha, $this->tenduong])->filter()->implode(' ');
         return trim($addrs);
     }
 
-    public function getDncText() {
+    public function getDncText()
+    {
         return Html::a($this->ten_cs, ['/admin/pt-nguyco/update', 'id' => $this->getId()], ['target' => '_blank']);
     }
 
-    public function loadDNC($data, &$giamsats) {
+    public function loadDNC($data, &$giamsats)
+    {
         $l1 = $this->load($data);
         $n = collect(data_get($data, 'PhieuGs'))->map(function ($i) use ($giamsats) {
             $id = data_get($i, 'id');
@@ -172,9 +189,11 @@ class PtNguyco extends App {
             return $d ? $d : new PhieuGs();
         })->all();
         $giamsats = $n;
-        if($this->lat && $this->lng){$this->geom = [$this->lng, $this->lat];}
+        if ($this->lat && $this->lng) {
+            $this->geom = [$this->lng, $this->lat];
+        }
 
-        if($this->loaihinh_id){
+        if ($this->loaihinh_id) {
             $this->nhom = data_get(DmLoaihinh::findOne($this->loaihinh_id), 'nhom');
         }
 
@@ -192,18 +211,19 @@ class PtNguyco extends App {
         return false;
     }
 
-    public function getPopupFields() {
+    public function getPopupFields()
+    {
         return [
             'gid',
             'ten_cs',
-            'diachi'    => function ($model) {
+            'diachi' => function ($model) {
                 if ($model->sonha || $model->tenduong) return collect([$model->sonha, $model->tenduong])->filter()->implode(' ');
                 return Html::tag('span', $model->diachi, ['class' => 'text-danger']);
             },
             'tenphuong' => function ($model) {
                 return data_get($model, 'phuong.tenphuong');
             },
-            'tenquan'   => function ($model) {
+            'tenquan' => function ($model) {
                 return data_get($model, 'quan.tenquan');
             },
             'khupho_to' => function ($model) {
@@ -213,18 +233,19 @@ class PtNguyco extends App {
             'maquan',
             'khupho',
             'to_dp',
-            'nhom' ,
+            'nhom',
             'loaihinh' => function ($model) {
                 return data_get($model->dm_loaihinh, 'ten_lh');
             },
             'ngaycapnhat',
-            'geometry'  => function ($model) {
+            'geometry' => function ($model) {
                 return $model->toGeometry();
             },
         ];
     }
 
-    public static function getPopupInfo($id) {
+    public static function getPopupInfo($id)
+    {
         $model = self::find()->andWhere(['gid' => $id])->one();
         return ArrayHelper::toArray($model, [
             self::className() => (new self())->getPopupFields()
