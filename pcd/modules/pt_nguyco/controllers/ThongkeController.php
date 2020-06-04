@@ -86,8 +86,11 @@ class ThongkeController extends BackendController
                 ->orderBy($field['order'])
             ;
 
-            if ($model->maquan)  $q2->andFilterWhere(['maquan' => $model->maquan]);
-            if ($model->maphuong)  $q2->andFilterWhere(['maphuong' => $model->maphuong]);
+            if($model->loai_tk == 'hanhchinh'){
+                if ($model->maquan)  $q2->andFilterWhere(['maquan' => $model->maquan]);
+                if ($model->maphuong)  $q2->andFilterWhere(['maphuong' => $model->maphuong]);
+            }
+
 
             $data0 = collect($q2->all())->map(function ($i) {
                 return array_merge($i, [

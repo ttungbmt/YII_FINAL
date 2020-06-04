@@ -4,7 +4,9 @@
         <th>STT</th>
         <th style="min-width: 160px">
             <span v-if="loai_tk=='loaihinh'">Loại hình ĐNC</span>
-            <span v-else>Đơn vị hành chính</span>
+            <span v-else>
+                Đơn vị hành chính (<span v-if="!maquan && !maphuong">Quận huyện</span><span v-if="maquan && !maphuong">Phường xã</span><span v-if="maquan && maphuong">Khu phố</span>)
+            </span>
         </th>
         <th>Số ĐNC đầu tháng</th>
         <th>Số ĐNC đã xóa</th>

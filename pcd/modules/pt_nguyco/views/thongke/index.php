@@ -62,12 +62,16 @@ $maphuong = userInfo()->ma_phuong;
                         'id' => 'drop-quan',
                         'options' => [
                             userInfo()->ma_quan => ['Selected' => true],
-                        ]
+                        ],
+                        'v-model' => 'maquan'
                     ]); ?>
                 </div>
                 <div class="col-md-6">
                     <?= $form->field($model, 'maphuong')->widget(DepDrop::className(), [
-                        'options' => ['prompt' => 'Chọn phường...'],
+                        'options' => [
+                            'prompt' => 'Chọn phường...',
+                            'v-model' => 'maphuong'
+                        ],
                         'pluginOptions' => [
                             'depends' => ['drop-quan'],
                             'url' => url(['/api/dm/phuong?role=true']),
@@ -122,6 +126,8 @@ $maphuong = userInfo()->ma_phuong;
             data: {
                 formId: 'formTK',
                 loai_tk: '<?=$model->loai_tk?>',
+                maquan: '<?=$model->maquan?>',
+                maphuong: '<?=$model->maphuong?>',
                 year: '',
                 list_url: {
                     loaihinh: '/pt_nguyco/thongke/loaihinh',
