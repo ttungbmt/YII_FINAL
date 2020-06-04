@@ -8,6 +8,7 @@ use kartik\depdrop\DepDrop;
 $model->year = $model->year ? $model->year : date('Y');
 $dm_loaitk = [
     'loaihinh' => 'Loại hình',
+    'hanhchinh' => 'Hành chính',
     'xuphat' => 'Xử phạt',
 ];
 $maquan = userInfo()->ma_quan;
@@ -34,7 +35,7 @@ $maphuong = userInfo()->ma_phuong;
                 <div class="col-md-6">
                     <?= $form->field($model, 'loai_tk')->dropDownList($dm_loaitk, ['v-model' => 'loai_tk']); ?>
                 </div>
-                <div class="col-md-6" v-show="loai_tk=='loaihinh'">
+                <div class="col-md-6" v-show="loai_tk!=='xuphat'">
                     <?= $form->field($model, 'month')->widget(\kartik\widgets\DatePicker::className(), [
                         'pluginOptions' => [
                             'autoclose' => true,
@@ -97,7 +98,7 @@ $maphuong = userInfo()->ma_phuong;
             </div>
             <div class="table-responsive" v-if="shownResp">
 
-                <div v-if="loai_tk=='loaihinh'">
+                <div v-if="loai_tk!='xuphat'">
                     <?= $this->render('_loaihinh') ?>
                 </div>
                 <div v-if="loai_tk=='xuphat'">
@@ -124,6 +125,7 @@ $maphuong = userInfo()->ma_phuong;
                 year: '',
                 list_url: {
                     loaihinh: '/pt_nguyco/thongke/loaihinh',
+                    hanhchinh: '/pt_nguyco/thongke/loaihinh',
                     xuphat: '/pt_nguyco/thongke/xuphat'
                 },
                 chartData: {

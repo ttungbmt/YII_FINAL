@@ -25,9 +25,25 @@ class ThongkeController extends BackendController
             $month = $model->month;
             $date = Carbon::createFromFormat('m/Y', $month)->setDay(1)->format('Y-m-d');
 
+            $field = [];
+            if($model->loai_tk == 'hanhchinh'){
+                if($model->maquan){
+                    if($model->maphuong){
+                        $field = ['table' => 'dm_khupho', 'name' => 'khupho', 'code' => 'khupho', 'key' => 'khupho', 'order' => 'khupho'];
+
+                    } else {
+                        $field = ['table' => 'hc_phuong', 'name' => 'tenphuong', 'code' => 'maphuong', 'key' => 'maphuong', 'order' => 'order'];
+                    }
+                } else {
+                    $field = ['table' => 'hc_quan', 'name' => 'tenquan', 'code' => 'maquan', 'key' => 'maquan', 'order' => 'order'];
+                }
+            } else {
+                $field = ['table' => 'dm_loaihinh', 'name' => 'ten_lh', 'code' => 'loaihinh_id', 'key' => 'id', 'order' => 'id'];
+            }
+
             $q0 = (new Query())->select([
                 'pt.gid',
-                'pt.loaihinh_id',
+                'code' => "pt.{$field['code']}",
                 'ngayxoa',
                 'ngaycapnhat',
                 'gs' => new Expression("MAX(CASE WHEN TO_CHAR(ngay_gs, 'MM/YYYY') = '{$month}' THEN 1 END)"),
@@ -41,18 +57,13 @@ class ThongkeController extends BackendController
                 ->groupBy(new Expression('1,2,3,4'))
                 ->orderBy(new Expression('1'));
 
-            if ($model->maphuong) {
-                $q0->andFilterWhere(['maphuong' => $model->maphuong]);
-            }
-
-            if ($model->maquan) {
-                $q0->andFilterWhere(['maquan' => $model->maquan]);
-            }
-
+            if ($model->maphuong)  $q0->andFilterWhere(['maphuong' => $model->maphuong]);
+            if ($model->maquan) $q0->andFilterWhere(['maquan' => $model->maquan]);
 
             $e_moi = "COUNT(CASE WHEN TO_CHAR(ngaycapnhat, 'MM/YYYY') = '{$month}' THEN 1 END)";
+
             $q1 = (new Query())->select([
-                'loaihinh_id',
+                'code',
                 'dauthang' => new Expression("(COUNT(*) - {$e_moi} - COUNT(CASE WHEN ngayxoa < '{$date}' THEN 1 END))"),
                 'daxoa' => new Expression("COUNT(CASE WHEN TO_CHAR(ngayxoa, 'MM/YYYY') = '{$month}' THEN 1 END)"),
                 'moi' => new Expression($e_moi),
@@ -63,42 +74,48 @@ class ThongkeController extends BackendController
                 'xp' => new Expression("SUM(xp)"),
             ])
                 ->from(['pgs' => $q0])
-                ->groupBy('loaihinh_id');
+                ->groupBy('code');
 
             $q2 = (new Query())->select([
-                'id',
-                'ten_lh',
+                $field['key'],
+                'name' => $field['name'],
                 'dnc_gs.*',
             ])
-                ->from(['lh' => 'dm_loaihinh'])
-                ->leftJoin(['dnc_gs' => $q1], 'dnc_gs.loaihinh_id = lh.id')
-                ->orderBy('id')//                ->andWhere(['NOT IN', 'id', [20, 21, 22]])
+                ->from(['tb' => $field['table']])
+                ->leftJoin(['dnc_gs' => $q1], "dnc_gs.code = tb.{$field['key']}")
+                ->orderBy($field['order'])
             ;
 
+            if ($model->maquan)  $q2->andFilterWhere(['maquan' => $model->maquan]);
+            if ($model->maphuong)  $q2->andFilterWhere(['maphuong' => $model->maphuong]);
 
             $data0 = collect($q2->all())->map(function ($i) {
                 return array_merge($i, [
                     'luot_gs' => is_string($i['luot_gs']) ? (float)$i['luot_gs'] : $i['luot_gs']
                 ]);
             });
+            $data_e = $data0;
 
-            $data1 = $data0->whereNotIn('id', [20, 21, 22]);
-            $data2 = $data0->whereIn('id', [20, 21, 22]);
-            $data3 = collect([
-                'ten_lh' => 'Khác',
-                'dauthang' => $data2->sum('dauthang'),
-                'daxoa' => $data2->sum('daxoa'),
-                'moi' => $data2->sum('moi'),
-                'gs' => $data2->sum('gs'),
-                'luot_gs' => $data2->sum('luot_gs'),
-                'lq' => $data2->sum('lq'),
-                'dx_xp' => $data2->sum('dx_xp'),
-                'xp' => $data2->sum('xp'),
-            ]);
+            if($model->loai_tk == 'loaihinh'){
+                $data1 = $data0->whereNotIn('id', [20, 21, 22]);
+                $data2 = $data0->whereIn('id', [20, 21, 22]);
+                $data3 = collect([
+                    'name' => 'Khác',
+                    'dauthang' => $data2->sum('dauthang'),
+                    'daxoa' => $data2->sum('daxoa'),
+                    'moi' => $data2->sum('moi'),
+                    'gs' => $data2->sum('gs'),
+                    'luot_gs' => $data2->sum('luot_gs'),
+                    'lq' => $data2->sum('lq'),
+                    'dx_xp' => $data2->sum('dx_xp'),
+                    'xp' => $data2->sum('xp'),
+                ]);
+                $data_e = $data1->push($data3)->all();
+            }
 
 
             return $this->asJson([
-                'data' => $data1->push($data3)->all()
+                'data' => $data_e
             ]);
         }
 

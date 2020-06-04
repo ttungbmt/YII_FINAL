@@ -2,7 +2,10 @@
     <thead>
     <tr>
         <th>STT</th>
-        <th>Loại hình ĐNC</th>
+        <th style="min-width: 160px">
+            <span v-if="loai_tk=='loaihinh'">Loại hình ĐNC</span>
+            <span v-else>Đơn vị hành chính</span>
+        </th>
         <th>Số ĐNC đầu tháng</th>
         <th>Số ĐNC đã xóa</th>
         <th>Số ĐNC mới phát sinh</th>
@@ -17,7 +20,7 @@
     <tbody>
     <tr v-for="(v, k) in resp">
         <td>{{k+1}}</td>
-        <td>{{v.ten_lh}}</td>
+        <td>{{v.name}}</td>
         <td>{{v.dauthang | number}}</td>
         <td>{{v.daxoa | number}}</td>
         <td>{{v.moi | number}}</td>
