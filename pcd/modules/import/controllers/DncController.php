@@ -64,8 +64,8 @@ class DncController extends BackendController {
             $transaction = $connection->beginTransaction();
             try {
                 $this->saveModels($models, $data, $connection);
-                $id = PtNguyco::find()->select(['gid'=>'MAX(gid)'])->one()->gid;
-                $connection->createCommand("UPDATE pt_nguyco SET geom = ST_SetSRID(ST_MakePoint(lng::float, lat::float), 4326) WHERE gid > {$id}")->execute();
+//                $id = PtNguyco::find()->select(['gid'=>'MAX(gid)'])->one()->gid;
+//                $connection->createCommand("UPDATE pt_nguyco SET geom = ST_SetSRID(ST_MakePoint(lng::float, lat::float), 4326) WHERE gid > {$id}")->execute();
                 $transaction->commit();
                 return true;
             } catch (\Exception $e) {

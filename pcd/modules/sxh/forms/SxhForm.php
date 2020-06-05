@@ -7,14 +7,21 @@ use common\forms\MyForm;
 use common\models\User;
 use common\modules\auth\models\UserInfo;
 use common\modules\notifications\models\Notification;
+use Illuminate\Support\Arr;
 use nepstor\validators\DateTimeCompareValidator;
 use pcd\models\CabenhSxh;
 use pcd\models\Chuyenca;
 use pcd\models\DieutraSxh;
+use pcd\models\HcPhuong;
+use pcd\models\HcQuan;
 use pcd\models\XacminhCb;
 use pcd\notifications\ChuyencaNoty;
+use ttungbmt\db\Query;
+use ttungbmt\leaflet\types\Point;
 use yii\base\Arrayable;
+use yii\db\Expression;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 
 class SxhForm extends MyForm
 {
@@ -27,16 +34,31 @@ class SxhForm extends MyForm
     {
         $xacminh = $this->{$attribute};
 
+
         if (is_array($xacminh)) {
             foreach ($xacminh as $k => $v) {
                 $index = $k + 1;
                 $i = optional((object)$v);
+
 
                 if (!$i->tinh && !($index % 2 == 0 && $i->is_diachi == 0 || is_null($i->is_diachi))) {
                     $this->addError("xacminh.{$k}.tinh", "Tỉnh ($index) buộc nhập");
                 }
 
                 if ($i->tinh === 'HCM' && (($i->is_diachi == 1 && $index % 2 == 0) || $index % 2 != 0)) {
+                    if ($index % 2 != 0) {
+                        if ($i->is_diachi == 1) {
+                            if (!$i->khupho) $this->addError("xacminh.{$k}.khupho", "Khu phố ($index) bắt buộc nhập");
+                            if (!$i->to_dp) $this->addError("xacminh.{$k}.to_dp", "Tổ dân phố ({$index}) bắt buộc nhập");
+                        }
+
+                        if((count($xacminh)-1) == $index){
+                            if (role('phuong') && $i->px != userInfo()->maphuong) $this->addError("xacminh.{$k}.px", "Phường xã ($index) này không được chọn");
+                            if (role('quan') && $i->px != userInfo()->maquan) $this->addError("xacminh.{$k}.quan", "Phường xã ($index) này không được chọn");
+                        }
+
+                    }
+
 //                    if($index % 2 != 0){
 //                        // Không bắt buộc nhập tổ khu phố cho px2
 //                        if (!$i->khupho) $this->addError("xacminh.{$k}.khupho", "Khu phố ($index) bắt buộc nhập");
@@ -57,6 +79,15 @@ class SxhForm extends MyForm
             $this->addError('xacminh.0.is_benhnhan', 'Bệnh nhân (1) không được bỏ trống');
             $this->addError('xacminh.0.is_diachi', 'Địa chỉ (1) không được bỏ trống');
         }
+
+        if($this->id){
+            $chca = Chuyenca::find()->andWhere(['cabenh_id' => $this->id])->orderBy(['id' => SORT_DESC])->one();
+            $is_chuyentiep = data_get($chca, 'is_chuyentiep');
+            if( request('status.is_chuyenca') && !$is_chuyentiep){
+                $lastIndex = count($xacminh)-1;
+                $this->addError("xacminh.{$lastIndex}.px", "Ca bệnh trả về không được phép tiếp tục chuyển ca");
+            }
+        }
     }
 
     public function rules()
@@ -73,8 +104,8 @@ class SxhForm extends MyForm
 
             [['ngaybaocao', 'hoten', 'ngaynhanthongbao', 'ngaydieutra', 'ngaybaocao', 'phai', 'ngaydieutra', 'nguoidieutra'], 'required', 'on' => ['xacminh']],
             [['sonha', 'duong', 'to_dp', 'khupho', 'px', 'qh', 'tinh', 'tinh_dc_khac'], 'safe'],
-//            [['lat', 'lng'], 'inBound', 'on' => ['geom']],
             [['lat', 'lng'], 'number'],
+            [['geom'], 'geom', 'geoprocessing' => [$this, 'validateGeom']],
             [['songuoicutru', 'cutruduoi15', 'tuoi', 'bi', 'ci', 'gdsonguoisxh', 'gdso15t', 'gdthuocsxhsonguoi', 'gdthuocsxh15t', 'odichcu_xuly'], 'integer', 'min' => 0, 'max' => 5000, 'on' => ['dieutra']],
             // Ngày
             [['ngaybaocao', 'ngaysinh', 'ngaynhanthongbao', 'ngaydieutra', 'ngaymacbenh', 'ngaynhapvien', 'ngayxuatvien'], DateTimeCompareValidator::className(), 'compareValue' => date('d/m/Y'), 'operator' => '<=', 'format' => 'd/m/Y', 'jsFormat' => 'DD/MM/YYYY', 'skipOnEmpty' => true],
@@ -186,19 +217,55 @@ class SxhForm extends MyForm
         ];
     }
 
+    public function validateGeom()
+    {
+        $geojson = ['type' => 'Point', 'coordinates' => $this->geom];
+        $e1 = "ST_SetSRID(ST_GeomFromGeoJSON('" . Json::encode($geojson) . "'), 4326)";
+        $bool = true;
+        $message = 'Tọa độ không hợp lệ';
+
+        $e2 = function ($field) {
+            return "SELECT ST_Union(geom) FROM {$field['table']} WHERE ST_Intersects(geom, (SELECT geom FROM {$field['table']} WHERE {$field['key']} = '{$field['value']}'))";
+        };
+
+        if (role('phuong')) {
+            $field = ['table' => HcPhuong::tableName(), 'key' => 'maphuong', 'value' => userInfo()->maphuong];
+            $bool = Arr::first((new Query())->select(new Expression("ST_Intersects( $e1, (" . $e2($field) . ")) bool"))->one());
+            $message = 'Tọa độ không nằm trong phạm vi cập nhật phường xã của bạn';
+        }
+
+        if (role('quan')) {
+            $field = ['table' => HcQuan::tableName(), 'key' => 'maquan', 'value' => userInfo()->maquan];
+            $bool = Arr::first((new Query())->select(new Expression("ST_Intersects( $e1, (" . $e2($field) . ")) bool"))->one());
+            $message = 'Tọa độ không nằm trong phạm vi cập nhật quận huyện của bạn';
+        }
+
+        if (!$bool) {
+            $this->addError('geom', $message);
+            return false;
+        }
+
+    }
+
     protected function loadDcCuoi($formData)
     {
         $lastXm = optional((object)(last($this->xacminh)));
+        $count = count($this->xacminh);
+
+        if($lastXm->is_diachi == 0 && $count > 1 && $count%2 == 0) {
+            $lastXm = optional((object)($this->xacminh[$count-2]));
+        }
 
         $this->to_dp = $lastXm->to_dp;
         $this->khupho = $lastXm->khupho;
         $this->sonha = $lastXm->sonha;
         $this->duong = $lastXm->duong;
         $this->px = $lastXm->px;
-        $this->px = $lastXm->px;
         $this->qh = $lastXm->qh;
         $this->tinh = $lastXm->tinh;
         $this->tinh_dc_khac = $lastXm->tinh_dc_khac;
+        $this->diachi_cc_id = $lastXm->id;
+
     }
 
     public function loadForm($id)
@@ -250,6 +317,7 @@ class SxhForm extends MyForm
         $is_dieutra = request('status.is_dieutra');
         $is_chuyenca = request('status.is_chuyenca');
         $cb = new CabenhSxh();
+        $this->id = $id;
 
         $this->scenario = self::SCENARIO_XACMINH;
         if ($id) {
@@ -263,6 +331,10 @@ class SxhForm extends MyForm
         $this->load($formData, '');
         $this->updateXacminh($cb, $formData);
         $this->loadDcCuoi($formData);
+        if ($this->lat && $this->lng) {
+            $this->geom = [$this->lng, $this->lat];
+        }
+
         $this->validate();
 
         $errors = $this->getErrors();
@@ -296,13 +368,10 @@ class SxhForm extends MyForm
             $this->loaidieutra = $is_chuyenca ? 1 : 3;
             return true;
         }
-
-
     }
 
     public function saveForm($id, $data)
     {
-
         if ($data->get('errors')) return false;
         $is_chuyenca = request('status.is_chuyenca');
 
@@ -314,13 +383,13 @@ class SxhForm extends MyForm
 //        is_nghingo
 
         // Lock phân quyền
-
-
         $cb = $id ? (CabenhSxh::findOne($id) ? CabenhSxh::findOne($id) : new CabenhSxh()) : new CabenhSxh();
         $dt = $cb->dieutraSxh ? $cb->dieutraSxh : new DieutraSxh();
         $cb->attributes = $this->toArray();
         $cb->maquan = $this->qh;
         $cb->maphuong = $this->px;
+        $cb->tenquan = data_get(HcQuan::findOne(['maquan' => $this->qh]), 'tenquan');
+        $cb->tenphuong = data_get(HcPhuong::findOne(['maphuong' => $this->px]), 'tenphuong');
         $dt->attributes = $this->toArray();
         if ($this->lat && $this->lng) {
             $cb->geom = [$this->lng, $this->lat];
@@ -340,6 +409,9 @@ class SxhForm extends MyForm
         if ($is_chuyenca) $this->doChuyenca($cb, $dt, $data);
         $cb->link('dieutraSxh', $dt);
         $cb->syncOne('xacminhCbs', $this->xacminh);
+
+        $this->id = $cb->id;
+        return true;
     }
 
     protected function doChuyenca($cb, $dt, $data)
@@ -450,9 +522,15 @@ class SxhForm extends MyForm
                         return true;
                     }
 
-                    return false;
+                    $px = data_get($xacminh, '0.px');
+                    return $px ? !($px == $maphuong) : false;
                 };
                 $lastIndex = count($xacminh) - 1;
+
+                if(count($xacminh) > 2 && $index == $lastIndex - 1){
+                    return false;
+                }
+
                 if ($index == $lastIndex) {
                     $preLastXm = $xacminh[$index - 1];
                     $lastXm = $model;

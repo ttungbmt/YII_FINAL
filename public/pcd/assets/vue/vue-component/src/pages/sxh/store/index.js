@@ -24,6 +24,7 @@ const store = new Vuex.Store({
     },
     getters: {
         loai_xm_cb({xacminh, dm, form}){
+
             let val = xacminh.items,
                 danhmuc = dm.xacminh_cb,
                 lastXm = last(val),

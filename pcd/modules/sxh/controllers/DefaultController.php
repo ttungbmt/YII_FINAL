@@ -50,10 +50,12 @@ class DefaultController extends AppController {
         $data = collect(['errors' => [], 'warnings' => []]);
         $model->validateForm($id, $data);
 
+        $is_chuyenca = request('status.is_chuyenca');
         $is_save = $model->saveForm($id, $data);
 
         return $this->asJson([
             'is_save'  => $is_save,
+            'redirect_url' => ((!$id || $is_chuyenca) && $is_save) ? url(['update', 'id' => $model->id]) : null,
             'model'    => $model->toArray(),
             'errors'   => $data->get('errors'),
             'warnings' => $data->get('warnings'),

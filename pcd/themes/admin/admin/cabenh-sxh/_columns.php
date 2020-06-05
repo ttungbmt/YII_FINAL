@@ -54,7 +54,7 @@ return [
         'updateOptions' => ['title' => lang('Update'), 'data-toggle' => 'tooltip'],
         'visibleButtons' => [
             'delete' => function ($model) {
-                return role('admin') || role('quan');
+                return role('admin|quan');
             },
             'view' => false,
             'download' => function ($model) {

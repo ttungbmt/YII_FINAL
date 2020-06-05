@@ -7,6 +7,7 @@ class DncImportForm extends DynamicImportForm {
     public $postUrl = '/import/dnc';
     public $dm_quan;
     public $dm_phuong;
+    public $geom;
 
     public function attributeLabels(){
         return [
@@ -35,6 +36,8 @@ class DncImportForm extends DynamicImportForm {
 //            [['khupho', 'to', 'khupho', 'to', 'diachi', 'sonha', 'tenduong', 'ten_cs', 'dienthoai', 'loaihinh'], 'filter', 'filter' => 'trim', 'skipOnArray' => true],
             [['maquan', 'maphuong', 'khupho', 'to', 'diachi', 'sonha', 'tenduong', 'ten_cs', 'dienthoai', 'loaihinh', 'nhom', 'lat', 'lng'], 'safe'],
             [['nhom'], 'integer'],
+            ['lat', 'match', 'pattern' => '/^(\+|-)?(?:90(?:(?:\.0{1,15})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,15})?))$/'],
+            ['lng', 'match', 'pattern' => '/^(\+|-)?(?:180(?:(?:\.0{1,15})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,15})?))$/'],
             [['lat', 'lng'], 'safe'],
             [['ngaycapnhat', 'ngayxoa'], 'date', 'format' => 'php:d/m/Y'],
 //            [['maphuong'], 'in', 'range' => Arr::pluck($this->dm_quan, 'tenquan')],
@@ -65,6 +68,10 @@ class DncImportForm extends DynamicImportForm {
             'khupho',
             'to_dp' => 'to',
             'diachi', 'sonha', 'tenduong', 'ten_cs', 'dienthoai', 'loaihinh', 'nhom', 'ngaycapnhat', 'ngayxoa', 'lat', 'lng',
+            'geom' => function($model){
+                if($model->lng && $model->lat) return [$model->lng, $model->lat];
+                return null;
+            }
         ]);
 
         return $data->collapse()->all();

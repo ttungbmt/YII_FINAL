@@ -7,6 +7,7 @@ trait SxhTrait {
     public $id;
     public $lat;
     public $lng;
+    public $geom;
     public $chuandoan_bd;
     public $chuandoan_bd_khac;
     public $me;
@@ -109,6 +110,7 @@ trait SxhTrait {
     public $loai_xm_cb;
     public $chuyenca;
     public $list_chuyenca;
+    public $diachi_cc_id;
 
     public $dates = [
         'ngaybaocao',
@@ -140,8 +142,15 @@ trait SxhTrait {
         $id = request('id');
         $maphuong = userInfo()->maphuong;
         $maquan = userInfo()->maquan;
+        $lastXm = opt(last($this->xacminh));
         $qh1 = opt(head($this->xacminh))->qh; $px1 = opt(head($this->xacminh))->px;
-        $qh2 = opt(last($this->xacminh))->qh; $px2 = opt(last($this->xacminh))->px;
+
+        if($lastXm->is_diachi == 0 && is_null($lastXm->is_benhnhan) && count($this->xacminh) > 1){
+            $prevLastXm = opt($this->xacminh[count($this->xacminh)-2]);
+            $qh2 = $prevLastXm->qh; $px2 = $prevLastXm->px;
+        } else {
+            $qh2 = opt($lastXm)->qh; $px2 = opt($lastXm)->px;
+        }
 
         $disabled_px1 = $id ? true : false;
         $disabled_px2 = $id ? true : false;

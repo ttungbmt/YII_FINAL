@@ -103,7 +103,6 @@
             },
             'form.cathuphat': function (val) {
                 if(val == 0) {
-                    console.log(1111)
                     this.setNullFormAttrs(['odichmoi', 'odichcu', 'xuly', 'xuly_ngay'])
                 }
             },
@@ -226,6 +225,11 @@
                     }
 
                     this.$store.commit('LOADED')
+
+                    if(resp.redirect_url) {
+                        // window.location.href = resp.redirect_url;
+                        window.open(resp.redirect_url, "_blank");
+                    }
                 }
                 catch (err) {
                     this.$store.commit('LOADED')

@@ -50,7 +50,9 @@ $errors = $models->map(function ($i){return $i->getErrors();})->filter();
                 <ul>
                     <?php foreach ($errors as $k => $e):?>
                         <?php $val = data_get($models, "{$k}.".head(array_keys($e))); ?>
-                        <li><?="Dòng ".($k+1).": ".collect($e)->map(function ($i){return head($i);})->flatten()->implode(', ')?> (<u style="background: #ff7043"><?=$val?></u>)</li>
+                        <?php dd($errors); ?>
+
+                        <li><?="Dòng ".($k+1).": ".collect($e)->map(function ($i){return head($i);})->flatten()->implode(', ')?> (<u style="background: #ff7043"><?=is_array($val) ? collect($val)->implode(', '): $val?></u>)</li>
                     <?php endforeach;?>
                 </ul>
             </div>

@@ -51,7 +51,7 @@ const module = {
                 tenduong: '',
                 to_kp: '',
                 khupho: '',
-                tinh: 'HCM',
+                tinh: '',
                 qh: null,
                 px: null,
                 tinh_dc_khac: null,

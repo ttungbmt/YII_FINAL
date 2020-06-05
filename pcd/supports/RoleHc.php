@@ -255,23 +255,23 @@ class PhuongAction extends QuanAction
     }
 
     public function filterChuyenca($loaica, &$query){
-        $ca = Chuyenca::find();
+        $ca = Chuyenca::find()->select(['gid' => 'cabenh_id']);
 
         if ($loaica == 2) {
             // Ca chuyển
-            $ca = $ca->where(['type' => 1, 'px_chuyen' => $this->maphuong])->pluck('cabenh_id')->unique()->all();
+            $ca = $ca->where(['is_chuyentiep' => 1, 'px_chuyen' => (string)$this->maphuong]);
             $query->andFilterWhere(['gid' => $ca]);
         } elseif ($loaica == 3) {
             // Ca nhận
-            $ca = $ca->where(['type' => 1, 'px_nhan' => $this->maphuong])->pluck('cabenh_id')->unique()->all();
+            $ca = $ca->where(['is_chuyentiep' => 1, 'px_nhan' => (string)$this->maphuong]);
             $query->andFilterWhere(['gid' => $ca]);
         } elseif ($loaica == 4) {
             // Ca trả về
-            $ca = $ca->where(['type' => 2, 'px_nhan' => $this->maphuong])->pluck('cabenh_id')->unique()->all();
+            $ca = $ca->where(['is_chuyentiep' => 0, 'px_nhan' => $this->maphuong]);
             $query->andFilterWhere(['gid' => $ca]);
         } elseif ($loaica == 1) {
-            // Ca trả về
-            $ca = $ca->where(['type' => 2, 'px_nhan' => $this->maphuong])->pluck('cabenh_id')->unique()->all();
+            // Ca TP
+            $ca = $ca->where(['type' => 2, 'px_nhan' => $this->maphuong]);
             $this->filterCabenhSxh($query);
             $query->andFilterWhere(['NOT IN', 'gid', $ca]);
         } else {

@@ -22,6 +22,7 @@ $dm = [
     'xacminh_cb'   => api('dm_xacminh_cb'),
     'benhvien'     => Benhvien::pluck('tenbenhvien', 'tenvt'),
     'tinh'         => [
+        '' => 'Chọn tỉnh...',
         'HCM'      => 'Hồ Chí Minh',
         'TinhKhac' => 'Tỉnh khác',
     ],

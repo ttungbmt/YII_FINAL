@@ -22,6 +22,8 @@ trait SxhAttrTrait {
             'ngaysinh',
             'tuoi',
             'vitri',
+            'sonha',
+            'duong',
             'to_dp',
             'khupho',
             'px',
@@ -107,6 +109,7 @@ trait SxhAttrTrait {
             'chuyenca',
             'list_chuyenca',
             'ngaymacbenh_nv',
+            'diachi_cc_id'
         ];
 
         return $fields;

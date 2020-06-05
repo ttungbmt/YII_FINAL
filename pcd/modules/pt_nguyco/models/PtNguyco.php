@@ -69,7 +69,7 @@ class PtNguyco extends App
             [['geom'], 'geom'],
             [['maphuong', 'maquan'], 'required'],
             [['ngayxoa', 'ngaycapnhat', 'ngayky_ck'], 'dateCompare', 'compareValue' => date('d/m/Y'), 'format' => 'd/m/Y', 'operator' => '<='],
-            ['ngayxoa', 'dateCompare', 'compareAttribute' => 'ngaycapnhat', 'format' => 'd/m/Y', 'operator' => '>='],
+//            ['ngayxoa', 'dateCompare', 'compareAttribute' => 'ngaycapnhat', 'format' => 'd/m/Y', 'operator' => '>='],
             [['lat', 'lng'], 'safe'],
             [['ky_ck'], 'required', 'when' => function ($model) {
                 return $model->dm_loaihinh && $model->dm_loaihinh->nhom == '1';

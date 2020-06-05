@@ -190,7 +190,6 @@ ttungbmt\yii\alpine\AlpineAsset::register($this);
                     $.get(`/pt_nguyco/default/view-gs?i=` + this.incre++, res => {
                         $('#resp-gs').append(res)
                         setTimeout(() => {
-
                             this.setFnRemove()
                         })
                     })

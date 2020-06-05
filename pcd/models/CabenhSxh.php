@@ -90,7 +90,7 @@ class CabenhSxh extends App
         return [
             [['loaidieutra', 'loaicabenh', 'maphuong', 'maquan', 'tuoi', 'nam_nv', 'thang_nv', 'tuan_nv', 'nam_bc', 'thang_bc', 'tuan_bc', 'px', 'qh', 'ht_dieutri'], 'default', 'value' => null],
             [['loai_xm_cb', 'chuandoan', 'loaidieutra', 'loaicabenh', 'maphuong', 'maquan', 'tuoi', 'nam_nv', 'thang_nv', 'tuan_nv', 'nam_bc', 'thang_bc', 'tuan_bc', 'px', 'qh', 'ht_dieutri', 'is_nghingo', 'xetnghiem', 'loai_xn', 'ketqua_xn'], 'integer'],
-            [['is_trave'], 'integer'],
+            [['is_trave', 'diachi_cc_id'], 'integer'],
             [['benhvien', 'dienthoai', 'chuandoan_khac'], 'string'],
             [['ngaybaocao', 'ngaynhanthongbao', 'ngaymacbenh', 'ngaynhapvien', 'ngayxuatvien', 'ngaysinh', 'ngaymacbenh_nv', 'ngaylaymau', 'geom'], 'safe'],
             [['chuandoan_bd', 'phai', 'nghenghiep', 'vitri', 'me', 'sonha', 'duong', 'to_dp', 'khupho'], 'string', 'max' => 255],
