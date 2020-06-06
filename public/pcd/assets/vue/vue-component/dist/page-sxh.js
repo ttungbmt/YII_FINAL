@@ -55427,8 +55427,7 @@
 	              this.$store.commit('LOADED');
 
 	              if (resp.redirect_url) {
-	                // window.location.href = resp.redirect_url;
-	                window.open(resp.redirect_url, "_blank");
+	                window.location.href = resp.redirect_url; // window.open(resp.redirect_url, "_blank");
 	              }
 
 	              _context.next = 20;
