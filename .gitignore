@@ -1,5 +1,6 @@
 # phpstorm project files
 .idea
+composer.lock
 
 # runtime
 gsnc/runtime
