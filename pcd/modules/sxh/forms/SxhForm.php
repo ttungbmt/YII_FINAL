@@ -83,7 +83,7 @@ class SxhForm extends MyForm
         if($this->id){
             $chca = Chuyenca::find()->andWhere(['cabenh_id' => $this->id])->orderBy(['id' => SORT_DESC])->one();
             $is_chuyentiep = data_get($chca, 'is_chuyentiep');
-            if( request('status.is_chuyenca') && !$is_chuyentiep){
+            if( request('status.is_chuyenca') && $is_chuyentiep === 0){
                 $lastIndex = count($xacminh)-1;
                 $this->addError("xacminh.{$lastIndex}.px", "Ca bệnh trả về không được phép tiếp tục chuyển ca");
             }
