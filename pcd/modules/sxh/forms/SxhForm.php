@@ -54,7 +54,7 @@ class SxhForm extends MyForm
 
                         if((count($xacminh)-1) == $index){
                             if (role('phuong') && $i->px != userInfo()->maphuong) $this->addError("xacminh.{$k}.px", "Phường xã ($index) này không được chọn");
-                            if (role('quan') && $i->px != userInfo()->maquan) $this->addError("xacminh.{$k}.quan", "Phường xã ($index) này không được chọn");
+                            if (role('quan') && $i->qh != userInfo()->maquan) $this->addError("xacminh.{$k}.quan", "Quận huyện ($index) này không được chọn");
                         }
 
                     }
