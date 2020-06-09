@@ -93,7 +93,6 @@ class PoiBenhvienImportController extends GsncController
                 return true;
             } catch (\Exception $e) {
                 $transaction->rollback();
-                dd($e);
             }
             return true;
         }

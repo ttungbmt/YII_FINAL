@@ -6,9 +6,6 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use gsnc\models\PoiBenhvien;
 
-/**
- * PoiBenhvienBenhvienSearch represents the model behind the search form of `gsnc\models\PoiBenhvien`.
- */
 class PoiBenhvienBenhvienSearch extends PoiBenhvien
 {
     /**
