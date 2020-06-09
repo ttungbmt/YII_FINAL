@@ -57,7 +57,7 @@ $li = function ($name, $url, $icon = '', $rolename = null){
                 <?=$li('Vị trí ô nhiễm', '/admin/vt-onhiem', 'icon-cube2')?>
                 <?=$li('Nước thải bệnh viện ', '/admin/benhvien', 'icon-droplet2')?>
                 <?=$li('Điểm Thu gom rác ', '/admin/poi-thugomrac', 'icon-trash')?>
-                <?=$li('Lập báo cáo ', '/admin/poi-thugomrac', 'icon-newspaper2')?>
+                <?=$li('Lập báo cáo ', '/admin/baocao-cln', 'icon-newspaper2')?>
                 <li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">Công cụ nhập Excel</div> <i class="icon-menu" title="Công cụ nhập Excel"></i></li>
                 <?=$li('Nhập Mẫu nước', '/admin/maunuoc-import', 'icon-database-add')?>
                 <?=$li('Nhập Vị trí Khảo sát', '/admin/vt-khaosat-import', 'icon-database-add')?>

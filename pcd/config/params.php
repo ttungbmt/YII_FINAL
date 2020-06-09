@@ -1,8 +1,9 @@
 <?php
 return [
-    'adminEmail'  => 'ttungbmt@gmail.com',
-    'author'      => 'Trương Thanh Tùng',
-    'keywords'    => 'Maps, HCMGIS',
+    'version' => '0.0.1',
+    'adminEmail' => 'ttungbmt@gmail.com',
+    'author' => 'Trương Thanh Tùng',
+    'keywords' => 'Maps, HCMGIS',
     'app_name' => 'Hệ thống quản lý bệnh truyền nhiễm',
     'app_name_login' => 'Hệ thống quản lý <br> bệnh truyền nhiễm',
     'description' => 'Hệ thống quản lý bệnh truyền nhiễm',

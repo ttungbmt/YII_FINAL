@@ -81,7 +81,7 @@ $appData = [
 <?php $this->beginBlock('scripts'); ?>
     <script src="/libs/bower/jquery-sticky/jquery.sticky.js"></script>
     <link rel="stylesheet" href="<?= asset('assets/vue/vue-component/dist/page-sxh.css') ?>">
-    <script src="<?= asset('assets/vue/vue-component/dist/page-sxh.js') ?>"></script>
+    <script src="<?= asset('assets/vue/vue-component/dist/page-sxh.js?v='.params('version')) ?>"></script>
     <script>
         window.appData = <?=json_encode($appData)?>;
     </script>
