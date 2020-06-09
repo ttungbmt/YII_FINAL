@@ -171,7 +171,9 @@ class SxhForm extends MyForm
             }, 'on' => ['dieutra']],
 
             // 4. HƯỚNG XỬ LÝ
-            [['bi', 'ci'], 'required', 'on' => ['dieutra']],
+            [['bi', 'ci'], 'required', 'when' => function () {
+                return $this->chuandoan == 1;
+            }, 'on' => ['dieutra']],
             [['cachidiem'], 'required', 'on' => ['dieutra']],
             [['dietlangquang', 'giamsattheodoi', 'xulyonho'], 'required', 'when' => function () {
                 return $this->cachidiem == 1;
@@ -523,7 +525,7 @@ class SxhForm extends MyForm
                     }
 
                     $px = data_get($xacminh, '0.px');
-                    return $px ? !($px == $maphuong) : false;
+                    return $px && role('phuong')? !($px == $maphuong) : false;
                 };
                 $lastIndex = count($xacminh) - 1;
 
