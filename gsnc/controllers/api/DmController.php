@@ -17,10 +17,28 @@ use gsnc\models\DmQcvn;
 use gsnc\models\DmOnhiem;
 use gsnc\models\DmLoaibv;
 use gsnc\models\DmQuan;
+use gsnc\models\DvCapnuoc;
 use gsnc\models\PoiBenhvien;
+use Illuminate\Support\Arr;
 
 class DmController extends ApiController
 {
+    public function actionDonviBc(){
+        return DmQuan::find()->orderBy('order')->pluck('tenquan', 'maquan')->put('THANH PHO', 'Trung tâm kiểm soát bệnh tật TP.HCM');
+    }
+
+    public function actionDonviCn($donvi_bc_id){
+        $data = DvCapnuoc::find()->andWhere(['ma_dv_ql' => $donvi_bc_id])->orderBy('ten_dv')->all();
+        return collect($data)->map(function ($i){
+
+            return [
+                'label' => $i['ten_dv'],
+                'value' => (string)$i['gid'],
+                'extra' => Arr::only($i->toArray(), ['loaimau_id'])
+            ];
+        });
+    }
+
     public function actionPhuong(){
         $value = app('request')->post('value');
         $maquan = data_get(app('request')->post('depdrop_parents'), '0');

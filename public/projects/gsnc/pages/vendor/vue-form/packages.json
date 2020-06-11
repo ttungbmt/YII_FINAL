@@ -1,0 +1,18 @@
+{
+  "name": "vue-form",
+  "version": "0.0.1",
+  "description": "Form for Vue.js",
+  "repository": "github:fergaldoyle/vue-form",
+  "main": "dist/vue-form.js",
+  "scripts": {
+
+  },
+  "author": "Truong Thanh Tung <ttungbmt@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+
+  },
+  "devDependencies": {
+
+  }
+}

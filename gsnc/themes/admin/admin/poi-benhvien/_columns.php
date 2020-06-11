@@ -2,10 +2,13 @@
 
 return [
     ['class' => 'yii\grid\SerialColumn'],
+    'ma_bv',
     'ten',
     'diachi',
     'sonha',
     'tenduong',
+    'lat',
+    'lng',
     [
         'class' => 'kartik\grid\ActionColumn',
         'template' => '{view} {update} {delete}',

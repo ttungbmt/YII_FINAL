@@ -7,9 +7,11 @@ use gsnc\models\App;
  * This is the model class for table "baocao_cln".
  *
  * @property int $id
+ * @property string $thoigian
  */
 class BaocaoCln extends App
 {
+    public $donvi_cns;
     /**
      * {@inheritdoc}
      */
@@ -24,7 +26,7 @@ class BaocaoCln extends App
     public function rules()
     {
         return [
-
+            [['thoigian', 'donvi_bc', 'data'], 'safe']
         ];
     }
 
@@ -35,6 +37,39 @@ class BaocaoCln extends App
     {
         return [
             'id' => 'ID',
+            'thoigian' => 'Thời gian',
         ];
+    }
+
+    public function formName()
+    {
+        return '';
+    }
+
+    public function toSchema(){
+        return [
+            'fields' => [
+                'name' => 'thoigian',
+                'label' => 'Báo cáo'
+            ]
+
+        ];
+    }
+
+    public function saveModel(){
+        $this->data = request()->only([
+            'donvi_cns',
+            'coso_cns',
+            'donvi_thnks',
+            'ho_gd',
+            'sokinhphi',
+            'kinhphi_nk',
+            'thuchien_bc',
+            'maunuoc_tn',
+            'maunuoc_dqc',
+            'kiennghi',
+        ]);
+
+        return $this->save();
     }
 }

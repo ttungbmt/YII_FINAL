@@ -1,5 +1,6 @@
 <?php
 
+use gsnc\models\DmQuan;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -10,57 +11,43 @@ $this->title = ($model->isNewRecord ? 'Thêm mới' : 'Cập nhật') . ' Loại
 
 $dm_thoigian = [
     '6 THANG' => '6 tháng',
-    '1 NAM' => '1 năm',
+    '1 NAM' => '1 năm'
 ];
+
+
 ?>
-
-<div class="dmloaibv-form">
-
+<div  class="dmloaibv-form">
     <?php $form = ActiveForm::begin(); ?>
     <div class="card">
-        <div class="card-body">
-            <div class="flex">
-                <div class="flex flex-col flex-auto items-center text-base">
-                    <div class="font-bold">SỞ Y TẾ TP. HỒ CHÍ MINH</div>
-                    <div class="font-bold">TRUNG TÂM KIỂM SOÁT BỆNH TẬT</div>
-                    <div>Số…………..</div>
-                </div>
-                <div class="flex flex-col flex-auto items-center text-base">
-                    <div class="font-bold">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-                    <div class="font-bold">Độc lập - Tự do - Hạnh phúc</div>
-                </div>
-            </div>
-            <div class="text-right">
-                TP. Hồ Chí Minh, ngày ….. tháng ….. năm 20……
-            </div>
-
-            <div class="text-center">
-                <div class="text-xl  font-bold">
-                    BÁO CÁO
-                </div>
-                <div class="text-base  font-bold">
-                    Tổng hợp kết quả kiểm tra chất lượng nước sạch
-                </div>
-                <div>
-                    <?=$form->field($model, 'thoigian')->radioList($dm_thoigian)->label('Báo cáo')?>
-                </div>
-            </div>
-
-            <div>
-                <div class="font-bold">A. TÌNH HÌNH CHUNG</div>
-
-            </div>
+        <div class="card-body" id="pageApp"  v-cloak>
+            <page v-bind="pageData"></page>
 
 
-
-
-            <?php if (!request()->isAjax): ?>
-                <div class="form-group">
-                    <?= Html::submitButton($model->isNewRecord ? lang('Create') : lang('Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-                </div>
-            <?php endif; ?>
         </div>
     </div>
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?php
+$this->beginBlock('scripts');
+$this->registerJsFile('/projects/gsnc/pages/dist/baocao-cln/main.js?v='.params('version'), ['depends' => [\common\assets\AppPluginAsset::className()]]);
+$this->registerJsVar('pageData', [
+    'cat' => [
+        'thoigian' => toInpOptions($dm_thoigian),
+        'yesno' => [1 => 'Có', 2 => 'Không'],
+        'yesno_qd' => [1 => 'Đẩy đủ theo quy định', 2 => 'Không đầy đủ theo quy định'],
+        'yesno_qd1' => [1 => 'Đúng quy định', 2 => 'Không đúng quy định'],
+        'tanggiam' => [1 => 'Tăng', 2 => 'Giảm'],
+        'donvi_bc' => toInpOptions(api('dm/donvi-bc')),
+        'donvi_cn' => api('dm/donvi-cn?donvi_bc_id='.$model->donvi_bc)
+    ],
+    'form' => $model->toArray(),
+    'schema' => $model->toSchema()
+])
+?>
+
+<?php $this->endBlock() ?>
+
+
+

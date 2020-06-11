@@ -8,7 +8,7 @@ pcd/runtime
 
 
 /vendor
-/node_modules
+node_modules/
 /public/assets
 # composer vendor dir
 

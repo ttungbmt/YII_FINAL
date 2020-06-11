@@ -15,7 +15,7 @@ class PoiBenhvienBenhvienSearch extends PoiBenhvien
     {
         return [
             [['gid', 'loaibv_id', 'status'], 'integer'],
-            [['ten', 'diachi', 'sonha', 'tenduong', 'maquan', 'maphuong', 'lat', 'lng', 'loaibv', 'dienthoai', 'website', 'lichlamviec', 'thamkhao', 'gioithieu', 'check', 'geom', 'created_at', 'updated_at', 'ngaylaymau', 'mamau'], 'safe'],
+            [['ma_bv', 'ten', 'diachi', 'sonha', 'tenduong', 'maquan', 'maphuong', 'lat', 'lng', 'loaibv', 'dienthoai', 'website', 'lichlamviec', 'thamkhao', 'gioithieu', 'check', 'geom', 'created_at', 'updated_at', 'ngaylaymau', 'mamau'], 'safe'],
         ];
     }
 
@@ -62,7 +62,10 @@ class PoiBenhvienBenhvienSearch extends PoiBenhvien
             'status' => $this->status,
         ]);
 
-        $query->andFilterWhere(['ilike', 'ten', $this->ten])
+
+        $query
+            ->andFilterWhere(['ilike', 'ma_bv', $this->ma_bv])
+            ->andFilterWhere(['ilike', 'ten', $this->ten])
             ->andFilterWhere(['ilike', 'diachi', $this->diachi])
             ->andFilterWhere(['ilike', 'sonha', $this->sonha])
             ->andFilterWhere(['ilike', 'tenduong', $this->tenduong])

@@ -101,6 +101,7 @@ class PoiBenhvien extends \common\models\MyModel
             'loaimau_id' => Yii::t('app', 'Loại mẫu'),
             'hl_xn' => Yii::t('app', 'Hl Xn'),
             'hl_mt' => Yii::t('app', 'Hl Mt'),
+            'ma_bv' => Yii::t('app', 'Mã bệnh viện'),
         ];
     }
 }

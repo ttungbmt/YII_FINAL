@@ -17,7 +17,7 @@ $this->title = 'Danh sách báo cáo';
             'columns' => $gridColumns = require(__DIR__ . '/_columns.php'),
             'toolbar' => [
                 ['content' =>
-                    Html::a('Thêm mới', ['create'], ['title' => 'Thêm mới loại bệnh viện', 'class' => 'btn btn-primary']) .
+                    Html::a('Thêm mới', ['create'], ['data-pjax' => 0, 'title' => 'Thêm mới loại bệnh viện', 'class' => 'btn btn-primary']) .
                     Html::a('<i class="icon-reload-alt"></i>', [''],
                         ['data-pjax' => 1, 'class' => 'btn btn-default', 'title' => lang('Reset Grid')]) .
                     '{toggleData}' .
@@ -26,7 +26,7 @@ $this->title = 'Danh sách báo cáo';
             ],
             'panel' => [
                 'type' => 'primary',
-                'heading' => ' Danh sách loại bệnh viện',
+                'heading' => ' Danh sách báo cáo',
             ]
 //
         ]); ?>

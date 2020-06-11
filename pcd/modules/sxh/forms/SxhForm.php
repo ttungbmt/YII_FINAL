@@ -40,7 +40,6 @@ class SxhForm extends MyForm
                 $index = $k + 1;
                 $i = optional((object)$v);
 
-
                 if (!$i->tinh && !($index % 2 == 0 && $i->is_diachi == 0 || is_null($i->is_diachi))) {
                     $this->addError("xacminh.{$k}.tinh", "Tỉnh ($index) buộc nhập");
                 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace gsnc\controllers\admin;
 
 use app\models\BaocaoCln;
@@ -11,27 +12,30 @@ use ttungbmt\actions\UpdateAction;
 
 class BaocaoClnController extends AppController
 {
-   public $modelClass = BaocaoCln::class;
+    public $enableCsrfValidation = false;
+    public $modelClass = BaocaoCln::class;
 
-   public function actions()
-   {
-       return array_merge(parent::actions(), [
-           'index' => [
-               'class' => IndexAction::class,
-               'modelClass' => BaocaoClnSearch::class
-           ],
-           'create' => [
-               'class' => CreateAction::class,
-               'modelClass' => $this->modelClass
-           ],
-           'update' => [
-               'class' => UpdateAction::class,
-               'modelClass' => $this->modelClass
-           ],
-           'delete' => [
-               'class' => DeleteAction::class,
-               'modelClass' => $this->modelClass
-           ]
-       ]);
-   }
+    public function actions()
+    {
+        return array_merge(parent::actions(), [
+            'index' => [
+                'class' => IndexAction::class,
+                'modelClass' => BaocaoClnSearch::class
+            ],
+            'create' => [
+                'class' => CreateAction::class,
+                'modelClass' => $this->modelClass,
+                'handler' => 'saveModel'
+            ],
+            'update' => [
+                'class' => UpdateAction::class,
+                'modelClass' => $this->modelClass,
+                'handler' => 'saveModel'
+            ],
+            'delete' => [
+                'class' => DeleteAction::class,
+                'modelClass' => $this->modelClass
+            ]
+        ]);
+    }
 }
