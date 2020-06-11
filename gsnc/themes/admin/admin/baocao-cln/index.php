@@ -1,10 +1,13 @@
 <?php
 
+use johnitvn\ajaxcrud\CrudAsset;
 use kartik\export\ExportMenu;
 use kartik\grid\GridView;
 use kartik\helpers\Html;
+use yii\bootstrap4\Modal;
 
 $this->title = 'Danh sách báo cáo';
+CrudAsset::register($this);
 ?>
 
 <div class="dmloaibv-index">
@@ -32,3 +35,9 @@ $this->title = 'Danh sách báo cáo';
         ]); ?>
     </div>
 </div>
+
+<?php Modal::begin([
+    "id"     => "ajaxCrudModal",
+    "footer" => "",// always need it for jquery plugin
+]) ?>
+<?php Modal::end(); ?>

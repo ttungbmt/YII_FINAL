@@ -2,6 +2,7 @@
 namespace app\models;
 
 use gsnc\models\App;
+use gsnc\models\DmQuan;
 
 /**
  * This is the model class for table "baocao_cln".
@@ -54,6 +55,10 @@ class BaocaoCln extends App
             ]
 
         ];
+    }
+
+    public function getDonviBc(){
+        return $this->hasOne(DmQuan::className(), ['maquan' => 'donvi_bc']);
     }
 
     public function saveModel(){

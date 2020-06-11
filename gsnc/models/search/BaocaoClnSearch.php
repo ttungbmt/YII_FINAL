@@ -39,7 +39,7 @@ class BaocaoClnSearch extends BaocaoCln
      */
     public function search($params)
     {
-        $query = $this::find();
+        $query = $this::find()->with(['donviBc']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -52,7 +52,6 @@ class BaocaoClnSearch extends BaocaoCln
             // $query->where('0=1');
             return $dataProvider;
         }
-
 
         return $dataProvider;
     }

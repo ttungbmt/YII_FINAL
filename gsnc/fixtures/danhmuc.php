@@ -1,5 +1,10 @@
 <?php
 
+$data['dm_thoigian'] = [
+    '6 THANG' => '6 tháng',
+    '1 NAM' => '1 năm'
+];
+
 $data['nav_links'] = [
     [
         'path' => '/maps',

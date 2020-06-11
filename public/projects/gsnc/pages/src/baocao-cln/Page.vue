@@ -1,9 +1,6 @@
 <template>
     <div>
         <vue-form @submit="onSubmit" name="form_bc">
-            <field-input type="b-text" v-model="form.title" label="Title"/>
-            <field-input type="b-text" v-model="form.message" label="Message"/>
-
             <div class="flex">
                 <div class="flex flex-col flex-auto items-center text-base">
                     <div class="font-bold">SỞ Y TẾ TP. HỒ CHÍ MINH</div>
@@ -423,12 +420,15 @@
         },
         methods: {
             onSubmit(values) {
-                let data = this.form
+                let data = this.form,
+                    id = this.form.id,
+                    url = '/admin/baocao-cln/' + (id ? `update?id=${id}` : 'create')
 
-                axios.post('/admin/baocao-cln/update?id=1', data, {
+                axios.post(url, data, {
                     headers: {'X-Requested-With': 'XMLHttpRequest'}
                 }).then(({data}) => {
                     alert('Đã lưu thành công')
+                    if(!id) window.location.href = '/admin/baocao-cln'
                 })
             },
             addItem(name){
