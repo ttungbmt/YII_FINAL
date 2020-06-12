@@ -1,6 +1,8 @@
 <?php
 
 
+use yii\bootstrap4\Html;
+
 return [
     [
         'class' => 'kartik\grid\SerialColumn',
@@ -26,6 +28,7 @@ return [
         'urlCreator' => function ($action, $model, $key, $index) {
             return url([$action, 'id' => $key]);
         },
+        'template' => '{view}{update}{delete}{download}',
         'viewOptions' => ['role' => 'modal-remote', 'title' => lang('View'), 'data-toggle' => 'tooltip'],
         'updateOptions' => ['data-pjax' => 0, 'title' => lang('Update'), 'data-toggle' => 'tooltip'],
         'deleteOptions' => ['role' => 'modal-remote', 'title' => lang('Delete'),
@@ -40,6 +43,11 @@ return [
                 return role('admin');
             },
             'view' => false,
+        ],
+        'buttons' => [
+            'download' => function ($url, $model, $key) {
+                return Html::a("<i class='icon-download4'></i>", ['/admin/baocao-cln/export-word', 'id' => $model->id], ['title' => 'Tải phiếu báo cáo', 'data-toggle' => 'tooltip', 'data-pjax' => 0, 'target' => '_blank']);
+            }
         ],
     ],
 ];   
