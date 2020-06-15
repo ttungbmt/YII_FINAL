@@ -162,9 +162,9 @@
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:120%; font-size:13pt; background-color:#ffffff">
     Tổng số HGĐ được cung cấp nước:
-    <span>……………</span>
+    <span><?=$if($m->tk_ho_gd_ccn, '………')?>/<?=$if($m->ho_gd, '………')?>.</span>
     <span>Chiếm tỷ lệ:</span>
-    <span>…….</span>
+    <span><?=$if($m->tk_tyle_ho_gd, '…….')?></span>
     <span>% (được tính bằng tổng số HGĐ được cung cấp nước sạch từ các đơn vị cấp nước (tổng số HGĐ toàn tỉnh)</span>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:120%; font-size:13pt; background-color:#ffffff">
@@ -181,7 +181,7 @@
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; line-height:120%; font-size:13pt; background-color:#ffffff">
     <span>- Số kinh phí được cấp cho công tác ngoại kiểm:</span>
-    <span>&#xa0;</span><span>..................................................</span>
+    <span>&#xa0;</span><span><?=$if(Yii::$app->formatter->asDecimal($m->sokinhphi), '..................................................')?></span>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:120%; font-size:13pt; background-color:#ffffff">
     <span>- Kinh phí ngoại kiểm so với năm trước</span>
@@ -189,7 +189,7 @@
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:120%; font-size:13pt; background-color:#ffffff">
     <span>Tăng</span>
     <span>&#xa0;</span>
-    <span>□</span>
+    <span><?=$checkbox($m->kinhphi_nk == 1)?></span>
     <span>&#xa0;</span>
     <span>&#xa0;</span>
     <span>&#xa0;</span>
@@ -199,7 +199,7 @@
     <span>&#xa0;</span>
     <span>Giảm</span>
     <span>&#xa0;</span>
-    <span>□</span>
+    <span><?=$checkbox($m->kinhphi_nk == 2)?></span>
     <span>&#xa0;</span>
     <span>&#xa0;</span>
     <span>&#xa0;</span>
@@ -208,7 +208,7 @@
     <span>&#xa0;</span>
     <span>Bằng</span>
     <span>&#xa0;</span>
-    <span>□</span>
+    <span><?=$checkbox($m->kinhphi_nk == 3)?></span>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:120%; font-size:13pt; background-color:#ffffff">
     <span>- Thực hiện báo cáo kết quả ngoại kiểm và công khai thông tin</span>
@@ -216,13 +216,13 @@
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:120%; font-size:13pt; background-color:#ffffff">
     <span>Đúng quy định</span>
     <span>&#xa0;</span>
-    <span>□</span>
+    <span><?=$checkbox($m->thuchien_bc == 1)?></span>
     <span>&#xa0;</span>
     <span>&#xa0;</span>
     <span>&#xa0;</span>
     <span>&#xa0;</span>
     <span>Không đúng quy định</span>
-    <span>□</span>
+    <span><?=$checkbox($m->thuchien_bc == 2)?></span>
 </p>
 <p style="line-height:108%; font-size:13pt">
     <br style="page-break-before:always; clear:both"/>
@@ -322,191 +322,78 @@
             </p>
         </td>
     </tr>
+    <?php foreach ($m->donvi_cns as $k => $i):?>
+    <?php $v = opt($i);?>
+
     <tr>
         <td style="width:4.42%; border-right:1pt solid #000000; border-left:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>1.</span>
+                <span><?=$k+1?>.</span>
             </p>
         </td>
         <td style="width:10.7%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
+                <span><?=$v->ten_dv?></span>
             </p>
         </td>
         <td style="width:11.18%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
+                <span><?=$v->soho?></span>
             </p>
         </td>
         <td style="width:0.06%; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
+                <span><?=$v->lap_hs?></span>
             </p>
         </td>
         <td style="width:13.8%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
+                <span></span>
             </p>
         </td>
         <td style="width:8.54%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
+                <span><?=$v->hs_daydu?></span>
             </p>
         </td>
         <td style="width:7%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
+                <span><?=$v->thieu_hs?></span>
             </p>
         </td>
         <td style="width:9.36%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
+                <span><?=$v->somau?></span>
             </p>
         </td>
         <td style="width:12.3%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
+                <span><?=$v->tanxuat?></span>
             </p>
         </td>
         <td style="width:10.62%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
+                <span><?=$v->chedo_bc?></span>
             </p>
         </td>
         <td colspan="2"
             style="border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
+                <span><?=$v->bienphap?></span>
             </p>
         </td>
     </tr>
-    <tr>
-        <td style="width:4.42%; border-right:1pt solid #000000; border-left:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>2.</span>
-            </p>
-        </td>
-        <td style="width:10.7%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:11.18%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:0.06%; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:13.8%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:8.54%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:7%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:9.36%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:12.3%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:10.62%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td colspan="2"
-            style="border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-    </tr>
-    <tr>
-        <td style="width:4.42%; border-right:1pt solid #000000; border-left:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>3.</span>
-            </p>
-        </td>
-        <td style="width:10.7%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:11.18%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:0.06%; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:13.8%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:8.54%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:7%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:9.36%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:12.3%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:10.62%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td colspan="2"
-            style="border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-    </tr>
+    <?php endforeach;?>
     <tr>
         <td colspan="2"
             style="border-right:1pt solid #000000; border-left:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <strong><span>Tổng cộng</span></strong><strong><span
-                    >&#xa0;</span></strong>
+                <strong><span>Tổng cộng</span></strong><strong><span>&#xa0;</span></strong>
             </p>
         </td>
         <td style="width:11.16%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:12pt">
-                <strong><span>&#xa0;</span></strong>
+                <strong><span><?=collect($m->donvi_cns)->sum('soho')?></span></strong>
             </p>
         </td>
         <td style="width:0.08%; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
@@ -580,62 +467,40 @@
     </tr>
 </table>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
-    <strong><span>2. Kết quả thử nghiệm nước nội ki</span></strong><strong><span
-        >ể</span></strong><strong><span
-        >m</span></strong>
+    <strong><span>Kết quả thử nghiệm nước nội kiểm</span></strong>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
-    <em><span>(Một mẫu nước đạ</span></em><em><span
-        >t</span></em><em><span
-        >&#xa0;</span></em><em><span
-        >qu</span></em><em><span>y</span></em><em><span
-        >&#xa0;</span></em><em><span
-        >chu</span></em><em><span
-        >ẩ</span></em><em><span>n là đạt tất cả các thông số theo quy <a
-                    id="trial14832" href="https://docconverter.pro/"
-                    title="Converted with Doc Converter Pro Online trial">trial</a> hiện hành </span></em><em><span
-        >)</span></em>
+    <em><span>(Một mẫu nước đạt quy chuẩn là đạt tất cả các thông số theo quy trial hiện hành)</span></em>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
-    <span>T</span><span>ổ</span><span
-    >ng số mẫu nước làm XN: </span><span
-    >&#xa0;</span><span
-    >……………..</span><span
-    >(m</span><span
-    >ẫ</span><span>u)</span>
+    <span>Tổng số mẫu nước làm XN: </span>
+    <span>&#xa0;</span>
+    <span><?=$if($m->maunuoc_tn, '……………..')?></span>
+    <span>(mẫu)</span>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
-    <span>Tổng số mẫu</span><span
-    >&#xa0;</span><span>đ</span><span
-    >ạt quy chuẩn:</span><span
-    >&#xa0;</span><span
-    >…………….</span><span>(mẫu).</span>
+    <span>Tổng số mẫu đạt quy chuẩn:</span>
+    <span>&#xa0;</span>
+    <span><?=$if($m->maunuoc_dqc, '……………..')?></span>
+    <span>(mẫu)</span>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
-    <span>Tỷ lệ mẫu đạt qu</span><span
-    >y</span><span>&#xa0;</span><span
-    >chuẩn:</span><span
-    >&#xa0;</span><span
-    >………………</span><span>%</span>
+    <span>Tỷ lệ mẫu đạt quy chuẩn:</span>
+    <span>&#xa0;</span>
+    <span><?=$if($m->tk_tyle_dqc, '……………..')?></span>
+    <span>%</span>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
-    <span>T</span><span>ổng s</span><span
-    >ố</span><span>&#xa0;</span><span
-    >mẫu không</span><span
-    >&#xa0;</span><span>đ</span><span
-    >ạt quy chuẩn là:</span><span
-    >&#xa0;</span><span
-    >………..</span><span
-    >(m</span><span>ẫ</span><span
-    >u)</span>
+    <span>Tổng số mẫu không đạt quy chuẩn là:</span>
+    <span>&#xa0;</span>
+    <span><?=$if($m->tk_mau_kdqd, '……………..')?></span>
+    <span>(mẫu)</span>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
-    <span>Tỷ lệ m</span><span>ẫ</span><span
-    >u kh</span><span>ô</span><span
-    >ng đạt quy chuẩn:</span><span
-    >&#xa0;</span><span
-    >………….</span><span
-    >%</span>
+    <span>Tỷ lệ mẫu không đạt quy chuẩn:</span>
+    <span>&#xa0;</span>
+    <span><?=$if($m->tk_tylemau_kdqd, '……………..')?></span>
+    <span>%</span>
 </p>
 <table cellspacing="0" cellpadding="0" style="width:116.16%; margin-bottom:0pt">
     <tr>
@@ -644,10 +509,7 @@
                 <strong><span>Thông số không đạt</span></strong>
             </p>
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <strong><span>Tên c</span></strong><strong><span
-                    >ơ</span></strong><strong><span
-                    >&#xa0;</span></strong><strong><span
-                    >sở cấp nước</span></strong>
+                <strong><span>Tên cơ sở cấp nước</span></strong>
             </p>
         </td>
         <td style="width:13.3%; border-top:1pt solid #000000; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
@@ -698,98 +560,20 @@
             </p>
         </td>
     </tr>
-    <tr>
-        <td style="width:48.54%; border-right:1pt solid #000000; border-left:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <strong><span>…</span></strong>
-            </p>
-        </td>
-        <td style="width:13.3%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:13.3%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:11.54%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:13.3%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:bottom; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-    </tr>
-    <tr>
-        <td style="width:48.54%; border-right:1pt solid #000000; border-left:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <strong><span>…</span></strong>
-            </p>
-        </td>
-        <td style="width:13.3%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:13.3%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:11.54%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:13.3%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-    </tr>
 </table>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
-    <strong><span>D. K</span></strong><strong><span
-        >Ế</span></strong><strong><span
-        >T QUẢ NGOẠI KI</span></strong><strong><span
-        >Ể</span></strong><strong><span
-        >M NƯỚC SẠCH CỦA C</span></strong><strong><span
-        >Ơ</span></strong><strong><span
-        >&#xa0;</span></strong><strong><span
-        >QUAN C</span></strong><strong><span
-        >Ó</span></strong><strong><span
-        >&#xa0;</span></strong><strong><span
-        >TH</span></strong><strong><span
-        >Ẩ</span></strong><strong><span
-        >M QUY</span></strong><strong><span
-        >Ề</span></strong><strong><span
-        >N (NẾU CÓ),</span></strong>
+    <strong><span>D. KẾT QUẢ NGOẠI KIỂM NƯỚC SẠCH CỦA CƠ QUAN CÓ THẨM QUYỀN (NẾU CÓ)</span></strong>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
-    <span>1.</span><span>&#xa0;</span><span
-    >Số đơn vị cấp nước được n</span><span
-    >g</span><span
-    >oại kiểm/ T</span><span
-    >ổ</span><span>n</span><span
-    >g</span><span>&#xa0;</span><span
-    >số đơn</span><span
-    >&#xa0;</span><span
-    >vị</span><span
-    >&#xa0;</span><span
-    >cấp nước:</span><span
-    >&#xa0;</span><span
-    >……….</span><span
-    >; Tỷ lệ: ....%</span>
+    <span>1.</span><span>&#xa0;</span>
+    <span>Số đơn vị cấp nước được ngoại kiểm/ Tổng số đơn vị cấp nước:</span>
+    <span>&#xa0;</span>
+    <span>……….</span>
+    <span>; Tỷ lệ: ....%</span>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
-    <span>2. Số l</span><span>ầ</span><span
-    >n ngoại kiểm/ Số đơn vị cấp nước được ngoại kiểm:</span><span
-    >&#xa0;</span><span>…………..</span>
+    <span>2. Số lần ngoại kiểm/ Số đơn vị cấp nước được ngoại kiểm:</span>
+    <span>&#xa0;</span><span>…………..</span>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
     <span>3. Liệt kê các đơn vị thực hiện ngoại kiểm</span>
@@ -825,87 +609,36 @@
             </p>
         </td>
     </tr>
+    <?php foreach ($m->donvi_thnks as $k => $dv):?>
+    <?php $v = opt($dv);?>
     <tr>
         <td style="width:5.58%; border-right:1pt solid #000000; border-left:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>1.</span>
+                <span><?=$k+1?>.</span>
             </p>
         </td>
         <td style="width:25.44%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
+                <span><?=$v->ten_dv?></span>
             </p>
         </td>
         <td style="width:8.44%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
+                <span><?=$v->solan?></span>
             </p>
         </td>
         <td style="width:42.26%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
+                <span><?=$v->noidung?></span>
             </p>
         </td>
         <td style="width:18.28%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
+                <span><?=$v->thunghiem?></span>
             </p>
         </td>
     </tr>
-    <tr>
-        <td style="width:5.58%; border-right:1pt solid #000000; border-left:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>2.</span>
-            </p>
-        </td>
-        <td style="width:25.44%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:8.44%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:42.26%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:18.28%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-    </tr>
-    <tr>
-        <td style="width:5.58%; border-right:1pt solid #000000; border-left:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>3.</span>
-            </p>
-        </td>
-        <td style="width:25.44%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:8.44%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:42.26%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:18.28%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-    </tr>
+    <?php endforeach;?>
 </table>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
     <span>4. Kết quả ngoại kiểm</span>
@@ -925,17 +658,12 @@
         </td>
         <td style="width:15.5%; border-top:1pt solid #000000; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:middle; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <strong><span>Đạt (Số lượng, t</span></strong><strong><span
-                    >ỷ lệ</span></strong><strong><span
-                    >&#xa0;</span></strong><strong><span
-                    >%)</span></strong>
+                <strong><span>Đạt (Số lượng, tỷ lệ %)</span></strong>
             </p>
         </td>
         <td style="width:18.28%; border-top:1pt solid #000000; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:middle; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <strong><span>Không đ</span></strong><strong><span
-                    >ạ</span></strong><strong><span
-                    >t (Số lượng, tỷ lệ%)</span></strong>
+                <strong><span>Không đạt (Số lượng, tỷ lệ%)</span></strong>
             </p>
         </td>
     </tr>
@@ -947,19 +675,13 @@
         </td>
         <td style="width:59.8%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:middle; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>Hồ sơ theo d</span><span
-                >õ</span><span
-                >i</span><span
-                >,</span><span
-                >&#xa0;</span><span>quản lý chất lượng nước</span>
+                <span>Hồ sơ theo dõi, quản lý chất lượng nước</span>
             </p>
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
                 <span>- Lập hồ sơ </span>
             </p>
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>- Hồ sơ đầy đ</span><span
-                >ủ</span><span
-                >&#xa0;</span><span>theo quy định</span>
+                <span>- Hồ sơ đầy đủ theo quy định</span>
             </p>
         </td>
         <td style="width:15.5%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:middle; background-color:#ffffff">
@@ -984,25 +706,15 @@
                 <span>Thử nghiệm các thông số chất lượng nước nội kiểm </span>
             </p>
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>-</span><span
-                >&#xa0;</span><span
-                >S</span><span
-                >ố</span><span
-                >&#xa0;</span><span
-                >mẫu</span>
+                <span>-</span>
+                <span>&#xa0;</span>
+                <span>Số mẫu</span>
             </p>
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>- Kết quả (s</span><span
-                >ố</span><span
-                >&#xa0;</span><span>mẫu, t</span><span
-                >ỷ</span><span
-                >&#xa0;</span><span
-                >lệ %)</span>
+                <span>- Kết quả (số mẫu, tỷ lệ %)</span>
             </p>
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>- Các thông số không</span><span
-                >&#xa0;</span><span
-                >đạt</span>
+                <span>- Các thông số không đạt</span>
             </p>
         </td>
         <td style="width:15.5%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:middle; background-color:#ffffff">
@@ -1074,31 +786,16 @@
         </td>
         <td style="width:59.8%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:middle; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>Kết qu</span><span
-                >ả</span><span
-                >&#xa0;</span><span>thử nghiệm thông số chất lượng nước của cơ quan ngoại kiểm</span>
+                <span>Kết quả thử nghiệm thông số chất lượng nước của cơ quan ngoại kiểm</span>
             </p>
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>- Số m</span><span
-                >ẫ</span><span
-                >u</span>
+                <span>- Số mẫu</span>
             </p>
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>- K</span><span
-                >ế</span><span
-                >t qu</span><span
-                >ả</span><span
-                >&#xa0;</span><span>(số mẫu, tỷ</span><span
-                >&#xa0;</span><span
-                >lệ</span><span
-                >&#xa0;</span><span
-                >%)</span>
+                <span>- Kết quả (số mẫu, tỷ lệ %)</span>
             </p>
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>- Các thông số không</span><span
-                >&#xa0;</span><span
-                >đ</span><span
-                >ạt</span>
+                <span>- Các thông số không đạt</span>
             </p>
         </td>
         <td style="width:15.5%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:middle; background-color:#ffffff">
@@ -1123,9 +820,7 @@
                 <span>Công khai thông tin chất lượng nước</span>
             </p>
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>- Thông báo cho đơn vị c</span><span
-                >ấ</span><span
-                >p nước</span>
+                <span>- Thông báo cho đơn vị cấp nước</span>
             </p>
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
                 <span>- Công khai trên trang thông tin của cơ quan ngoại kiểm</span>
@@ -1153,12 +848,10 @@
     <strong><span>&#xa0;</span></strong>
 </p>
 <p>
-    <strong><span>E. NHẬN XÉT, KI</span></strong><strong><span
-        >Ế</span></strong><strong><span
-        >N NGHỊ</span></strong>
+    <strong><span>E. NHẬN XÉT, KIẾN NGHỊ</span></strong>
 </p>
 <p>
-    <span>.............................................................................................................................................</span>
+    <span><?=$m->kiennghi?></span>
 </p>
 <p>
     <span>&#xa0;</span>
@@ -1172,15 +865,10 @@
         </td>
         <td style="width:210.6pt; padding-right:5.4pt; padding-left:5.4pt; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:center; line-height:normal; font-size:13pt">
-                <strong><span>Thủ trư</span></strong><strong><span
-                    >ởn</span></strong><strong><span
-                    >g đơn vị</span></strong>
+                <strong><span>Thủ trưởng đơn vị</span></strong>
             </p>
             <p style="margin-bottom:0pt; text-align:center; line-height:normal; font-size:13pt">
-                <span>(Ký tên</span><span>, đó</span><span
-                >ng d</span><span
-                >ấ</span><span
-                >u)</span>
+                <span>(Ký tên, đóng dấu)</span>
             </p>
         </td>
     </tr>

@@ -8,16 +8,12 @@ use yii\widgets\ActiveForm;
 /* @var $model gsnc\models\Dmloaibv */
 /* @var $form yii\widgets\ActiveForm */
 $this->title = ($model->isNewRecord ? 'Thêm mới' : 'Cập nhật') . ' Loại bệnh viện';
-
-
 ?>
 <div  class="dmloaibv-form">
     <?php $form = ActiveForm::begin(); ?>
     <div class="card">
         <div class="card-body" id="pageApp"  v-cloak>
             <page v-bind="pageData"></page>
-
-
         </div>
     </div>
     <?php ActiveForm::end(); ?>
@@ -30,10 +26,10 @@ $this->registerJsFile('/projects/gsnc/pages/dist/baocao-cln/main.js?v='.params('
 $this->registerJsVar('pageData', [
     'cat' => [
         'thoigian' => toInpOptions(api('dm_thoigian')),
-        'yesno' => [1 => 'Có', 2 => 'Không'],
-        'yesno_qd' => [1 => 'Đẩy đủ theo quy định', 2 => 'Không đầy đủ theo quy định'],
-        'yesno_qd1' => [1 => 'Đúng quy định', 2 => 'Không đúng quy định'],
-        'tanggiam' => [1 => 'Tăng', 2 => 'Giảm', 3 => 'Bằng'],
+        'yesno' => api('dm_yesno'),
+        'yesno_qd' => api('dm_yesno_qd'),
+        'yesno_qd1' => api('dm_yesno_qd1'),
+        'tanggiam' => api('dm_tanggiam'),
         'donvi_bc' => toInpOptions(api('dm/donvi-bc')),
         'donvi_cn' => api('dm/donvi-cn?donvi_bc_id='.$model->donvi_bc)
     ],

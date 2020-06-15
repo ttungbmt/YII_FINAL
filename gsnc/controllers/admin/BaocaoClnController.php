@@ -6,6 +6,7 @@ use app\models\BaocaoCln;
 use gsnc\controllers\AppController;
 use gsnc\models\search\BaocaoClnSearch;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use ttungbmt\actions\CreateAction;
 use ttungbmt\actions\DeleteAction;
@@ -64,6 +65,11 @@ class BaocaoClnController extends AppController
             }];
         });
 
+        $dm_donvi_cn = collect(api('dm/donvi-cn?donvi_bc_id='.$model->donvi_bc));
+        $dm_yesno = collect(api('dm_yesno'));
+        $dm_yesno_qd = collect(api('dm_yesno_qd'));
+
+
         $m1 = ArrayHelper::toArray($model, [
             BaocaoCln::class => $data_map->merge([
                 'thoigian',
@@ -71,8 +77,32 @@ class BaocaoClnController extends AppController
                 'ten_dv' => function($model){
                     return $model->donvi_bc == 'THANH PHO' ? 'SỞ Y TẾ TP. HỒ CHÍ MINH' : Str::upper('UBND '.$model->donviBc->tenquan);
                 },
-                'tong_ho_gd_ccn' => function($model) use($data_map){
-                    return ;
+
+                'donvi_cns' => function($model) use($dm_donvi_cn, $dm_yesno, $dm_yesno_qd){
+                    $dv = data_get($model, 'data.donvi_cns', []);
+                    return collect($dv)->map(function ($v, $k) use($dm_donvi_cn, $dm_yesno, $dm_yesno_qd){
+                        $ov = opt($v);
+                        return array_merge($v, [
+                            'ten_dv' => $dm_donvi_cn->firstWhereGet('value', $ov->ten_dv, 'label'),
+                            'lap_hs' => $dm_yesno->get($ov->lap_hs),
+                            'hs_daydu' => $dm_yesno->get($ov->hs_daydu),
+                            'bienphap' => $dm_yesno->get($ov->bienphap),
+                            'somau' => $dm_yesno_qd->get($ov->somau),
+                            'tanxuat' => $dm_yesno_qd->get($ov->tanxuat),
+                            'chedo_bc' => $dm_yesno_qd->get($ov->chedo_bc),
+                            'chedo_tt' => $dm_yesno_qd->get($ov->chedo_tt),
+                        ]);
+                    });
+                },
+                'donvi_thnks' => function($model) use($dm_yesno){
+                    $dv = data_get($model, 'data.donvi_thnks', []);
+                    return collect($dv)->map(function ($v, $k) use($dm_yesno){
+                        $ov = opt($v);
+                        return array_merge($v, [
+                            'thunghiem' => $dm_yesno->get($ov->thunghiem),
+
+                        ]);
+                    });
                 },
             ])->all()
         ]);
@@ -83,8 +113,8 @@ class BaocaoClnController extends AppController
             },
         ];
 
-        $data_func = [
 
+        $data_func = [
             'checkbox' => function($value){
                 $content = $value ? '' : '';
                 return Html::tag('span', $content, ['style' => "font-family:'Wingdings 2'"]);
@@ -94,9 +124,8 @@ class BaocaoClnController extends AppController
             }
         ];
 
-        $data_final = collect(['m' => (object)array_merge($m1, $m2)])->merge($data_func)->all();
-
-//        dd($data_final);
+        $data_final = collect(['m' => opt(array_merge($m1, $m2))])->merge($data_func)->all();
+//        dd($data_final['m']);
 
         return $data_final;
     }

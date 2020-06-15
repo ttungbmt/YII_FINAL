@@ -424,6 +424,14 @@
                     id = this.form.id,
                     url = '/admin/baocao-cln/' + (id ? `update?id=${id}` : 'create')
 
+                let extraFields = [
+                    'tk_ho_gd_ccn',
+                    'tk_tyle_ho_gd', 'tk_ho_gd_ccn', 'tk_cs1', 'tk_cs2', 'tk_nhamay', 'tk_tong_dvbc', 'tk_tyle_dqc', 'tk_mau_kdqd', 'tk_tylemau_kdqd'
+                ]
+                map(extraFields, name => {
+                    data[name] = this[name]
+                })
+
                 axios.post(url, data, {
                     headers: {'X-Requested-With': 'XMLHttpRequest'}
                 }).then(({data}) => {

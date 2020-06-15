@@ -4,6 +4,10 @@ $data['dm_thoigian'] = [
     '6 THANG' => '6 tháng',
     '1 NAM' => '1 năm'
 ];
+$data['dm_yesno'] = [1 => 'Có', 2 => 'Không'];
+$data['dm_yesno_qd'] = [1 => 'Đẩy đủ theo quy định', 2 => 'Không đầy đủ theo quy định'];
+$data['dm_yesno_qd1'] = [1 => 'Đúng quy định', 2 => 'Không đúng quy định'];
+$data['dm_tanggiam'] = [1 => 'Tăng', 2 => 'Giảm', 3 => 'Bằng'];
 
 $data['nav_links'] = [
     [

@@ -27,8 +27,8 @@ class DmController extends ApiController
         return DmQuan::find()->orderBy('order')->pluck('tenquan', 'maquan')->put('THANH PHO', 'Trung tâm kiểm soát bệnh tật TP.HCM');
     }
 
-    public function actionDonviCn($donvi_bc_id){
-        $data = DvCapnuoc::find()->andWhere(['ma_dv_ql' => $donvi_bc_id])->orderBy('ten_dv')->all();
+    public function actionDonviCn($donvi_bc_id = null){
+        $data = DvCapnuoc::find()->andFilterWhere(['ma_dv_ql' => $donvi_bc_id])->orderBy('ten_dv')->all();
         return collect($data)->map(function ($i){
 
             return [

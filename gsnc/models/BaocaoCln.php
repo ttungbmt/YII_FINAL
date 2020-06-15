@@ -73,6 +73,16 @@ class BaocaoCln extends App
             'maunuoc_tn',
             'maunuoc_dqc',
             'kiennghi',
+
+            'tk_ho_gd_ccn',
+            'ho_gd',
+            'kinhphi_nk',
+            'thuchien_bc',
+            'tk_tyle_ho_gd', 'tk_ho_gd_ccn', 'tk_cs1', 'tk_cs2', 'tk_nhamay', 'tk_tong_dvbc',
+            'maunuoc_tn',
+            'maunuoc_dqc',
+            'tk_tyle_dqc', 'tk_mau_kdqd', 'tk_tylemau_kdqd',
+            'kiennghi'
         ]);
 
         return $this->save();
