@@ -14,6 +14,11 @@ use Illuminate\Support\Arr;
 class BaocaoCln extends App
 {
     public $donvi_cns;
+
+    public $dates = [
+        'laymau_from',
+        'laymau_to',
+    ];
     /**
      * {@inheritdoc}
      */
@@ -28,7 +33,7 @@ class BaocaoCln extends App
     public function rules()
     {
         return [
-            [['thoigian', 'donvi_bc', 'data'], 'safe']
+            [['thoigian', 'donvi_bc', 'data', 'laymau_from', 'laymau_to'], 'safe']
         ];
     }
 

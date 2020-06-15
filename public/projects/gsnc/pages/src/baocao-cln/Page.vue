@@ -227,6 +227,17 @@
                 </b-button>
 
                 <div class="font-bold mt-6"> 4. Kết quả ngoại kiểm</div>
+                <div class="flex">
+                    <div class="self-center mr-2">Ngày lấy mẫu</div>
+                    <div class=""><field-input id="dp-1" type="b-text" v-model="form.laymau_from" placeholder="Từ ngày" class="m-0"/></div>
+                    <div class=""><field-input id="dp-2" type="b-text" v-model="form.laymau_to" placeholder="Đến ngày" class="m-0"/></div>
+                    <div class="self-center ml-2">
+                        <button type="button" @click="filterDate" class="btn btn-primary btn-small mt-2" variant="light">
+                            Lọc dữ liệu
+                        </button>
+                    </div>
+                </div>
+
 
                 <table class="table">
                     <thead>
@@ -247,9 +258,14 @@
                                 <li>Hồ sơ đầy đủ theo quy định</li>
                             </ul>
                         </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            {{tk_4_dat_lap_hs}} <br>
+                            {{tk_4_dat_hs_ddqd}}
+                        </td>
+                        <td>
+                            {{tk_4_kdat_lap_hs}} <br>
+                            {{tk_4_kdat_hs_ddqd}}
+                        </td>
                     </tr>
                     <tr>
                         <td>2.</td>
@@ -261,8 +277,14 @@
                                 <li>Các thông số không đạt</li>
                             </ul>
                         </td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            {{form.maunuoc_tn}} mẫu <br>
+                            {{form.maunuoc_dqc}}/{{form.maunuoc_tn}} ({{tk_tyle_dqc}}%)
+                        </td>
+                        <td>
+                            <br>
+                            {{tk_mau_kdqd}}/{{form.maunuoc_tn}} ({{tk_tylemau_kdqd}}%)
+                        </td>
                         <td></td>
                     </tr>
                     <tr>
@@ -275,15 +297,25 @@
                                 <li>Các thông số không đạt</li>
                             </ul>
                         </td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            {{tk_4_dat_bc}} <br>
+                            {{tk_4_dat_tt}}
+                        </td>
+                        <td>
+                            {{tk_4_kdat_bc}} <br>
+                            {{tk_4_kdat_tt}}
+                        </td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>4.</td>
                         <td>Thực hiện các biện pháp khắc phục (43 đơn vị cần khắc phục)</td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            {{tk_4_dat_bp}}
+                        </td>
+                        <td>
+                            {{tk_4_kdat_bp}}
+                        </td>
                         <td></td>
                     </tr>
                     <tr>
@@ -345,6 +377,11 @@
     import axios from 'axios'
     import uniqid from 'uniqid'
 
+    function toRatio(a, b, digits = 2) {
+        if(!b) return ''
+        return (a*100/b).toFixed(digits)
+    }
+
     export default {
         name: 'page',
         inheritAttrs: false,
@@ -371,14 +408,26 @@
             }
         },
         mounted() {
-
+            $('#dp-1, #dp-2').kvDatepicker({
+                todayBtn: "linked",
+                clearBtn: true,
+                language: "vi",
+                autoclose: true,
+                todayHighlight: true
+            }).on('changeDate', (e) => {
+                let val = e.target.value
+                if(e.target.id === 'dp-1') {
+                    this.form.laymau_from = val
+                } else {
+                    this.form.laymau_to = val
+                }
+            });
         },
         computed: {
             tk_hc_baocao(){
                 return this.form.donvi_bc == 'THANH PHO' ? 'SỞ Y TẾ TP. HỒ CHÍ MINH' : ('UBND '+this.getCat(this.form.donvi_bc, 'donvi_bc'))
             },
             tk_hc_cap(){
-                console.log(this.o_donvi_bc)
                 return this.o_donvi_bc.value == 'THANH PHO' ? 'TRUNG TÂM KIỂM SOÁT BỆNH TẬT' : 'TRUNG TÂM Y TẾ '+ toUpper(get(this.o_donvi_bc, 'extra.caphc'))
             },
             tk_hc_nk(){
@@ -431,10 +480,45 @@
                 if(!this.form.maunuoc_tn || isNil(this.tk_mau_kdqd)) return ''
                 return (this.tk_mau_kdqd*100/this.form.maunuoc_tn).toFixed(0)
             },
+            tk_4_dat_lap_hs(){
+                let count = filter(this.form.donvi_cns, {lap_hs: '1'}).length
+                return `${count}/${this.tk_capnc_nk} (${toRatio(count, this.tk_capnc_nk)}%)`
+            },
+            tk_4_kdat_lap_hs(){
+                let count = filter(this.form.donvi_cns, {lap_hs: '2'}).length
+                return `${count}/${this.tk_capnc_nk} (${toRatio(count, this.tk_capnc_nk)}%)`
+            },
+            tk_4_dat_hs_ddqd(){
+                let count = filter(this.form.donvi_cns, {hs_daydu: '1'}).length
+                return `${count}/${this.tk_capnc_nk} (${toRatio(count, this.tk_capnc_nk)}%)`
+            },
+            tk_4_kdat_hs_ddqd(){
+                let count = filter(this.form.donvi_cns, {hs_daydu: '2'}).length
+                return `${count}/${this.tk_capnc_nk} (${toRatio(count, this.tk_capnc_nk)}%)`
+            },
+            tk_4_dat_bc(){
+                return this.get4Dat('chedo_bc', '1');
+            },
+            tk_4_kdat_bc(){
+                return this.get4Dat('chedo_bc', '2');
+            },
+            tk_4_dat_tt(){
+                return this.get4Dat('chedo_tt', '1');
+            },
+            tk_4_kdat_tt(){
+                return this.get4Dat('chedo_tt', '2');
+            },
+            tk_4_dat_bp(){
+                return this.get4Dat('bienphap', '1');
+            },
+            tk_4_kdat_bp(){
+                return this.get4Dat('bienphap', '2');
+            },
             o_donvi_bc(){
                 let o =  find(this.cat.donvi_bc, {value: this.form.donvi_bc})
                 return o ? o : {}
-            }
+            },
+
         },
         methods: {
             onSubmit(values) {
@@ -459,6 +543,17 @@
                     alert('Đã lưu thành công')
                     if(!id) window.location.href = '/admin/baocao-cln'
                 })
+            },
+            filterDate(){
+                console.log(111)
+            },
+            get4Dat(field, val){
+                let count = filter(this.form.donvi_cns, {[field]: val}).length
+                return `${count}/${this.tk_capnc_nk} (${toRatio(count, this.tk_capnc_nk)}%)`
+            },
+            get4Kdat(field, val){
+                let count = filter(this.form.donvi_cns, {[field]: val}).length
+                return `${count}/${this.tk_capnc_nk} (${toRatio(count, this.tk_capnc_nk)}%)`
             },
             addItem(name, data = {}){
                 this.form[name].push(data)

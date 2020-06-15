@@ -7,7 +7,8 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model gsnc\models\Dmloaibv */
 /* @var $form yii\widgets\ActiveForm */
-$this->title = ($model->isNewRecord ? 'Thêm mới' : 'Cập nhật') . ' Loại bệnh viện';
+$this->title = ($model->isNewRecord ? 'Thêm mới' : 'Cập nhật') . ' Báo cáo';
+$dp = \kartik\date\DatePickerAsset::register($this);
 ?>
 <div  class="dmloaibv-form">
     <?php $form = ActiveForm::begin(); ?>
@@ -22,6 +23,7 @@ $this->title = ($model->isNewRecord ? 'Thêm mới' : 'Cập nhật') . ' Loại
 
 <?php
 $this->beginBlock('scripts');
+$this->registerJsFile($dp->baseUrl.'/js/locales/bootstrap-datepicker.vi.min.js', ['depends' => [\kartik\date\DatePickerAsset::className()]]);
 $this->registerJsFile('/themes/admin/main/js/plugins/forms/selects/bootstrap_multiselect.js', ['depends' => [\common\assets\AppPluginAsset::className()]]);
 $this->registerJsFile('/projects/gsnc/pages/dist/baocao-cln/main.js?v='.params('version'), ['depends' => [\common\assets\AppPluginAsset::className()]]);
 $this->registerJsVar('pageData', [
