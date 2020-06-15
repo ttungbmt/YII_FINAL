@@ -71,8 +71,9 @@ class SyncRelationBehavior extends \frostealth\yii2\behaviors\SyncRelationBehavi
                 $id = $attrs['id'];
                 $model = data_get($relations, $id);
                 $model->setAttributes($attrs, false);
-                $model->save();
+                $model->save(false);
             }
+
 
             $command->batchInsert($tableName, $columns, $addedItems)->execute();
             $command->delete($tableName, ['id' => $deleted])->execute();
