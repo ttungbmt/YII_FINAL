@@ -513,54 +513,32 @@
                 <strong><span>Tên cơ sở cấp nước</span></strong>
             </p>
         </td>
+        <?php $chitieus = data_get(array_values($m->coso_cns), '0.chitieu_kd', []);  ?>
+        <?php foreach ($chitieus as $ct):?>
         <td style="width:13.3%; border-top:1pt solid #000000; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
             <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
+                <span><?=$ct['label']?></span>
             </p>
         </td>
-        <td style="width:13.3%; border-top:1pt solid #000000; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:11.54%; border-top:1pt solid #000000; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:bottom; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:13.3%; border-top:1pt solid #000000; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:bottom; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
+        <?php endforeach;?>
     </tr>
-    <tr>
-        <td style="width:48.54%; border-right:1pt solid #000000; border-left:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <strong><span>…</span></strong>
-            </p>
-        </td>
-        <td style="width:13.3%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:13.3%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:11.54%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-        <td style="width:13.3%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
-            <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
-                <span>&#xa0;</span>
-            </p>
-        </td>
-    </tr>
+    <?php foreach ($m->coso_cns as $cs):?>
+        <tr>
+            <td style="width:48.54%; border-right:1pt solid #000000; border-left:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
+                <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
+                    <strong><span><?=$cs['ten_cs']?></span></strong>
+                </p>
+            </td>
+            <?php foreach ($chitieus as $ct):?>
+                <td style="width:13.3%; border-right:1pt solid #000000; border-bottom:1pt solid #000000; vertical-align:top; background-color:#ffffff">
+                    <p style="margin-bottom:0pt; text-align:justify; line-height:normal; font-size:13pt">
+                        <span><?=$ct['value']?></span>
+                    </p>
+                </td>
+            <?php endforeach;?>
+        </tr>
+    <?php endforeach;?>
+
 </table>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
     <strong><span>D. KẾT QUẢ NGOẠI KIỂM NƯỚC SẠCH CỦA CƠ QUAN CÓ THẨM QUYỀN (NẾU CÓ)</span></strong>

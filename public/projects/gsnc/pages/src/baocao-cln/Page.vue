@@ -160,21 +160,7 @@
                         <tr>
                             <th></th>
                             <th style="min-width: 170px">Tên cơ sở cấp nước</th>
-                            <th>pH</th>
-                            <th>Độ đục (NTU)</th>
-                            <th>Clo dư (mg/l)</th>
-                            <th>Clorua (mg/l)</th>
-                            <th>Nitrit (mg/l)</th>
-                            <th>Nitrat (mg/l)</th>
-                            <th>Sulphat (mg/l)</th>
-                            <th>Độ cứng, tính theo CaCO3 (mg/l)</th>
-                            <th>Pec (mg/l)</th>
-                            <th>Fe tổng (mg/l)</th>
-                            <th>Mn tổng (mg/l)</th>
-                            <th>Màu (TCU)</th>
-                            <th>Mùi, vị Không có mùi, vị lạ</th>
-                            <th>Coli tổng vk/100ml</th>
-                            <th>Ecoli vk/100ml</th>
+                            <th v-for="i in form.chitieu_kd">{{cat.chitieu_kd[i]}}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -184,21 +170,9 @@
                                         @click="removeItem(k, 'coso_cns')"><i class="icon-bin text-danger"></i></button>
                             </td>
                             <td><field-input type="b-text" v-model="i.ten_cs"/></td>
-                            <td><field-input type="b-text" v-model="i.ph"/></td>
-                            <td><field-input type="b-text" v-model="i.doduc"/></td>
-                            <td><field-input type="b-text" v-model="i.clodu"/></td>
-                            <td><field-input type="b-text" v-model="i.clorua"/></td>
-                            <td><field-input type="b-text" v-model="i.nitrit"/></td>
-                            <td><field-input type="b-text" v-model="i.nitrat"/></td>
-                            <td><field-input type="b-text" v-model="i.sulphat"/></td>
-                            <td><field-input type="b-text" v-model="i.docung"/></td>
-                            <td><field-input type="b-text" v-model="i.pec"/></td>
-                            <td><field-input type="b-text" v-model="i.fe"/></td>
-                            <td><field-input type="b-text" v-model="i.mn"/></td>
-                            <td><field-input type="b-text" v-model="i.mau"/></td>
-                            <td><field-input type="b-text" v-model="i.mui"/></td>
-                            <td><field-input type="b-text" v-model="i.coli"/></td>
-                            <td><field-input type="b-text" v-model="i.ecoli"/></td>
+                            <td v-for="j in form.chitieu_kd">
+                                <field-input type="b-text" v-model="i[j]"/>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -212,7 +186,7 @@
                             Chọn chỉ tiêu
                         </div>
 
-                        <field-input type="b-multiselect" v-model="form.chitieu_kd" :options="cat.chitieu_kdat" class="m-0 ml-2"/>
+                        <field-input type="b-multiselect" v-model="form.chitieu_kd" :options="cat.chitieu_kd" class="m-0 ml-2" @input="onChangeChitieu"/>
                     </div>
 
                 </div>
@@ -367,7 +341,7 @@
 </template>
 
 <script>
-    import {filter, map, sortBy, get, find, isArray, omit, sum, isNil} from 'lodash-es'
+    import {filter, map, sortBy, get, find, isArray, omit, sum, isNil, values} from 'lodash-es'
     import axios from 'axios'
     import uniqid from 'uniqid'
 
@@ -397,6 +371,7 @@
             }
         },
         mounted() {
+
         },
         computed: {
             tk_cs_nk(){
@@ -480,6 +455,9 @@
                 if (isArray(cat)) return get(find(cat, {value}), 'label')
 
                 return get(cat, value)
+            },
+            onChangeChitieu(val){
+                console.log(val)
             },
             onChangeDonviBc(val) {
                 this.form.donvi_cns = []

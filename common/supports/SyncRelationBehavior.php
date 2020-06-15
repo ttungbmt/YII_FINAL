@@ -47,6 +47,7 @@ class SyncRelationBehavior extends \frostealth\yii2\behaviors\SyncRelationBehavi
         $updatedItems = $data->whereIn('id', $updated);
 
         // ADDED
+
         foreach ($added as $i){
             $model = new DynamicModel($columns);
             $v = data_get($data->all(), $i);
@@ -59,11 +60,10 @@ class SyncRelationBehavior extends \frostealth\yii2\behaviors\SyncRelationBehavi
             $addedItems[] = $model->toArray();
         }
 
-
-
         $connection = \Yii::$app->db;
         $transaction = $connection->beginTransaction();
         $tableName = $relationClass::tableName();
+
 
         try {
             foreach ($updatedItems as $k => $attrs){

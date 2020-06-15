@@ -27,7 +27,7 @@ $this->registerJsFile('/projects/gsnc/pages/dist/baocao-cln/main.js?v='.params('
 $this->registerJsVar('pageData', [
     'cat' => [
         'thoigian' => toInpOptions(api('dm_thoigian')),
-        'chitieu_kdat' => api('dm_chitieu_kdat'),
+        'chitieu_kd' => api('dm_chitieu_kd'),
         'yesno' => api('dm_yesno'),
         'yesno_qd' => api('dm_yesno_qd'),
         'yesno_qd1' => api('dm_yesno_qd1'),

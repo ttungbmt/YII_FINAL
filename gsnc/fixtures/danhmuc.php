@@ -8,7 +8,7 @@ $data['dm_yesno'] = [1 => 'Có', 2 => 'Không'];
 $data['dm_yesno_qd'] = [1 => 'Đẩy đủ theo quy định', 2 => 'Không đầy đủ theo quy định'];
 $data['dm_yesno_qd1'] = [1 => 'Đúng quy định', 2 => 'Không đúng quy định'];
 $data['dm_tanggiam'] = [1 => 'Tăng', 2 => 'Giảm', 3 => 'Bằng'];
-$data['dm_chitieu_kdat'] = [
+$data['dm_chitieu_kd'] = [
     1 => 'pH',
     2 => 'Độ đục (NTU)',
     3 => 'Clo dư (mg/l)',

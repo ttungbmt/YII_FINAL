@@ -3,6 +3,7 @@ namespace app\models;
 
 use gsnc\models\App;
 use gsnc\models\DmQuan;
+use Illuminate\Support\Arr;
 
 /**
  * This is the model class for table "baocao_cln".
@@ -64,7 +65,6 @@ class BaocaoCln extends App
     public function saveModel(){
         $this->data = request()->only([
             'donvi_cns',
-            'coso_cns',
             'donvi_thnks',
             'ho_gd',
             'sokinhphi',
@@ -73,6 +73,7 @@ class BaocaoCln extends App
             'maunuoc_tn',
             'maunuoc_dqc',
             'kiennghi',
+            'chitieu_kd',
 
             'tk_ho_gd_ccn',
             'ho_gd',
@@ -89,6 +90,13 @@ class BaocaoCln extends App
             'tk_tyle_dqc', 'tk_mau_kdqd', 'tk_tylemau_kdqd',
             'kiennghi'
         ]);
+
+        $this->data = array_merge($this->data, [
+            'coso_cns' =>        collect(request()->post('coso_cns'))->map(function ($i) {
+                return Arr::only($i, array_merge(['ten_cs'], request()->post('chitieu_kd', [])));
+            })->all()
+        ]);
+
 
         return $this->save();
     }

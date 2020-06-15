@@ -133,6 +133,12 @@ class PtNguyco extends App
         return $this->hasMany(PhieuGs::className(), ['pt_nguyco_id' => 'gid'])->orderBy('ngay_gs');
     }
 
+    public function getGiamsatOrderIds()
+    {
+        return $this->hasMany(PhieuGs::className(), ['pt_nguyco_id' => 'gid'])->orderBy('id');
+    }
+
+
     public function getKehoachs()
     {
         return $this->hasMany(KehoachGs::className(), ['pt_nguyco_id' => 'gid'])->orderBy('year, month');

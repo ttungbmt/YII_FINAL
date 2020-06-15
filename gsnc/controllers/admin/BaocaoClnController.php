@@ -68,6 +68,7 @@ class BaocaoClnController extends AppController
         $dm_donvi_cn = collect(api('dm/donvi-cn?donvi_bc_id='.$model->donvi_bc));
         $dm_yesno = collect(api('dm_yesno'));
         $dm_yesno_qd = collect(api('dm_yesno_qd'));
+        $dm_chitieu_kd = collect(api('dm_chitieu_kd'));
 
 
         $m1 = ArrayHelper::toArray($model, [
@@ -102,6 +103,19 @@ class BaocaoClnController extends AppController
                             'thunghiem' => $dm_yesno->get($ov->thunghiem),
 
                         ]);
+                    });
+                },
+                'coso_cns' => function($model) use($dm_chitieu_kd){
+                    $dv = data_get($model, 'data.coso_cns', []);
+                    return collect($dv)->map(function ($v, $k) use($dm_chitieu_kd){
+                        $ov = opt($v);
+                        $mv = collect($v)->except(['ten_cs'])->map(function ($i, $k) use($dm_chitieu_kd){
+                            return ['label' => $dm_chitieu_kd->get($k), 'value' => $i];
+                        });
+                        return [
+                            'ten_cs' => $ov->ten_cs,
+                            'chitieu_kd' => $mv->all()
+                        ];
                     });
                 },
             ])->all()

@@ -52,33 +52,37 @@
 </template>
 
 <script>
+    import {includes, reject} from 'lodash-es'
     import FormulateInputMixin from '@braid/vue-formulate/src/FormulateInputMixin'
 
     export default {
         name: 'FormulateInputMultiSelect',
         mixins: [FormulateInputMixin],
-        mounted(){
+        mounted() {
             $(this.$refs.input).multiselect({
                 includeSelectAllOption: true,
                 enableFiltering: true,
                 enableCaseInsensitiveFiltering: true,
-                onChange: function(option, checked) {
-                    console.log(option, checked)
-
-                    if (checked === false) {
-                        // $preventDeselectElement.multiselect('select', option.val());
+                onChange: (option, checked) => {
+                    let value = option.val()
+                    if(checked){
+                        this.context.model.push(value)
+                    } else {
+                        this.context.model = reject(this.context.model, v => v === value)
                     }
                 }
             });
+
+
         },
         computed: {
-            options () {
+            options() {
                 return this.context.options || {}
             },
-            optionGroups () {
+            optionGroups() {
                 return this.context.optionGroups || false
             },
-            placeholderSelected () {
+            placeholderSelected() {
                 return !!(!this.hasValue && this.context.attributes && this.context.attributes.placeholder)
             }
         }
