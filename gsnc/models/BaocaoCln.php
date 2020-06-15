@@ -66,6 +66,7 @@ class BaocaoCln extends App
         $this->data = request()->only([
             'donvi_cns',
             'donvi_thnks',
+            'tk_hc_baocao',
             'ho_gd',
             'sokinhphi',
             'kinhphi_nk',

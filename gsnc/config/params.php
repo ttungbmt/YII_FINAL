@@ -1,5 +1,6 @@
 <?php
 return [
+    'version' => '0.0.1',
     'adminEmail' => 'ttungbmt@gmail.com',
     'author'     => 'Trương Thanh Tùng',
     'keywords'   => 'Gsnc, HCMGIS',

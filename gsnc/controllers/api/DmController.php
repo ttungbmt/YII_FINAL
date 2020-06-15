@@ -24,7 +24,7 @@ use Illuminate\Support\Arr;
 class DmController extends ApiController
 {
     public function actionDonviBc(){
-        return DmQuan::find()->orderBy('order')->pluck('tenquan', 'maquan')->put('THANH PHO', 'Trung tâm kiểm soát bệnh tật TP.HCM');
+        return DmQuan::find()->andFilterWhere(['NOT IN', 'gid', [27,28]])->orderBy('order')->pluck('tenquan', 'maquan')->put('THANH PHO', 'Trung tâm kiểm soát bệnh tật TP.HCM');
     }
 
     public function actionDonviCn($donvi_bc_id = null){

@@ -3,7 +3,7 @@
         <vue-form @submit="onSubmit" name="form_bc">
             <div class="flex">
                 <div class="flex flex-col flex-auto items-center text-base">
-                    <div class="font-bold">SỞ Y TẾ TP. HỒ CHÍ MINH</div>
+                    <div class="font-bold uppercase">{{tk_hc_baocao}}</div>
                     <div class="font-bold">TRUNG TÂM KIỂM SOÁT BỆNH TẬT</div>
                     <div>Số…………..</div>
                 </div>
@@ -374,6 +374,12 @@
 
         },
         computed: {
+            tk_hc_baocao(){
+                return this.form.donvi_bc == 'THANH PHO' ? 'SỞ Y TẾ TP. HỒ CHÍ MINH' : ('UBND '+this.getCat(this.form.donvi_bc, 'donvi_bc'))
+            },
+            tk_hc_nk(){
+                return this.form.donvi_bc == 'THANH PHO' ? 'SỞ Y TẾ TP. HỒ CHÍ MINH' : 'TRUNG TÂM Y TẾđẩy đủ'
+            },
             tk_cs_nk(){
                 return filter(this.form.donvi_cns, {lap_hs: '1'}).length
             },
@@ -429,6 +435,7 @@
                     url = '/admin/baocao-cln/' + (id ? `update?id=${id}` : 'create')
 
                 let extraFields = [
+                    'tk_hc_baocao',
                     'tk_cs_nk', 'tk_tong_cs', 'tk_capnc_nk', 'tk_tyle_capnc_nk', 'tk_solan_nk',
                     'tk_ho_gd_ccn',
                     'tk_tyle_ho_gd', 'tk_ho_gd_ccn', 'tk_cs1', 'tk_cs2', 'tk_nhamay', 'tk_tong_dvbc', 'tk_tyle_dqc', 'tk_mau_kdqd', 'tk_tylemau_kdqd'
