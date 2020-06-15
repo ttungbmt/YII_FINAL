@@ -67,6 +67,7 @@ class BaocaoCln extends App
             'donvi_cns',
             'donvi_thnks',
             'tk_hc_baocao',
+            'tk_hc_cap',
             'ho_gd',
             'sokinhphi',
             'kinhphi_nk',

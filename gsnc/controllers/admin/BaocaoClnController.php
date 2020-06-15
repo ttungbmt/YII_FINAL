@@ -105,15 +105,15 @@ class BaocaoClnController extends AppController
                         ]);
                     });
                 },
-                'coso_cns' => function($model) use($dm_chitieu_kd){
+                'coso_cns' => function($model) use($dm_chitieu_kd, $dm_donvi_cn){
                     $dv = data_get($model, 'data.coso_cns', []);
-                    return collect($dv)->map(function ($v, $k) use($dm_chitieu_kd){
+                    return collect($dv)->map(function ($v, $k) use($dm_chitieu_kd, $dm_donvi_cn){
                         $ov = opt($v);
                         $mv = collect($v)->except(['ten_cs'])->map(function ($i, $k) use($dm_chitieu_kd){
                             return ['label' => $dm_chitieu_kd->get($k), 'value' => $i];
                         });
                         return [
-                            'ten_cs' => $ov->ten_cs,
+                            'ten_cs' => $dm_donvi_cn->firstWhereGet('value', $ov->ten_cs, 'label'),
                             'chitieu_kd' => $mv->all()
                         ];
                     });

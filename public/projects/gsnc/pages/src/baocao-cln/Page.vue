@@ -114,7 +114,7 @@
                     <li>Tổng số đơn vị cấp nước được kiểm tra trong kỳ báo cáo: {{tk_tong_dvbc}} đơn vị.</li>
                 </ul>
 
-                <div class="font-bold">B. KẾT QUẢ THỰC HIỆN NGOẠI KIỂM CỦA TRUNG TÂM Y TẾ DỰ PHÒNG TP.HCM</div>
+                <div class="font-bold">B. KẾT QUẢ THỰC HIỆN NGOẠI KIỂM CỦA {{tk_hc_cap}}</div>
                 <div>
                     <ul>
                         <li class="flex mt-2">Số cơ sở thực hiện ngoại kiểm/ Tổng số cơ sở: {{tk_cs_nk}}/{{tk_tong_cs}} đơn vị</li>
@@ -169,7 +169,7 @@
                                 <button type="button" class="btn btn-link" style="padding: 0 5px"
                                         @click="removeItem(k, 'coso_cns')"><i class="icon-bin text-danger"></i></button>
                             </td>
-                            <td><field-input type="b-text" v-model="i.ten_cs"/></td>
+                            <td><field-input type="b-select" v-model="i.ten_cs" :options="cat.donvi_cn" placeholder="Chọn..."/></td>
                             <td v-for="j in form.chitieu_kd">
                                 <field-input type="b-text" v-model="i[j]"/>
                             </td>
@@ -178,7 +178,7 @@
                     </table>
                 </div>
                 <div class="btn-group">
-                    <b-button @click="addItem('coso_cns')" class="btn-default btn-small mt-2" variant="light">
+                    <b-button @click="addItem('coso_cns', {ten_cs: ''})" class="btn-default btn-small mt-2" variant="light">
                         Thêm mới cơ sở cấp nước
                     </b-button>
                     <div class="flex ml-2">
@@ -341,7 +341,7 @@
 </template>
 
 <script>
-    import {filter, map, sortBy, get, find, isArray, omit, sum, isNil, values} from 'lodash-es'
+    import {filter, map, sortBy, get, find, isArray, omit, sum, isNil, values, toUpper} from 'lodash-es'
     import axios from 'axios'
     import uniqid from 'uniqid'
 
@@ -376,6 +376,10 @@
         computed: {
             tk_hc_baocao(){
                 return this.form.donvi_bc == 'THANH PHO' ? 'SỞ Y TẾ TP. HỒ CHÍ MINH' : ('UBND '+this.getCat(this.form.donvi_bc, 'donvi_bc'))
+            },
+            tk_hc_cap(){
+                console.log(this.o_donvi_bc)
+                return this.o_donvi_bc.value == 'THANH PHO' ? 'TRUNG TÂM KIỂM SOÁT BỆNH TẬT' : 'TRUNG TÂM Y TẾ '+ toUpper(get(this.o_donvi_bc, 'extra.caphc'))
             },
             tk_hc_nk(){
                 return this.form.donvi_bc == 'THANH PHO' ? 'SỞ Y TẾ TP. HỒ CHÍ MINH' : 'TRUNG TÂM Y TẾđẩy đủ'
@@ -426,6 +430,10 @@
             tk_tylemau_kdqd(){
                 if(!this.form.maunuoc_tn || isNil(this.tk_mau_kdqd)) return ''
                 return (this.tk_mau_kdqd*100/this.form.maunuoc_tn).toFixed(0)
+            },
+            o_donvi_bc(){
+                let o =  find(this.cat.donvi_bc, {value: this.form.donvi_bc})
+                return o ? o : {}
             }
         },
         methods: {
@@ -436,6 +444,7 @@
 
                 let extraFields = [
                     'tk_hc_baocao',
+                    'tk_hc_cap',
                     'tk_cs_nk', 'tk_tong_cs', 'tk_capnc_nk', 'tk_tyle_capnc_nk', 'tk_solan_nk',
                     'tk_ho_gd_ccn',
                     'tk_tyle_ho_gd', 'tk_ho_gd_ccn', 'tk_cs1', 'tk_cs2', 'tk_nhamay', 'tk_tong_dvbc', 'tk_tyle_dqc', 'tk_mau_kdqd', 'tk_tylemau_kdqd'
@@ -451,8 +460,8 @@
                     if(!id) window.location.href = '/admin/baocao-cln'
                 })
             },
-            addItem(name){
-                this.form[name].push({})
+            addItem(name, data = {}){
+                this.form[name].push(data)
             },
             removeItem(index, name){
                 this.form[name].splice(index, 1);

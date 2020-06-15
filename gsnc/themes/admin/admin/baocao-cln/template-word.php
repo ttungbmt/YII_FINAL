@@ -172,7 +172,7 @@
     <span><?=$if($m->tk_tong_dvbc, '....................................................')?></span>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:120%; font-size:13pt; background-color:#ffffff">
-    <strong><span>B. KẾT QUẢ THỰC HIỆN NGOẠI KIỂM CỦA TRUNG TÂM KIỂM SOÁT BỆNH TẬT TỈNH</span></strong>
+    <strong><span>B. KẾT QUẢ THỰC HIỆN NGOẠI KIỂM CỦA <?=$m->tk_hc_cap?></span></strong>
 </p>
 
 <p style="margin-top:6pt; margin-bottom:6pt; line-height:120%; font-size:13pt; background-color:#ffffff">

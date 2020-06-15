@@ -32,7 +32,7 @@ $this->registerJsVar('pageData', [
         'yesno_qd' => api('dm_yesno_qd'),
         'yesno_qd1' => api('dm_yesno_qd1'),
         'tanggiam' => api('dm_tanggiam'),
-        'donvi_bc' => toInpOptions(api('dm/donvi-bc')),
+        'donvi_bc' => api('dm/donvi-bc'),
         'donvi_cn' => api('dm/donvi-cn?donvi_bc_id='.$model->donvi_bc),
     ],
     'form' => $model->toArray(),

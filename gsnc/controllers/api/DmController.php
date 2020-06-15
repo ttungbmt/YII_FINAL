@@ -24,13 +24,19 @@ use Illuminate\Support\Arr;
 class DmController extends ApiController
 {
     public function actionDonviBc(){
-        return DmQuan::find()->andFilterWhere(['NOT IN', 'gid', [27,28]])->orderBy('order')->pluck('tenquan', 'maquan')->put('THANH PHO', 'Trung tâm kiểm soát bệnh tật TP.HCM');
+        $data = DmQuan::find()->andFilterWhere(['NOT IN', 'gid', [27,28]])->orderBy('order')->all();
+        return collect($data)->map(function ($i){
+            return [
+                'label' => $i['maquan'] === 'THANH PHO' ? 'Trung tâm kiểm soát bệnh tật TP.HCM' : $i['tenquan'],
+                'value' => (string)$i['maquan'],
+                'extra' => Arr::only($i->toArray(), ['caphc'])
+            ];
+        });
     }
 
     public function actionDonviCn($donvi_bc_id = null){
         $data = DvCapnuoc::find()->andFilterWhere(['ma_dv_ql' => $donvi_bc_id])->orderBy('ten_dv')->all();
         return collect($data)->map(function ($i){
-
             return [
                 'label' => $i['ten_dv'],
                 'value' => (string)$i['gid'],
