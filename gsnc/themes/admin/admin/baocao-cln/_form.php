@@ -22,16 +22,18 @@ $this->title = ($model->isNewRecord ? 'Thêm mới' : 'Cập nhật') . ' Loại
 
 <?php
 $this->beginBlock('scripts');
+$this->registerJsFile('/themes/admin/main/js/plugins/forms/selects/bootstrap_multiselect.js', ['depends' => [\common\assets\AppPluginAsset::className()]]);
 $this->registerJsFile('/projects/gsnc/pages/dist/baocao-cln/main.js?v='.params('version'), ['depends' => [\common\assets\AppPluginAsset::className()]]);
 $this->registerJsVar('pageData', [
     'cat' => [
         'thoigian' => toInpOptions(api('dm_thoigian')),
+        'chitieu_kdat' => api('dm_chitieu_kdat'),
         'yesno' => api('dm_yesno'),
         'yesno_qd' => api('dm_yesno_qd'),
         'yesno_qd1' => api('dm_yesno_qd1'),
         'tanggiam' => api('dm_tanggiam'),
         'donvi_bc' => toInpOptions(api('dm/donvi-bc')),
-        'donvi_cn' => api('dm/donvi-cn?donvi_bc_id='.$model->donvi_bc)
+        'donvi_cn' => api('dm/donvi-cn?donvi_bc_id='.$model->donvi_bc),
     ],
     'form' => $model->toArray(),
     'schema' => $model->toSchema()

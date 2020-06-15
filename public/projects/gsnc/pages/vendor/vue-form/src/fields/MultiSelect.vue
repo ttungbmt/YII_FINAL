@@ -4,11 +4,13 @@
             :data-type="context.type"
     >
         <select
+                ref="input"
                 class="form-control"
                 v-model="context.model"
                 v-bind="attributes"
                 :data-placeholder-selected="placeholderSelected"
                 @blur="context.blurHandler"
+                multiple="multiple"
         >
             <option
                     v-if="attributes.placeholder"
@@ -53,12 +55,21 @@
     import FormulateInputMixin from '@braid/vue-formulate/src/FormulateInputMixin'
 
     export default {
-        name: 'FormulateInputSelect',
+        name: 'FormulateInputMultiSelect',
         mixins: [FormulateInputMixin],
-        watch: {
-            model () {
-                console.log(111)
-            }
+        mounted(){
+            $(this.$refs.input).multiselect({
+                includeSelectAllOption: true,
+                enableFiltering: true,
+                enableCaseInsensitiveFiltering: true,
+                onChange: function(option, checked) {
+                    console.log(option, checked)
+
+                    if (checked === false) {
+                        // $preventDeselectElement.multiselect('select', option.val());
+                    }
+                }
+            });
         },
         computed: {
             options () {

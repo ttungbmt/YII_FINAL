@@ -117,7 +117,7 @@
                 <div class="font-bold">B. KẾT QUẢ THỰC HIỆN NGOẠI KIỂM CỦA TRUNG TÂM Y TẾ DỰ PHÒNG TP.HCM</div>
                 <div>
                     <ul>
-                        <li class="flex mt-2">Số cơ sở thực hiện ngoại kiểm/ Tổng số cơ sở: 8/36 đơn vị</li>
+                        <li class="flex mt-2">Số cơ sở thực hiện ngoại kiểm/ Tổng số cơ sở: {{tk_cs_nk}}/{{tk_tong_cs}} đơn vị</li>
                         <li class="flex">
                             <div class="self-center mr-2">Số kinh phí được cấp cho công tác ngoại kiểm:</div>
                             <field-input type="b-text" v-model="form.sokinhphi"/>
@@ -203,15 +203,24 @@
                         </tbody>
                     </table>
                 </div>
-                <b-button @click="addItem('coso_cns')" class="btn-default btn-small mt-2" variant="light">
-                    Thêm mới cơ sở cấp nước
-                </b-button>
+                <div class="btn-group">
+                    <b-button @click="addItem('coso_cns')" class="btn-default btn-small mt-2" variant="light">
+                        Thêm mới cơ sở cấp nước
+                    </b-button>
+                    <div class="flex ml-2">
+                        <div class="self-center ">
+                            Chọn chỉ tiêu
+                        </div>
 
-               
+                        <field-input type="b-multiselect" v-model="form.chitieu_kd" :options="cat.chitieu_kdat" class="m-0 ml-2"/>
+                    </div>
+
+                </div>
+
                 <div class="font-bold mt-6">D. KẾT QUẢ NGOẠI KIỂM NƯỚC SẠCH CỦA TRUNG TÂM Y TẾ DỰ PHÒNG TP.HCM</div>
                 <ol>
-                    <li>Số đơn vị cấp nước được ngoại kiểm/ Tổng số đơn vị cấp nước: 106/134 đơn vị; Tỷ lệ: 79,01%</li>
-                    <li>Số lần ngoại kiểm/ Số đơn vị cấp nước được ngoại kiểm: 146 lần/ 106 đơn vị cấp nước được ngoại kiểm.</li>
+                    <li>Số đơn vị cấp nước được ngoại kiểm/ Tổng số đơn vị cấp nước: {{tk_capnc_nk}}/{{form.donvi_cns.length}} đơn vị; Tỷ lệ: {{tk_tyle_capnc_nk}}%</li>
+                    <li>Số lần ngoại kiểm/ Số đơn vị cấp nước được ngoại kiểm: {{tk_solan_nk}} lần/ {{tk_capnc_nk}} đơn vị cấp nước được ngoại kiểm.</li>
                     <li>Liệt kê các đơn vị thực hiện ngoại kiểm</li>
                 </ol>
                 <table class="table">
@@ -358,22 +367,26 @@
 </template>
 
 <script>
-    import {map, sortBy, get, find, isArray, omit, sum, isNil} from 'lodash-es'
+    import {filter, map, sortBy, get, find, isArray, omit, sum, isNil} from 'lodash-es'
     import axios from 'axios'
     import uniqid from 'uniqid'
 
     export default {
         name: 'page',
         inheritAttrs: false,
+        components: {
+        },
         data() {
             let form = this.$attrs.form,
                 restData = omit(form.data, ['donvi_cns', 'coso_cns'])
 
             return {
+                value: null,
                 cat: {
                     ...this.$attrs.cat
                 },
                 form: {
+                    chitieu_kd: [],
                     donvi_cns: get(form, 'data.donvi_cns', []),
                     coso_cns: get(form, 'data.coso_cns', []),
                     donvi_thnks: get(form, 'data.donvi_thnks', []),
@@ -386,9 +399,25 @@
         mounted() {
         },
         computed: {
+            tk_cs_nk(){
+                return filter(this.form.donvi_cns, {lap_hs: '1'}).length
+            },
+            tk_tong_cs(){
+                return this.tk_cs1+this.tk_nhamay
+            },
+            tk_capnc_nk(){
+                return this.tk_cs2+this.tk_nhamay
+            },
+            tk_tyle_capnc_nk(){
+                if(!this.form.donvi_cns.length) return 0
+                return ((this.tk_capnc_nk/this.form.donvi_cns.length)*100).toFixed(2)
+            },
             tk_tyle_ho_gd() {
                 if(!this.form.ho_gd) return 0
                 return ((this.tk_ho_gd_ccn/this.form.ho_gd)*100).toFixed(2)
+            },
+            tk_solan_nk(){
+                return sum(this.form.donvi_thnks.map(v => parseInt(v.solan)), 'solan')
             },
             tk_ho_gd_ccn() {
                 return sum(this.form.donvi_cns.map(v => parseInt(v.soho)), 'soho')
@@ -425,6 +454,7 @@
                     url = '/admin/baocao-cln/' + (id ? `update?id=${id}` : 'create')
 
                 let extraFields = [
+                    'tk_cs_nk', 'tk_tong_cs', 'tk_capnc_nk', 'tk_tyle_capnc_nk', 'tk_solan_nk',
                     'tk_ho_gd_ccn',
                     'tk_tyle_ho_gd', 'tk_ho_gd_ccn', 'tk_cs1', 'tk_cs2', 'tk_nhamay', 'tk_tong_dvbc', 'tk_tyle_dqc', 'tk_mau_kdqd', 'tk_tylemau_kdqd'
                 ]

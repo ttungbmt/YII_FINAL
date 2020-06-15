@@ -169,15 +169,16 @@
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:120%; font-size:13pt; background-color:#ffffff">
     <span>Tổng số đơn vị cấp nước  được kiểm tra trong kỳ báo cáo:</span>
-    <span>....................................................</span>
+    <span><?=$if($m->tk_tong_dvbc, '....................................................')?></span>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:120%; font-size:13pt; background-color:#ffffff">
     <strong><span>B. KẾT QUẢ THỰC HIỆN NGOẠI KIỂM CỦA TRUNG TÂM KIỂM SOÁT BỆNH TẬT TỈNH</span></strong>
 </p>
+
 <p style="margin-top:6pt; margin-bottom:6pt; line-height:120%; font-size:13pt; background-color:#ffffff">
     <span>- Số cơ sở thực hiện ngoại kiểm/Tổng số cơ sở:</span>
     <span>&#xa0;</span>
-    <span>....................................................</span>
+    <span><?=$if($m->tk_cs_nk, '................')?>/<?=$if($m->tk_tong_cs, '................')?></span>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; line-height:120%; font-size:13pt; background-color:#ffffff">
     <span>- Số kinh phí được cấp cho công tác ngoại kiểm:</span>
@@ -568,12 +569,12 @@
     <span>1.</span><span>&#xa0;</span>
     <span>Số đơn vị cấp nước được ngoại kiểm/ Tổng số đơn vị cấp nước:</span>
     <span>&#xa0;</span>
-    <span>……….</span>
-    <span>; Tỷ lệ: ....%</span>
+    <span><?=$if($m->tk_capnc_nk, '……')?>/<?=$if(count($m->donvi_cns), '……')?></span>
+    <span>; Tỷ lệ: <?=$if($m->tk_tyle_capnc_nk, '....')?>%</span>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
     <span>2. Số lần ngoại kiểm/ Số đơn vị cấp nước được ngoại kiểm:</span>
-    <span>&#xa0;</span><span>…………..</span>
+    <span><?=$if($m->tk_solan_nk, '……')?></span><span>/<?=$if($m->tk_capnc_nk, '……')?></span>
 </p>
 <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify; line-height:normal; font-size:13pt; background-color:#ffffff">
     <span>3. Liệt kê các đơn vị thực hiện ngoại kiểm</span>

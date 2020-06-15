@@ -4,6 +4,7 @@ import {clone, map} from 'lodash-es'
 import Input from './fields/Input'
 import Box from './fields/Box'
 import Select from './fields/Select'
+import MultiSelect from './fields/MultiSelect'
 
 const getComponents = () => {
     const formulate = clone(VueFormulate.defaults.components)
@@ -44,6 +45,7 @@ class VueForm {
                 BText: Input,
                 BBox: Box,
                 BSelect: Select,
+                BMultiSelect: MultiSelect,
             }
         }
 
@@ -65,6 +67,10 @@ class VueForm {
                 'b-select': {
                     classification: 'text',
                     component: 'BSelect'
+                },
+                'b-multiselect': {
+                    classification: 'text',
+                    component: 'BMultiSelect'
                 }
             }
         })
