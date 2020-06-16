@@ -61,6 +61,8 @@ class PtNguyco extends App
     public function rules()
     {
         return [
+            [['lat', 'lng'], 'safe'],
+            [['lat', 'lng'], 'filter', 'filter' => 'trim'],
             [['loaihinh_id', 'ky_ck'], 'integer'],
             [['khupho', 'to_dp', 'ngaycapnhat', 'ngayxoa', 'created_at', 'updated_at', 'created_by', 'updated_by', 'diachi'], 'safe'],
             [['maphuong', 'maquan', 'khupho', 'to_dp', 'dienthoai', 'sonha', 'tenduong', 'nhom',], 'safe'],
@@ -70,7 +72,6 @@ class PtNguyco extends App
             [['maphuong', 'maquan'], 'required'],
             [['ngayxoa', 'ngaycapnhat', 'ngayky_ck'], 'dateCompare', 'compareValue' => date('d/m/Y'), 'format' => 'd/m/Y', 'operator' => '<='],
             ['ngayxoa', 'dateCompare', 'compareAttribute' => 'ngaycapnhat', 'format' => 'd/m/Y', 'operator' => '>='],
-            [['lat', 'lng'], 'safe'],
             [['ky_ck'], 'required', 'when' => function ($model) {
                 return $model->dm_loaihinh && $model->dm_loaihinh->nhom == '1';
             }],
