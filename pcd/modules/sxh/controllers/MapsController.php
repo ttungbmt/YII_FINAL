@@ -210,7 +210,6 @@ class MapsController extends AppController {
                 if($info) {
                     $layerName = $feature->layers;
                     $data = array_merge(['gid' => last(explode('.', $info['id']))], data_get($resp, 'features.0.properties'));
-                    dd(Carbon::createFromFormat($data['ngaymacbenh_nv']));
                     return $this->asJson([
                         'status' => 'OK',
                         'data' => array_merge( [
