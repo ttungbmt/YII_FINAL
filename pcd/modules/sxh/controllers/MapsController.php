@@ -138,19 +138,19 @@ class MapsController extends AppController {
                     "zIndex" => 10
                 ],
             ],
-            [
-                "title"     => "Ca bệnh test",
-                "type" => 'wms',
-                "key" => "cabenh_sxh",
-                'active'  => true,
-                "options" => [
-                    "cql_filter" => $fn_cql($_3mAgo),
-                    "url"        => "/geoserver/ows?",
-                    "layers"     => "dichte:v_phieu_dt",
-                    "zIndex" => 10,
-                    'styles' => 'point_custom'
-                ],
-            ],
+//            [
+//                "title"     => "Ca bệnh test",
+//                "type" => 'wms',
+//                "key" => "cabenh_sxh",
+//                'active'  => true,
+//                "options" => [
+//                    "cql_filter" => $fn_cql($_3mAgo),
+//                    "url"        => "/geoserver/ows?",
+//                    "layers"     => "dichte:v_phieu_dt",
+//                    "zIndex" => 10,
+//                    'styles' => 'point_custom'
+//                ],
+//            ],
             [
                 "title"     => "Ca bệnh nghi ngờ",
                 "type" => 'wms',
