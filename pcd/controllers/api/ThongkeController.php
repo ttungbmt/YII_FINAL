@@ -16,6 +16,7 @@ use yii\db\Expression;
 class ThongkeController extends MyApiController
 {
     public function actionThongke($type){
+        $tk_from_date = '2020-01-01';
         $tbThongke = CabenhSxh::tableName();
 
         $role = RoleHc::init();
@@ -48,20 +49,49 @@ class ThongkeController extends MyApiController
             ->from($tbThongke)
             ->groupBy('loaidieutra');
 
+        $model2 = (new Query())
+            ->select('loaicabenh, count(*)')
+            ->from($tbThongke)
+            ->andWhere(['>=', new Expression("ngaybaocao"), $tk_from_date])
+            ->groupBy('loaicabenh');
+
+        $model3 = (new Query())
+            ->select('count(*), loai_xm')
+            ->from('v_xacminh_cb')
+            ->andWhere(['>=', 'ngaybaocao', $tk_from_date])
+            ->groupBy('loai_xm');
+
+        $data3 = (new Query())->select([
+            'cdc_cbn' => 'COUNT(CASE WHEN loai_xm_cb IN(7,8) THEN 1 END)',
+            'cdc_kbn' => 'COUNT(CASE WHEN loai_xm_cb IN(4,5,6) THEN 1 END)',
+            'kdc_kbn' => 'COUNT(CASE WHEN loai_xm_cb IN(1,2,3) THEN 1 END)',
+        ])
+            ->from('cabenh_sxh')
+            ->andWhere(['>=', 'ngaybaocao', $tk_from_date])
+            ->addSelect($fieldGroup)->addGroupBy($fieldGroup)
+        ;
+
         if($date_from = request()->get('date_from')){
             $model->andWhere(['>=', new Expression("ngaybaocao"), dateToDb($date_from)]);
+            $model2->andWhere(['>=', new Expression("ngaybaocao"), dateToDb($date_from)]);
+            $data3->andWhere(['>=', new Expression("ngaybaocao"), dateToDb($date_from)]);
         } else {
-            $model->andWhere(['>=', new Expression("ngaybaocao"), '2019-01-01']);
+            $model->andWhere(['>=', new Expression("ngaybaocao"), $tk_from_date]);
+            $model2->andWhere(['>=', new Expression("ngaybaocao"), $tk_from_date]);
+            $data3->andWhere(['>=', new Expression("ngaybaocao"), $tk_from_date]);
         }
 
         if($date_to = request()->get('date_to')){
             $model->andWhere(['<=', new Expression("ngaybaocao"), dateToDb($date_to)]);
+            $model2->andWhere(['<=', new Expression("ngaybaocao"), dateToDb($date_to)]);
+            $data3->andWhere(['<=', new Expression("ngaybaocao"), dateToDb($date_to)]);
         }
 
         $model
             ->addSelect($fieldGroup)->addGroupBy($fieldGroup);
 
         $role->filterCabenh($model, 0);
+//        dd($model->createCommand()->getRawSql());
 
         $model = collect($model->all());
 
@@ -100,13 +130,6 @@ class ThongkeController extends MyApiController
 
 //        dd($tk_dieutra, $data, $dm);
 
-
-        $model2 = (new Query())
-            ->select('loaicabenh, count(*)')
-            ->from($tbThongke)
-            ->andWhere(['>=', new Expression("ngaybaocao"), '2019-01-01'])
-            ->groupBy('loaicabenh');
-
         $model2->addSelect($fieldGroup)->addGroupBy($fieldGroup);
 
         $role->filterCabenh($model2, 0);
@@ -135,26 +158,13 @@ class ThongkeController extends MyApiController
                 ];
             });
 
-        $model3 = (new Query())
-            ->select('count(*), loai_xm')
-            ->from('v_xacminh_cb')
-            ->andWhere(['>=', 'ngaybaocao', '2019-01-01'])
-            ->groupBy('loai_xm');
 
 
         $model3->addSelect($fieldGroup)->addGroupBy($fieldGroup);
         $role->filterCabenh($model3, 0);
 
 
-        $data3 = (new Query())->select([
-            'cdc_cbn' => 'COUNT(CASE WHEN loai_xm_cb IN(7,8) THEN 1 END)',
-            'cdc_kbn' => 'COUNT(CASE WHEN loai_xm_cb IN(4,5,6) THEN 1 END)',
-            'kdc_kbn' => 'COUNT(CASE WHEN loai_xm_cb IN(1,2,3) THEN 1 END)',
-        ])
-            ->from('cabenh_sxh')
-            ->andWhere(['>=', 'ngaybaocao', '2019-01-01'])
-            ->addSelect($fieldGroup)->addGroupBy($fieldGroup)
-        ;
+
         $role->filterCabenh($data3, 0);
         $data3 = collect($data3->all());
 

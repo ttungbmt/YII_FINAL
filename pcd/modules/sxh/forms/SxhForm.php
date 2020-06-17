@@ -396,6 +396,7 @@ class SxhForm extends MyForm
             $cb->geom = [$this->lng, $this->lat];
         }
 
+
         // Cập nhật thông tin người nhận
         if (count($this->xacminh) > 2) {
             $lastCh = last($cb->chuyenCas);

@@ -206,6 +206,16 @@ class MapsController extends AppController {
             try {
                 $resp = $req->send()->getData();
                 $info = data_get($resp, 'features.0');
+                $date = data_get($info, 'properties.ngaymacbenh_nv');
+                if($date){
+                    $m3ago = Carbon::now()->subtract('month', 1);
+                    $compare = (new Carbon($date))->lessThan($m3ago);
+                    if($compare){
+                        return $this->asJson([
+                            'status' => 'FAILED',
+                        ]);
+                    }
+                }
 
                 if($info) {
                     $layerName = $feature->layers;

@@ -50,6 +50,7 @@ $buildChart = function ($dataProvier, $max, $title) {
 };
 $max1 = collect($week1)->merge($week3)->max('p_year');
 $max2 = collect($week2)->merge($week4)->max('p_year');
+
 ?>
 
 <style type="text/css">
@@ -162,7 +163,7 @@ $max2 = collect($week2)->merge($week4)->max('p_year');
         <?= DatePicker::widget([
             'name' => 'date_from',
             'type' => DatePicker::TYPE_INPUT,
-            'value' => Carbon::create(2019,1,1)->format('d/m/Y'),
+            'value' => request()->get('date_from', Carbon::create(2020,1,1)->format('d/m/Y')),
             'pluginOptions' => [
                 'autoclose' => true,
                 'format' => 'dd/mm/yyyy'
@@ -176,7 +177,7 @@ $max2 = collect($week2)->merge($week4)->max('p_year');
         <?= DatePicker::widget([
             'name' => 'date_to',
             'type' => DatePicker::TYPE_INPUT,
-            'value' => date('d/m/Y'),
+            'value' => request()->get('date_from', date('d/m/Y')),
             'pluginOptions' => [
                 'autoclose' => true,
                 'format' => 'dd/mm/yyyy'

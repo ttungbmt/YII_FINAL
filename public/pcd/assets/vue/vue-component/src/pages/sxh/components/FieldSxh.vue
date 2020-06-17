@@ -90,6 +90,10 @@
                     $attrs.options = this.dm[$attrs.options]
                 }
 
+                if(this.$attrs.options){
+                    $attrs.options = this.$attrs.options
+                }
+
                 if (this.$attrs.depends) {
                     $attrs.depends = this.$attrs.depends
                 }

@@ -106,6 +106,13 @@
                     this.setNullFormAttrs(['odichmoi', 'odichcu', 'xuly', 'xuly_ngay'])
                 }
             },
+            'form.odichmoi': function (val) {
+                this.form.odichcu = val == 0 ? 1 : null
+            },
+            'form.xuatvien': function (val) {
+                this.form.chuandoan = val == 0 ? 1 : null
+                console.log(this.form.chuandoan)
+            },
         },
         data() {
             return {

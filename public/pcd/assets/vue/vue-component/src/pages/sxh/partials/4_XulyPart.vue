@@ -93,9 +93,9 @@
                 <field-sxh name="ngayxuatvien"/>
             </b-col>
         </b-row>
-        <b-row v-if="form.xuatvien == 1 || form.ht_dieutri == 0">
+        <b-row>
             <b-col>
-                <field-sxh name="chuandoan"/>
+                <field-sxh name="chuandoan" :options="dm_chuandoan"/>
             </b-col>
             <b-col v-if="form.chuandoan == 3">
                 <field-sxh name="chuandoan_khac"/>
@@ -113,7 +113,12 @@
     export default {
         name: 'xuly-part',
         computed: {
-            ...mapState(['form', 'schema'])
+            ...mapState(['form', 'schema', 'dm']),
+            dm_chuandoan(){
+                if(this.form.xuatvien == 0) return this.dm.chuandoan.filter(v => v.value === 1)
+
+                return this.dm.chuandoan
+            }
         },
     }
 </script>

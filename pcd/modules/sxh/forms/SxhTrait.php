@@ -508,7 +508,7 @@ trait SxhTrait {
             ],
             [
                 'name'      => 'odichcu',
-                'component' => 'field-radio', 'labelInline' => 'Ổ dịch cũ đã xác định', 'options' => 'yesno', 'disabled' => $disabled_px2,
+                'component' => 'field-radio', 'labelInline' => 'Ổ dịch cũ đã xác định', 'options' => 'yes', 'disabled' => $disabled_px2,
             ],
             [
                 'name'  => 'odichcu_xuly',
@@ -532,7 +532,7 @@ trait SxhTrait {
             ],
             [
                 'name'      => 'chuandoan',
-                'component' => 'field-radio', 'label' => 'Chuẩn đoán', 'options' => 'chuandoan', 'disabled' => $disabled_px2,
+                'component' => 'field-radio', 'label' => 'Chuẩn đoán', 'disabled' => $disabled_px2,
             ],
             [
                 'name'  => 'chuandoan_khac',
