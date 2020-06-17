@@ -1,4 +1,6 @@
 <?php
+
+use Illuminate\Support\Arr;
 use yii\helpers\ArrayHelper;
 ?>
 <div class="m-2">
@@ -11,7 +13,7 @@ use yii\helpers\ArrayHelper;
             <span class="font-weight-semibold text-primary text-underline"><u><?= $tenphuong ?> (<?=count($dsKhupho)?> khu phố)</u></span> <br>
 
             <?php foreach ($dsKhupho as $tenkp => $kp): ?>
-                <b>Khu phố <?= $tenkp ?> (<?=count($kp)?>):</b> <?= implode(', ', array_pluck($kp, 'tento')) ?> <br>
+                <b>Khu phố <?= $tenkp ?> (<?=count($kp)?>):</b> <?= implode(', ', Arr::pluck($kp, 'tento')) ?> <br>
             <?php endforeach; ?>
 
         <?php endforeach; ?>
