@@ -2,6 +2,7 @@
 
 use kartik\widgets\DatePicker;
 use pcd\models\CabenhSxh;
+use pcd\models\KehoachXulyOdsxh;
 use pcd\models\XulyOdsxh;
 use ttungbmt\map\Map;
 use yii\helpers\Html;
@@ -32,7 +33,8 @@ foreach($cabenhs as $cb) {
 }
 
 $loaiodich = api('dm_loaiodich');
-
+$khXulyOdsxh = KehoachXulyOdsxh::findOne(['odich_id' => $model->id]);
+$khXulyOdsxh = $khXulyOdsxh ? $khXulyOdsxh : new KehoachXulyOdsxh();
 ?>
 
 <div class="odich-sxh-form">
@@ -104,7 +106,7 @@ $loaiodich = api('dm_loaiodich');
         <span class="badge badge-flat border-primary text-primary mt-3">II</span> KẾ HOẠCH XỬ LÝ Ổ DỊCH
         <a href="<?=url(['/admin/odich-sxh/export-khxl', 'id' => $model->id])?>" target="_blank" type="button" class="ml-2 btn badge bg-warning-400"> Xuất kế hoạch xử lý</a>
     </h5>
-    <?=$this->render('_kehoach_xl', ['form' => $form, 'model' => $model, 'khXulyOdsxh' => $khXulyOdsxh, 'cabenhs' => $cabenhs])?>
+    <?php echo $this->render('_kehoach_xl', ['form' => $form, 'model' => $model, 'khXulyOdsxh' => $khXulyOdsxh, 'cabenhs' => $cabenhs])?>
 
     <h5 class="text-primary bold">
         <span class="badge badge-flat border-primary text-primary mt-3">III</span> QUẢN LÝ VÀ XỬ LÝ Ổ DỊCH
