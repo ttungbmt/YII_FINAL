@@ -12,6 +12,7 @@ use yii\widgets\Pjax;
 
 $this->title = Yii::t('app', 'Dân số');
 $this->params['breadcrumbs'][] = $this->title;
+$type = role('phuong') ? 2 : 1;
 ?>
 <div class="danso-index">
 
@@ -21,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'pjax' => true,
         'toolbar' => [
             ['content' => (
-                Html::a('Thêm mới', ['update'], ['title' => 'Thêm mới', 'class' => 'btn btn-primary', 'data-pjax' => 0]) .
+                Html::a('Thêm mới', ['create', 'type' => $type], ['title' => 'Thêm mới', 'class' => 'btn btn-primary', 'data-pjax' => 0]) .
                 '{toggleData}'
             )
             ],
@@ -37,10 +38,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'viewOptions' => ['role' => 'modal-remote', 'title' => 'View', 'data-toggle' => 'tooltip'],
                 'updateOptions' => ['role' => 'modal-remote', 'title' => 'Update', 'data-toggle' => 'tooltip'],
                 'deleteOptions' => ['role' => 'modal-remote', 'title' => 'Delete',
-                    'data-confirm' => false, 'data-method' => false,// for overide yii data api
-                    'data-request-method' => 'post',
-                    'data-toggle' => 'tooltip',
-                    'data-confirm-title' => 'Are you sure?',
+                    'data-request-method'  => 'post',
+                    'data-confirm-ok'      => 'Chấp nhận',
+                    'data-confirm-cancel'  => 'Đóng',
+                    'data-toggle'          => 'tooltip',
+                    'data-confirm-title'   => 'Bạn có chắc chắn?',
                     'data-confirm-message' => 'Are you sure want to delete this item'],
             ],
             [

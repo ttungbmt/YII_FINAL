@@ -14,6 +14,8 @@ use Yii;
  */
 class Danso extends App
 {
+    public $qh;
+    public $px;
     /**
      * {@inheritdoc}
      */
@@ -32,6 +34,7 @@ class Danso extends App
             [['nam', 'danso', 'uoctinh'], 'integer'],
             [['ma_hc'], 'string', 'max' => 255],
             [['danso', 'nam'], 'integer'],
+            [['ma_hc', 'type', 'nam', 'danso', 'uoctinh'], 'required'],
         ];
     }
 
@@ -46,6 +49,7 @@ class Danso extends App
             'nam' => 'Năm',
             'danso' => 'Dân số',
             'uoctinh' => 'Ước tính',
+            'type' => 'Dân số',
         ];
     }
     

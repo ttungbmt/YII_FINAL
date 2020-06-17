@@ -139,6 +139,19 @@ class MapsController extends AppController {
                 ],
             ],
             [
+                "title"     => "Ca bệnh test",
+                "type" => 'wms',
+                "key" => "cabenh_sxh",
+                'active'  => true,
+                "options" => [
+                    "cql_filter" => $fn_cql($_3mAgo),
+                    "url"        => "/geoserver/ows?",
+                    "layers"     => "dichte:v_phieu_dt",
+                    "zIndex" => 10,
+                    'styles' => 'point_custom'
+                ],
+            ],
+            [
                 "title"     => "Ca bệnh nghi ngờ",
                 "type" => 'wms',
                 "options" => [
@@ -197,6 +210,7 @@ class MapsController extends AppController {
                 if($info) {
                     $layerName = $feature->layers;
                     $data = array_merge(['gid' => last(explode('.', $info['id']))], data_get($resp, 'features.0.properties'));
+                    dd(Carbon::createFromFormat($data['ngaymacbenh_nv']));
                     return $this->asJson([
                         'status' => 'OK',
                         'data' => array_merge( [

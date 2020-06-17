@@ -1,5 +1,6 @@
 <?php
 
+use kartik\widgets\DepDrop;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -7,6 +8,8 @@ use yii\widgets\ActiveForm;
 /* @var $model pcd\models\Danso */
 /* @var $form yii\widgets\ActiveForm */
 $model->uoctinh = is_null($model->uoctinh) ? 0 : $model->uoctinh;
+$dm_type = [1 => 'Quận', 2 => 'Phường'];
+$model->type = $model->type ? $model->type : request('type');
 ?>
 
 <div class="card">
@@ -16,15 +19,38 @@ $model->uoctinh = is_null($model->uoctinh) ? 0 : $model->uoctinh;
             <?php $form = ActiveForm::begin(); ?>
             <div class="row">
                 <div class="col-md-6">
-                    <?= $form->field($model, 'ma_hc')->dropDownList(api('/dm/quan?role=true'), [
+                    <?= $form->field($model, 'type')->dropDownList($dm_type, [
+                        'prompt'  => 'Chọn...',
+                    ]); ?>
+                </div>
+                <div class="col-md-3">
+                    <?php
+                    $maquan = $model->ma_hc ? $model->ma_hc : userInfo()->maquan;
+                    ?>
+                    <?= $form->field($model, $model->type == 1 ? 'ma_hc' : 'qh')->dropDownList(api('/dm/quan?role=true'), [
                         'prompt'  => 'Chọn quận huyện...',
                         'id'      => 'drop-quan',
                         'options' => [
-                            userInfo()->ma_quan => ['Selected' => true],
+                            $maquan => ['Selected' => true],
                         ]
-                    ])->label(false); ?>
+                    ])->label('Quận huyện'); ?>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
+                    <?php if($model->type == 2):?>
+                    <?php
+                        $maphuong = $model->ma_hc ? $model->ma_hc : userInfo()->maphuong;
+                    ?>
+                    <?= $form->field($model, 'ma_hc')->widget(DepDrop::className(), [
+                        'options'       => ['prompt' => 'Chọn phường...'],
+                        'pluginOptions' => [
+                            'depends'      => ['drop-quan'],
+                            'url'          => url(['/api/dm/phuong?role=true']),
+                            'initialize'   => $maquan == true,
+                            'placeholder'  => 'Chọn phường...',
+                            'ajaxSettings' => ['data' => ['value' => $maphuong]],
+                        ],
+                    ])->label('Phường xã') ?>
+                    <?php endif;?>
                 </div>
             </div>
 
