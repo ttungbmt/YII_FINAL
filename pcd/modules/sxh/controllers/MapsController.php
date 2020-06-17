@@ -208,7 +208,7 @@ class MapsController extends AppController {
                 $info = data_get($resp, 'features.0');
                 $date = data_get($info, 'properties.ngaymacbenh_nv');
                 if($date){
-                    $m3ago = Carbon::now()->subtract('month', 1);
+                    $m3ago = Carbon::now()->subtract('month', 3);
                     $compare = (new Carbon($date))->lessThan($m3ago);
                     if($compare){
                         return $this->asJson([
