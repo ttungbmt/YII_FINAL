@@ -5,9 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model pcd\models\Danso */
 
-$this->title = Yii::t('app', 'Create Danso');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Dansos'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = Yii::t('app', 'Thêm mới');
 ?>
 <div class="danso-create">
 

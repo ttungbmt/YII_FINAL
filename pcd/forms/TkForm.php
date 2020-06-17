@@ -93,13 +93,16 @@ class TkForm extends MyModel
             ->groupBy(new Expression('cb.qh, cb.px, px.tenquan, px.tenphuong'))
         ;
 
+        $sortKey = 'ten_qh';
 
         if($this->ma_quan){
+            $sortKey = 'ten_px';
             $this->dataTK['cap'] = 'quan';
             $query->andFilterWhere(['cb.qh' => $this->ma_quan]);
         }
 
         if($this->ma_phuong){
+            $sortKey = 'khupho1';
             $this->dataTK['cap'] = 'phuong';
             $query->andFilterWhere(['cb.px' => $this->ma_phuong]);
             $query->addSelect(['khupho1' => 'cb.khupho'])->addGroupBy(new Expression('cb.khupho'));
@@ -115,6 +118,8 @@ class TkForm extends MyModel
             $query->andFilterWhere(['>=', $date_field, $this->date_from]);
         }
 
+
         $this->dataTK['tk_kpa'] = $query->all();
+        $this->dataTK['tk_kpa'] = collect($this->dataTK['tk_kpa'])->sortBy($sortKey, SORT_NATURAL)->values()->all();
     }
 }

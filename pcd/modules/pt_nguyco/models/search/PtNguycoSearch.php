@@ -5,6 +5,7 @@ use pcd\modules\pt_nguyco\models\PtNguyco;
 use pcd\supports\RoleHc;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\db\Expression;
 
 /**
  * PtNguycoSearch represents the model behind the search form about `pcd\models\PtNguyco`.
@@ -60,9 +61,9 @@ class PtNguycoSearch extends PtNguyco
             $query->andWhere('loaihinh_id IS NULL');
         } elseif ($filter === '1'){
             $query->andWhere('updated_at IS NULL');
+        } elseif ($filter === '2'){
+            $query->andWhere(new Expression("ST_Intersects(geom , (SELECT ST_Union(geom) geom FROM hc_quan)) = false"));
         }
-
-
 
         $query->andFilterWhere([
             'maquan' => $this->maquan,
@@ -78,6 +79,7 @@ class PtNguycoSearch extends PtNguyco
         $query->andFilterSearch(['ilike', 'tenduong', $this->tenduong]);
 
         $query->andFilterDate(['ngaycapnhat' => [$this->date_from, $this->date_to]]);
+
 
         $roles->filterHc($query);
 

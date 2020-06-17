@@ -31,6 +31,7 @@ class Danso extends App
             [['nam', 'danso'], 'default', 'value' => null],
             [['nam', 'danso', 'uoctinh'], 'integer'],
             [['ma_hc'], 'string', 'max' => 255],
+            [['danso', 'nam'], 'integer'],
         ];
     }
 

@@ -29,6 +29,11 @@ $null_updated = \pcd\models\PtNguyco::find()
     ->andWhere('updated_by = 1')
     ->andFilterWhere(['maquan' => $searchModel->maquan, 'maphuong' => $searchModel->maphuong])
     ->count();
+$wrong_geom = (new \yii\db\Query())
+    ->from('pt_nguyco')->andWhere(new \yii\db\Expression("ST_Intersects(geom , (SELECT ST_Union(geom) geom FROM hc_quan)) = false"))
+    ->andFilterWhere(['maquan' => $searchModel->maquan, 'maphuong' => $searchModel->maphuong])
+    ->count()
+;
 
 ?>
 
@@ -69,7 +74,8 @@ $null_updated = \pcd\models\PtNguyco::find()
                 'heading' => 'Danh sách Điểm nguy cơ',
                 'before'  =>  Html::tag('div', (
                     ($null_lh > 0 ? '<a href="'.url(array_merge(['', 'filter_dnc' => 0], request()->queryParams)).'" class="badge bg-warning-400" target="_blank" data-pjax="0">'.$null_lh.' DNC chưa nhập loại hình</a>' : '').
-                    ($null_updated > 0 ? '<a href="'.url(array_merge(['', 'filter_dnc' => 1], request()->queryParams)).'" class="ml-1 badge bg-danger-400" target="_blank" data-pjax="0">'.$null_updated.' DNC cập nhập dữ liệu</a>' : '')
+                    ($null_updated > 0 ? '<a href="'.url(array_merge(['', 'filter_dnc' => 1], request()->queryParams)).'" class="ml-1 badge bg-danger-400" target="_blank" data-pjax="0">'.$null_updated.' DNC cập nhập dữ liệu</a>' : '').
+                    ($wrong_geom > 0 ? '<a href="'.url(array_merge(['', 'filter_dnc' => 2], request()->queryParams)).'" class="ml-1 badge bg-violet" target="_blank" data-pjax="0">'.$wrong_geom.' Điểm sai tọa độ</a>' : '')
                 ), ['class' => 'btn-group'])
             ],
             'floatHeader' => false,
@@ -79,7 +85,7 @@ $null_updated = \pcd\models\PtNguyco::find()
 </div>
 <?php Modal::begin([
     "id" => "ajaxCrudModal",
-    "footer" => "",// always need it for jquery plugin
+    "footer" => "",
 ]) ?>
 <?php Modal::end(); ?>
 

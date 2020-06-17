@@ -2,6 +2,7 @@
 
 namespace pcd\models\search;
 
+use pcd\supports\RoleHc;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use pcd\models\Danso;
@@ -42,6 +43,8 @@ class DansoSearch extends Danso
     {
         $query = Danso::find();
 
+        $roles = RoleHc::init();
+
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -65,6 +68,16 @@ class DansoSearch extends Danso
         ]);
 
         $query->andFilterWhere(['ilike', 'ma_hc', $this->ma_hc]);
+
+        if(role('phuong')){
+            $query->andWhere(['type' => 2]);
+        } else {
+            $query->andWhere(['type' => 1]);
+            if(role('quan')){
+                $query->andWhere(['ma_hc' => userInfo()->maquan]);
+            }
+        }
+
 
         return $dataProvider;
     }

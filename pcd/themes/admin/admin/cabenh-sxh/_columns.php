@@ -13,11 +13,15 @@ $dm_xacminh_cb = api('dm_xacminh_cb');
 $dm_benh = \pcd\models\Loaibenh::pluck('tenbenh', 'mabenh')->all();
 $dm_phai = api('dm_phai');
 $dm_ht_dieutri = api('dm_ht_dieutri');
+$dm_loai_xn = api('dm_loai_xn');
+$dm_kq_xn = api('dm_kq_xn');
+
 $s_options = ['class' => 'form-control', 'prompt' => 'Tất cả'];
 
 $exportType = request()->post('export_type');
 $hasExport = in_array(request()->post('export_type'), ['Excel2007', 'Excel5', 'Xlsx', 'Xls']);
 $fmExcelDate = $hasExport ? 'exceldate' : ['date', 'php:d/m/Y'];
+
 
 return [
     [
@@ -188,6 +192,22 @@ return [
         'value' => function ($model, $key, $index) use ($dm_ht_dieutri) {
             return data_get($dm_ht_dieutri, is_null($model->ht_dieutri) ? '' : $model->ht_dieutri);
         },
+    ],
+    [
+        'class' => '\kartik\grid\DataColumn',
+        'label' => 'Loại xét nghiệm',
+        'attribute' => 'loai_xn',
+        'value' => function($model) use($dm_loai_xn){
+            return !is_null($model->loai_xn) ? data_get($dm_loai_xn, $model->loai_xn) : '';
+        }
+    ],
+    [
+        'class' => '\kartik\grid\DataColumn',
+        'label' => 'Kết quả xét nghiệm',
+        'attribute' => 'ketqua_xn',
+        'value' => function($model) use($dm_kq_xn){
+            return !is_null($model->ketqua_xn) ? data_get($dm_kq_xn, $model->ketqua_xn) : '';
+        }
     ],
     [
         'class' => '\kartik\grid\DataColumn',

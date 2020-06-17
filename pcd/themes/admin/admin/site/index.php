@@ -1,51 +1,55 @@
 <?php
 
+use Carbon\Carbon;
+use kartik\widgets\DatePicker;
 use ttungbmt\amcharts\AmCharts;
 use yii\helpers\Html;
 
 $this->title = 'Trang chủ';
-$buildChart = function ($dataProvier, $title){
+$buildChart = function ($dataProvier, $max, $title) {
     return AmCharts::widget([
-        'height'               => '400px',
-        'valueAxes'            => [
-            ['title' => 'Số lượng ca bệnh']
+        'height' => '400px',
+        'valueAxes' => [
+            ['title' => 'Số lượng ca bệnh', 'maximum' => $max]
         ],
         'defaultPluginOptions' => [
-            'titles' => [['text' => $title." ".(date('Y')-1)."-".date('Y')."/ Tuần", 'size' => 16, 'color' => '#FF8000']],
-            'legend'         => [
+            'titles' => [['text' => $title . " " . (date('Y') - 1) . "-" . date('Y') . "/ Tuần", 'size' => 16, 'color' => '#FF8000']],
+            'legend' => [
                 'enabled' => true
             ],
-            'title'          => '',
+            'title' => '',
             'chartScrollbar' => [
-                'enabled'         => true,
+                'enabled' => true,
                 'scrollbarHeight' => 10,
-                'dragIconHeight'  => 25
+                'dragIconHeight' => 25
             ],
-            'categoryField'  => 'weekly',
-            'graphs'         => [
+            'categoryField' => 'weekly',
+            'graphs' => [
                 [
-                    'title'        => 'Năm '.date('Y'),
-                    'type'        => 'column',
-                    'valueField'  => 'year',
-                    'fillAlphas'  => 1,
-                    'lineColor'   => '#66BB6A',
+                    'title' => 'Năm ' . date('Y'),
+                    'type' => 'column',
+                    'valueField' => 'year',
+                    'fillAlphas' => 1,
+                    'lineColor' => '#66BB6A',
                     'balloonText' => 'Tuần [[weekly]]: [[value]]',
                     'columnWidth' => 0.7,
                 ],
                 [
-                    'title'        => 'Năm '.(date('Y')-1),
-                    'valueField'    => 'p_year',
-                    'bullet'        => 'round',
-                    'lineColor'     => '#ff0000',
+                    'title' => 'Năm ' . (date('Y') - 1),
+                    'valueField' => 'p_year',
+                    'bullet' => 'round',
+                    'lineColor' => '#ff0000',
                     'lineThickness' => 2,
-                    'balloonText'   => 'Tuần [[weekly]]: [[value]]',
+                    'balloonText' => 'Tuần [[weekly]]: [[value]]',
                 ],
 
             ],
-            'dataProvider'   => $dataProvier
+            'dataProvider' => $dataProvier
         ]
     ]);
-}
+};
+$max1 = collect($week1)->merge($week3)->max('p_year');
+$max2 = collect($week2)->merge($week4)->max('p_year');
 ?>
 
 <style type="text/css">
@@ -53,14 +57,17 @@ $buildChart = function ($dataProvier, $title){
         display: none !important;
     }
 </style>
-<?php if(role('quan|phuong')):?>
+<?php if (role('quan|phuong')): ?>
     <div class="alert alert-primary border-0 alert-dismissible">
         <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
         <span class="font-weight-semibold text-uppercase">Thông báo!</span>
-        <br> - Hiện tại hệ thống vừa được cập nhật nên không thể tránh khỏi những lỗi kỹ thuật về tài khoản và chức năng. Mong quý anh/chị thông cảm cho sự bất tiện này ảnh hưởng tiến độ công việc, hiện chúng tôi đang hoàn tất chỉnh sửa để hệ thống được tốt hơn. Chân thành cám ơn.
-        <br> - Trường hợp không nhập được phiếu điều tra. Quý anh/ chị gửi mail thông tin liên hệ và hình ảnh chụp lỗi cho TÙNG (ttungbmt@gmail.com - 0796628733) để được xử lỷ ngay, kịp tiến độ công việc
+        <br> - Hiện tại hệ thống vừa được cập nhật nên không thể tránh khỏi những lỗi kỹ thuật về tài khoản và chức
+        năng. Mong quý anh/chị thông cảm cho sự bất tiện này ảnh hưởng tiến độ công việc, hiện chúng tôi đang hoàn tất
+        chỉnh sửa để hệ thống được tốt hơn. Chân thành cám ơn.
+        <br> - Trường hợp không nhập được phiếu điều tra. Quý anh/ chị gửi mail thông tin liên hệ và hình ảnh chụp lỗi
+        cho TÙNG (ttungbmt@gmail.com - 0796628733) để được xử lỷ ngay, kịp tiến độ công việc
     </div>
-<?php endif;?>
+<?php endif; ?>
 
 <div class="system-statistic row">
     <div class="col-md-3">
@@ -117,25 +124,25 @@ $buildChart = function ($dataProvier, $title){
     </div>
 </div>
 
-<div class="row" >
+<div class="row">
     <div class="col-md-6">
         <div class="card card-white">
-            <?= $buildChart($week1, 'Biểu đồ sốt xuất huyết nội trú TP gửi về ') ?>
+            <?= $buildChart($week1, $max1,'Biểu đồ sốt xuất huyết nội trú TP gửi về ') ?>
         </div>
     </div>
     <div class="col-md-6">
         <div class="card card-white">
-            <?= $buildChart($week2, 'Biểu đồ sốt xuất huyết nội trú, ngoại trú TP gửi về') ?>
+            <?= $buildChart($week2, $max2,'Biểu đồ sốt xuất huyết nội trú, ngoại trú TP gửi về') ?>
         </div>
     </div>
     <div class="col-md-6">
         <div class="card card-white">
-            <?= $buildChart($week3, 'Biểu đồ sốt xuất huyết nội trú thực tế') ?>
+            <?= $buildChart($week3, $max1,'Biểu đồ sốt xuất huyết nội trú thực tế') ?>
         </div>
     </div>
     <div class="col-md-6">
         <div class="card card-white">
-            <?= $buildChart($week4, 'Biểu đồ sốt xuất huyết nội trú, ngoại trú thực tế') ?>
+            <?= $buildChart($week4, $max2,'Biểu đồ sốt xuất huyết nội trú, ngoại trú thực tế') ?>
         </div>
     </div>
     <div class="col-md-9">
@@ -145,11 +152,49 @@ $buildChart = function ($dataProvier, $title){
 
 </div>
 
+<form method="GET">
+
+<div class="flex mb-2">
+    <div class="self-center mr-2">
+        <b class="mr-2">Ngày báo cáo:</b> Từ ngày
+    </div>
+    <div>
+        <?= DatePicker::widget([
+            'name' => 'date_from',
+            'type' => DatePicker::TYPE_INPUT,
+            'value' => Carbon::create(2019,1,1)->format('d/m/Y'),
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format' => 'dd/mm/yyyy'
+            ]
+        ])?>
+    </div>
+    <div class="self-center mr-2">
+        đến ngày
+    </div>
+    <div>
+        <?= DatePicker::widget([
+            'name' => 'date_to',
+            'type' => DatePicker::TYPE_INPUT,
+            'value' => date('d/m/Y'),
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format' => 'dd/mm/yyyy'
+            ]
+        ])?>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-primary ml-2">Lọc dữ liệu</button>
+    </div>
+</div>
+</form>
+
+
 <div class="row">
     <div class="col-md-9">
-        <?= Html::tag('div', null, ['style' => 'min-height: 200px', 'data' => ['action' => 'embed', 'url' => url(['/api/thongke/thongke', 'type' => 'all'])]]) ?>
+        <?= Html::tag('div', null, ['style' => 'min-height: 200px', 'data' => ['action' => 'embed', 'url' => url(['/api/thongke/thongke', 'type' => 'all', 'date_from' => request('date_from'), 'date_to' => request('date_to')])]]) ?>
     </div>
-    <?php if(role('admin')):?>
+    <?php if (role('admin')): ?>
         <div class="col-md-3">
             <?= Html::tag('div', null, ['style' => 'min-height: 200px', 'data' => ['action' => 'embed', 'url' => url(['/api/thongke/activity'])]]) ?>
         </div>

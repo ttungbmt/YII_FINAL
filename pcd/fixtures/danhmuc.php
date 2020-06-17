@@ -38,7 +38,7 @@ $data['dm_loaidieutra'] = [
 $data['dm_xuatvien'] = [
     1 => 'Đã xuất viện',
     0 => 'Chưa xuất viện',
-    9 => 'Không rõ',
+//    9 => 'Không rõ',
 ];
 
 $data['dm_loaicabenh'] = [
@@ -70,7 +70,7 @@ $data['dm_ht_dieutri'] = [
 
 $data['dm_loai_xn'] = [1 => 'PCR', 2 => 'MAC-ELISA', 3 => 'TEST NHANH', 4 => 'KHAC'];
 
-$data['dm_kq_xn'] = [1 => 'Dương tính', 2 => 'Âm tính', 3 => 'KHAC'];
+$data['dm_kq_xn'] = [1 => 'Dương tính', 2 => 'Âm tính', 3 => 'Chưa có kết quả'];
 
 $data['dm_xacminh_cb'] = [
     // Không địa chỉ - không bn

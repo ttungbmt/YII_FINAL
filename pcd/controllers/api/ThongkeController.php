@@ -16,7 +16,6 @@ use yii\db\Expression;
 class ThongkeController extends MyApiController
 {
     public function actionThongke($type){
-
         $tbThongke = CabenhSxh::tableName();
 
         $role = RoleHc::init();
@@ -46,14 +45,23 @@ class ThongkeController extends MyApiController
 
         $model = (new Query())
             ->select('count(*), loaidieutra')
-            ->andWhere(['>=', new Expression("ngaybaocao"), '2019-01-01'])
             ->from($tbThongke)
             ->groupBy('loaidieutra');
 
-        $model->addSelect($fieldGroup)->addGroupBy($fieldGroup);
+        if($date_from = request()->get('date_from')){
+            $model->andWhere(['>=', new Expression("ngaybaocao"), dateToDb($date_from)]);
+        } else {
+            $model->andWhere(['>=', new Expression("ngaybaocao"), '2019-01-01']);
+        }
+
+        if($date_to = request()->get('date_to')){
+            $model->andWhere(['<=', new Expression("ngaybaocao"), dateToDb($date_to)]);
+        }
+
+        $model
+            ->addSelect($fieldGroup)->addGroupBy($fieldGroup);
 
         $role->filterCabenh($model, 0);
-//        dd($model->createCommand()->getRawSql());
 
         $model = collect($model->all());
 
@@ -255,11 +263,6 @@ class ThongkeController extends MyApiController
             }
         }
 
-//        return $this->render('soca', [
-//            'ys' => $ys,
-//            'list' => $data,
-//            'type' => $type,
-//        ]);
 
         return [
             'type' => $type,

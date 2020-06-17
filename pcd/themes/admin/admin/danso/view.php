@@ -7,8 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model pcd\models\Danso */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Dansos'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Chi tiết dân số'), 'url' => ['index']];
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="danso-view">
