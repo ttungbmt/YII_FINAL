@@ -3,6 +3,8 @@
     "private": true,
     "workspaces": {
         "packages": [
+            "public/vendor/*",
+            "public/pcd/pages",
             "public/projects/*/pages"
         ]
     },

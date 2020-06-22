@@ -12,7 +12,5 @@ use common\controllers\MyApiController;
 
 class ApiController extends MyApiController
 {
-    public function actionTest(){
-        return ['test' => 123];
-    }
+
 }

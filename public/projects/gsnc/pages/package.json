@@ -22,6 +22,7 @@
     },
     "dependencies": {
         "@braid/vue-formulate": "^2.3.8",
+        "@ttungbmt/vuexy": "^0.0.1",
         "axios": "^0.19.2",
         "bootstrap-multiselect": "^0.9.15",
         "bootstrap-vue": "^2.15.0",

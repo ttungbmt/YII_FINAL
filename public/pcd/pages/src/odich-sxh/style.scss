@@ -1,0 +1,33 @@
+.btn-small {
+  background-color: transparent;
+  border: 1px solid #007bff;
+  border-radius: .25rem;
+  outline: 0!important;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.form-group {
+  legend {
+    border-bottom: none;
+  }
+}
+
+.modal-backdrop {
+  opacity: .5;
+}
+
+.modal-header {
+  border-bottom: 1px solid #dee2e6!important;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 1rem!important;
+  font-weight: 500;
+}
+
+.modal-title {
+  font-weight: 500;
+}

@@ -213,6 +213,7 @@ class MapsController extends AppController {
                     if($compare){
                         return $this->asJson([
                             'status' => 'FAILED',
+                            'message' => "{$date} >= $m3ago"
                         ]);
                     }
                 }

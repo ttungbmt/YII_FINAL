@@ -1,0 +1,61 @@
+<template>
+    <b-card header-class="p-0">
+        <template v-slot:header>
+            <p-map></p-map>
+        </template>
+
+        <b-card-text>
+            <form method="POST" @submit.prevent="handleSubmit">
+                <component v-bind:is="i.component" v-for="(i, k) in schema" v-bind="i" :key="k"></component>
+                <b-button variant="primary" type="submit">Submit</b-button>
+            </form>
+        </b-card-text>
+    </b-card>
+</template>
+<script>
+    import Map from './partials/Map.vue'
+    import DsCabenh from './partials/DsCabenh.vue'
+    import Phamvi from './partials/Phamvi.vue'
+    import TbDnc from './partials/TbDnc.vue'
+    import {get, sync} from 'vuex-pathify'
+    import {mapFields} from 'vuex-map-fields'
+
+    export default {
+        name: 'page-form-odich',
+        components: {
+            [Map.name]: Map,
+            [DsCabenh.name]: DsCabenh,
+            [TbDnc.name]: TbDnc,
+            [Phamvi.name]: Phamvi,
+        },
+        computed: {
+            schema: get('schema'),
+            form: get('form'),
+            formModal: get('formModal'),
+        },
+        data() {
+            return {
+
+            }
+        },
+        mounted() {
+        },
+        methods: {
+            handleSubmit(){
+                this.$http.post(window.location.href, this.form).then(({data}) => {
+                    if(!this.form.id){
+                        window.location.href = '/sxh/odich'
+                    }
+                })
+            }
+        }
+    }
+</script>
+
+
+
+
+
+
+
+

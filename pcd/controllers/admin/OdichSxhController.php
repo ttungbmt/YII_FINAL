@@ -113,19 +113,20 @@ class OdichSxhController extends AppController
 
     public function actionCreate()
     {
-        $request = Yii::$app->request;
-        $model = new OdichSxh();
-
-        if ($model->load($request->post()) && $model->validate()) {
-            if ($model->saveOdich($request)) {
-                return $this->redirect('index');
-            }
-        } else {
-
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
+        return $this->redirect(['/sxh/odich/create', 'cabenh_ids' => request('cabenh_ids')]);
+//        $request = Yii::$app->request;
+//        $model = new OdichSxh();
+//
+//        if ($model->load($request->post()) && $model->validate()) {
+//            if ($model->saveOdich($request)) {
+//                return $this->redirect('index');
+//            }
+//        } else {
+//
+//            return $this->render('create', [
+//                'model' => $model,
+//            ]);
+//        }
     }
 
     protected function getDnc($ids){

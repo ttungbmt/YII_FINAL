@@ -235,7 +235,6 @@ class OdichController extends MyApiController
             $ids = $tmp;
             $dataMap = $dataMap->push($q);
         }
-        dd($dataMap);
 
         $cabenhs = collect(($table == 'cabenh_sxh_nn' ? CabenhSxhNn::className() : CabenhSxh::className())::find()->where(['gid' => $ids])
             ->indexBy('gid')->all())->map(function ($i) {return $i->toArray(

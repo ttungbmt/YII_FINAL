@@ -1,0 +1,33 @@
+{
+  "name": "@ttungbmt/vuexy",
+  "version": "0.0.1",
+  "description": "Core for Vue.js",
+  "main": "src/index.js",
+  "sideEffects": false,
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuejs/vuex.git"
+  },
+  "author": "Truong Thanh Tung",
+  "license": "MIT",
+  "homepage": "https://github.com/ttungbmt/vuex#readme",
+  "devDependencies": {},
+  "dependencies": {
+    "@braid/vue-formulate": "^2.4.0",
+    "axios": "^0.19.2",
+    "bootstrap-vue": "^2.15.0",
+    "leaflet": "^1.6.0",
+    "lodash-es": "^4.17.15",
+    "uniqid": "^5.2.0",
+    "vee-validate": "^3.3.4",
+    "vue-lodash": "^2.1.2",
+    "vue-set-value": "^1.0.3",
+    "vue-wait": "^1.4.8",
+    "vue2-filters": "^0.11.0",
+    "vue2-leaflet": "^2.5.2",
+    "vuex": "^3.4.0",
+    "vuex-map-fields": "^1.4.0",
+    "vuex-pathify": "^1.4.1"
+  }
+}

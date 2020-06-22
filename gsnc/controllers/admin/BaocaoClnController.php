@@ -139,7 +139,6 @@ class BaocaoClnController extends AppController
         ];
 
         $data_final = collect(['m' => opt(array_merge($m1, $m2))])->merge($data_func)->all();
-//        dd($data_final['m']);
 
         return $data_final;
     }

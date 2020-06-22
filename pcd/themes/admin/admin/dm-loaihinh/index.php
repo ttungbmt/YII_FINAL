@@ -1,8 +1,9 @@
 <?php
+
 use yii\helpers\Html;
 use yii\bootstrap\Modal;
 use kartik\grid\GridView;
-use johnitvn\ajaxcrud\CrudAsset; 
+use johnitvn\ajaxcrud\CrudAsset;
 
 /* @var $this yii\web\View */
 /* @var $searchModel pcd\search\DmLoaihinhSearch */
@@ -13,37 +14,37 @@ $this->title = "Loại hình";
 ?>
 <div class="dm-loaihinh-index">
     <div id="ajaxCrudDatatable">
-        <?=GridView::widget([
-                    'id'=> 'crud-datatable',
-                    'dataProvider' => $dataProvider,
+        <?= GridView::widget([
+            'id' => 'crud-datatable',
+            'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'filterSelector' => 'select[name="pagination"]',
-            'pjax'=>true,
-            'columns' => require(__DIR__.'/_columns.php'),
-            'toolbar'=> [
-                ['content'=>
+            'pjax' => true,
+            'columns' => require(__DIR__ . '/_columns.php'),
+            'toolbar' => [
+                ['content' =>
                     Html::a('Thêm mới', ['create'],
-                    ['role'=>'modal-remote','title'=> 'Thêm mới Loại hình','class'=>'btn btn-default', ]).
+                        ['role' => 'modal-remote', 'title' => 'Thêm mới Loại hình', 'class' => 'btn btn-default',]) .
                     Html::a('<i class="icon-reload-alt"></i>', [''],
-                    ['data-pjax'=>1, 'class'=>'btn btn-default', 'title'=> lang('Reset Grid')]).
-                    '{toggleData}'.
+                        ['data-pjax' => 1, 'class' => 'btn btn-default', 'title' => lang('Reset Grid')]) .
+                    '{toggleData}' .
                     '{export}'
                 ],
-            ],          
+            ],
             'striped' => true,
             'condensed' => true,
-            'responsive' => true,          
+            'responsive' => true,
             'panel' => [
-                'type' => 'primary', 
+                'type' => 'primary',
                 'heading' => 'Danh sách Loại hình',
             ]
-        ])?>
+        ]) ?>
     </div>
 </div>
 <?php Modal::begin([
-    "id"=> "ajaxCrudModal",
-    "footer"=> "",// always need it for jquery plugin
-])?>
+    "id" => "ajaxCrudModal",
+    "footer" => "",// always need it for jquery plugin
+]) ?>
 <?php Modal::end(); ?>
 
 

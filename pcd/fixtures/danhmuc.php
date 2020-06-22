@@ -88,7 +88,9 @@ $data['dm_xacminh_cb'] = [
 
 $data['dm_loaiodich'] = [
     1 => 'Ổ dịch',
-    4 => 'Ổ dịch diện rộng',
+    2 => 'Ổ dịch diện rộng',
+    3 => 'Ổ dịch liên phường',
+    4 => 'Ổ dịch liên quận',
 ];
 
 $data['dm_mucdich_gs'] = [
@@ -98,5 +100,9 @@ $data['dm_mucdich_gs'] = [
     4 => 'Giám sát đột xuất',
 ];
 
+$data['dm_loai_ks'] = [
+    1 => 'Lăng quăng',
+    2 => 'Lăng quăng và muỗi',
+];
 
 return $data;

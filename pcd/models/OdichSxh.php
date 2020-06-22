@@ -151,11 +151,13 @@ class OdichSxh extends App
 
     public function getCabenhs()
     {
-        return $this->hasMany(CabenhSxh::className(), ['gid' => 'cabenh_id'])
+        return $this->hasMany(CabenhSxh::className(), ['gid' => 'resource_id'])
             ->viaTable('odich_sxh_poly', ['odich_id' => 'id'])
-            ->innerJoin(['pl' => 'odich_sxh_poly'], 'gid = cabenh_id')
+            ->andWhere(['resource_type' => 'sxh'])
+            ->innerJoin(['pl' => 'odich_sxh_poly'], 'gid = resource_id')
             ->orderBy(['order' => SORT_ASC])
-        ;
+            ;
+
     }
 
     public function getOdichSxhPoly(){

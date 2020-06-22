@@ -53,7 +53,7 @@ class OdichSxhSearch extends OdichSxh
     {
         $query = $this->find()
             ->with(['cabenhs', 'xulyOdsxhs'])
-            ->where(['not', ['ngayxacdinh' => null]])
+//            ->where(['not', ['ngayxacdinh' => null]])
         ;
 
         $this->load($params);
