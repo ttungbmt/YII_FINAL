@@ -1,23 +1,14 @@
 <template>
     <div class="mt-2">
-        <b-table v-bind="options" :fields="fields" :items="innerItems" style="max-height: 500px">
-<!--            <template v-slot:cell(tt)="data">-->
-<!--                <span>{{labelLan(data)}}</span> {{ data.index + 1 }}-->
-<!--            </template>-->
-
+        <b-table v-bind="options" :fields="fields" :items="innerItems" style="max-height: 500px" @row-clicked="onRowClicked">
             <template v-slot:[`cell(${i.key})`]="data" v-for="i in fields">
-                {{data.value}}
-            </template>
+                {{isFormatHtml(data) ? '' : cellValue(data)}}
+                <div v-if="isFormatHtml(data)" v-html="cellValue(data)"></div>
 
-            <template v-slot:cell(actions)="data">
-                <b-button-group>
-                    <b-button size="sm" variant="link" class="p-0 pr-2" @click="editItem(data)"><i class="icon-pencil7"></i></b-button>
-                    <b-button size="sm" variant="link" class="p-0 text-danger" @click="deleteItem(data)"><i class="icon-bin"></i></b-button>
+                <b-button-group v-if="isMatchField(data.field, {type: 'action'})">
+                    <b-button size="sm" variant="link" class="p-0 pr-2" @click="editItem(data)" v-if="shownBtnAction(data, 'update')"><i class="icon-pencil7"></i></b-button>
+                    <b-button size="sm" variant="link" class="p-0 text-danger" @click="deleteItem(data)" v-if="shownBtnAction(data, 'delete')"><i class="icon-bin"></i></b-button>
                 </b-button-group>
-            </template>
-
-            <template v-slot:cell()="data">
-                <i>{{ data.value }}</i>
             </template>
         </b-table>
 
@@ -25,41 +16,58 @@
             <template slot="waiting">
                 <b-progress :value="100" :max="100" animated></b-progress>
             </template>
-
         </v-wait>
 
         <div class="btn-group">
             <button type="button" class="btn-small mt-2" @click="openModal" v-if="hasBtn('create')">Thêm mới</button>
+            <button type="button" class="btn-small mt-2" @click="openOrderModal" v-if="hasBtn('order')">{{getBtn('order', 'label')}}</button>
             <button type="button" class="btn-small mt-2" @click="getList" v-if="hasBtn('getList')">{{getBtn('getList', 'label')}}</button>
         </div>
-
 
         <b-modal ref="modal-table" :title="form.title" v-if="form" v-bind="modalOptions">
             <div>
                 <component v-bind:is="i.component" v-for="(i, k) in form.schema" v-bind="i" :key="k"></component>
             </div>
             <div class="mt-3 text-right">
-                <b-button variant="danger" @click="handleCancel">Hủy</b-button>
+                <b-button variant="danger" @click="handleCancel('modal-table')">Hủy</b-button>
                 <b-button variant="primary" @click="handleOk">Lưu</b-button>
+            </div>
+        </b-modal>
+
+        <b-modal ref="modal-order" :title="getBtn('order', 'title', '')" hide-footer>
+            <div>
+                <v-list :itemsPath="itemsPath" :formatter="getBtn('order', 'formatter')" @ordered="onOrdered"></v-list>
+            </div>
+            <div class="mt-3 text-right">
+                <b-button variant="danger" @click="handleCancel('modal-order')">Hủy</b-button>
+                <b-button variant="primary" @click="handleOrderOk">Lưu</b-button>
             </div>
         </b-modal>
     </div>
 
 </template>
 <script>
-    import {has, get, includes, isNull, isString, isPlainObject, isEmpty, filter, head, isArray } from 'lodash-es'
+    import {cloneDeep, isBoolean, has, get, includes, isNull, isString, isPlainObject, isEmpty, filter, head, isArray, isMatch } from 'lodash-es'
+
     const KEY_LOADING = 'table'
 
     export default {
         inheritAttrs: false,
         name: 'v-table',
-        props: [
-            'buttons',
-            'fields',
-            'items',
-            'itemsPath',
-            'form'
-        ],
+        props: {
+            buttons: Array,
+            fields: Array,
+            items: Array,
+            itemsPath: String,
+            form: Object,
+            onRowClicked: {
+                type: Function,
+                default: function (item, index, event) {
+
+                }
+            },
+        },
+
         data(){
             return {
                 keyLoading: KEY_LOADING,
@@ -68,7 +76,9 @@
                     responsive: true,
                     hover: true,
                     small: 'small',
-                    'head-variant': 'light'
+                    'head-variant': 'light',
+                    // selectable: true,
+                    // 'select-mode': 'single'
                 },
                 modalOptions: {
                     'ok-title': 'Lưu',
@@ -76,6 +86,7 @@
                     'hide-footer': true,
                     size: get(this.form, 'size', 'md')
                 },
+                ordered: []
             }
         },
         computed: {
@@ -87,15 +98,50 @@
 
         },
         methods: {
+            isMatchField(field, options){
+                return isMatch(field, options)
+            },
+            isFormatHtml(data){
+                return this.isMatchField(data.field, {format: 'html'})
+            },
+            shownBtnAction(data, btn){
+                let visibleBtn = get(data, `field.visibleButtons.${btn}`)
+
+                if(isBoolean(visibleBtn)) return visibleBtn
+
+                return true
+            },
+            cellValue(data){
+                if(data.field.type) return this.getTypeValue(data)
+                if(data.field.value) return data.field.value(data)
+                if(data.field.filter) {
+                    let filter = this.$store.get(data.field.filter)
+                    return get(filter, data.value, '')
+                }
+
+                return data.value
+            },
+            getTypeValue(data){
+                const {field, value} = data
+
+                switch (field.type) {
+                    case 'serial':
+                        return data.index+1
+                    case 'data':
+                        return data.index+1
+                }
+
+                return value
+            },
             hasBtn(name){
                 return !isEmpty(filter(this.buttons, (v, k) => {
                     if(isString(v) && v === name) return true
-                    if(has(v, 'key') && v.key === name) return true
+                    if(has(v, 'type') && v.type === name) return true
                     return false
                 }))
             },
-            getBtn(name, attr = ''){
-                return get(filter(this.buttons, v => this.hasBtn(name)), '0'+(attr ? '.'+attr : ''), {})
+            getBtn(name, attr = '', defaultValue = {}){
+                return get(filter(this.buttons, v => this.hasBtn(name)), '0'+(attr ? '.'+attr : ''), defaultValue)
             },
             labelLan(data){
                 let name = get(this, 'form.name')
@@ -104,7 +150,7 @@
             },
             editItem({index}){
                 this.modelIndex = index
-                let value = get(this.innerItems, index)
+                let value = cloneDeep(get(this.innerItems, index))
                 this.$store.commit('updateModal', {path: 'formModal', value})
                 this.$refs['modal-table'].show()
             },
@@ -119,8 +165,8 @@
                 this.$store.commit('resetModal', {path: 'formModal', value: {}})
                 this.$refs['modal-table'].show()
             },
-            handleCancel(){
-                this.$refs['modal-table'].hide()
+            handleCancel(name){
+                this.$refs[name].hide()
             },
             handleOk(){
                 let old = this.innerItems,
@@ -164,6 +210,28 @@
                         console.warn(e)
                     }
                 })
+            },
+            openOrderModal(){
+                this.$refs['modal-order'].show()
+            },
+            handleOrderOk(){
+                let items = []
+
+                if(!isEmpty(this.ordered)){
+                    this.ordered.map(index => items.push(this.innerItems[index]))
+                    this.updateForm({value: items})
+                }
+
+                this.$refs['modal-order'].hide()
+            },
+            updateForm({path, value}){
+                this.$store.commit('updateForm', {
+                    path: path ? path : this.itemsPath,
+                    value,
+                })
+            },
+            onOrdered(payload){
+                this.ordered = payload
             }
         }
     }

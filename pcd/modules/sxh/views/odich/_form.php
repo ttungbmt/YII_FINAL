@@ -13,6 +13,7 @@ $this->title = ($model->isNewRecord ? 'Thêm mới' : 'Cập nhật') . ' Ổ d�
 <?php
 $options = ['depends' => [\common\assets\AppPluginAsset::className()]];
 $this->registerCssFile('https://unpkg.com/leaflet@1.6.0/dist/leaflet.css', $options);
+$this->registerCssFile('https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.2.1/dist/css/leaflet.extra-markers.min.css', $options);
 $this->registerJsFile('https://unpkg.com/leaflet@1.6.0/dist/leaflet.js', $options);
 $this->registerJsFile('/pcd/pages/dist/odich-sxh/main.js', $options);
 $this->registerJsVar('pageData', [

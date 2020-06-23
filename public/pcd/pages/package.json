@@ -23,12 +23,16 @@
     "dependencies": {
         "@ttungbmt/vuexy": "^0.0.1",
         "@turf/circle": "^6.0.1",
+        "@turf/helpers": "^6.1.4",
+        "@turf/union": "^6.0.3",
         "axios": "^0.19.2",
         "bootstrap-datepicker": "^1.9.0",
         "html-minifier": "^4.0.0",
+        "leaflet-extra-markers": "^1.2.1",
         "lodash-es": "^4.17.15",
         "vue": "^2.6.10",
         "vue-imask": "^6.0.5",
-        "vue-quill-editor": "^3.0.6"
+        "vue-quill-editor": "^3.0.6",
+        "vuedraggable": "^2.23.2"
     }
 }
