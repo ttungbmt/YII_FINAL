@@ -245,6 +245,7 @@ const options = {
                             return `Lần ${index + 1}`
                         }
                     },
+                    {key: 'ngayxuly', label: 'Ngày PHC'},
                     {key: 'khupho', label: 'Khu phố/ấp'},
                     {key: 'to_dp', label: 'Tổ dân phố'},
                     {key: 'sonocgia_tt', label: 'Số nóc gia thực tế'},
@@ -263,6 +264,7 @@ const options = {
                     path: 'formModal',
                     size: 'lg',
                     schema: [
+                        {component: 'v-field', label: 'Ngày PHC', model: 'formModal.ngayxuly', type: 'date'},
                         {
                             component: 'v-grid', cols: 2,
                             schema: [

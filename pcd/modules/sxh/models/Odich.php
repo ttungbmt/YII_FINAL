@@ -44,6 +44,7 @@ use pcd\models\OdichSxhPoly;
  * @property string|null $odich_kt
  * @property string|null $ngayketthuc_td
  * @property int|null $sonocgia
+ * @property int|null $dncs_count
  */
 
 class Odich extends App
@@ -69,7 +70,7 @@ class Odich extends App
         return [
             [['ngayxacdinh', 'ngayphathien', 'ngaydukien_kt', 'ngayketthuc', 'ngaybatdau_gs', 'ngayketthuc_td'], 'date', 'format' => 'php:d/m/Y'],
             [['donvi_xp', 'hdtt_hinhthuc', 'hdtt_thoigian', 'hdtt_diadiem', 'danhgia', 'nguoithuchien', 'dienthoai',], 'safe'],
-            [['loai_od', 'sonocgia'], 'integer'],
+            [['loai_od', 'sonocgia', 'dncs_count'], 'integer'],
         ];
     }
 

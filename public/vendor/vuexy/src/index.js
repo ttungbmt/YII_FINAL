@@ -1,4 +1,3 @@
-import { BootstrapVue } from 'bootstrap-vue'
 import Vue2Filters from 'vue2-filters'
 import VueWait from 'vue-wait'
 import VueLodash from 'vue-lodash'
@@ -17,7 +16,6 @@ const NAME = 'Vuexy'
 // --- Vuexy plugin ---
 const Vuexy = {
     install(Vue, config = {}){
-        Vue.use(BootstrapVue)
         Vue.use(VueAxios)
         Vue.use(VueLodash, { lodash })
         Vue.use(VueWait)

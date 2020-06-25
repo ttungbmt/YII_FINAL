@@ -66,7 +66,7 @@ $header = function ($title){
                     <a href="#" class="nav-link"><i class="icon-cart4"></i> <span>Ổ dịch</span></a>
                     <ul class="nav nav-group-sub" data-submenu-title="Ổ dịch">
                         <?=$li('Danh sách', '/sxh/odich', null, 'odich.index.view')?>
-                        <?=$li('Thống kê', '/thongke/odich', null, 'odich.thongke')?>
+                        <?=$li('Thống kê', '/sxh/thongke/odich', null, 'odich.thongke')?>
                     </ul>
                 </li>
 

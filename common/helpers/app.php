@@ -22,6 +22,16 @@ if (!function_exists('dateToDb')) {
     }
 }
 
+if (!function_exists('dbToDate')) {
+    function dbToDate($date) {
+        try {
+            return Carbon::createFromFormat('Y-m-d', $date)->format('d/m/Y');
+        } catch (Exception $e){
+            return $date;
+        }
+    }
+}
+
 
 if (!function_exists('app')) {
     function app($abstract = null) {

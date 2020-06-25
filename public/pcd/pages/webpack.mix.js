@@ -27,4 +27,5 @@ mix
         }
     })
     .js('src/odich-sxh/index.js', 'odich-sxh/main.js')
+    .js('src/odich-sxh-thongke/index.js', 'odich-sxh-thongke/main.js')
     .disableNotifications();

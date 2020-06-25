@@ -9,6 +9,7 @@ use pcd\models\App;
  *
  * @property int $id
  * @property int|null $odich_id
+ * @property string|null $ngayxuly
  * @property int|null $tt
  * @property string|null $maquan
  * @property string|null $maphuong
@@ -24,6 +25,7 @@ use pcd\models\App;
  */
 class PhunHc extends App
 {
+    protected $dates = ['ngayxuly'];
     /**
      * {@inheritdoc}
      */
@@ -43,7 +45,7 @@ class PhunHc extends App
             [['solit_hc'], 'number'],
             [['maquan'], 'string', 'max' => 3],
             [['maphuong'], 'string', 'max' => 8],
-            [['khupho', 'to_dp', 'loai_hc'], 'string', 'max' => 100],
+            [['khupho', 'to_dp', 'loai_hc', 'ngayxuly'], 'string', 'max' => 100],
         ];
     }
 

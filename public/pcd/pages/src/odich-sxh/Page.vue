@@ -75,7 +75,11 @@
         methods: {
             handleSubmit(){
                 this.loading = true
-                this.$http.post(window.location.href, this.form).then(({data}) => {
+                let data = this.form
+
+                data.dncs_count = this.form.dncs.length
+
+                this.$http.post(window.location.href, data).then(({data}) => {
                     this.loading = false
 
                     if(!this.form.id){

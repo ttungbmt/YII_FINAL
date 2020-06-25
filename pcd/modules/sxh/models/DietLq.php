@@ -16,6 +16,7 @@ use pcd\models\App;
  */
 class DietLq extends App
 {
+    protected $dates = ['ngayxuly'];
     /**
      * {@inheritdoc}
      */
