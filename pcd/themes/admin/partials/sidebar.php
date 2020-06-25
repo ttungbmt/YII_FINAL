@@ -65,7 +65,7 @@ $header = function ($title){
                 <li class="nav-item nav-item-submenu">
                     <a href="#" class="nav-link"><i class="icon-cart4"></i> <span>Ổ dịch</span></a>
                     <ul class="nav nav-group-sub" data-submenu-title="Ổ dịch">
-                        <?=$li('Danh sách', '/admin/odich-sxh', null, 'odich.index.view')?>
+                        <?=$li('Danh sách', '/sxh/odich', null, 'odich.index.view')?>
                         <?=$li('Thống kê', '/thongke/odich', null, 'odich.thongke')?>
                     </ul>
                 </li>
@@ -124,8 +124,6 @@ $header = function ($title){
                     <?=$li('Loại bệnh', '/admin/loaibenh', 'icon-file-text')?>
                     <?=$li('Bệnh viện', '/admin/benhvien', 'icon-office')?>
                     <?=$li('Loại hình ĐNC', '/pt_nguyco/dm-loaihinh', 'icon-file-text')?>
-
-
 
                     <?=$li('Ranh tổ', '/dm/ranhto', 'icon-file-text')?>
                 <?php endif; ?>
