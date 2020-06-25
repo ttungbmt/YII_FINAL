@@ -1,15 +1,22 @@
 <template>
-    <div v-html="html"></div>
+    <div v-html="computedHtml"></div>
 </template>
 <script>
+    import {isFunction} from 'lodash-es'
+
     export default {
         inheritAttrs: false,
         name: 'v-html',
-        props: [
-            'html',
-        ],
-        data(){
-            return {
+        props: {
+            html: [String, Function]
+        },
+        computed: {
+            computedHtml(){
+                if(isFunction(this.html)){
+                    return this.html.bind(this)()
+                }
+
+                return this.html
             }
         }
     }

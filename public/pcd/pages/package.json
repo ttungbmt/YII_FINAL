@@ -33,6 +33,7 @@
         "vue": "^2.6.10",
         "vue-imask": "^6.0.5",
         "vue-quill-editor": "^3.0.6",
-        "vuedraggable": "^2.23.2"
+        "vuedraggable": "^2.23.2",
+        "vuejs-noty": "^0.1.3"
     }
 }

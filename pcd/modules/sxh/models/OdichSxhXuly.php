@@ -14,7 +14,9 @@ use Yii;
  * @property string|null $diet_lqs
  * @property string|null $phun_hcs
  * @property string|null $dncs
- * @property string|null $phamvi
+ * @property string|null $phamvi_gis
+ * @property string|null $phamvi_px
+ * @property string|null $phamvi_px_html
  */
 class OdichSxhXuly extends App
 {
@@ -32,7 +34,7 @@ class OdichSxhXuly extends App
     public function rules()
     {
         return [
-            [['khaosat_cts', 'diet_lqs', 'phun_hcs', 'dncs', 'odich_id', 'phamvi'], 'safe'],
+            [['khaosat_cts', 'diet_lqs', 'phun_hcs', 'dncs', 'odich_id', 'phamvi_gis', 'phamvi_px', 'phamvi_px_html'], 'safe'],
         ];
     }
 
@@ -48,6 +50,8 @@ class OdichSxhXuly extends App
             'phun_hcs' => 'Phun Hcs',
             'dncs' => 'Dncs',
             'odich_id' => 'Odich_id',
+            'phamvi_gis' => 'Phạm vi GIS',
+            'phamvi_px' => 'Phạm vi PX',
         ];
     }
 }

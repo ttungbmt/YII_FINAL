@@ -7,13 +7,12 @@
         <b-card-text>
             <form method="POST" @submit.prevent="handleSubmit">
                 <component v-bind:is="i.component" v-for="(i, k) in schema" v-bind="i" :key="k"></component>
-                <b-button variant="primary" type="submit">Lưu kết quả</b-button>
+                <b-button variant="primary" type="submit"><i v-if="loading" class="icon-spinner2 spinner"></i> Lưu kết quả</b-button>
             </form>
         </b-card-text>
     </b-card>
 </template>
 <script>
-
     import Map from './partials/Map.vue'
     import DsCabenh from './partials/DsCabenh.vue'
     import Phamvi from './partials/Phamvi.vue'
@@ -21,7 +20,6 @@
 
     import {get, sync} from 'vuex-pathify'
     import {mapFields} from 'vuex-map-fields'
-
 
     export default {
         name: 'page-form-odich',
@@ -39,6 +37,7 @@
         },
         data() {
             return {
+                loading: false,
                 fields: [
                     {
                         key: 'tt1',
@@ -71,13 +70,19 @@
             }
         },
         mounted() {
+
         },
         methods: {
-
             handleSubmit(){
+                this.loading = true
                 this.$http.post(window.location.href, this.form).then(({data}) => {
+                    this.loading = false
+
                     if(!this.form.id){
+                        this.$noty.success(`Đã thêm mới thành công`)
                         window.location.href = '/sxh/odich'
+                    } else {
+                        this.$noty.success(`Đã cập nhật thành công`)
                     }
                 })
             }

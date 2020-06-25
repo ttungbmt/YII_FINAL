@@ -164,13 +164,13 @@ class OdichSxhSearch extends OdichSxh
             ],
             [
                 'label'     => 'Ngày dự kiến kết thúc',
-                'attribute' => 'ngaydukienkt',
+                'attribute' => 'ngaydukien_kt',
             ],
             [
                 'label'     => 'Số lần xử lý',
                 'attribute' => 'solan_xl',
                 'value' => function($model){
-                    return collect($model->xulyOdsxhs)->count();
+                    return collect($model->phunHcs)->count();
                 }
             ],
             [

@@ -101,6 +101,7 @@ class SyncRelationBehavior extends \frostealth\yii2\behaviors\SyncRelationBehavi
 
         $models = !empty($unlink) ? $relationClass::findAll($unlink) : [];
 
+
         foreach ($models as $model) {
             $this->owner->unlink($name, $model, $delete);
         }

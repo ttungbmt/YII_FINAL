@@ -6,6 +6,7 @@ use pcd\controllers\AppController;
 use pcd\models\CabenhSxh;
 use pcd\models\HcPhuong;
 use pcd\models\HcQuan;
+use pcd\models\OdichSxhPoly;
 use pcd\modules\pt_nguyco\models\PtNguyco;
 use pcd\modules\sxh\models\Odich;
 use pcd\modules\sxh\models\OdichSxhXuly;
@@ -70,19 +71,25 @@ class OdichController extends AppController
             'tenquan' => ['value' => 'quan.tenquan'],
             'tenphuong' => ['value' => 'phuong.tenquan'],
         ];
-        $toFilterValue = function ($options){
-            return function ($model) use($options){
-                $filter = collect($options['filter']);
-                $value = $options['value'];
-                return $filter->get($model->{$value}, '');
-            };
-        };
 
 
         $m1 = ArrayHelper::toArray($model, [
             Odich::class => $data_map->merge([
                 'tenquan' => 'quan.tenquan',
                 'tenphuong' => 'phuong.tenphuong',
+                'khaosat_cts' => function($model) use($dm_loai_ks){
+                    return collect(data_get($model, 'xuly.khaosat_cts', []))->map(function ($i) use($dm_loai_ks){
+                        return array_merge($i, [
+                            'loai_ks' => toFilterValue(['filter' => $dm_loai_ks, 'value' => 'loai_ks'])(opt($i)),
+                        ]);
+                    })->all();
+                },
+                'dncs' => function($model){
+                    $dncs = PtNguyco::find()->andWhere(['gid' => data_get($model, 'xuly.dncs', [])])->all();
+                    return ArrayHelper::toArray($dncs, [PtNguyco::class => $this->getDnsFields()]);
+                },
+                'diet_lqs' => 'dietLqs',
+                'phun_hcs' => 'phunHcs',
                 'cabenhs' => function($model){
                     return ArrayHelper::toArray($model->cabenhs, [CabenhSxh::class => [
                         'gid',
@@ -96,16 +103,13 @@ class OdichController extends AppController
                         'ngaybaocao',
                     ]]);
                 },
-                'loai_od' => $toFilterValue(['filter' => $dm_loai_od, 'value' => 'loai_od']),
+                'loai_od' => toFilterValue(['filter' => $dm_loai_od, 'value' => 'loai_od']),
             ])->all()
         ]);
 
         $m2 = [
-//            'tong_ho_gd_ccn' => function() use($m1){
-//                return collect($m1['donvi_cns'])->sum('soho');
-//            },
-        ];
 
+        ];
 
         $data_func = [
             'checkbox' => function($value){
@@ -127,6 +131,7 @@ class OdichController extends AppController
         $id = request()->get('id');
         $odich = Odich::findOne($id);
         $odich = $odich ? $odich : new Odich();
+        $sxhPolys = collect($odich->sxhPolys);
 
         if($odich->cabenhs){
             $sxhs = $odich->cabenhs;
@@ -137,6 +142,9 @@ class OdichController extends AppController
 
         $cabenhs = ArrayHelper::toArray($sxhs, [
             CabenhSxh::class => [
+                'poly_id' => function($model) use($sxhPolys){
+                    return data_get($sxhPolys->firstWhere('resource_id', $model->gid), 'id');
+                },
                 'gid',
                 'hoten', 'tuoi', 'khupho', 'to_dp', 'ngaymacbenh', 'ngaybaocao', 'ngaymacbenh_nv',
                 'geometry' => function($model){
@@ -150,10 +158,14 @@ class OdichController extends AppController
                 }
             ]
         ]);
-        $xuly = opt($odich->xuly ? $odich->xuly->toArray() : (new OdichSxhXuly())->toArray());
 
-        $odich = ArrayHelper::toArray($odich, [Odich::class => [
+
+
+        $odichData = ArrayHelper::toArray($odich, [Odich::class => [
             'id',
+            'maphuong',
+            'maquan',
+            'sonocgia',
             'loai_od',
             'ngayxacdinh',
             'ngayphathien',
@@ -166,20 +178,36 @@ class OdichController extends AppController
             'danhgia',
             'nguoithuchien',
             'dienthoai',
+            'diet_lqs' => 'dietLqs',
+            'phun_hcs' => 'phunHcs',
+            'xuly_id' => 'xuly.id',
         ]]);
 
+        $xulyData = ArrayHelper::toArray($odich->xuly ? $odich->xuly : new OdichSxhXuly(), [
+            OdichSxhXuly::class => [
+                'khaosat_cts',
+                'phamvi_gis',
+                'phamvi_px',
+                'dncs' => function($model){
+                    $dncs = PtNguyco::find()->andWhere(['gid' => $model->dncs->toArray()])->all();
+                    return ArrayHelper::toArray($dncs, [PtNguyco::class => $this->getDnsFields()]);
+                },
+            ]
+        ]);
+
         return [
-            'formData' => array_merge($odich, [
+            'formData' => array_merge($odichData, $xulyData, [
                 'cabenhs' => $cabenhs,
-                'khaosat_cts' => $xuly->khaosat_cts,
-                'diet_lqs' => $xuly->diet_lqs,
-                'dncs' => $xuly->dncs,
-                'phun_hcs' => $xuly->phun_hcs,
-                'phamvi' => $xuly->phamvi,
             ]),
             'cat' => [
                 'loai_od' => api('dm_loaiodich'),
                 'loai_ks' => api('dm_loai_ks'),
+                'qh' => collect(HcQuan::find()->select('tenquan,maquan,order')->orderBy('order')->pluck('tenquan', 'maquan'))->map(function ($i, $k){
+                    return ['label' => $i, 'value' => (string)$k];
+                })->values()->all(),
+                'px' => collect(HcPhuong::find()->select('maquan,tenphuong,maphuong,order')->orderBy('order')->all())->map(function ($i, $k){
+                    return ['label' => $i['tenphuong'], 'value' => (string)$i['maphuong'], 'extra' => ['maquan' => $i['maquan']]];
+                })->values()->all(),
             ]
         ];
     }
@@ -211,33 +239,39 @@ class OdichController extends AppController
         ]);
     }
 
+    protected function getDnsFields(){
+        return [
+            'id',
+            'ten_cs',
+            'nhom',
+            'loaihinh' => function($model){
+                if($lh = $model->dm_loaihinh){
+                    if(in_array($lh->id, [20, 21, 22]) && $model->loaihinh) return "Khác ({$model->loaihinh})";
+                    return $model->dm_loaihinh->ten_lh;
+                }
+                return '';
+            },
+            'khupho',
+            'to_dp',
+            'tenphuong' => function($model){
+                return $model->phuong->tenphuong;
+            },
+            'tenquan' => function($model){
+                return $model->quan->tenquan;
+            },
+            'diachi'=> function($model){
+                return collect([$model->sonha, $model->tenduong])->implode(' ');
+            },
+        ];
+    }
+
     public function actionDncs(){
         $ids = request('cabenhIds', []);
+        $odich_id = request('odich_id', null);
         $distance = 200;
         $sql = CabenhSxh::find()->select(new Expression("ST_Union(ST_Buffer(geom::geography, {$distance})::geometry) geom"))->andWhere(['gid' => $ids])->createCommand()->getRawSql();
         $data = ArrayHelper::toArray(PtNguyco::find()->with(['quan', 'phuong', 'dm_loaihinh'])->andWhere(new Expression("ST_Intersects(geom, ({$sql}))"))->all(), [
-            PtNguyco::class => [
-                'ten_cs',
-                'nhom',
-                'loaihinh' => function($model){
-                    if($lh = $model->dm_loaihinh){
-                        if(in_array($lh->id, [20, 21, 22]) && $model->loaihinh) return "Khác ({$model->loaihinh})";
-                        return $model->dm_loaihinh->ten_lh;
-                    }
-                    return '';
-                },
-                'khupho',
-                'to_dp',
-                'tenphuong' => function($model){
-                    return $model->phuong->tenphuong;
-                },
-                'tenquan' => function($model){
-                    return $model->quan->tenquan;
-                },
-                'diachi'=> function($model){
-                    return collect([$model->sonha, $model->tenduong])->implode(' ');
-                },
-            ]
+            PtNguyco::class => $this->getDnsFields()
         ]);
 
         return $this->asJson([

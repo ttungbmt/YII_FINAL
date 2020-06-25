@@ -20,13 +20,13 @@ $columns = array_merge([
             'urlCreator' => function ($action, $model, $key, $index) {
                 return url([$action, 'id' => $key]);
             },
-            'viewOptions' => ['role' => 'modal-remote', 'title' => lang('View'), 'data-toggle' => 'tooltip'],
-            'updateOptions' => ['role' => 'modal-remote', 'title' => lang('Update'), 'data-toggle' => 'tooltip'],
+            'updateOptions' => ['title' => lang('Update'), 'data-toggle' => 'tooltip'],
             'buttons' => [
                 'download' => function ($url, $model, $key) {
                     return Html::a("<i class='icon-download4'></i>", ['/sxh/odich/export-word', 'id' => $model->getId()], ['title' => 'Tải phiếu điều tra', 'data-toggle' => 'tooltip', 'data-method' => 'POST', 'data-pjax' => 0, 'target' => '_blank']);
                 }
             ],
+            'visibleButtons' => ['view' => false]
         ],
     ]);
 

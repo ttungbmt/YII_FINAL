@@ -1,12 +1,21 @@
 <template>
-    <div>
-        <b-form-group :label="label">
-            <component :is="computedComponent" v-bind="computedAttrs" v-model="innerValue"></component>
-        </b-form-group>
-    </div>
+    <b-form-group :label="label">
+        <component :is="computedComponent" v-bind="computedAttrs" v-model="innerValue"></component>
+    </b-form-group>
 </template>
 <script>
-    import {get, has, isString, isPlainObject, isArray, map, isEmpty, includes} from 'lodash-es'
+    import {get, has, isString, isPlainObject, isArray, map, isEmpty, includes, isUndefined, filter} from 'lodash-es'
+
+    const natsort = (arr) => {
+        return arr.sort(function (a,b) {
+            if ( isNaN(a) && isNaN(b) ) {
+                if (a<=b) { return false; } else { return true; }
+            }
+            if (isNaN(a)) { return true; }
+            if (isNaN(b)) { return false; }
+            return a-b;
+        });
+    }
 
     const toOptions = (items, extraOpts = {}, config = {}) => {
         let opts = []
@@ -19,14 +28,15 @@
 
         if (isArray(items)) {
             if (has(items, '0.value') && has(items, '0.label')) {
-                opts =  items
-            } else {
-                opts = items.map((l, v) => ({[value]: v, [label]: l}))
+                opts =  items.map((v, k) => ({[value]: v.value, [label]: v.label}))
             }
         }
 
+        if(placeholder) {
+            opts = [{[value]: null, [label]: placeholder}].concat(opts)
+        }
+
         if(!isEmpty(opts)){
-            if(placeholder) return  [{[value]: null, [label]: placeholder}].concat(opts)
             return opts
         }
 
@@ -41,21 +51,28 @@
         props: {
             label: String,
             model: String,
+            filterBy: [Object, Function],
             placeholder: String,
             type: {
                 type: String,
                 default: 'text'
             },
-            items: [String, Array, Object]
+            items: [String, Array, Object],
+            value: [String, Array, Object, Number],
         },
         computed: {
             innerValue: {
                 get: function () {
+                    if(!isUndefined(this.value)) return this.value
                     if (!this.model) return ''
 
                     return get(this.$store.state, this.model)
                 },
                 set: function (value) {
+                    if(!isUndefined(this.value)) {
+                        this.$emit('input', value)
+                    }
+
                     if (this.model) {
                         this.$store.commit('updateField', {
                             path: this.model,
@@ -112,9 +129,20 @@
                 let items = []
                 if (isString(this.items)) {
                     items = get(this.$store.state, this.items, [])
+                } else {
+                    items = this.items ? this.items : []
+                }
+
+                if(this.filterBy){
+                    items = filter(items, v => get(v, this.filterBy.path) == this.filterBy.value)
                 }
 
                 return toOptions(items, {placeholder: this.placeholder}, {label: 'text'})
+            }
+        },
+        watch: {
+            'filterBy.value': function (val) {
+                this.$emit('input', null)
             }
         },
         created() {

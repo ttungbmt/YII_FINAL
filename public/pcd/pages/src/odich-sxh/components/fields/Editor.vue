@@ -24,8 +24,7 @@
         },
         methods:{
             updateValue({quill, html, text}){
-                console.log(quill, html, text)
-                // this.$emit('input', value)
+                this.$emit('input', html)
             },
         },
         beforeDestroy() {

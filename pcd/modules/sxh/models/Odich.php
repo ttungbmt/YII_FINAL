@@ -1,6 +1,7 @@
 <?php
 namespace pcd\modules\sxh\models;
 
+use Illuminate\Support\Arr;
 use maybeworks\minify\MinifyHelper;
 use pcd\models\App;
 use pcd\models\CabenhSxh;
@@ -42,6 +43,7 @@ use pcd\models\OdichSxhPoly;
  * @property string|null $thoigian
  * @property string|null $odich_kt
  * @property string|null $ngayketthuc_td
+ * @property int|null $sonocgia
  */
 
 class Odich extends App
@@ -67,7 +69,7 @@ class Odich extends App
         return [
             [['ngayxacdinh', 'ngayphathien', 'ngaydukien_kt', 'ngayketthuc', 'ngaybatdau_gs', 'ngayketthuc_td'], 'date', 'format' => 'php:d/m/Y'],
             [['donvi_xp', 'hdtt_hinhthuc', 'hdtt_thoigian', 'hdtt_diadiem', 'danhgia', 'nguoithuchien', 'dienthoai',], 'safe'],
-            [['loai_od'], 'integer'],
+            [['loai_od', 'sonocgia'], 'integer'],
         ];
     }
 
@@ -82,12 +84,13 @@ class Odich extends App
             ->viaTable('odich_sxh_poly', ['odich_id' => 'id'])
             ->andWhere(['resource_type' => 'sxh'])
             ->innerJoin(['pl' => 'odich_sxh_poly'], 'gid = resource_id')
-            ->orderBy(['order' => SORT_ASC])
-            ;
+            ->orderBy(['order' => SORT_ASC]);
     }
 
+
+
     public function saveModel(){
-        $data = request()->all();
+        $data = collect(request()->all());
 
         if(role('phuong')){
             $this->maphuong = $this->maphuong ? $this->maphuong : userInfo()->maphuong;
@@ -96,30 +99,32 @@ class Odich extends App
 
         $this->save();
 
-        $this->linkCabenhs(request()->post('cabenhs'));
+        $toPoly = function ($data, $type, $key){
+            return collect($data)->map(function ($i, $k) use($type, $key){
+                return [
+                    'id' =>  $i['poly_id'],
+                    'order' => $k+1,
+                    'resource_type' => $type,
+                    'resource_id' => $i[$key]
+                ];
+            })->all();
+        };
 
-        $xuly = $this->xuly ? $this->xuly : new OdichSxhXuly();
-        if(isset($data['phamvi'])){
-            $data['phamvi'] = MinifyHelper::html($data['phamvi']);
-        }
-        $xuly->setAttributes($data);
-        $this->link('xuly', $xuly);
+        $cabenhs = $toPoly($data->get('cabenhs'), 'sxh', 'gid');
+//        $dncs = $toPoly($data->get('dncs'), 'dnc', 'id');
 
-    }
+        $this->linkMany('sxhPolys', $cabenhs);
+//        $this->linkMany('dncPolys', $dncs);
 
-    protected function linkCabenhs($cabenhs){
-        OdichSxhPoly::deleteAll(['odich_id' => $this->id]);
-        $stt = 1;
-        foreach ($cabenhs as $k => $val) {
-            $cb = CabenhSxh::findOne($val['gid']);
-            $pl = new OdichSxhPoly([
-                'odich_id' => $this->id,
-                'order' => $stt++,
-                'resource_type' => 'sxh',
-                'resource_id' => $cb->gid
-            ]);
-            $pl->save();
-        }
+        $this->linkMany('dietLqs', $data->get('diet_lqs'));
+        $this->linkMany('phunHcs', $data->get('phun_hcs'));
+
+        $xuly = $data->only(['xuly_id', 'phamvi_gis', 'phamvi_px', 'phamvi_px_html', 'khaosat_cts', 'dncs']);
+
+        if(isset($xuly['phamvi_gis'])) $xuly['phamvi_gis'] = MinifyHelper::html($xuly['phamvi_gis']);
+        if(isset($xuly['dncs'])) $xuly['dncs'] = Arr::pluck($xuly['dncs'], 'id');
+
+        $this->linkOne('xuly', $xuly, ['xuly_id' => 'id']);
     }
 
     public function getXuly(){
@@ -134,4 +139,19 @@ class Odich extends App
         return $this->hasOne(HcPhuong::className(), ['maphuong' => 'maphuong']);
     }
 
+    public function getDietLqs(){
+        return $this->hasMany(DietLq::className(), ['odich_id' => 'id']);
+    }
+
+    public function getPhunHcs(){
+        return $this->hasMany(PhunHc::className(), ['odich_id' => 'id']);
+    }
+
+    public function getSxhPolys(){
+        return $this->hasMany(OdichSxhPoly::className(), ['odich_id' => 'id'])->andWhere(['resource_type' => 'sxh']);
+    }
+
+//    public function getDncPolys(){
+//        return $this->hasMany(OdichSxhPoly::className(), ['odich_id' => 'id'])->andWhere(['resource_type' => 'dnc']);
+//    }
 }

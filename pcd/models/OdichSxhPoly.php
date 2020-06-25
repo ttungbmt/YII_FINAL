@@ -29,8 +29,8 @@ class OdichSxhPoly extends App
     public function rules()
     {
         return [
-            [['odich_id', 'cabenh_id', 'order', 'resource_id'], 'default', 'value' => null],
-            [['odich_id', 'cabenh_id', 'order', 'resource_id'], 'integer'],
+            [['odich_id', 'order', 'resource_id'], 'default', 'value' => null],
+            [['odich_id', 'order', 'resource_id'], 'integer'],
             [['data'], 'safe'],
             [['resource_type'], 'string', 'max' => 255],
         ];
@@ -44,7 +44,6 @@ class OdichSxhPoly extends App
         return [
             'id' => Yii::t('app', 'ID'),
             'odich_id' => Yii::t('app', 'Odich ID'),
-            'cabenh_id' => Yii::t('app', 'Cabenh ID'),
             'order' => 'Order',
             'resource_type' => 'Resource Type',
             'resource_id' => 'Resource ID',

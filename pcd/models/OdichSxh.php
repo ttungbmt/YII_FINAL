@@ -2,6 +2,7 @@
 namespace pcd\models;
 
 use nanson\postgis\behaviors\GeometryBehavior;
+use pcd\modules\sxh\models\PhunHc;
 use Yii;
 
 /**
@@ -18,7 +19,7 @@ class OdichSxh extends App
     public $phamvi_to;
     public $phamvi_khupho;
 
-    protected $dates = ['ngayphathien', 'ngaydukienkt', 'ngaykt', 'ngayxacdinh'];
+    protected $dates = ['ngayphathien', 'ngaydukien_kt', 'ngaykt', 'ngayxacdinh'];
 
     public $geometryType = GeometryBehavior::GEOMETRY_MULTIPOLYGON;
 
@@ -71,6 +72,10 @@ class OdichSxh extends App
     public function getKehoachXulyOdsxh()
     {
         return $this->hasOne(KehoachXulyOdsxh::className(), ['odich_id' => 'id']);
+    }
+
+    public function getPhunHcs(){
+        return $this->hasMany(PhunHc::className(), ['odich_id' => 'id']);
     }
 
     public function saveGeometry($odich_id){

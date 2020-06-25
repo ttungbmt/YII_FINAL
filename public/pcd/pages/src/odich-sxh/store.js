@@ -1,4 +1,4 @@
-import {isNil} from 'lodash-es'
+import {isNil, cloneDeep} from 'lodash-es'
 import {createStore} from '@ttungbmt/vuexy'
 
 import Bus from './bus'
@@ -6,7 +6,7 @@ import Bus from './bus'
 const options = {
     mutations: {
         updateForm(state, {path, value}){
-            this.setIn(path, value)
+            this.setIn(path, cloneDeep(value))
         },
         deleteForm(state, {path, value}){
             this.setIn(path, this.getIn(path).filter((v, k) => k !== value))
@@ -29,34 +29,34 @@ const options = {
         schema: [
             {component: 'v-heading', type: 'heading', serial: 'I', title: 'Tổng quan về ổ dịch', class: 'text-lg'},
             {component: 'v-html', html: `<div class="mt-2 font-semibold"><div class="text-base uppercase">Danh sách ca bệnh trong ổ dịch</div></div>`},
-            // {
-            //     component: 'v-table',
-            //     class: 'mb-2',
-            //     fields: [
-            //         {key: 'action', label: '', type: 'action', visibleButtons: {update: false}},
-            //         {key: 'tt', label: 'STT', type: 'serial'},
-            //         {key: 'hoten', label: 'Họ tên'},
-            //         {key: 'tuoi', label: 'Tuổi'},
-            //         {key: 'to_dp', label: 'Tổ'},
-            //         {key: 'khupho', label: 'Khu phố'},
-            //         {key: 'px', label: 'Phường xã'},
-            //         {key: 'qh', label: 'Quận huyện'},
-            //         {key: 'ngaymacbenh', label: 'Ngày mắc bệnh'},
-            //         {key: 'ngaybaocao', label: 'Ngày báo cáo'},
-            //     ],
-            //     itemsPath: 'form.cabenhs',
-            //     buttons: [{
-            //         type: 'order',
-            //         label: 'Thay đổi thứ tự sắp xếp',
-            //         title: 'Thay đổi thứ tự sắp xếp ca bệnh trong ổ dịch',
-            //         formatter: function (item, index) {
-            //             return `${index+1} - <b>${item.hoten}</b> (${item.ngaymacbenh_nv})`
-            //         }
-            //     }],
-            //     onRowClicked: function (item, index) {
-            //         Bus.$emit('@map/SHOW_POPUP', {index, item});
-            //     }
-            // },
+            {
+                component: 'v-table',
+                class: 'mb-2',
+                fields: [
+                    {key: 'action', label: '', type: 'action', visibleButtons: {update: false}},
+                    {key: 'tt', label: 'STT', type: 'serial'},
+                    {key: 'hoten', label: 'Họ tên'},
+                    {key: 'tuoi', label: 'Tuổi'},
+                    {key: 'to_dp', label: 'Tổ'},
+                    {key: 'khupho', label: 'Khu phố'},
+                    {key: 'px', label: 'Phường xã'},
+                    {key: 'qh', label: 'Quận huyện'},
+                    {key: 'ngaymacbenh', label: 'Ngày mắc bệnh'},
+                    {key: 'ngaybaocao', label: 'Ngày báo cáo'},
+                ],
+                itemsPath: 'form.cabenhs',
+                buttons: [{
+                    type: 'order',
+                    label: 'Thay đổi thứ tự sắp xếp',
+                    title: 'Thay đổi thứ tự sắp xếp ca bệnh trong ổ dịch',
+                    formatter: function (item, index) {
+                        return `${index+1} - <b>${item.hoten}</b> (${item.ngaymacbenh_nv})`
+                    }
+                }],
+                onRowClicked: function (item, index) {
+                    Bus.$emit('@map/SHOW_POPUP', {index, item});
+                }
+            },
             {component: 'v-field', label: 'Loại ổ dịch', type: 'select', items: 'cat.loai_od', placeholder: 'Chọn...', model: 'form.loai_od'},
             {
                 component: 'v-grid',
@@ -70,6 +70,7 @@ const options = {
             {component: 'v-heading', type: 'heading', serial: 'II', title: 'Kết quả xử lý', class: 'text-lg'},
             {component: 'v-heading', type: 'heading', serial: '1', title: 'Phạm vi khoanh vùng xử lý', class: 'text-base', pill: true},
             {component: 'p-phamvi'},
+            {component: 'v-field', label: 'Số nhà (nóc gia trong phạm vi ổ dịch đã xác định): ', model: 'form.sonocgia', type: 'integer', class: 'mt-2'},
             {component: 'v-heading', type: 'heading', serial: '2', title: 'Khảo sát côn trùng', class: 'text-base', pill: true},
             {
                 component: 'v-table',
@@ -164,11 +165,11 @@ const options = {
                     {key: 'tt', label: 'Lần DLQ', value: ({index}) => {
                             return `Lần ${index+1}`
                     }},
-                    {key: 'ngay_dlq', label: 'Ngày DLQ'},
-                    {key: 'khupho_dlq', label: 'Khu phố DLQ'},
-                    {key: 'to_dp_dlq', label: 'Tổ DLQ'},
-                    {key: 'sonha_dlq', label: 'Số nhà DLQ (vãng gia)'},
-                    {key: 'songuoi_dlq', label: 'Số người tham gia'},
+                    {key: 'ngayxuly', label: 'Ngày DLQ'},
+                    {key: 'khupho', label: 'Khu phố DLQ'},
+                    {key: 'to_dp', label: 'Tổ DLQ'},
+                    {key: 'sonha', label: 'Số nhà DLQ (vãng gia)'},
+                    {key: 'songuoi', label: 'Số người tham gia'},
                 ],
                 buttons: ['create'],
                 itemsPath: 'form.diet_lqs',
@@ -177,11 +178,11 @@ const options = {
                     title: 'Diệt lăng quăng ',
                     path: 'formModal',
                     schema: [
-                        {component: 'v-field', label: 'Ngày DLQ', model: 'formModal.ngay_dlq', type: 'date', placeholder: 'DD/MM/YYYY'},
-                        {component: 'v-field', label: 'Khu phố DLQ', model: 'formModal.khupho_dlq'},
-                        {component: 'v-field', label: 'Tổ DLQ', model: 'formModal.to_dp_dlq'},
-                        {component: 'v-field', label: 'Số nhà DLQ (vãng gia)', model: 'formModal.sonha_dlq', type: 'integer'},
-                        {component: 'v-field', label: 'Số người tham gia', model: 'formModal.songuoi_dlq', type: 'integer'},
+                        {component: 'v-field', label: 'Ngày DLQ', model: 'formModal.ngayxuly', type: 'date', placeholder: 'DD/MM/YYYY'},
+                        {component: 'v-field', label: 'Khu phố DLQ', model: 'formModal.khupho'},
+                        {component: 'v-field', label: 'Tổ DLQ', model: 'formModal.to_dp'},
+                        {component: 'v-field', label: 'Số nhà DLQ (vãng gia)', model: 'formModal.sonha', type: 'integer'},
+                        {component: 'v-field', label: 'Số người tham gia', model: 'formModal.songuoi', type: 'integer'},
                     ]
                 }
             },
@@ -192,8 +193,13 @@ const options = {
                 schema: [
                     {component: 'v-html', html: '<div class="mt-2 font-bold">b. Hoạt động giám sát, xử lý điểm nguy cơ tại OD</div>'},
                     {
+                        component: 'v-html', html: function () {
+                            return  `<div class="mt-2">Số điểm nguy cơ trong ổ dịch: `+this.$store.get('form.dncs').length+`</div>`
+                        }},
+                    {
                         component: 'v-table',
                         fields: [
+                            {key: 'action', label: '', type: 'action', visibleButtons: {update: false}},
                             {key: 'tt', label: '#', type: 'serial'},
                             {key: 'ten_cs', label: 'Tên điểm'},
                             {key: 'nhom', label: 'Nhóm'},
@@ -210,7 +216,10 @@ const options = {
                                 type: 'getList',
                                 url: '/sxh/odich/dncs',
                                 data(){
-                                    return {cabenhIds: this.$store.get('form.cabenhs').map(v => v.gid)}
+                                    return {
+                                        cabenhIds: this.$store.get('form.cabenhs').map(v => v.gid),
+                                        odich_id: this.$store.get('form.id'),
+                                    }
                                 },
                                 label: 'Cập nhật danh sách ĐNC'
                             }
@@ -236,8 +245,8 @@ const options = {
                             return `Lần ${index + 1}`
                         }
                     },
-                    {key: 'to_dp', label: 'Khu phố/ấp'},
-                    {key: 'khupho', label: 'Tổ dân phố'},
+                    {key: 'khupho', label: 'Khu phố/ấp'},
+                    {key: 'to_dp', label: 'Tổ dân phố'},
                     {key: 'sonocgia_tt', label: 'Số nóc gia thực tế'},
                     {key: 'sonocgia_xl', label: 'Số nóc gia xử lý'},
                     {key: 'somaylon', label: 'Số máy nhỏ'},

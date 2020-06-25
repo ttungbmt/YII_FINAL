@@ -32,6 +32,15 @@
  */
 
 /*!
+ * leaflet-extra-markers
+ * Custom Markers for Leaflet JS based on Awesome Markers
+ * Leaflet ExtraMarkers
+ * https://github.com/coryasilva/Leaflet.ExtraMarkers/
+ * @author coryasilva <https://github.com/coryasilva>
+ * @version 1.2.1
+ */
+
+/*!
  * vuex v3.4.0
  * (c) 2020 Evan You
  * @license MIT
@@ -87,4 +96,11 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ */
+
+/**!
+ * Sortable 1.10.2
+ * @author	RubaXa   <trash@rubaxa.org>
+ * @author	owenm    <owen23355@gmail.com>
+ * @license MIT
  */

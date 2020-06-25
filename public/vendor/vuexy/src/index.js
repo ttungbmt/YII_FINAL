@@ -7,8 +7,10 @@ import VuexyPlugin from './plugins/vuexy'
 import lodash, {has, defaultsDeep} from 'lodash-es'
 import pathify from 'vuex-pathify'
 import Vuex from 'vuex'
+import VueNoty from 'vuejs-noty'
 import { getField, updateField } from 'vuex-map-fields';
 
+import 'vuejs-noty/dist/vuejs-noty.css'
 
 const NAME = 'Vuexy'
 
@@ -20,6 +22,10 @@ const Vuexy = {
         Vue.use(VueLodash, { lodash })
         Vue.use(VueWait)
         Vue.use(Vue2Filters)
+        Vue.use(VueNoty, {
+            theme: 'nest'
+        })
+
     },
     NAME
 }

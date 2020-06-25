@@ -49,6 +49,68 @@ class MyModel extends ActiveRecord
         }];
     }
 
+    public function linkMany($name, $data, $link = ['id' => 'id']){
+        $key = head(array_values($link));
+        $dataKey = head(array_keys($link));
+
+        $records = collect($data);
+        $ids = $records->pluck($dataKey)->filter();
+        $relatedIds = collect($this->{$name})->pluck($key);
+        $modelClass = $this->{"get".ucfirst($name)}()->modelClass;
+
+        if($ids->isEmpty()){
+            $this->unlinkAll($name, true);
+
+            foreach ($data as $d){
+                $model = new $modelClass;
+                $model->setAttributes($d);
+                $this->link($name, $model);
+            }
+        } else {
+            $deleted = $relatedIds->diff($ids)->values();
+            $updated = $relatedIds->intersect($ids)->values();
+            if($deleted->isNotEmpty()){
+                $deletedModels = $modelClass::find()->where([$key => $deleted])->all();
+                foreach ($deletedModels as $d){
+                    $this->unlink($name, $d, true);
+                }
+            }
+
+            if($updated->isNotEmpty()){
+                $updatedModels = $modelClass::find()->where([$key => $updated])->all();
+                foreach ($updatedModels as $u){
+                    $record = $records->firstWhere($dataKey, $u->id);
+                    $u->setAttributes($record);
+                    $this->link($name, $u);
+                }
+            }
+        }
+    }
+
+    public function linkOne($name, $data, $link){
+        $key = head(array_values($link));
+        $dataKey = head(array_keys($link));
+
+        $record = collect($data);
+        $related = $this->$name;
+        $modelClass = $this->{"get".ucfirst($name)}()->modelClass;
+        $id = $record->get($dataKey);
+
+        if($related && !$id){
+            $this->unlink($name, $related, true);
+        }
+
+        if(!$id){
+            $createdModel = new $modelClass;
+            $createdModel->setAttributes($record->all(), true);
+            $this->link($name, $createdModel);
+        } else {
+            $updatedModel = $modelClass::findOne($id);
+            $updatedModel->setAttributes($record->all());
+            $this->link($name, $updatedModel);
+        }
+    }
+
     public function getDraw($dataProvider) {
         $total = $dataProvider->getTotalCount();
         $models = $dataProvider->getModels();
