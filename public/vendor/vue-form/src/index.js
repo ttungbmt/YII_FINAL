@@ -9,6 +9,8 @@ import Field from './components/Field.vue'
 import Date from './components/fields/Date'
 import Editor from './components/fields/Editor'
 import List from './components/List'
+import Button from './components/Button'
+import './style.scss'
 
 const NAME = 'VueForm'
 
@@ -25,6 +27,7 @@ const VueForm = {
         Vue.component(Date['name'], Date)
         Vue.component(Editor['name'], Editor)
         Vue.component(List['name'], List)
+        Vue.component(Button['name'], Button)
         Vue.component('v-draggable', draggable)
 
     },

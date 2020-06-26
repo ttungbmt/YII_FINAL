@@ -24,7 +24,6 @@
     export default {
         name: 'page-form-odich',
         components: {
-
             [Map.name]: Map,
             [DsCabenh.name]: DsCabenh,
             [TbDnc.name]: TbDnc,

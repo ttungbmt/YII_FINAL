@@ -140,13 +140,13 @@ class OdichController extends AppController
             $sxhs = CabenhSxh::find()->andWhere(['in', 'gid', $cabenh_ids])->all();
         }
 
+
         $cabenhs = ArrayHelper::toArray($sxhs, [
             CabenhSxh::class => [
                 'poly_id' => function($model) use($sxhPolys){
                     return data_get($sxhPolys->firstWhere('resource_id', $model->gid), 'id');
                 },
-                'gid',
-                'hoten', 'tuoi', 'khupho', 'to_dp', 'ngaymacbenh', 'ngaybaocao', 'ngaymacbenh_nv',
+                'gid', 'hoten', 'tuoi', 'khupho', 'to_dp', 'ngaymacbenh', 'ngaybaocao', 'ngaymacbenh_nv', 'ngaydieutra' => 'dieutraSxh.ngaydieutra',
                 'geometry' => function($model){
                     return $model->toGeometry();
                 },

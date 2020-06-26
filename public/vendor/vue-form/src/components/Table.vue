@@ -55,6 +55,7 @@
         inheritAttrs: false,
         name: 'v-table',
         props: {
+            id: String,
             buttons: Array,
             fields: Array,
             items: Array,
@@ -74,6 +75,7 @@
                 keyLoading: KEY_LOADING,
                 modelIndex: null,
                 tbOptions: {
+                    id: this.id,
                     responsive: true,
                     hover: true,
                     small: 'small',

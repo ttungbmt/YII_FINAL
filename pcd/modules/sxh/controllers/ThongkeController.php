@@ -35,7 +35,7 @@ class ThongkeController extends AppController
             if($loai_tk == 1){
                 return $this->asJson([
                     'fields' => [
-                        ['key' => 'ngayxuly', 'label' => 'Ngày xử lý',],
+                        ['key' => 'ngayxuly', 'label' => 'Ngày xử lý'],
                         ['key' => 'loai_od', 'label' => 'Loại xử lý',],
                         ['key' => 'tt', 'label' => 'Lần phun',],
                         ['key' => 'tenquan', 'label' => 'Quận/ huyện',],
@@ -122,7 +122,7 @@ class ThongkeController extends AppController
             if($loai_tk == 3){
                 return $this->asJson([
                     'fields' => [
-                        ['key' => 'tenquan', 'label' => 'Quận huyện'],
+                        ['key' => 'tenquan', 'label' => 'Quận huyện', 'thStyle' => 'min-width: 150px'],
                         ['key' => 'mxl1', 'label' => 'Số ổ dịch mới xử lý'],
                         ['key' => 'mxl2', 'label' => 'Số ổ dịch mới xử lý diện rộng'],
                         ['key' => 'mxl3', 'label' => 'Số ổ dịch mới liên PX'],

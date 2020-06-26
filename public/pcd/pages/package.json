@@ -21,6 +21,7 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
+        "@linways/table-to-excel": "^1.0.4",
         "@ttungbmt/vuexy": "^0.0.1",
         "@turf/circle": "^6.0.1",
         "@turf/helpers": "^6.1.4",
