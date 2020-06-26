@@ -211,6 +211,14 @@ return [
     ],
     [
         'class' => '\kartik\grid\DataColumn',
+        'attribute' => 'ngaydieutra',
+        'value' => 'ngaydieutra',
+        'label' => 'Ngày điều tra',
+        'filterType' => GridView::FILTER_DATE,
+        'format' => 'exceldate',
+    ],
+    [
+        'class' => '\kartik\grid\DataColumn',
         'label' => 'Ghi chú',
     ],
     [

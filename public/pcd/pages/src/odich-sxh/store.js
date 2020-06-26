@@ -43,7 +43,6 @@ const options = {
                     {key: 'qh', label: 'Quận huyện'},
                     {key: 'ngaymacbenh', label: 'Ngày mắc bệnh'},
                     {key: 'ngaybaocao', label: 'Ngày báo cáo'},
-                    {key: 'ngaydieutra', label: 'Ngày điều tra'},
                 ],
                 itemsPath: 'form.cabenhs',
                 buttons: [{
