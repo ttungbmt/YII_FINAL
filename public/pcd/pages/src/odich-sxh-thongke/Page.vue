@@ -3,8 +3,11 @@
         <b-card header-class="p-0">
             <b-form @submit.prevent="onSubmit">
                 <v-field type="select" :items="dm_loai_tk" label="Loại thống kê" v-model="form.loai_tk"></v-field>
+                <div class="grid grid-cols-2 gap-4">
+                    <v-field type="date" label="Từ ngày Ngày xử lý" v-model="form.date_from" placeholder="DD/MM/YYYY"></v-field>
+                    <v-field type="date" label="Đến ngày" v-model="form.date_to" placeholder="DD/MM/YYYY"></v-field>
+                </div>
 
-                <v-field type="date" label="Ngày xử lý" v-model="form.ngayxuly" placeholder="DD/MM/YYYY"></v-field>
 
                 <m-btn type="submit" color="primary" :loading="$wait.any">Thống kê</m-btn>
             </b-form>
@@ -49,7 +52,8 @@
                 },
                 form: {
                     loai_tk: 1,
-                    ngayxuly: ''
+                    date_from: '',
+                    date_to: '',
                 },
                 data: {
 

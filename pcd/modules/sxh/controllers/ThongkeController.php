@@ -8,7 +8,7 @@ use pcd\models\HcQuan;
 use pcd\modules\sxh\models\DietLq;
 use pcd\modules\sxh\models\Odich;
 use pcd\modules\sxh\models\PhunHc;
-use yii\db\Query;
+use ttungbmt\db\Query;
 use yii\helpers\ArrayHelper;
 
 class ThongkeController extends AppController
@@ -20,6 +20,8 @@ class ThongkeController extends AppController
 
         if(request()->isPost){
             $loai_tk = request()->post('loai_tk');
+            $date_from = request()->post('date_from');
+            $date_to = request()->post('date_to');
             $dm_loai_od = api('dm_loaiodich');
 
             $od = (new Query())
@@ -30,6 +32,7 @@ class ThongkeController extends AppController
             $tb1 = (new Query())
                 ->select('phc.*, od.loai_od, od.tenquan, od.tenphuong, od.dncs_count')->from(['phc' => PhunHc::tableName()])
                 ->leftJoin(['od' => $od], 'od.odich_id = phc.odich_id')
+                ->andFilterDate(['ngayxuly' => [$date_from, $date_to]])
             ;
 
             if($loai_tk == 1){
@@ -63,6 +66,7 @@ class ThongkeController extends AppController
             $tb2 = (new Query())
                 ->select('dlq.*, od.loai_od, od.tenquan, od.tenphuong, od.sonocgia')->from(['dlq' => DietLq::tableName()])
                 ->leftJoin(['od' => $od], 'od.odich_id = dlq.odich_id')
+                ->andFilterDate(['ngayxuly' => [$date_from, $date_to]])
             ;
 
             if($loai_tk == 2){
