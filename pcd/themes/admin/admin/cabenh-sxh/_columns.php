@@ -103,6 +103,13 @@ return [
     ],
     [
         'class' => '\kartik\grid\DataColumn',
+        'attribute' => 'ngaydieutra',
+        'label' => 'Ngày điều tra',
+        'filterType' => GridView::FILTER_DATE,
+        'format' => 'exceldate',
+    ],
+    [
+        'class' => '\kartik\grid\DataColumn',
         'attribute' => 'hoten',
     ],
     [
@@ -209,14 +216,7 @@ return [
             return !is_null($model->ketqua_xn) ? data_get($dm_kq_xn, $model->ketqua_xn) : '';
         }
     ],
-    [
-        'class' => '\kartik\grid\DataColumn',
-        'attribute' => 'ngaydieutra',
-        'value' => 'ngaydieutra',
-        'label' => 'Ngày điều tra',
-        'filterType' => GridView::FILTER_DATE,
-        'format' => 'exceldate',
-    ],
+
     [
         'class' => '\kartik\grid\DataColumn',
         'label' => 'Ghi chú',
