@@ -105,8 +105,7 @@ return [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'ngaydieutra',
         'label' => 'Ngày điều tra',
-        'filterType' => GridView::FILTER_DATE,
-        'format' => 'exceldate',
+        'format' => ['date', 'php:d/m/Y']
     ],
     [
         'class' => '\kartik\grid\DataColumn',
