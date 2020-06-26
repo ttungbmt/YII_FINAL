@@ -67,7 +67,7 @@ class CabenhSxh extends App
         'ngaysinh',
         'ngaymacbenh_nv',
         'ngaylaymau',
-        'ngaydieutra',
+//        'ngaydieutra',
     ];
 
     /**
