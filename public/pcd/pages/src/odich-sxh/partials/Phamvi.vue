@@ -58,8 +58,8 @@
                 </thead>
                 <tbody>
                 <tr v-for="(i, k) in phamvis[1]">
-                    <td class="td-cell-phamvi"><v-field v-model="i.khupho"></v-field></td>
-                    <td class="td-cell-phamvi"><v-field v-model="i.to_dp"></v-field></td>
+                    <td class="td-cell-phamvi"><m-field v-model="i.khupho"></m-field></td>
+                    <td class="td-cell-phamvi"><m-field v-model="i.to_dp"></m-field></td>
                     <td class="td-cell-phamvi pl-2 pr-2"><button type="button" class="btn btn-link" @click="deletePhamvi(1, k)"><i class="icon-bin text-danger"></i></button></td>
                 </tr>
                 </tbody>
@@ -79,9 +79,9 @@
                     </thead>
                     <tbody>
                     <tr v-for="(i, k) in phamvis[2]">
-                        <td class="td-cell-phamvi"><v-field v-model="i.maphuong" type="select" :items="dm_px" placeholder="Chọn phường xã..." :filterBy="{path: 'extra.maquan', value: maquan}"></v-field></td>
-                        <td class="td-cell-phamvi"><v-field v-model="i.khupho"></v-field></td>
-                        <td class="td-cell-phamvi"><v-field v-model="i.to_dp"></v-field></td>
+                        <td class="td-cell-phamvi"><m-field v-model="i.maphuong" type="select" :items="dm_px" placeholder="Chọn phường xã..." :filterBy="{path: 'extra.maquan', value: maquan}"></m-field></td>
+                        <td class="td-cell-phamvi"><m-field v-model="i.khupho"></m-field></td>
+                        <td class="td-cell-phamvi"><m-field v-model="i.to_dp"></m-field></td>
                         <td class="td-cell-phamvi pl-2 pr-2"><button type="button" class="btn btn-link" @click="deletePhamvi(2, k)"><i class="icon-bin text-danger"></i></button></td>
                     </tr>
                     </tbody>
@@ -105,10 +105,10 @@
                     </thead>
                     <tbody>
                     <tr v-for="(i, k) in phamvis[3]">
-                        <td class="td-cell-phamvi"><v-field v-model="i.maquan" type="select" :items="dm_qh" placeholder="Chọn quận huyện..."></v-field></td>
-                        <td class="td-cell-phamvi"><v-field v-model="i.maphuong" type="select" :items="dm_px" placeholder="Chọn phường xã..." :filterBy="{path: 'extra.maquan', value: i.maquan}" @change="onChange"></v-field></td>
-                        <td class="td-cell-phamvi"><v-field v-model="i.khupho"></v-field></td>
-                        <td class="td-cell-phamvi"><v-field v-model="i.to_dp"></v-field></td>
+                        <td class="td-cell-phamvi"><m-field v-model="i.maquan" type="select" :items="dm_qh" placeholder="Chọn quận huyện..."></m-field></td>
+                        <td class="td-cell-phamvi"><m-field v-model="i.maphuong" type="select" :items="dm_px" placeholder="Chọn phường xã..." :filterBy="{path: 'extra.maquan', value: i.maquan}" @change="onChange"></m-field></td>
+                        <td class="td-cell-phamvi"><m-field v-model="i.khupho"></m-field></td>
+                        <td class="td-cell-phamvi"><m-field v-model="i.to_dp"></m-field></td>
                         <td class="td-cell-phamvi pl-2 pr-2"><button type="button" class="btn btn-link" @click="deletePhamvi(3, k)"><i class="icon-bin text-danger"></i></button></td>
                     </tr>
                     </tbody>
@@ -117,7 +117,7 @@
 
 
             <div class="flex mt-2 pl-3">
-                <v-field :items="dm_phamvi" type="select" v-model="phamvi" style="width: 130px"></v-field>
+                <m-field :items="dm_phamvi" type="select" v-model="phamvi" style="width: 130px"></m-field>
 
                 <div class="ml-2">
                     <button type="button" class="btn-small mt-2" @click="addPhamvi">Thêm mới</button>
@@ -143,9 +143,9 @@
         computed: {
             dm_qh: pGet('cat.qh'),
             dm_px: pGet('cat.px'),
-            phamvi_px: pGet('form.phamvi_px'),
+            phamvi_px: pGet('form/values.phamvi_px'),
             cabenhIds(){
-                return map(this.$store.get('form.cabenhs'), 'gid')
+                return map(this.$store.get('form/values.cabenhs'), 'gid')
             }
         },
         filters: {
@@ -157,8 +157,8 @@
         data () {
             return {
                 keyLoading: KEY_LOADING,
-                html: this.$store.get('form.phamvi_gis'),
-                maquan: this.$store.get('form.maquan'),
+                html: this.$store.get('form/values.phamvi_gis'),
+                maquan: this.$store.get('form/values.maquan'),
                 modalRef: 'modal-phamvi',
                 modalOptions: {
                     'ok-title': 'Lưu',
@@ -187,8 +187,8 @@
                 this.$refs[name].hide()
             },
             handleOk(name){
-                this.$store.commit('updateModal', {path: 'form.phamvi_px', value: this.phamvis})
-                this.$store.commit('updateModal', {path: 'form.phamvi_px_html', value: $('#phamvi-px-html').html()})
+                this.$store.commit('updateField', {path: 'form/values.phamvi_px', value: this.phamvis})
+                this.$store.commit('updateField', {path: 'form/values.phamvi_px_html', value: $('#phamvi-px-html').html()})
                 this.$refs[name].hide()
             },
             updatePhamviGis(){
@@ -196,8 +196,8 @@
                 this.$http.post(`/sxh/odich/to-ah`, {cabenhIds: this.cabenhIds}).then(({data}) => {
                     this.html = data
 
-                    this.$store.commit('updateForm', {
-                        path: 'form.phamvi_gis',
+                    this.$store.commit('updateField', {
+                        path: 'form/values.phamvi_gis',
                         value: data,
                     })
 

@@ -12,7 +12,7 @@
 <script>
     import {isFunction} from 'lodash-es'
     export default {
-        name: 'v-list',
+        name: 'm-list',
         props: {
             itemsPath: String,
             items: {

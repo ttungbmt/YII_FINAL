@@ -6,7 +6,7 @@
 <script>
     export default {
         inheritAttrs: false,
-        name: 'v-row',
+        name: 'm-row',
         props: {
             schema: Array,
         },

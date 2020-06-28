@@ -129,6 +129,33 @@ class PtNguyco extends App
         ];
     }
 
+
+    public static function rawFields(){
+        return [
+            'id',
+            'ten_cs',
+            'nhom',
+            'loaihinh' => function($model){
+                if($lh = $model->dm_loaihinh){
+                    if(in_array($lh->id, [20, 21, 22]) && $model->loaihinh) return "Khác ({$model->loaihinh})";
+                    return $model->dm_loaihinh->ten_lh;
+                }
+                return '';
+            },
+            'khupho',
+            'to_dp',
+            'tenphuong' => function($model){
+                return $model->phuong->tenphuong;
+            },
+            'tenquan' => function($model){
+                return $model->quan->tenquan;
+            },
+            'diachi'=> function($model){
+                return collect([$model->sonha, $model->tenduong])->implode(' ');
+            },
+        ];
+    }
+
     public function getGiamsats()
     {
         return $this->hasMany(PhieuGs::className(), ['pt_nguyco_id' => 'gid'])->orderBy('ngay_gs');
@@ -138,7 +165,6 @@ class PtNguyco extends App
     {
         return $this->hasMany(PhieuGs::className(), ['pt_nguyco_id' => 'gid'])->orderBy('id');
     }
-
 
     public function getKehoachs()
     {

@@ -8,6 +8,7 @@ use pcd\models\HcPhuong;
 use pcd\models\HcQuan;
 use pcd\models\OdichSxhPoly;
 use pcd\modules\pt_nguyco\models\PtNguyco;
+use pcd\modules\sxh\forms\OdichForm;
 use pcd\modules\sxh\models\Odich;
 use pcd\modules\sxh\models\OdichSxhXuly;
 use pcd\modules\sxh\models\search\OdichSearch;
@@ -28,6 +29,8 @@ class OdichController extends AppController
 
     public function actions()
     {
+        $errorMessage = 'Biên bản xử lý có một số thông tin nhập chưa đúng. Xin vui lòng kiểm tra lại biên bản';
+
         return array_merge(parent::actions(), [
             'index' => [
                 'class' => IndexAction::class,
@@ -35,26 +38,78 @@ class OdichController extends AppController
             ],
             'create' => [
                 'class' => CreateAction::class,
-                'modelClass' => $this->modelClass,
+                'modelClass' => OdichForm::class,
+                'redirectUrl' => ['index'],
+                'messages' => [
+                    'error' => $errorMessage
+                ],
                 'viewParams' => [$this, 'getPageData'],
                 'handler' => 'saveModel'
             ],
             'update' => [
                 'class' => UpdateAction::class,
-                'modelClass' => $this->modelClass,
+                'modelClass' => OdichForm::class,
+                'redirectUrl' => false,
+                'messages' => [
+                    'error' => $errorMessage
+                ],
                 'viewParams' => [$this, 'getPageData'],
                 'handler' => 'saveModel'
             ],
             'delete' => [
                 'class' => DeleteAction::class,
                 'modelClass' => $this->modelClass,
-                'handler' => 'saveModel'
             ],
             'export-word' => [
                 'class'    => ExportWordAction::class,
                 'fileName' => 'BienbanXL_OD',
                 'getData'  => [$this, 'getDataWord'],
             ]
+        ]);
+    }
+
+    public function getPageData(){
+        $id = request()->get('id');
+        $odich = OdichForm::findById($id);
+
+        return [
+            'formData' => $odich->toFormArray(),
+            'cat' => [
+                'loai_od' => api('dm_loaiodich'),
+                'loai_ks' => api('dm_loai_ks'),
+                'qh' => collect(HcQuan::find()->select('tenquan,maquan,order')->orderBy('order')->pluck('tenquan', 'maquan'))->map(function ($i, $k){
+                    return ['label' => $i, 'value' => (string)$k];
+                })->values()->all(),
+                'px' => collect(HcPhuong::find()->select('maquan,tenphuong,maphuong,order')->orderBy('order')->all())->map(function ($i, $k){
+                    return ['label' => $i['tenphuong'], 'value' => (string)$i['maphuong'], 'extra' => ['maquan' => $i['maquan']]];
+                })->values()->all(),
+            ]
+        ];
+    }
+
+    public function actionToAh(){
+        $distance = 200;
+        $ids = request('cabenhIds', []);
+
+        $q_cb = (new Query())->select(new Expression("ST_Union(ST_Buffer(geom::geography, {$distance})::geometry)"))->from('cabenh_sxh')->andFilterWhere(['gid' => $ids])->createCommand()->getRawSql();
+        $to_ah = collect((new Query())->select('khupho, tento, tenphuong, tenquan, maphuong, maquan')->from(['ranh_to'])
+            ->where("ST_Intersects(({$q_cb}), geom)")
+            ->all())
+        ;
+
+        $maquan = userInfo()->maquan;
+        $maphuong = userInfo()->maphuong;
+        $giap_qh = HcQuan::find()->select('maquan')->andWhere(new Expression("ST_Intersects(geom, (SELECT geom FROM hc_quan WHERE maquan = '{$maquan}'))"))->andWhere(['<>', 'maquan', $maquan])->pluck('maquan');
+        $giap_px = HcPhuong::find()->select('maphuong')->andWhere(new Expression("ST_Intersects(geom, (SELECT geom FROM hc_phuong WHERE maphuong = '{$maphuong}'))"))->andWhere(['<>', 'maphuong', $maphuong])->pluck('maphuong');
+
+        $px = $to_ah->where('maphuong', $maphuong)->sortBy('khupho', SORT_NATURAL);
+        $lien_px = $to_ah->whereIn('maphuong', $giap_px)->sortBy('khupho', SORT_NATURAL);
+        $lien_qh = $to_ah->whereIn('maquan', $giap_qh)->sortBy('khupho', SORT_NATURAL);
+
+        return $this->renderPartial('to_ah', [
+            'px' => $px,
+            'lien_px' => $lien_px,
+            'lien_qh' => $lien_qh,
         ]);
     }
 
@@ -127,151 +182,13 @@ class OdichController extends AppController
         return $data_final;
     }
 
-    public function getPageData(){
-        $id = request()->get('id');
-        $odich = Odich::findOne($id);
-        $odich = $odich ? $odich : new Odich();
-        $sxhPolys = collect($odich->sxhPolys);
-
-        if($odich->cabenhs){
-            $sxhs = $odich->cabenhs;
-        } else {
-            $cabenh_ids = array_map('trim',explode(',', request()->get('cabenh_ids')));
-            $sxhs = CabenhSxh::find()->andWhere(['in', 'gid', $cabenh_ids])->all();
-        }
-
-
-        $cabenhs = ArrayHelper::toArray($sxhs, [
-            CabenhSxh::class => [
-                'poly_id' => function($model) use($sxhPolys){
-                    return data_get($sxhPolys->firstWhere('resource_id', $model->gid), 'id');
-                },
-                'gid', 'hoten', 'tuoi', 'khupho', 'to_dp', 'ngaymacbenh', 'ngaybaocao', 'ngaymacbenh_nv',
-                'geometry' => function($model){
-                    return $model->toGeometry();
-                },
-                'px' => function($model){
-                    return $model->hcPhuong ? data_get($model, 'hcPhuong.tenphuong') : '';
-                },
-                'qh' => function($model){
-                    return $model->hcQuan ? data_get($model, 'hcQuan.tenquan') : '';
-                }
-            ]
-        ]);
-
-
-
-        $odichData = ArrayHelper::toArray($odich, [Odich::class => [
-            'id',
-            'maphuong',
-            'maquan',
-            'sonocgia',
-            'loai_od',
-            'ngayxacdinh',
-            'ngayphathien',
-            'ngaydukien_kt',
-            'ngayketthuc',
-            'ngaybatdau_gs',
-            'donvi_xp',
-            'hdtt_hinhthuc', 'hdtt_thoigian', 'hdtt_diadiem',
-            'ngayketthuc_td',
-            'danhgia',
-            'nguoithuchien',
-            'dienthoai',
-            'diet_lqs' => 'dietLqs',
-            'phun_hcs' => 'phunHcs',
-            'xuly_id' => 'xuly.id',
-        ]]);
-
-        $xulyData = ArrayHelper::toArray($odich->xuly ? $odich->xuly : new OdichSxhXuly(), [
-            OdichSxhXuly::class => [
-                'khaosat_cts',
-                'phamvi_gis',
-                'phamvi_px',
-                'dncs' => function($model){
-                    $dncs = PtNguyco::find()->andWhere(['gid' => $model->dncs->toArray()])->all();
-                    return ArrayHelper::toArray($dncs, [PtNguyco::class => $this->getDnsFields()]);
-                },
-            ]
-        ]);
-
-        return [
-            'formData' => array_merge($odichData, $xulyData, [
-                'cabenhs' => $cabenhs,
-            ]),
-            'cat' => [
-                'loai_od' => api('dm_loaiodich'),
-                'loai_ks' => api('dm_loai_ks'),
-                'qh' => collect(HcQuan::find()->select('tenquan,maquan,order')->orderBy('order')->pluck('tenquan', 'maquan'))->map(function ($i, $k){
-                    return ['label' => $i, 'value' => (string)$k];
-                })->values()->all(),
-                'px' => collect(HcPhuong::find()->select('maquan,tenphuong,maphuong,order')->orderBy('order')->all())->map(function ($i, $k){
-                    return ['label' => $i['tenphuong'], 'value' => (string)$i['maphuong'], 'extra' => ['maquan' => $i['maquan']]];
-                })->values()->all(),
-            ]
-        ];
-    }
-
-    public function actionToAh(){
-        $distance = 200;
-        $ids = request('cabenhIds', []);
-
-        $q_cb = (new Query())->select(new Expression("ST_Union(ST_Buffer(geom::geography, {$distance})::geometry)"))->from('cabenh_sxh')->andFilterWhere(['gid' => $ids])->createCommand()->getRawSql();
-        $to_ah = collect((new Query())->select('khupho, tento, tenphuong, tenquan, maphuong, maquan')->from(['ranh_to'])
-            ->where("ST_Intersects(({$q_cb}), geom)")
-            ->all())
-        ;
-
-        $maquan = userInfo()->maquan;
-        $maphuong = userInfo()->maphuong;
-        $giap_qh = HcQuan::find()->select('maquan')->andWhere(new Expression("ST_Intersects(geom, (SELECT geom FROM hc_quan WHERE maquan = '{$maquan}'))"))->andWhere(['<>', 'maquan', $maquan])->pluck('maquan');
-        $giap_px = HcPhuong::find()->select('maphuong')->andWhere(new Expression("ST_Intersects(geom, (SELECT geom FROM hc_phuong WHERE maphuong = '{$maphuong}'))"))->andWhere(['<>', 'maphuong', $maphuong])->pluck('maphuong');
-
-        $px = $to_ah->where('maphuong', $maphuong)->sortBy('khupho', SORT_NATURAL);
-        $lien_px = $to_ah->whereIn('maphuong', $giap_px)->sortBy('khupho', SORT_NATURAL);
-        $lien_qh = $to_ah->whereIn('maquan', $giap_qh)->sortBy('khupho', SORT_NATURAL);
-
-
-        return $this->renderPartial('to_ah', [
-            'px' => $px,
-            'lien_px' => $lien_px,
-            'lien_qh' => $lien_qh,
-        ]);
-    }
-
-    protected function getDnsFields(){
-        return [
-            'id',
-            'ten_cs',
-            'nhom',
-            'loaihinh' => function($model){
-                if($lh = $model->dm_loaihinh){
-                    if(in_array($lh->id, [20, 21, 22]) && $model->loaihinh) return "Khác ({$model->loaihinh})";
-                    return $model->dm_loaihinh->ten_lh;
-                }
-                return '';
-            },
-            'khupho',
-            'to_dp',
-            'tenphuong' => function($model){
-                return $model->phuong->tenphuong;
-            },
-            'tenquan' => function($model){
-                return $model->quan->tenquan;
-            },
-            'diachi'=> function($model){
-                return collect([$model->sonha, $model->tenduong])->implode(' ');
-            },
-        ];
-    }
-
     public function actionDncs(){
         $ids = request('cabenhIds', []);
         $odich_id = request('odich_id', null);
         $distance = 200;
         $sql = CabenhSxh::find()->select(new Expression("ST_Union(ST_Buffer(geom::geography, {$distance})::geometry) geom"))->andWhere(['gid' => $ids])->createCommand()->getRawSql();
         $data = ArrayHelper::toArray(PtNguyco::find()->with(['quan', 'phuong', 'dm_loaihinh'])->andWhere(new Expression("ST_Intersects(geom, ({$sql}))"))->all(), [
-            PtNguyco::class => $this->getDnsFields()
+            PtNguyco::class => PtNguyco::rawFields()
         ]);
 
         return $this->asJson([

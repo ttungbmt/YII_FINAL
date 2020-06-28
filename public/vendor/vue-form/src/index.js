@@ -1,38 +1,38 @@
-import { BootstrapVue } from 'bootstrap-vue'
+import {BootstrapVue} from 'bootstrap-vue'
 import draggable from 'vuedraggable'
-import Heading from './components/Heading.vue'
-import Grid from './components/Grid.vue'
-import Row from './components/Row.vue'
-import Table from './components/Table.vue'
-import Html from './components/Html.vue'
-import Field from './components/Field.vue'
-import Date from './components/fields/Date'
-import Editor from './components/fields/Editor'
-import List from './components/List'
-import Button from './components/Button'
+import {has, mapKeys, replace} from 'lodash-es'
+import vueDeepSet from 'vue-set-value'
+import {registerComponents} from '@ttungbmt/vue-toolkit'
+import VueValidation from './Validation'
+
+import * as comps from './components'
 import './style.scss'
 
 const NAME = 'VueForm'
 
+const components = {
+    ...mapKeys(comps, v => v.name),
+    'v-draggable': draggable,
+}
+
 const VueForm = {
-    install(Vue, config = {}){
+    install(Vue, config = {}) {
+        registerComponents(Vue, components)
+
         Vue.use(BootstrapVue)
-
-        Vue.component(Heading['name'], Heading)
-        Vue.component(Grid['name'], Grid)
-        Vue.component(Row['name'], Row)
-        Vue.component(Table['name'], Table)
-        Vue.component(Html['name'], Html)
-        Vue.component(Field['name'], Field)
-        Vue.component(Date['name'], Date)
-        Vue.component(Editor['name'], Editor)
-        Vue.component(List['name'], List)
-        Vue.component(Button['name'], Button)
-        Vue.component('v-draggable', draggable)
-
+        Vue.use(VueValidation)
     },
     NAME
 }
 
-
 export default VueForm
+
+export function createField(state, payload) {
+    let path = replace(payload.path, '/', '.')
+
+    if (!has(state, path)) {
+        vueDeepSet(state, path, null)
+    }
+}
+
+export {getField, updateField} from 'vuex-map-fields'

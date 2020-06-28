@@ -1,20 +1,20 @@
+import Vue from 'vue'
 import Vue2Filters from 'vue2-filters'
 import VueWait from 'vue-wait'
 import VueLodash from 'vue-lodash'
 import VueAxios from './plugins/axios'
-import VuexyPlugin from './plugins/vuexy'
-import lodash, {has, defaultsDeep} from 'lodash-es'
-import pathify from 'vuex-pathify'
+import lodash from 'lodash-es'
 import Vuex from 'vuex'
 import VueNoty from 'vuejs-noty'
-import { getField, updateField } from 'vuex-map-fields';
-
+// import PortalVue from 'portal-vue'
+// import AsyncComputed from 'vue-async-computed'
+import VueForm from '@ttungbmt/vue-form'
+import Vuexy from './Vuexy'
 import 'vuejs-noty/dist/vuejs-noty.css'
 
-const NAME = 'Vuexy'
 
 // --- Vuexy plugin ---
-const Vuexy = {
+const VuexyPlugin = {
     install(Vue, config = {}){
         Vue.use(VueAxios)
         Vue.use(VueLodash, { lodash })
@@ -23,32 +23,18 @@ const Vuexy = {
         Vue.use(VueNoty, {
             theme: 'nest'
         })
+        // Vue.use(PortalVue)
+        // Vue.use(AsyncComputed)
 
     },
-    NAME
 }
 
+export const createVuexy = (config) => {
+    Vue.use(VuexyPlugin)
+    Vue.use(VueForm)
 
-export const createStore = options => {
-    let innerOptions = defaultsDeep({
-        plugins: [ pathify.plugin, VuexyPlugin ],
-        getters: {
-            getField,
-        },
-        mutations: {
-            updateField,
-            createField,
-        },
-    }, options)
-
-
-    return new Vuex.Store(innerOptions)
+    return new Vuexy(config)
 }
 
-export function createField(state, { path, value }) {
-    if (!has(state, path)) {
-        this.setIn(path, null)
-    }
-}
 
 export default Vuexy

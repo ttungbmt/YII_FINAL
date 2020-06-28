@@ -2,10 +2,10 @@
     <div>
         <b-card header-class="p-0">
             <b-form @submit.prevent="onSubmit">
-                <v-field type="select" :items="dm_loai_tk" label="Loại thống kê" v-model="form.loai_tk"></v-field>
+                <m-field type="select" :items="dm_loai_tk" label="Loại thống kê" v-model="form.loai_tk"></m-field>
                 <div class="grid grid-cols-2 gap-4">
-                    <v-field type="date" label="Từ ngày Ngày xử lý" v-model="form.date_from" placeholder="DD/MM/YYYY"></v-field>
-                    <v-field type="date" label="Đến ngày" v-model="form.date_to" placeholder="DD/MM/YYYY"></v-field>
+                    <m-field type="date" label="Từ ngày Ngày xử lý" v-model="form.date_from" placeholder="DD/MM/YYYY"></m-field>
+                    <m-field type="date" label="Đến ngày" v-model="form.date_to" placeholder="DD/MM/YYYY"></m-field>
                 </div>
 
 
@@ -23,7 +23,7 @@
             <div v-if="!_.isEmpty(data)" >
                 <m-btn class="mb-2 mr-3" type="export" :exportOptions="exportOptions" size="sm">Xuất Excel</m-btn>
                 <div class="bg-white">
-                    <v-table id="tb-thongke" :fields="fields" :items="data" :options="tbOptions"></v-table>
+                    <m-table id="tb-thongke" :fields="fields" :items="data" :options="tbOptions"></m-table>
                 </div>
 
             </div>

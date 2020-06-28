@@ -1,10 +1,13 @@
 <template>
-    <b-form-group :label="label">
-        <component :is="computedComponent" v-bind="computedAttrs" v-model="innerValue"></component>
-    </b-form-group>
+    <validation-provider v-slot="v" :rules="fieldRules" :name="label" :vid="computedName" ref="validator" slim>
+        <b-form-group :label="label">
+            <component :is="computedComponent" v-bind="computedAttrs" v-model="innerValue" :state="getValidationState(v)"></component>
+            <b-form-invalid-feedback>{{ v.errors[0] }}</b-form-invalid-feedback>
+        </b-form-group>
+    </validation-provider>
 </template>
 <script>
-    import {get, has, isString, isPlainObject, isArray, map, isEmpty, includes, isUndefined, filter} from 'lodash-es'
+    import {get, has, replace, isString, isPlainObject, isFunction, isArray, map, isEmpty, includes, isUndefined, filter} from 'lodash-es'
 
     const natsort = (arr) => {
         return arr.sort(function (a,b) {
@@ -43,13 +46,33 @@
         return items
     }
 
-    const inputTypes = ['text', 'password', 'integer', 'number', 'email', 'url', 'search', 'tel', 'range', 'date']
+    // Valid supported input types
+    const TYPES = [
+        'text',
+        'password',
+        'email',
+        'number',
+        'url',
+        'tel',
+        'search',
+        'range',
+        'color',
+        'date',
+        'time',
+        'datetime',
+        'datetime-local',
+        'month',
+        'week'
+    ]
 
     export default {
         inheritAttrs: false,
-        name: 'v-field',
+        name: 'm-field',
+        inject: ['formOptions'],
         props: {
             label: String,
+            rules: String,
+            name: String,
             model: String,
             filterBy: [Object, Function],
             placeholder: String,
@@ -64,9 +87,10 @@
             innerValue: {
                 get: function () {
                     if(!isUndefined(this.value)) return this.value
+
                     if (!this.model) return ''
 
-                    return get(this.$store.state, this.model)
+                    return this.$store.get(this.modelPath)
                 },
                 set: function (value) {
                     if(!isUndefined(this.value)) {
@@ -75,12 +99,15 @@
 
                     if (this.model) {
                         this.$store.commit('updateField', {
-                            path: this.model,
+                            path: this.modelPath,
                             value
                         })
                     }
-
                 }
+            },
+
+            modelPath(){
+                return [this.formOptions.model, this.model].join('.')
             },
 
             computedComponent(){
@@ -100,29 +127,44 @@
             },
 
             computedAttrs(){
-                let attrs = {}
+                const { computedType: type, computedName: name, disabled, placeholder, required, min, max, step } = this
+
+                let attrs = {
+                    type,
+                    name
+                }
 
                 if(this.type === 'select'){
                     attrs.options = this.computedItems
                 }
 
-                if(includes(['text', 'password', 'number', 'email', 'url', 'search', 'tel', 'range'], this.type)){
-                    attrs.type = this.type
-                }
-
                 if(this.type === 'integer'){
-                    attrs = {...attrs, type: 'number', min: 0, step: 1}
+                    attrs = {...attrs, min: 0, step: 1}
                 }
 
-                if(this.type === 'date'){
-                    attrs = {...attrs, type: 'text'}
-                }
-
-                if(includes(inputTypes, attrs.type)){
+                if(includes(TYPES, attrs.type)){
                     attrs.placeholder = this.placeholder
                 }
 
                 return attrs
+            },
+
+            computedName(){
+                  return this.name ? this.name : this.model
+            },
+
+            computedType(){
+                if(includes(['text', 'password', 'number', 'email', 'url', 'search', 'tel', 'range'], this.type)){
+                    return this.type
+                }
+
+                if(this.type === 'integer'){
+                    return 'number'
+                }
+
+                if(this.type === 'date'){
+                    return 'text'
+                }
             },
 
             computedItems() {
@@ -138,6 +180,12 @@
                 }
 
                 return toOptions(items, {placeholder: this.placeholder}, {label: 'text'})
+            },
+
+            fieldRules(){
+                if(isFunction(this.rules)) return this.rules.bind(this)(this.innerValue)
+
+                return this.rules
             }
         },
         watch: {
@@ -146,10 +194,19 @@
             }
         },
         created() {
-            let path = this.model
-            if (!has(this.$store.state, path)) {
-                this.$store.commit('createField', {path})
+            let path = this.modelPath
+            if (!this.$store.has(path)) {
+                this.$store.commit('createField', {path, value: null})
             }
+        },
+        methods: {
+            getValidationState({ dirty, validated, valid = null, failed }) {
+                if(this.rules || failed) return dirty || validated ? valid : null;
+                return null
+            },
+        },
+        mounted(){
+
         }
     }
 </script>

@@ -5,6 +5,7 @@
 </template>
 <script>
     export default {
+        name: 'm-heading',
         props: {
             serial: String,
             title: String,
@@ -14,6 +15,5 @@
                 default: true
             },
         },
-        name: 'v-heading'
     }
 </script>

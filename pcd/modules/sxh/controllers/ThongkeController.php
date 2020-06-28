@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 
 class ThongkeController extends AppController
 {
-    public $enableCsrfValidation = false;
+//    public $enableCsrfValidation = false;
 
     public function actionOdich(){
         $dm_loai_od = api('dm_loaiodich');

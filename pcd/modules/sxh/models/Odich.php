@@ -79,6 +79,15 @@ class Odich extends App
         return '';
     }
 
+    public function attributeLabels()
+    {
+        return [
+            'ngayxacdinh' => 'Ngày xác định',
+            'ngayphathien' => 'Ngày phát hiện',
+            'loai_od' => 'Loại ổ dịch',
+        ];
+    }
+
     public function getCabenhs()
     {
         return $this->hasMany(CabenhSxh::className(), ['gid' => 'resource_id'])
@@ -91,6 +100,8 @@ class Odich extends App
 
 
     public function saveModel(){
+        if(!$this->validate()) return false;
+
         $data = collect(request()->all());
 
         if(role('phuong')){
@@ -112,11 +123,8 @@ class Odich extends App
         };
 
         $cabenhs = $toPoly($data->get('cabenhs'), 'sxh', 'gid');
-//        $dncs = $toPoly($data->get('dncs'), 'dnc', 'id');
 
         $this->linkMany('sxhPolys', $cabenhs);
-//        $this->linkMany('dncPolys', $dncs);
-
         $this->linkMany('dietLqs', $data->get('diet_lqs'));
         $this->linkMany('phunHcs', $data->get('phun_hcs'));
 
@@ -126,6 +134,8 @@ class Odich extends App
         if(isset($xuly['dncs'])) $xuly['dncs'] = Arr::pluck($xuly['dncs'], 'id');
 
         $this->linkOne('xuly', $xuly, ['xuly_id' => 'id']);
+
+        return true;
     }
 
     public function getXuly(){

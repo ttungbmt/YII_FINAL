@@ -8,7 +8,7 @@
 
     export default {
         inheritAttrs: false,
-        name: 'v-grid',
+        name: 'm-grid',
         props: {
             cols: {
                 type: Number,

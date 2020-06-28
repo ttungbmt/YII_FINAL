@@ -6,7 +6,7 @@
 
     export default {
         inheritAttrs: false,
-        name: 'v-html',
+        name: 'm-html',
         props: {
             html: [String, Function]
         },

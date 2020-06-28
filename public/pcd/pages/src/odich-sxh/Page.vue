@@ -5,88 +5,72 @@
         </template>
 
         <b-card-text>
-            <form method="POST" @submit.prevent="handleSubmit">
+            <m-form @submit="handleSubmit" v-bind="formOptions">
                 <component v-bind:is="i.component" v-for="(i, k) in schema" v-bind="i" :key="k"></component>
                 <b-button variant="primary" type="submit"><i v-if="loading" class="icon-spinner2 spinner"></i> Lưu kết quả</b-button>
-            </form>
+            </m-form>
         </b-card-text>
     </b-card>
 </template>
 <script>
-    import Map from './partials/Map.vue'
-    import DsCabenh from './partials/DsCabenh.vue'
-    import Phamvi from './partials/Phamvi.vue'
-    import TbDnc from './partials/TbDnc.vue'
+    import {map, isEmpty} from 'lodash-es'
+    import {get} from 'vuex-pathify'
 
-    import {get, sync} from 'vuex-pathify'
-    import {mapFields} from 'vuex-map-fields'
+    import Map from './partials/Map.vue'
+    import Phamvi from './partials/Phamvi.vue'
 
     export default {
         name: 'page-form-odich',
         components: {
             [Map.name]: Map,
-            [DsCabenh.name]: DsCabenh,
-            [TbDnc.name]: TbDnc,
             [Phamvi.name]: Phamvi,
         },
+
         computed: {
-            schema: get('schema'),
-            form: get('form'),
-            formModal: get('formModal'),
+            schema: get('form.schema'),
+            modal: get('modal'),
         },
         data() {
             return {
-                loading: false,
-                fields: [
-                    {
-                        key: 'tt1',
-                        type: 'serial',
-                        label: 'tt1',
-                    },
-                    {
-                        key: 'tt2',
-                        label: 'tt2',
-                        format: 'html',
-                        value({index}){
-                            return `<b>Lần ${index+1}</b>`
-                        }
-                    },
-                    {
-                        key: 'name',
-                        label: 'Label'
+                value: '123',
+                formOptions: {
+                    method: 'POST',
+                    options: {
+                        model: 'form.values'
                     }
-                ],
-                items: [
-                    { age: 32, first_name: 'Cyndi', name: 'hello' },
-                    { age: 27, first_name: 'Havij' },
-                    { age: 42, first_name: 'Robert' }
-                ],
-                list: [
-                    'Cyndi',
-                    'Havij',
-                    'Robert',
-                ]
+                },
+
+                loading: false,
             }
         },
         mounted() {
 
         },
         methods: {
-            handleSubmit(){
+            handleSubmit(values, {errors, $form}){
+                let data = values,
+                    message = `Biên bản xử lý có một số thông tin nhập chưa đúng. Xin vui lòng kiểm tra lại biên bản`
+
+                data.dncs_count = data.dncs.length
+
+                if(!isEmpty(errors)){
+                    this.$noty.error(message)
+                    return null
+                }
+
                 this.loading = true
-                let data = this.form
-
-                data.dncs_count = this.form.dncs.length
-
                 this.$http.post(window.location.href, data).then(({data}) => {
                     this.loading = false
+                    if(data.errors) {
+                        $form.setErrors(data.errors)
+                        this.$noty.error(data.message)
 
-                    if(!this.form.id){
-                        this.$noty.success(`Đã thêm mới thành công`)
-                        window.location.href = '/sxh/odich'
-                    } else {
-                        this.$noty.success(`Đã cập nhật thành công`)
+                        return false
                     }
+
+                    if(data.redirectUrl) window.location.href = data.redirectUrl
+                    if(data.message) this.$noty.info(data.message)
+
                 })
             }
         }
