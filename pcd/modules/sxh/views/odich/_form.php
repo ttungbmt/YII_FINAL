@@ -18,7 +18,8 @@ $this->registerJsFile('https://unpkg.com/leaflet@1.6.0/dist/leaflet.js', $option
 $this->registerJsFile('/pcd/pages/dist/odich-sxh/main.js', $options);
 $this->registerJsVar('pageData', [
     'form' => $formData,
-    'cat' => $cat
+    'cat' => $cat,
+    'map' => $map
 ])
 ?>
 <?php $this->endBlock(); ?>

@@ -153,6 +153,8 @@ class PtNguyco extends App
             'diachi'=> function($model){
                 return collect([$model->sonha, $model->tenduong])->implode(' ');
             },
+            'maquan',
+            'maphuong',
         ];
     }
 

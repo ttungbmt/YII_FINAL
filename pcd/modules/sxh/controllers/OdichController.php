@@ -12,6 +12,7 @@ use pcd\modules\sxh\forms\OdichForm;
 use pcd\modules\sxh\models\Odich;
 use pcd\modules\sxh\models\OdichSxhXuly;
 use pcd\modules\sxh\models\search\OdichSearch;
+use pcd\supports\RoleHc;
 use ttungbmt\actions\CreateAction;
 use ttungbmt\actions\DeleteAction;
 use ttungbmt\actions\ExportWordAction;
@@ -71,9 +72,66 @@ class OdichController extends AppController
     public function getPageData(){
         $id = request()->get('id');
         $odich = OdichForm::findById($id);
+        $role = RoleHc::init();
+
+        $fn_cql = function ($cql = '', $hc = null) use($role){
+            return $role->getGapranhCQL($cql, $hc);
+        };
 
         return [
             'formData' => $odich->toFormArray(),
+            'map' => [
+                'layers' => [
+                    [
+                        "title"     => "Quận huyện",
+                        "active" => role('quan'),
+                        "type" => 'wms',
+                        "key" => "hc_quan",
+                        "options" => [
+                            "url"        => "/geoserver/ows?",
+                            "layers"     => "dichte:hc_quan",
+                            "cql_filter" => $fn_cql('', 'quan'),
+                            "zIndex" => 1
+                        ],
+                    ],
+                    [
+                        "title"     => "Phường xã",
+                        "type" => 'wms',
+                        "key" => "hc_phuong",
+                        "active" => role('phuong'),
+                        "options" => [
+                            "url"        => "/geoserver/ows?",
+                            "layers"     => "dichte:hc_phuong",
+                            "cql_filter" => $fn_cql('', 'phuong'),
+                            "zIndex" => 2
+                        ],
+                    ],
+                    [
+                        "title"     => "Ranh tổ",
+                        "type" => 'wms',
+                        "key" => "ranhto",
+                        "options" => [
+                            "url"        => "/geoserver/ows?",
+                            "layers"     => "dichte:ranh_to",
+                            "cql_filter" => $fn_cql(),
+                            "zIndex" => 3
+                        ],
+                    ],
+                    [
+                        "title"     => "Điểm nguy cơ",
+                        "type" => 'wms',
+                        "key" => "dnc",
+                        "active" => true,
+                        "control" => true,
+                        "options" => [
+                            "url"        => "/geoserver/ows?",
+                            "layers"     => "dichte:pt_nguyco",
+                            "cql_filter" => $role->getGapranhCQL(''),
+                            "zIndex" => 9
+                        ],
+                    ],
+                ]
+            ],
             'cat' => [
                 'loai_od' => api('dm_loaiodich'),
                 'loai_ks' => api('dm_loai_ks'),

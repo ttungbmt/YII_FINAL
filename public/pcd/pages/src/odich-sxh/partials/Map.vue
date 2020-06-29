@@ -18,44 +18,55 @@
     </div>
 </template>
 <script>
-    import { LMap, LTileLayer, LMarker, LCircle, LGeoJson, LPopup, LControlLayers } from 'vue2-leaflet'
+    import { LMap, LTileLayer, LMarker, LCircle, LGeoJson, LPopup, LControlLayers, LWMSTileLayer } from 'vue2-leaflet'
     import Bus from '../bus'
     import circle from '@turf/circle'
 
     import L from 'leaflet'
     import 'leaflet-extra-markers'
-    import {reverse, clone, includes, uniqBy} from 'lodash-es'
+    import {reverse, clone, includes, uniqBy, map, pick} from 'lodash-es'
     import { get } from 'vuex-pathify'
 
+    let extraLayers = map(window.pageData.map.layers, v => {
+        return {
+            component: 'l-wms-tile-layer',
+            'layer-type': 'overlay',
+            'base-url': v.options.url,
+            layers: v.options.layers,
+            visible: !!v.active,
+            name: v.title,
+            transparent: true, format: 'image/png',
+            options: {
+                cql_filter: v.options.cql_filter,
+                zIndex: v.options.zIndex,
+            }
+        }
+    })
 
     export default {
         name: 'p-map',
         data () {
             return {
+                layers: this.$store.get('map/layers/getAll').concat(extraLayers),
+                cabenhs: this.$store.get('form/getValue', 'cabenhs', []).map(v => {
+                    return {
+                        ...v,
+                        latlng: clone(v.geometry.coordinates).reverse()
+                    }
+                }),
                 distance: 200,
                 selectedIndex: null,
                 bounds: null,
             };
         },
         components: {
-            LMap, LTileLayer, LMarker, LCircle, LGeoJson, LPopup, LControlLayers
+            LMap, LTileLayer, LMarker, LCircle, LGeoJson, LPopup, LControlLayers, 'l-wms-tile-layer': LWMSTileLayer
         },
         computed: {
             mapOptions: get('map/mapOptions'),
             controls: get('map/controls/getAll'),
-            layers: get('map/layers/getAll'),
-            cabenhs(){
-                return this.$store.get('form/getValue', 'cabenhs', []).map(v => {
-                    return {
-                        ...v,
-                        latlng: clone(v.geometry.coordinates).reverse()
-                    }
-                })
-            }
         },
         mounted(){
-
-
             let bounds = this.getBounds(this.cabenhs.map(v => v.geometry.coordinates), 200)
             if(bounds){
                 this.bounds = bounds
