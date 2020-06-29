@@ -45,13 +45,14 @@ class SxhController extends BackendController {
         $this->data['dm_loaibenh'] = Loaibenh::find()->select(['mabenh', 'tenbenh'])->andWhere(['mabenh' => $restrict_benh])->asArray()->indexBy('tenbenh')->all();
         $this->data['dm_bv'] = Benhvien::find()->select(['ma_bv' => 'mabenhvien', 'code' => 'tenvt'])->asArray()->indexBy('ma_bv')->all();
 
-        $qh =  HcQuan::find()->select(['tenquan' => 'tenquan', 'maquan' => 'maquan']);
+        $qh =  HcQuan::find()->select(['maquan', 'tenquan' => 'tenquan_en']);
         $px = HcPhuong::find()->select([
-            'maquan' => 'maquan',
-            'tenquan' => 'tenquan',
-            'maphuong' => 'maphuong',
-            'tenphuong' => 'tenphuong'
+            'maquan',
+            'maphuong',
+            'tenquan' => 'tenquan_en',
+            'tenphuong' => 'tenphuong_en',
         ]);
+
         if(role('quan')){
             $roles->filterMahc($qh, 'maquan');
             $px->andWhere(['maquan' => (string)$roles->maquan]);
@@ -62,10 +63,10 @@ class SxhController extends BackendController {
 
         $this->data['dm_quan'] = $qh->asArray()->indexBy('maquan')->all();
         $this->data['dm_phuong'] = $px->select([
-            'maquan' => 'maquan',
-            'tenquan' => 'tenquan',
-            'maphuong' => 'maphuong',
-            'tenphuong' => 'tenphuong'
+            'maquan',
+            'maphuong',
+            'tenquan' => 'tenquan_en',
+            'tenphuong' => 'tenphuong_en',
         ])->asArray()->indexBy('maphuong')->all();
     }
 
