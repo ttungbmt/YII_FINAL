@@ -163,10 +163,6 @@ class OdichSxhSearch extends OdichSxh
                 }
             ],
             [
-                'label'     => 'Ngày dự kiến kết thúc',
-                'attribute' => 'ngaydukien_kt',
-            ],
-            [
                 'label'     => 'Số lần xử lý',
                 'attribute' => 'solan_xl',
                 'value' => function($model){

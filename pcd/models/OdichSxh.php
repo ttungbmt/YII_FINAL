@@ -19,7 +19,7 @@ class OdichSxh extends App
     public $phamvi_to;
     public $phamvi_khupho;
 
-    protected $dates = ['ngayphathien', 'ngaydukien_kt', 'ngaykt', 'ngayxacdinh'];
+    protected $dates = ['ngayphathien', 'ngaykt', 'ngayxacdinh'];
 
     public $geometryType = GeometryBehavior::GEOMETRY_MULTIPOLYGON;
 

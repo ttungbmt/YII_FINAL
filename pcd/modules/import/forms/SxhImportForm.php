@@ -45,7 +45,7 @@ class SxhImportForm extends DynamicImportForm {
             [['ng_nv', 'ng_bc'], 'date', 'format' => 'DD/MM/YYYY'],
             [['t_benh'], 'in', 'range' => Arr::pluck($this->dm_loaibenh, 'tenbenh')],
             [['bv'], 'in', 'range' => Arr::pluck($this->dm_bv, 'code')],
-            
+
             [['px', 'qh'], 'required'],
             [['qh'], 'qhInRange'],
             [['px'], 'pxInRange'],

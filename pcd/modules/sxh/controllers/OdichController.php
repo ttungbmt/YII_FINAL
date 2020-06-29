@@ -141,7 +141,7 @@ class OdichController extends AppController
                 },
                 'dncs' => function($model){
                     $dncs = PtNguyco::find()->andWhere(['gid' => data_get($model, 'xuly.dncs', [])])->all();
-                    return ArrayHelper::toArray($dncs, [PtNguyco::class => $this->getDnsFields()]);
+                    return ArrayHelper::toArray($dncs, [PtNguyco::class => PtNguyco::rawFields()]);
                 },
                 'diet_lqs' => 'dietLqs',
                 'phun_hcs' => 'phunHcs',
