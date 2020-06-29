@@ -99,6 +99,7 @@ class CabenhSxh extends App
             [['ma_icd'], 'string', 'max' => 15],
             [['hoten'], 'string', 'max' => 150],
             [['lat', 'lng'], 'number'],
+            [['px', 'qh'], 'required'],
         ];
     }
 

@@ -89,6 +89,7 @@ class SxhController extends BackendController {
             $models[$k] = new CabenhSxh();
         }
 
+
         // Validate model and relation 2rd
         if (
             Model::loadMultiple($models, $data, '') &&

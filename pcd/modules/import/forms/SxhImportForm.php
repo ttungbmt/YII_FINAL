@@ -45,11 +45,29 @@ class SxhImportForm extends DynamicImportForm {
             [['ng_nv', 'ng_bc'], 'date', 'format' => 'DD/MM/YYYY'],
             [['t_benh'], 'in', 'range' => Arr::pluck($this->dm_loaibenh, 'tenbenh')],
             [['bv'], 'in', 'range' => Arr::pluck($this->dm_bv, 'code')],
-            [['qh'], 'in', 'range' => Arr::pluck($this->dm_quan, 'tenquan')],
-            [['px'], 'in', 'range' => Arr::pluck($this->dm_phuong, 'tenphuong')],
+            
+            [['px', 'qh'], 'required'],
+            [['qh'], 'qhInRange'],
+            [['px'], 'pxInRange'],
         ];
 
         return $rules;
+    }
+
+
+    public function qhInRange($attribute,$params){
+        $item = collect($this->dm_quan)->firstWhere('tenquan', $this->qh);
+        if(empty($item)){
+            $this->addError($attribute, "Mã quận/ huyện ({$this->px}) không tồn tại trong danh mục quận/ huyện");
+        }
+    }
+
+    public function pxInRange($attribute,$params){
+        $item = collect($this->dm_phuong)->where('tenquan', $this->qh)->firstWhere('tenphuong', $this->px);
+        if(empty($item)){
+            $this->addError($attribute, "Mã phường/ xã ({$this->px}) không tồn tại trong danh mục phường/ xã của quận/ huyện ({$this->qh})");
+        }
+
     }
 
     public function fields() {
