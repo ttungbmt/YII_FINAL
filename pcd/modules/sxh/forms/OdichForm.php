@@ -68,8 +68,11 @@ class OdichForm extends Odich
             'phamvi_gis' => 'xuly.phamvi_gis',
             'phamvi_px' => 'xuly.phamvi_px',
             'dncs' => function($model){
-                $dncs = PtNguyco::find()->andWhere(['gid' => $model->xuly->dncs->toArray()])->all();
-                return ArrayHelper::toArray($dncs, [PtNguyco::class => PtNguyco::rawFields()]);
+                if($model->xuly && $model->xuly->dncs) {
+                    $dncs = PtNguyco::find()->andWhere(['gid' => $model->xuly->dncs->toArray()])->all();
+                    return ArrayHelper::toArray($dncs, [PtNguyco::class => PtNguyco::rawFields()]);
+                }
+                return  [];
             },
         ]]);
     }

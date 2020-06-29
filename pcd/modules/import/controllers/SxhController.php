@@ -8,6 +8,8 @@ use pcd\models\Benhvien;
 use pcd\models\CabenhSxh;
 use pcd\models\DmPhuong;
 use pcd\models\DmQuan;
+use pcd\models\HcPhuong;
+use pcd\models\HcQuan;
 use pcd\models\Loaibenh;
 use pcd\supports\RoleHc;
 use yii\base\Model;
@@ -43,12 +45,12 @@ class SxhController extends BackendController {
         $this->data['dm_loaibenh'] = Loaibenh::find()->select(['mabenh', 'tenbenh'])->andWhere(['mabenh' => $restrict_benh])->asArray()->indexBy('tenbenh')->all();
         $this->data['dm_bv'] = Benhvien::find()->select(['ma_bv' => 'mabenhvien', 'code' => 'tenvt'])->asArray()->indexBy('ma_bv')->all();
 
-        $qh =  DmQuan::find()->select(['tenquan' => 'ten_qh', 'maquan' => 'ma_quan']);
-        $px = DmPhuong::find()->select([
-            'maquan' => 'ma_quan',
-            'tenquan' => 'ten_qh',
-            'maphuong' => 'ma_phuong',
-            'tenphuong' => 'ten_px'
+        $qh =  HcQuan::find()->select(['tenquan' => 'tenquan', 'maquan' => 'maquan']);
+        $px = HcPhuong::find()->select([
+            'maquan' => 'maquan',
+            'tenquan' => 'tenquan',
+            'maphuong' => 'maphuong',
+            'tenphuong' => 'tenphuong'
         ]);
         if(role('quan')){
             $roles->filterMahc($qh, 'maquan');
@@ -60,10 +62,10 @@ class SxhController extends BackendController {
 
         $this->data['dm_quan'] = $qh->asArray()->indexBy('maquan')->all();
         $this->data['dm_phuong'] = $px->select([
-            'maquan' => 'ma_quan',
-            'tenquan' => 'ten_qh',
-            'maphuong' => 'ma_phuong',
-            'tenphuong' => 'ten_px'
+            'maquan' => 'maquan',
+            'tenquan' => 'tenquan',
+            'maphuong' => 'maphuong',
+            'tenphuong' => 'tenphuong'
         ])->asArray()->indexBy('maphuong')->all();
     }
 
