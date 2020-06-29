@@ -65,6 +65,9 @@ class OdichForm extends Odich
             },
             'xuly_id' => 'xuly.id',
             'khaosat_cts' => 'xuly.khaosat_cts',
+            'khaosat_cts' => function($model){
+                return $model->xuly && $model->xuly->khaosat_cts ? $model->xuly->khaosat_cts : [];
+            },
             'phamvi_gis' => 'xuly.phamvi_gis',
             'phamvi_px' => 'xuly.phamvi_px',
             'dncs' => function($model){
