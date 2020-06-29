@@ -10,9 +10,9 @@ class OdichForm extends Odich
 {
     public function rules()
     {
-        return [
+        return array_merge(parent::rules(),[
             [['maquan', 'maphuong', 'ngayxacdinh', 'ngayphathien', 'loai_od'], 'required'],
-        ];
+        ]);
     }
 
     public static function findById($id){

@@ -43,7 +43,7 @@ export default [
             {component: 'm-field', label: 'Loại ổ dịch', type: 'select', items: 'cat.loai_od', placeholder: 'Chọn...', model: 'loai_od'},
             {component: 'm-field', label: 'Ngày xác định ổ dịch', model: 'ngayxacdinh', type: 'date', placeholder: 'DD/MM/YYYY', rules: ruleDate},
             {component: 'm-field', label: 'Ngày phát hiện ổ dịch', model: 'ngayphathien', type: 'date', placeholder: 'DD/MM/YYYY', rules: ruleDate},
-            {component: 'm-field', label: 'Ngày dự kiến kết thúc', model: 'ngaydukien_kt', type: 'date', placeholder: 'DD/MM/YYYY', rules: ruleDate},
+            {component: 'm-field', label: 'Ngày dự kiến kết thúc', model: 'ngaydukien_kt', type: 'date', placeholder: 'DD/MM/YYYY'},
         ]
     },
     {component: 'm-heading', type: 'heading', serial: 'II', title: 'Kết quả xử lý', class: 'text-lg'},

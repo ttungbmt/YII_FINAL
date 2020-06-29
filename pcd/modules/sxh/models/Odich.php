@@ -69,8 +69,8 @@ class Odich extends App
     {
         return [
             [['ngayxacdinh', 'ngayphathien', 'ngaydukien_kt', 'ngayketthuc', 'ngaybatdau_gs', 'ngayketthuc_td'], 'date', 'format' => 'php:d/m/Y'],
-            [['donvi_xp', 'hdtt_hinhthuc', 'hdtt_thoigian', 'hdtt_diadiem', 'danhgia', 'nguoithuchien', 'dienthoai',], 'safe'],
-            [['loai_od', 'sonocgia', 'dncs_count'], 'integer'],
+            [['donvi_xp', 'hdtt_hinhthuc', 'hdtt_thoigian', 'hdtt_diadiem', 'danhgia', 'nguoithuchien', 'dienthoai', 'dncs_count'], 'safe'],
+            [['loai_od', 'sonocgia'], 'integer'],
         ];
     }
 
@@ -96,8 +96,6 @@ class Odich extends App
             ->innerJoin(['pl' => 'odich_sxh_poly'], 'gid = resource_id')
             ->orderBy(['order' => SORT_ASC]);
     }
-
-
 
     public function saveModel(){
         if(!$this->validate()) return false;

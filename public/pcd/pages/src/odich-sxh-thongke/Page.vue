@@ -42,9 +42,9 @@
         data() {
             return {
                 dm_loai_tk: {
-                    1: 'Hoạt động phun hóa chất',
-                    2: 'Diệt lăng quăng',
-                    3: 'Tổng hợp',
+                    1: 'Báo cáo PHC',
+                    2: 'Báo cáo DLQ',
+                    3: 'Tổng hợp xử lý OD',
                 },
                 tbOptions: {
                     bordered: true,
