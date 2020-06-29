@@ -22,16 +22,18 @@ class ThongkeController extends AppController
             $loai_tk = request()->post('loai_tk');
             $date_from = request()->post('date_from');
             $date_to = request()->post('date_to');
+            $hc = request()->post('hc');
             $dm_loai_od = api('dm_loaiodich');
 
             $od = (new Query())
-                ->select('id odich_id, sonocgia, loai_od, dncs_count, px.tenphuong, px.tenquan')->from(['od' => Odich::tableName()])
+                ->select('id odich_id, sonocgia, loai_od, dncs_count, px.tenphuong, px.tenquan, px.maquan')->from(['od' => Odich::tableName()])
                 ->leftJoin(['px' => HcPhuong::tableName()], 'px.maphuong = od.maphuong')
             ;
 
             $tb1 = (new Query())
                 ->select('phc.*, od.loai_od, od.tenquan, od.tenphuong, od.dncs_count')->from(['phc' => PhunHc::tableName()])
                 ->leftJoin(['od' => $od], 'od.odich_id = phc.odich_id')
+                ->andFilterWhere(['od.maquan' => $hc])
                 ->andFilterDate(['ngayxuly' => [$date_from, $date_to]])
             ;
 
@@ -48,7 +50,7 @@ class ThongkeController extends AppController
                         ['key' => 'somaylon', 'label' => 'Máy phun lớn trên xe',],
                         ['key' => 'loai_hc', 'label' => 'Tên hóa chất',],
                         ['key' => 'solit_hc', 'label' => 'Số lít hóa chất (chưa pha)',],
-                        ['key' => 'sonha_kphc', 'label' => 'Số nhà không phun được / tổng số nhà',],
+                        ['key' => 'sonha_kphc', 'label' => 'Tỷ lệ nóc gia không PHC (%)',],
                         ['key' => 'songuoi_tg', 'label' => 'Tổng nhân sự tham gia',],
                         ['key' => 'dncs_count', 'label' => 'Số điểm nguy cơ trong ổ dịch',],
                         ['key' => 'dncs_odxp', 'label' => 'Số điểm nguy cơ trong ổ dịch xử phạt',],
@@ -57,7 +59,7 @@ class ThongkeController extends AppController
                         return array_merge($i, [
                             'ngayxuly' => dbToDate($i['ngayxuly']),
                             'loai_od' => data_get($dm_loai_od, $i['loai_od']),
-                            'tt' => "Lần {$i['tt']}",
+                            'sonha_kphc' => number_format ($i['sonocgia_tt'] > 0 ? ($i['sonocgia_tt']-$i['sonocgia_xl'])*100/$i['sonocgia_tt'] : 0, '1')
                         ]);
                     })
                 ]);
@@ -90,16 +92,19 @@ class ThongkeController extends AppController
                 ]);
             }
 
+
+            $field = $hc ? ['key' => 'maphuong', 'name' => 'tenphuong', 'label' => 'Phường xã', 'table' => HcPhuong::tableName(), 'filter' => ['maquan' => $hc]] : ['key' => 'maquan', 'name' => 'tenquan', 'label' => 'Quận huyện', 'table' => HcQuan::tableName(), 'filter' => ['maquan' => null]];
+
             $phc = (new Query()) ->select('odich_id, MAX ( tt ) m_tt, SUM ( solit_hc ) solit_hc ')->from(['phc' => PhunHc::tableName()])->groupBy('odich_id');
-            $phc_px = (new Query()) ->select('od.maquan, COUNT(DISTINCT od.maphuong) px_phc')->from(['tb' => PhunHc::tableName()])->leftJoin(['od' => Odich::tableName()], 'od.id = tb.odich_id')->groupBy('od.maquan')->having('MAX (tt) = 1');
+            $phc_px = (new Query()) ->select("od.{$field['key']}, COUNT(DISTINCT od.maphuong) px_phc")->from(['tb' => PhunHc::tableName()])->leftJoin(['od' => Odich::tableName()], 'od.id = tb.odich_id')->groupBy('od.'.$field['key'])->having('MAX (tt) = 1');
 
             $dlq = (new Query()) ->select('odich_id, MAX ( tt ) m_tt_dlq, SUM ( solit_hc ) solit_hc ')->from(['phc' => PhunHc::tableName()])->groupBy('odich_id');
-            $dlq_px = (new Query()) ->select('od.maquan, COUNT(DISTINCT od.maphuong) px_dlq')->from(['tb' => DietLq::tableName()])->leftJoin(['od' => Odich::tableName()], 'od.id = tb.odich_id')->groupBy('od.maquan')->having('MAX (tt) = 1');
+            $dlq_px = (new Query()) ->select("od.{$field['key']}, COUNT(DISTINCT od.maphuong) px_dlq")->from(['tb' => DietLq::tableName()])->leftJoin(['od' => Odich::tableName()], 'od.id = tb.odich_id')->groupBy('od.'.$field['key'])->having('MAX (tt) = 1');
 
 
             $tb3_od = (new Query())
                 ->select([
-                    'maquan' => 'od.maquan',
+                    $field['key'] => "od.{$field['key']}",
                     'mxl1' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 1 THEN 1 END )',
                     'mxl2' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 2 THEN 1 END )',
                     'mxl3' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 3 THEN 1 END )',
@@ -112,21 +117,21 @@ class ThongkeController extends AppController
                 ->from(['od' => Odich::tableName()])
                 ->leftJoin(['phc' => $phc], 'phc.odich_id = od.id')
                 ->leftJoin(['dlq' => $dlq], 'dlq.odich_id = od.id')
-                ->groupBy('od.maquan')
+                ->groupBy('od.'.$field['key'])
             ;
 
-
             $tb3 = (new Query())
-                ->select('qh.tenquan, od.*, phc_px.px_phc, dlq_px.px_dlq')->from(['qh' => HcQuan::tableName()])
-                ->leftJoin(['od' => $tb3_od], 'od.maquan = qh.maquan')
-                ->leftJoin(['phc_px' => $phc_px], 'phc_px.maquan = qh.maquan')
-                ->leftJoin(['dlq_px' => $dlq_px], 'dlq_px.maquan = qh.maquan')
+                ->select("hc.{$field['name']} name, od.*, phc_px.px_phc, dlq_px.px_dlq")->from(['hc' => $field['table']])
+                ->leftJoin(['od' => $tb3_od], "od.{$field['key']} = hc.{$field['key']}")
+                ->leftJoin(['phc_px' => $phc_px], "phc_px.{$field['key']} = hc.{$field['key']}")
+                ->leftJoin(['dlq_px' => $dlq_px], "dlq_px.{$field['key']} = hc.{$field['key']}")
+                ->andFilterWhere($field['filter'])
                 ->orderBy('order');
 
             if($loai_tk == 3){
                 return $this->asJson([
                     'fields' => [
-                        ['key' => 'tenquan', 'label' => 'Quận huyện', 'thStyle' => 'min-width: 150px'],
+                        ['key' => 'name', 'label' => $field['label'], 'thStyle' => 'min-width: 150px'],
                         ['key' => 'mxl1', 'label' => 'Số ổ dịch mới xử lý'],
                         ['key' => 'mxl2', 'label' => 'Số ổ dịch mới xử lý diện rộng'],
                         ['key' => 'mxl3', 'label' => 'Số ổ dịch mới liên PX'],

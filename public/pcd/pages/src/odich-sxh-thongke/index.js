@@ -10,5 +10,8 @@ Vuexy.liftOff({
     el: '#page-app',
     components: {
         [Page.name]: Page
+    },
+    created() {
+        this.$store.commit('cat/init', window.pageData.cat)
     }
 })

@@ -10,9 +10,8 @@ export default {
     actions: {},
 
     mutations: {
-        initPageData(state) {
-            let catData = window.pageData.cat
-            if(isPlainObject(catData)) map(catData, (value, name) => state[name] = value)
-        }
+        init(state, payload) {
+            if(isPlainObject(payload)) map(payload, (value, name) => state[name] = value)
+        },
     },
 }

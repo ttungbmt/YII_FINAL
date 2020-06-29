@@ -115,7 +115,11 @@ ttungbmt\yii\alpine\AlpineAsset::register($this);
                     <div class="row">
 
                         <div class="col-md-3"><?= $form->field($model, 'ngaycapnhat', ['template' => $template])->widget(\kartik\widgets\DatePicker::className()) ?></div>
-                        <div class="col-md-3"><?= $form->field($model, 'ngayxoa')->widget(\kartik\widgets\DatePicker::className()) ?></div>
+                        <div class="col-md-3"><?= $form->field($model, 'ngayxoa')->widget(\kartik\widgets\DatePicker::className(), [
+                                'options' => ['v-model' => 'm.ngayxoa'],
+                                'pluginEvents' => [ "changeDate" => "function(e) { vueApp.\$set(vueApp.m, 'ngayxoa', $(this).val()) }",]
+
+                            ]) ?></div>
                     </div>
                     <?= $form->field($model, 'ghichu')->textarea() ?>
 
@@ -128,11 +132,17 @@ ttungbmt\yii\alpine\AlpineAsset::register($this);
                     <?php endforeach; ?>
 
                     <div id="resp-gs"></div>
-                    <div class="text-right">
-                        <button type="button" @click="addItem"
-                                class="btn bg-success-400 btn-labeled btn-labeled-left legitRipple"><b><i
-                                        class="icon-file-plus"></i></b> Thêm lần giám sát
+
+                    <div class="text-right" v-if="!m.ngayxoa">
+                        <button type="button" @click="addItem" class="btn bg-success-400 btn-labeled btn-labeled-left legitRipple"><b><i class="icon-file-plus"></i></b> Thêm lần giám sát
                         </button>
+                    </div>
+                    <div class="alert alert-warning border-0 alert-dismissible" v-else>
+                        <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                        Điểm nguy cơ đã xóa không cho phép thêm lần giám sát!
+                    </div>
+                    <div >
+
                     </div>
 
                     <?php if (!request()->isAjax): ?>
@@ -150,7 +160,7 @@ ttungbmt\yii\alpine\AlpineAsset::register($this);
 
 <?php $this->beginBlock('scripts') ?>
     <script>
-        let app = new Vue({
+        let vueApp = new Vue({
             el: '#vueApp',
             data: {
                 message: 'Hello',

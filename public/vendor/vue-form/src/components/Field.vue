@@ -7,7 +7,7 @@
     </validation-provider>
 </template>
 <script>
-    import {get, has, replace, isString, isPlainObject, isFunction, isArray, map, isEmpty, includes, isUndefined, filter} from 'lodash-es'
+    import {get, has, replace, isString, isPlainObject, isFunction, isArray, map, isEmpty, includes, isUndefined, filter, values, sortBy} from 'lodash-es'
 
     const natsort = (arr) => {
         return arr.sort(function (a,b) {
@@ -21,12 +21,18 @@
     }
 
     const toOptions = (items, extraOpts = {}, config = {}) => {
+
         let opts = []
-        let {label = 'label', value = 'value'} = config
+        let {label = 'label', value = 'value', sortValues} = config
         let {placeholder} = extraOpts
 
         if (isPlainObject(items)) {
-            opts =  map(items, (l, v) => ({[value]: v, [label]: l}))
+            if(sortValues){
+                opts = map(items, (l, v) => ({[value]: v, [label]: l}))
+            } else {
+                opts = map(items, (l, v) => ({[value]: v, [label]: l}))
+            }
+
         }
 
         if (isArray(items)) {
@@ -68,10 +74,13 @@
     export default {
         inheritAttrs: false,
         name: 'm-field',
-        inject: ['formOptions'],
+        inject: {
+            formOptions: 'formOptions'
+        },
         props: {
             id: String,
             label: String,
+            sortValues: [String, Boolean],
             rules: String,
             name: String,
             model: String,
@@ -103,7 +112,8 @@
             },
 
             modelPath(){
-                return [this.formOptions.model, this.model].join('.')
+                if(has(this.formOptions, 'model')) return [this.formOptions.model, this.model].join('.')
+                return this.model
             },
 
             computedComponent(){
@@ -177,7 +187,7 @@
                     items = filter(items, v => get(v, this.filterBy.path) == this.filterBy.value)
                 }
 
-                return toOptions(items, {placeholder: this.placeholder}, {label: 'text'})
+                return toOptions(items, {placeholder: this.placeholder}, {label: 'text', sortValues: this.sortValues})
             },
 
             fieldRules(){

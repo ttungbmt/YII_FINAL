@@ -239,7 +239,6 @@ class OdichController extends AppController
 
         $data_final = collect(['m' => opt(array_merge($m1, $m2))])->merge($data_func)->all();
 
-
         return $data_final;
     }
 

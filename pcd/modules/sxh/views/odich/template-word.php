@@ -8,7 +8,7 @@
         #part-danhgia {padding-top: 6pt; padding-left: 30px; font-size:13.0pt}
         #part-danhgia p {margin-bottom: 4px; font-size:13.0pt}
         .font-bold {font-weight: bold}
-        .underline {text-decoration: underline;}
+        .underline {text-decoration: underline;mso-style-name:underline;}
         .uppercase {text-transform: uppercase;}
         .phamvi-html {
             font-size:11pt
@@ -1330,11 +1330,11 @@ margin-bottom:.0001pt;text-indent:-17.85pt;line-height:150%;mso-list:l0 level1 l
 tab-stops:right dotted 467.8pt'><span style='font-size:13.0pt;line-height:150%;
 color:white;mso-color-alt:windowtext'>Loại ổ dịch: <?=$m->loai_od?><span style='mso-tab-count:1 dotted'>.......................................................................................................................... </span><o:p></o:p></span></p>
 
-    <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt; margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lfo4; tab-stops:right dotted 467.8pt'><span style='font-size:13.0pt;line-height:150%'>Ngày xác định ổ dịch: <?=$if($m->ngayxacdinh)?><span style='mso-tab-count:1 dotted'>......................................................................................................... </span><o:p></o:p></span></p>
+    <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt; margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lfo4; tab-stops:right dotted 467.8pt'><span style='font-size:13.0pt;line-height:150%'>Ngày xác định ổ dịch: <?=$if($m->ngayxacdinh, "<span style='mso-tab-count:1 dotted'>......................................................................................................... </span>")?><o:p></o:p></span></p>
 
-    <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt; margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lfo4; tab-stops:right dotted 467.8pt'><span style='font-size:13.0pt;line-height:150%'>Ngày phát hiện ổ dịch: <?=$if($m->ngayphathien)?><span style='mso-tab-count:1 dotted'>........................................................................................................ </span><o:p></o:p></span></p>
+    <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt; margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lfo4; tab-stops:right dotted 467.8pt'><span style='font-size:13.0pt;line-height:150%'>Ngày phát hiện ổ dịch: <?=$if($m->ngayphathien, "<span style='mso-tab-count:1 dotted'>........................................................................................................ </span>")?><o:p></o:p></span></p>
 
-    <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt; margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lfo4; tab-stops:right dotted 467.8pt'><span style='font-size:13.0pt;line-height:150%'>Ngày dự kiến kết thúc: <?=$m->ngaydukien_kt?><span style='mso-tab-count:1 dotted'>........................................................................................................ </span><o:p></o:p></span></p>
+    <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt; margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lfo4; tab-stops:right dotted 467.8pt'><span style='font-size:13.0pt;line-height:150%'>Ngày dự kiến kết thúc: <?=$if($m->ngaydukien_kt, "<span style='mso-tab-count:1 dotted'>........................................................................................................ </span>")?><o:p></o:p></span></p>
 
     <p class=MsoNormal style='margin-top:6.0pt;margin-right:0cm;margin-bottom:6.0pt;
 margin-left:33.15pt;text-indent:-33.15pt;mso-text-indent-alt:-17.85pt;
@@ -1377,7 +1377,7 @@ margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lf
 tab-stops:right dotted 467.8pt'><![if !supportLists]><span style='font-size:
 13.0pt;line-height:150%;font-family:"Calibri",sans-serif;mso-fareast-font-family:
 Calibri'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]><span style='font-size:13.0pt;line-height:150%'>Số nhà (nóc gia trong phạm vi ổ dịch đã xác định): <?=$m->sonocgia?><span style='mso-tab-count:1 dotted'>......................................................... </span><o:p></o:p></span></p>
+</span></span></span><![endif]><span style='font-size:13.0pt;line-height:150%'>Số nhà (nóc gia trong phạm vi ổ dịch đã xác định): <?=$if($m->sonocgia, "<span style='mso-tab-count:1 dotted'>......................................................... </span>")?><o:p></o:p></span></p>
 
     <p class=MsoNormal style='margin-top:6.0pt;margin-right:0cm;margin-bottom:0cm;
 margin-left:72.0pt;margin-bottom:.0001pt;text-indent:-72.0pt;mso-text-indent-alt:
@@ -1581,7 +1581,7 @@ margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lf
 tab-stops:right dotted 467.8pt'><![if !supportLists]><span style='font-size:
 13.0pt;line-height:150%;font-family:"Calibri",sans-serif;mso-fareast-font-family:
 Calibri'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]><span style='font-size:13.0pt;line-height:150%'>Số điểm nguy cơ trong ổ dịch: <?=count($m->dncs)?><span style='mso-tab-count:1 dotted'>........................................................................................... </span><o:p></o:p></span></p>
+</span></span></span><![endif]><span style='font-size:13.0pt;line-height:150%'>Số điểm nguy cơ trong ổ dịch: <?=count($m->dncs)?><o:p></o:p></span></p>
 
     <?php if(count($m->dncs) > 0):?>
 
@@ -1745,7 +1745,7 @@ margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lf
 tab-stops:right dotted 467.8pt'><![if !supportLists]><span style='font-size:
 13.0pt;line-height:150%;font-family:"Calibri",sans-serif;mso-fareast-font-family:
 Calibri'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]><span style='font-size:13.0pt;line-height:150%'>Ngày bắt đầu giám sát: <?=$m->ngaybatdau_gs?><span style='mso-tab-count:1 dotted'>....................................................................................................... </span><o:p></o:p></span></p>
+</span></span></span><![endif]><span style='font-size:13.0pt;line-height:150%'>Ngày bắt đầu giám sát: <?=$if($m->ngaybatdau_gs, "<span style='mso-tab-count:1 dotted'>....................................................................................................... </span>")?><o:p></o:p></span></p>
 
     <p class=MsoNormal style='margin-top:12.0pt;margin-right:0cm;margin-bottom:
 0cm;margin-left:72.0pt;margin-bottom:.0001pt;text-indent:-72.0pt;mso-text-indent-alt:
@@ -1818,7 +1818,7 @@ Calibri'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman
   center'><span style='font-size:11.0pt'>Số người tham gia <o:p></o:p></span></p>
             </td>
         </tr>
-        <?php foreach($m->phun_hcs as $i):?>
+        <?php foreach($m->phun_hcs as $k => $i):?>
         <?php $v = opt($i)?>
         <tr style='mso-yfti-irow:1;mso-yfti-lastrow:yes'>
             <td width=43 style='width:32.1pt;border:solid black 1.0pt;border-top:none;
@@ -1882,20 +1882,20 @@ margin-bottom:.0001pt;text-indent:-17.85pt;mso-list:l0 level1 lfo4;tab-stops:
 right dotted 467.8pt'><![if !supportLists]><span style='font-size:13.0pt;
 font-family:"Calibri",sans-serif;mso-fareast-font-family:Calibri'><span
                     style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]><span style='font-size:13.0pt'>Hình thức truyền thông: <?=$m->hdtt_hinhthuc?><span style='mso-tab-count:1 dotted'>...................................................................................................... </span><o:p></o:p></span></p>
+</span></span></span><![endif]><span style='font-size:13.0pt'>Hình thức truyền thông: <?=$if($m->hdtt_hinhthuc, "<span style='mso-tab-count:1 dotted'>...................................................................................................... </span>")?><o:p></o:p></span></p>
 
     <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.25pt;
 margin-bottom:.0001pt;text-indent:-17.85pt;mso-list:l0 level1 lfo4;tab-stops:
 right dotted 467.8pt'><![if !supportLists]><span style='font-size:13.0pt;
 font-family:"Calibri",sans-serif;mso-fareast-font-family:Calibri'><span
                     style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]><span style='font-size:13.0pt'>Địa điểm: <?=$m->hdtt_diadiem?><span style='mso-tab-count:1 dotted'>.............................................................................................................................. </span><o:p></o:p></span></p>
+</span></span></span><![endif]><span style='font-size:13.0pt'>Địa điểm: <?=$if($m->hdtt_diadiem, "<span style='mso-tab-count:1 dotted'>.............................................................................................................................. </span>")?><o:p></o:p></span></p>
 
     <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.25pt;
 margin-bottom:.0001pt;text-indent:-17.85pt;mso-list:l0 level1 lfo4;tab-stops:
 right dotted 467.8pt'><![if !supportLists]><span style='font-size:13.0pt;
 font-family:"Calibri",sans-serif;mso-fareast-font-family:Calibri'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]><span style='font-size:13.0pt'>Thời gian: <?=$m->hdtt_thoigian?><span style='mso-tab-count:1 dotted'>............................................................................................................................ </span><o:p></o:p></span></p>
+</span></span></span><![endif]><span style='font-size:13.0pt'>Thời gian: <?=$if($m->hdtt_thoigian, "<span style='mso-tab-count:1 dotted'>............................................................................................................................ </span>")?><o:p></o:p></span></p>
 
     <p class=MsoNormal style='margin-top:12.0pt;margin-right:0cm;margin-bottom:
 0cm;margin-left:72.0pt;margin-bottom:.0001pt;text-indent:-72.0pt;mso-text-indent-alt:
@@ -1913,29 +1913,6 @@ Calibri'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman
         <p>Ổ dịch diện rộng</p><p>Ổ dịch xử lý 2 lần</p>
     </div>
 
-    <?php if(!$m->danhgia):?>
-        <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:3.4pt;
-margin-bottom:.0001pt;line-height:150%;tab-stops:right dotted 467.8pt;
-widows:0;orphans:0'><span style='font-size:13.0pt;line-height:150%'><span
-                        style='mso-tab-count:1 dotted'>.......................................................................................................................................................... </span><o:p></o:p></span></p>
-
-        <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:3.4pt;
-margin-bottom:.0001pt;line-height:150%;tab-stops:right dotted 467.8pt'><span
-                    style='font-size:13.0pt;line-height:150%'><span style='mso-tab-count:1 dotted'>.......................................................................................................................................................... </span><o:p></o:p></span></p>
-        <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:3.4pt;
-margin-bottom:.0001pt;line-height:150%;tab-stops:right dotted 467.8pt'><span
-                    style='font-size:13.0pt;line-height:150%'><span style='mso-tab-count:1 dotted'>.......................................................................................................................................................... </span><o:p></o:p></span></p>
-
-        <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:3.4pt;
-margin-bottom:.0001pt;line-height:150%;tab-stops:right dotted 467.8pt'><span
-                    style='font-size:13.0pt;line-height:150%'><span style='mso-tab-count:1 dotted'>.......................................................................................................................................................... </span><o:p></o:p></span></p>
-
-        <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:3.4pt;
-margin-bottom:.0001pt;line-height:150%;tab-stops:right dotted 467.8pt'><span
-                    style='font-size:13.0pt;line-height:150%'><span style='mso-tab-count:1 dotted'>.......................................................................................................................................................... </span><o:p></o:p></span></p>
-    <?php endif?>
-
-
     <p align=center style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
 margin-left:1.0cm;margin-bottom:.0001pt;text-align:center'><strong><o:p>&nbsp;</o:p></strong></p>
 
@@ -1943,6 +1920,21 @@ margin-left:1.0cm;margin-bottom:.0001pt;text-align:center'><strong><o:p>&nbsp;</
 margin-left:1.0cm;margin-bottom:.0001pt;text-align:center'><strong>PHỤ TRÁCH
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             TRẠM Y TẾ </strong></p>
+
+    <p align=center style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:1.0cm;margin-bottom:.0001pt;text-align:center;line-height:150%;
+tab-stops:center 78.0pt'><strong><o:p>&nbsp;</o:p></strong></p>
+
+    <p align=center style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:1.0cm;margin-bottom:.0001pt;text-align:center;line-height:150%;
+tab-stops:center 78.0pt'><strong><o:p>&nbsp;</o:p></strong></p>
+
+    <p align=center style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:1.0cm;margin-bottom:.0001pt;text-align:center;line-height:150%;
+tab-stops:center 78.0pt'><strong><o:p>&nbsp;</o:p></strong></p>
+
+    <p style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:150%;tab-stops:
+center 106.35pt'><strong><span style='mso-tab-count:1'>                  </span><?=$m->nguoithuchien?></strong></p>
 
 </div>
 

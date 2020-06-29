@@ -11,7 +11,7 @@
     </validation-observer>
 </template>
 <script>
-    import {map, head} from 'lodash-es'
+    import {map, head, has} from 'lodash-es'
 
     export default {
         name: 'm-form',
@@ -25,12 +25,14 @@
         },
         methods: {
             onSubmit () {
-                let errors =  map(this.$refs.form.errors, v => v[0]).filter(v => v)
+                let errors =  map(this.$refs.form.errors, v => v[0]).filter(v => v),
+                    value = has(this.options, 'model') ? this.$store.get(this.options.model): {}
 
-                this.$emit('submit', this.$store.get(this.options.model), {
+                this.$emit('submit', value, {
                     $form: this.$refs.form,
                     errors
                 })
+
             },
             filterErrors(errors){
                 return map(errors, v => head(v))

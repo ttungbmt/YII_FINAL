@@ -2,6 +2,7 @@
 
 namespace pcd\modules\pt_nguyco\models;
 
+use Carbon\Carbon;
 use kartik\helpers\Html;
 use pcd\models\App;
 use pcd\models\HcPhuong;
@@ -72,6 +73,7 @@ class PtNguyco extends App
             [['maphuong', 'maquan'], 'required'],
             [['ngayxoa', 'ngaycapnhat', 'ngayky_ck'], 'dateCompare', 'compareValue' => date('d/m/Y'), 'format' => 'd/m/Y', 'operator' => '<='],
             ['ngayxoa', 'dateCompare', 'compareAttribute' => 'ngaycapnhat', 'format' => 'd/m/Y', 'operator' => '>='],
+            ['ngayxoa', 'validateNgayxoa'],
             [['ky_ck'], 'required', 'when' => function ($model) {
                 return $model->dm_loaihinh && $model->dm_loaihinh->nhom == '1';
             }],
@@ -80,6 +82,20 @@ class PtNguyco extends App
             }],
             ['giamsats', 'validateGiamsats'],
         ];
+    }
+
+    public function validateNgayxoa($attribute){
+        foreach ($this->giamsats as $gs){
+
+            if($gs->ngay_gs && $this->ngayxoa){
+                $gs = Carbon::createFromFormat('d/m/Y', $gs->ngay_gs);
+                $nx = Carbon::createFromFormat('d/m/Y', $this->ngayxoa);
+                if($nx <= $gs){
+                    $this->addError($attribute, "Ngày xóa phải lớn hơn ngày giám sát của các đợt giám sát");
+                }
+
+            }
+        }
     }
 
     public function validateGiamsats()

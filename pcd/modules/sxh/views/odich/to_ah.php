@@ -3,7 +3,7 @@ use yii\helpers\Html;
 
 $r_khupho = function ($khupho, $p){
     return Html::tag('div', (
-        Html::tag('span', "Khu phố / ấp {$khupho} ({$p->count()}): ", ['class' => 'font-bold']).
+        Html::tag('span', "Khu phố / ấp {$khupho} ({$p->count()}): ", ['class' => 'font-bold'])."	&nbsp;".
         $p->sortBy('tento', SORT_NATURAL)->implode('tento', ', ')
     ));
 }

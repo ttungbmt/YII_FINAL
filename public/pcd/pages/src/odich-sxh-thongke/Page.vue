@@ -1,16 +1,18 @@
 <template>
     <div>
         <b-card header-class="p-0">
-            <b-form @submit.prevent="onSubmit">
-                <m-field type="select" :items="dm_loai_tk" label="Loại thống kê" v-model="form.loai_tk"></m-field>
+            <m-form @submit="onSubmit">
+                <div class="grid grid-cols-2 gap-4">
+                    <m-field type="select" :items="dm_loai_tk" label="Loại thống kê" v-model="form.loai_tk"></m-field>
+                    <m-field type="select" items="cat.qh" label="Hành chính" :placeholder="form.maquan ? false : `Thành phố`" v-model="form.hc"></m-field>
+                </div>
                 <div class="grid grid-cols-2 gap-4">
                     <m-field type="date" label="Từ ngày Ngày xử lý" v-model="form.date_from" placeholder="DD/MM/YYYY"></m-field>
                     <m-field type="date" label="Đến ngày" v-model="form.date_to" placeholder="DD/MM/YYYY"></m-field>
                 </div>
 
-
                 <m-btn type="submit" color="primary" :loading="$wait.any">Thống kê</m-btn>
-            </b-form>
+            </m-form>
         </b-card>
 
 
@@ -19,6 +21,7 @@
                 <b-progress :value="100" :max="100" animated></b-progress>
             </template>
 
+            <b-alert show v-if="info" class="border-0" dismissible>{{info}}</b-alert>
 
             <div v-if="!_.isEmpty(data)" >
                 <m-btn class="mb-2 mr-3" type="export" :exportOptions="exportOptions" size="sm">Xuất Excel</m-btn>
@@ -33,6 +36,7 @@
 
 </template>
 <script>
+    import {isEmpty} from 'lodash-es'
 
     export default {
         name: 'page-thongke-odich',
@@ -51,10 +55,11 @@
                     'sticky-header': true,
                 },
                 form: {
-                    loai_tk: 1,
                     date_from: '',
                     date_to: '',
+                    ...pageData.form
                 },
+                info: '',
                 data: {
 
                 },
@@ -70,8 +75,9 @@
 
         },
         methods: {
-            onSubmit(e){
+            onSubmit(){
                 this.$wait.start('thongke');
+                this.info = ''
 
                 let data = this.form
 
@@ -87,9 +93,12 @@
                     })
                     this.data = data.data
 
+                    if(isEmpty(this.data)) this.info = 'Không có dữ liệu'
+
                     this.$wait.end('thongke');
-                }).catch(() => {
+                }).catch((e) => {
                     this.$wait.end('thongke');
+                    this.info = 'Error'
                 })
             },
             resetData(){

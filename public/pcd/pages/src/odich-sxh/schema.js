@@ -109,9 +109,9 @@ export default [
                     component: 'm-grid',
                     cols: 3,
                     schema: [
-                        {component: 'm-field', label: 'BI', model: 'bi', type: 'integer', rules: ruleNumber},
-                        {component: 'm-field', label: 'CI%', model: 'ci', type: 'integer', rules: ruleNumber},
-                        {component: 'm-field', label: 'HILQ%', model: 'hilq', type: 'integer', rules: ruleNumber},
+                        {component: 'm-field', label: 'BI', model: 'bi', type: 'integer', rules: ruleInteger},
+                        {component: 'm-field', label: 'CI%', model: 'ci', type: 'integer', rules: ruleInteger},
+                        {component: 'm-field', label: 'HILQ%', model: 'hilq', type: 'integer', rules: ruleInteger},
                     ]
                 },
                 {
@@ -122,7 +122,7 @@ export default [
                     },
                     schema: [
                         {component: 'm-field', label: 'DI', model: 'di', type: 'integer', rules: ruleNumber},
-                        {component: 'm-field', label: 'HI_muoi', model: 'hi_muoi', type: 'integer', rules: ruleNumber},
+                        {component: 'm-field', label: 'HI_muoi', model: 'hi_muoi', type: 'integer', rules: ruleInteger},
                     ]
                 },
 

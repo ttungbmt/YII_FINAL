@@ -32,7 +32,7 @@ class DietLq extends App
     {
         return [
             [['odich_id'], 'default', 'value' => null],
-            [['odich_id'], 'integer'],
+            [['odich_id', 'tt'], 'integer'],
             [['ngayxuly', 'khupho', 'to_dp', 'sonha', 'songuoi'], 'string', 'max' => 255],
         ];
     }

@@ -17,7 +17,7 @@
             <div>
                 <div style="columns: auto 2">
                     <div v-for="i in getPhamVi(1)">
-                        <div class="font-bold">Khu phố / ấp {{i.khupho}} ({{i.to_dp | countToDp}}): {{i.to_dp}}</div>
+                        <div class="font-bold">Khu phố/ấp {{i.khupho}} ({{i.to_dp | countToDp}}): {{i.to_dp}}</div>
                     </div>
                     <div v-if="!_.isEmpty(getPhamVi(2))">
                         <div class="font-bold uppercase underline mt-2">Liên Phường xã:</div>
@@ -25,7 +25,7 @@
                             <div class="font-bold underline text-warning">
                                 {{getTenPx(pxs)}}
                             </div>
-                            <div class="font-bold" v-for="kp in pxs">Khu phố/Ấp {{kp.khupho}} ({{kp.to_dp | countToDp}}): {{kp.to_dp}}</div>
+                            <div class="font-bold" v-for="kp in pxs">Khu phố/ấp {{kp.khupho}} ({{kp.to_dp | countToDp}}): {{kp.to_dp}}</div>
                         </div>
                     </div>
                     <div v-if="!_.isEmpty(getPhamVi(3))">
@@ -38,7 +38,7 @@
                                 <div class="font-bold underline text-warning">
                                     {{getTenPx(pxs)}}
                                 </div>
-                                <div class="font-bold" v-for="kp in pxs">Khu phố/Ấp {{kp.khupho}} ({{kp.to_dp | countToDp}}): {{kp.to_dp}}</div>
+                                <div class="font-bold" v-for="kp in pxs">Khu phố/ấp {{kp.khupho}} ({{kp.to_dp | countToDp}}): {{kp.to_dp}}</div>
                             </div>
                         </div>
                     </div>

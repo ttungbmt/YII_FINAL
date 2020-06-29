@@ -23,29 +23,29 @@
     <tr v-for="(v, k) in resp">
         <td>{{k+1}}</td>
         <td>{{v.name}}</td>
-        <td>{{v.dauthang | number}}</td>
-        <td>{{v.daxoa | number}}</td>
-        <td>{{v.moi | number}}</td>
-        <td>{{v.dauthang-v.daxoa+v.moi | number}}</td>
-        <td>{{v.gs | number}}</td>
-        <td>{{v.luot_gs | number}}</td>
-        <td>{{v.lq | number}}</td>
-        <td>{{v.dx_xp | number}}</td>
-        <td>{{v.xp | number}}</td>
+        <td><a target="_blank" href="/pt_nguyco/default/index">{{v.dauthang | number}}</a></td>
+        <td><a target="_blank" href="/pt_nguyco/default/index">{{v.daxoa | number}}</a></td>
+        <td><a target="_blank" href="/pt_nguyco/default/index">{{v.moi | number}}</a></td>
+        <td><a target="_blank" href="/pt_nguyco/default/index">{{v.dauthang-v.daxoa+v.moi | number}}</a></td>
+        <td><a target="_blank" href="/pt_nguyco/default/index">{{v.gs | number}}</a></td>
+        <td><a target="_blank" href="/pt_nguyco/default/index">{{v.luot_gs | number}}</a></td>
+        <td><a target="_blank" href="/pt_nguyco/default/index">{{v.lq | number}}</a></td>
+        <td><a target="_blank" href="/pt_nguyco/default/index">{{v.dx_xp | number}}</a></td>
+        <td><a target="_blank" href="/pt_nguyco/default/index">{{v.xp | number}}</a></td>
     </tr>
     </tbody>
     <tfoot>
     <tr>
         <td colspan="2">Tổng</td>
-        <td>{{_.sumBy(resp, 'dauthang')}}</td>
-        <td>{{_.sumBy(resp, 'daxoa')}}</td>
-        <td>{{_.sumBy(resp, 'moi')}}</td>
-        <td>{{_.sumBy(resp, 'dauthang') - _.sumBy(resp, 'daxoa') + _.sumBy(resp, 'moi')}}</td>
-        <td>{{_.sumBy(resp, 'gs')}}</td>
-        <td>{{_.sumBy(resp, 'luot_gs')}}</td>
-        <td>{{_.sumBy(resp, 'lq')}}</td>
-        <td>{{_.sumBy(resp, 'dx_xp')}}</td>
-        <td>{{_.sumBy(resp, 'xp')}}</td>
+        <td><a target="_blank" href="">{{_.sumBy(resp, 'dauthang')}}</a></td>
+        <td><a target="_blank" href="">{{_.sumBy(resp, 'daxoa')}}</a></td>
+        <td><a target="_blank" href="">{{_.sumBy(resp, 'moi')}}</a></td>
+        <td><a target="_blank" href="">{{_.sumBy(resp, 'dauthang') - _.sumBy(resp, 'daxoa') + _.sumBy(resp, 'moi')}}</a></td>
+        <td><a target="_blank" href="">{{_.sumBy(resp, 'gs')}}</a></td>
+        <td><a target="_blank" href="">{{_.sumBy(resp, 'luot_gs')}}</a></td>
+        <td><a target="_blank" href="">{{_.sumBy(resp, 'lq')}}</a></td>
+        <td><a target="_blank" href="">{{_.sumBy(resp, 'dx_xp')}}</a></td>
+        <td><a target="_blank" href="">{{_.sumBy(resp, 'xp')}}</a></td>
     </tr>
     </tfoot>
 </table>

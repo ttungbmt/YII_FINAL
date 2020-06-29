@@ -110,9 +110,6 @@ $maphuong = userInfo()->ma_phuong;
                 </div>
             </div>
         </div>
-
-<!--        <div id="chartdiv" style="height: 1000px; width: 100%"></div>-->
-
     </div>
 
 </div>
@@ -134,17 +131,8 @@ $maphuong = userInfo()->ma_phuong;
                     hanhchinh: '/pt_nguyco/thongke/loaihinh',
                     xuphat: '/pt_nguyco/thongke/xuphat'
                 },
-                chartData: {
-                    labels: ['January', 'February'],
-                    datasets: [
-                        {
-                            label: 'Data One',
-                            backgroundColor: '#f87979',
-                            data: [40, 20]
-                        }
-                    ]
-                },
-                field: {}
+                field: {},
+                resp: []
             },
             components: {},
             filters: {
@@ -156,6 +144,11 @@ $maphuong = userInfo()->ma_phuong;
             computed: {
                 postUrl() {
                     return this.list_url[this.loai_tk]
+                }
+            },
+            watch: {
+                loai_tk(){
+                    this.resp = []
                 }
             },
             methods: {

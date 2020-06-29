@@ -164,16 +164,14 @@ class ThongkeController extends BackendController
                     'table' => (new Query())->select('maphuong, khupho')->from(PtNguyco::tableName())->groupBy(new Expression('1,2')),
                     'name' => 'khupho', 'code' => 'khupho', 'label' => 'Khu phố'
                 ];
-                $q2
-                    ->andWhere(['maphuong' => $maphuong]);
+                $q2->andWhere(['maphuong' => $maphuong]);
                 $q3
                     ->orderBy('hc.'.$field['code'])
                     ->andWhere(['maphuong' => $maphuong]);
 
             } else {
                 $field = ['table' => 'hc_phuong', 'name' => 'tenphuong', 'code' => 'maphuong', 'label' => 'Phường xã'];
-                $q2
-                    ->andWhere(['maquan' => $maquan]);
+                $q2->andWhere(['maquan' => $maquan]);
                 $q3
                     ->orderBy('hc.order')
                     ->andWhere(['maquan' => $maquan]);
@@ -181,12 +179,10 @@ class ThongkeController extends BackendController
 
         } else {
             $field = ['table' => 'hc_quan', 'name' => 'tenquan', 'code' => 'maquan', 'label' => 'Quận huyện'];
-
             $q3 = $q3->orderBy('hc.order');
         }
 
-        $q2
-            ->addSelect([ 'code' => "dnc.{$field['code']}"]);
+        $q2->addSelect([ 'code' => "dnc.{$field['code']}"]);
 
         $q3
             ->select([
