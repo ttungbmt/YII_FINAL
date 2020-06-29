@@ -11,12 +11,13 @@
         </v-wait>
 
         <button type="button" class="btn-small mt-2" @click="updatePhamviGis">Cập nhật phạm vi trên GIS</button>
+
+        <div class="font-bold mt-2 text-base underline text-pink-600">Phạm vi ổ dịch cần xử lý:</div>
         <div id="phamvi-px-html">
-            <div class="font-bold mt-2 text-base underline text-pink-600">Phạm vi ổ dịch cần xử lý:</div>
             <div>
                 <div style="columns: auto 2">
                     <div v-for="i in getPhamVi(1)">
-                        <div class="font-bold">Khu phố/Ấp {{i.khupho}} ({{i.to_dp | countToDp}}): {{i.to_dp}}</div>
+                        <div class="font-bold">Khu phố / ấp {{i.khupho}} ({{i.to_dp | countToDp}}): {{i.to_dp}}</div>
                     </div>
                     <div v-if="!_.isEmpty(getPhamVi(2))">
                         <div class="font-bold uppercase underline mt-2">Liên Phường xã:</div>

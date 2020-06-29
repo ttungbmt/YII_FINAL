@@ -7,6 +7,12 @@
     <style>
         #part-danhgia {padding-top: 6pt; padding-left: 30px; font-size:13.0pt}
         #part-danhgia p {margin-bottom: 4px; font-size:13.0pt}
+        .font-bold {font-weight: bold}
+        .underline {text-decoration: underline;}
+        .uppercase {text-transform: uppercase;}
+        .phamvi-html {
+            font-size:11pt
+        }
     </style>
     <!--[if gte mso 9]><xml>
         <o:DocumentProperties>
@@ -1347,28 +1353,24 @@ margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lf
 tab-stops:right dotted 467.8pt'><![if !supportLists]><span style='font-size:
 13.0pt;line-height:150%;font-family:"Calibri",sans-serif;mso-fareast-font-family:
 Calibri'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]><span style='font-size:13.0pt;line-height:150%'>Sau khi xác định mối liên quan giữa các ca bệnh và nhận thấy có sự hình thành của ổ
-dịch sốt xuất huyết tại các khu phố/ấp và các tổ trên hệ thống GIS: <span
-                    style='mso-tab-count:1 dotted'>.......................................... </span><o:p></o:p></span></p>
+</span></span></span><![endif]><span style='font-size:13.0pt;line-height:150%'>Sau khi xác định mối liên quan giữa các ca bệnh và nhận thấy có sự hình thành của ổ dịch sốt xuất huyết tại các khu phố/ấp và các tổ trên hệ thống GIS: </p>
 
-    <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt;
-margin-bottom:.0001pt;line-height:150%;tab-stops:right dotted 467.8pt'><span
-                style='font-size:13.0pt;line-height:150%'><span style='mso-tab-count:1 dotted'>............................................................................................................................................... </span><o:p></o:p></span></p>
+    <div class="phamvi-html">
+        <?=$if($m->phamvi_gis, ' ')?>
+    </div>
 
     <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt;
 margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lfo4;
 tab-stops:right dotted 467.8pt'><![if !supportLists]><span style='font-size:
 13.0pt;line-height:150%;font-family:"Calibri",sans-serif;mso-fareast-font-family:
 Calibri'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]><span style='font-size:13.0pt;line-height:150%'>Xác
-định phạm vi ổ dịch cần xử lý bao gồm các khu phố/ấp và các tổ:<span
-                    style='mso-tab-count:1 dotted'>....................... </span><o:p></o:p></span></p>
+</span></span></span><![endif]><span style='font-size:13.0pt;line-height:150%'>Xác định phạm vi ổ dịch cần xử lý bao gồm các khu phố/ấp và các tổ:</p>
 
     <p class=MsoListParagraph><span style='font-size:13.0pt'><o:p>&nbsp;</o:p></span></p>
 
-    <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt;
-margin-bottom:.0001pt;line-height:150%;tab-stops:right dotted 467.8pt'><span
-                style='font-size:13.0pt;line-height:150%'><span style='mso-tab-count:1 dotted'>............................................................................................................................................... </span><o:p></o:p></span></p>
+    <div class="phamvi-html">
+        <?=$if($m->phamvi_px, '')?>
+    </div>
 
     <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt;
 margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lfo4;

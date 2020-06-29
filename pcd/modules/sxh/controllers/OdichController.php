@@ -191,6 +191,8 @@ class OdichController extends AppController
             Odich::class => $data_map->merge([
                 'tenquan' => 'quan.tenquan',
                 'tenphuong' => 'phuong.tenphuong',
+                'phamvi_gis' => 'xuly.phamvi_gis',
+                'phamvi_px' => 'xuly.phamvi_px_html',
                 'khaosat_cts' => function($model) use($dm_loai_ks){
                     return collect(data_get($model, 'xuly.khaosat_cts', []))->map(function ($i) use($dm_loai_ks){
                         return array_merge($i, [
@@ -236,6 +238,7 @@ class OdichController extends AppController
         ];
 
         $data_final = collect(['m' => opt(array_merge($m1, $m2))])->merge($data_func)->all();
+
 
         return $data_final;
     }
