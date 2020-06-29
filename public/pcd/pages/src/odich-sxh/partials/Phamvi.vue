@@ -15,21 +15,21 @@
             <div class="font-bold mt-2 text-base underline text-pink-600">Phạm vi ổ dịch cần xử lý:</div>
             <div>
                 <div style="columns: auto 2">
-                    <div v-for="i in phamvi_px[1]">
+                    <div v-for="i in getPhamVi(1)">
                         <div class="font-bold">Khu phố/Ấp {{i.khupho}} ({{i.to_dp | countToDp}}): {{i.to_dp}}</div>
                     </div>
-                    <div v-if="!_.isEmpty(phamvi_px[2])">
+                    <div v-if="!_.isEmpty(getPhamVi(2))">
                         <div class="font-bold uppercase underline mt-2">Liên Phường xã:</div>
-                        <div v-for="pxs in _.groupBy(phamvi_px[2], 'maphuong')">
+                        <div v-for="pxs in _.groupBy(getPhamVi(2), 'maphuong')">
                             <div class="font-bold underline text-warning">
                                 {{getTenPx(pxs)}}
                             </div>
                             <div class="font-bold" v-for="kp in pxs">Khu phố/Ấp {{kp.khupho}} ({{kp.to_dp | countToDp}}): {{kp.to_dp}}</div>
                         </div>
                     </div>
-                    <div v-if="!_.isEmpty(phamvi_px[3])">
+                    <div v-if="!_.isEmpty(getPhamVi(3))">
                         <div class="font-bold uppercase underline my-2">Liên Quận huyện:</div>
-                        <div v-for="qhs in _.groupBy(phamvi_px[3], 'maquan')">
+                        <div v-for="qhs in _.groupBy(getPhamVi(3), 'maquan')">
                             <div class="font-bold underline text-danger uppercase">
                                 {{getTenQh(qhs)}}
                             </div>
@@ -203,6 +203,10 @@
 
                     this.$wait.end(KEY_LOADING);
                 })
+            },
+            getPhamVi(key){
+                let pv = get(this.phamvi_px, key);
+                return pv ? pv : []
             },
             updatePhamvi(){
                 this.phamvis = isEqual(keys(this.phamvi_px), ['1', '2', '3']) ? cloneDeep(this.phamvi_px) : { 1: [], 2: [], 3: []}
