@@ -18,12 +18,14 @@
 
     import Map from './partials/Map.vue'
     import Phamvi from './partials/Phamvi.vue'
+    import HanhChinh from './partials/HanhChinh.vue'
 
     export default {
         name: 'page-form-odich',
         components: {
             [Map.name]: Map,
             [Phamvi.name]: Phamvi,
+            [HanhChinh.name]: HanhChinh,
         },
 
         computed: {

@@ -90,6 +90,8 @@ class OdichController extends AppController
     public function actionToAh(){
         $distance = 200;
         $ids = request('cabenhIds', []);
+        $maquan = request()->post('maquan', userInfo()->maquan);
+        $maphuong = request()->post('maphuong', userInfo()->maphuong);
 
         $q_cb = (new Query())->select(new Expression("ST_Union(ST_Buffer(geom::geography, {$distance})::geometry)"))->from('cabenh_sxh')->andFilterWhere(['gid' => $ids])->createCommand()->getRawSql();
         $to_ah = collect((new Query())->select('khupho, tento, tenphuong, tenquan, maphuong, maquan')->from(['ranh_to'])
@@ -97,8 +99,7 @@ class OdichController extends AppController
             ->all())
         ;
 
-        $maquan = userInfo()->maquan;
-        $maphuong = userInfo()->maphuong;
+
         $giap_qh = HcQuan::find()->select('maquan')->andWhere(new Expression("ST_Intersects(geom, (SELECT geom FROM hc_quan WHERE maquan = '{$maquan}'))"))->andWhere(['<>', 'maquan', $maquan])->pluck('maquan');
         $giap_px = HcPhuong::find()->select('maphuong')->andWhere(new Expression("ST_Intersects(geom, (SELECT geom FROM hc_phuong WHERE maphuong = '{$maphuong}'))"))->andWhere(['<>', 'maphuong', $maphuong])->pluck('maphuong');
 
@@ -177,7 +178,6 @@ class OdichController extends AppController
         ];
 
         $data_final = collect(['m' => opt(array_merge($m1, $m2))])->merge($data_func)->all();
-//        dd($data_final);
 
         return $data_final;
     }

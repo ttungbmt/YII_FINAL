@@ -143,6 +143,8 @@
         computed: {
             dm_qh: pGet('cat.qh'),
             dm_px: pGet('cat.px'),
+            maquan: pGet('form/values.maquan'),
+            maphuong: pGet('form/values.maphuong'),
             phamvi_px: pGet('form/values.phamvi_px'),
             cabenhIds(){
                 return map(this.$store.get('form/values.cabenhs'), 'gid')
@@ -158,7 +160,6 @@
             return {
                 keyLoading: KEY_LOADING,
                 html: this.$store.get('form/values.phamvi_gis'),
-                maquan: this.$store.get('form/values.maquan'),
                 modalRef: 'modal-phamvi',
                 modalOptions: {
                     'ok-title': 'Lưu',
@@ -193,7 +194,13 @@
             },
             updatePhamviGis(){
                 this.$wait.start(KEY_LOADING);
-                this.$http.post(`/sxh/odich/to-ah`, {cabenhIds: this.cabenhIds}).then(({data}) => {
+                let data = {
+                    cabenhIds: this.cabenhIds,
+                    maquan: this.maquan,
+                    maphuong: this.maphuong,
+                }
+
+                this.$http.post(`/sxh/odich/to-ah`, data).then(({data}) => {
                     this.html = data
 
                     this.$store.commit('updateField', {

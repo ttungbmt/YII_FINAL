@@ -70,6 +70,7 @@
         name: 'm-field',
         inject: ['formOptions'],
         props: {
+            id: String,
             label: String,
             rules: String,
             name: String,
@@ -97,12 +98,7 @@
                         this.$emit('input', value)
                     }
 
-                    if (this.model) {
-                        this.$store.commit('updateField', {
-                            path: this.modelPath,
-                            value
-                        })
-                    }
+                    if (this.model) this.updateField(value)
                 }
             },
 
@@ -127,7 +123,7 @@
             },
 
             computedAttrs(){
-                const { computedType: type, computedName: name, disabled, placeholder, required, min, max, step } = this
+                const { computedType: type, computedName: name, id, disabled, placeholder, required, min, max, step } = this
 
                 let attrs = {
                     type,
@@ -145,6 +141,8 @@
                 if(includes(TYPES, attrs.type)){
                     attrs.placeholder = this.placeholder
                 }
+
+                if(id) attrs.id = id
 
                 return attrs
             },
@@ -175,7 +173,7 @@
                     items = this.items ? this.items : []
                 }
 
-                if(this.filterBy){
+                if(this.filterBy && !isUndefined(this.filterBy.value)){
                     items = filter(items, v => get(v, this.filterBy.path) == this.filterBy.value)
                 }
 
@@ -191,6 +189,8 @@
         watch: {
             'filterBy.value': function (val) {
                 this.$emit('input', null)
+
+                if (this.model) this.updateField(null)
             }
         },
         created() {
@@ -200,12 +200,28 @@
             }
         },
         methods: {
+            updateField(value){
+                this.$store.commit('updateField', {
+                    path: this.modelPath,
+                    value
+                })
+            },
             getValidationState({ dirty, validated, valid = null, failed }) {
                 if(this.rules || failed) return dirty || validated ? valid : null;
                 return null
             },
         },
         mounted(){
+            // let depends = get(this.filterBy, 'depends')
+            // if(depends){
+            //     console.log(this.computedItems)
+            //     // let value = $(depends).val()
+            //     // // console.log(filter(this.computedItems, v => get(v, this.filterBy.path) == value))
+            //     // this.$emit('input', filter(this.computedItems, v => get(v, this.filterBy.path) == value))
+            //     // $(depends).change(() => {
+            //     //     this.$emit('input', null)
+            //     // })
+            // }
 
         }
     }

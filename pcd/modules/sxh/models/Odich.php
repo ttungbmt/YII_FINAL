@@ -103,12 +103,6 @@ class Odich extends App
         if(!$this->validate()) return false;
 
         $data = collect(request()->all());
-
-        if(role('phuong')){
-            $this->maphuong = $this->maphuong ? $this->maphuong : userInfo()->maphuong;
-            $this->maquan = $this->maquan ? $this->maquan : userInfo()->maquan;
-        }
-
         $this->save();
 
         $toPoly = function ($data, $type, $key){
