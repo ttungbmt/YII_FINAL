@@ -4,7 +4,7 @@
             <m-form @submit="onSubmit">
                 <div class="grid grid-cols-2 gap-4">
                     <m-field type="select" :items="dm_loai_tk" label="Loại thống kê" v-model="form.loai_tk"></m-field>
-                    <m-field type="select" items="cat.qh" label="Hành chính" :placeholder="form.maquan ? false : `Thành phố`" v-model="form.hc"></m-field>
+                    <m-field type="select" items="cat.qh" label="Hành chính" :placeholder="form.maquan ? null : `Thành phố`" v-model="form.hc"></m-field>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <m-field type="date" label="Từ ngày Ngày xử lý" v-model="form.date_from" placeholder="DD/MM/YYYY"></m-field>

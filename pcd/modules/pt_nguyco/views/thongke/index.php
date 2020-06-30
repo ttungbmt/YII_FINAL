@@ -6,6 +6,7 @@ use yii\helpers\Html;
 use kartik\depdrop\DepDrop;
 
 $model->year = $model->year ? $model->year : date('Y');
+$model->maphuong = $model->maphuong ? $model->maphuong : '';
 $dm_loaitk = [
     'loaihinh' => 'Loại hình',
     'hanhchinh' => 'Hành chính',
@@ -33,10 +34,12 @@ $maphuong = userInfo()->ma_phuong;
             ]); ?>
             <div class="row">
                 <div class="col-md-6">
-                    <?= $form->field($model, 'loai_tk')->dropDownList($dm_loaitk, ['v-model' => 'loai_tk']); ?>
+                    <?= $form->field($model, 'loai_tk')->dropDownList($dm_loaitk, ['v-model' => 'form.loai_tk']); ?>
                 </div>
-                <div class="col-md-6" v-show="loai_tk!=='xuphat'">
+                <div class="col-md-6" v-show="form.loai_tk!=='xuphat'">
                     <?= $form->field($model, 'month')->widget(\kartik\widgets\DatePicker::className(), [
+                        'options' => ['v-model' => 'form.month'],
+                        'pluginEvents' => ['changeDate' => "function(){ vueApp.\$set(vueApp.form, 'month', $(this).val()) }"],
                         'pluginOptions' => [
                             'autoclose' => true,
                             'minViewMode' => 1,
@@ -44,8 +47,9 @@ $maphuong = userInfo()->ma_phuong;
                         ],
                     ]); ?>
                 </div>
-                <div class="col-md-6" v-show="loai_tk=='xuphat'">
+                <div class="col-md-6" v-show="form.loai_tk=='xuphat'">
                     <?= $form->field($model, 'year')->widget(\kartik\widgets\DatePicker::className(), [
+                        'pluginEvents' => ['changeDate' => "function(){ vueApp.\$set(vueApp.form, 'year', $(this).val()) }"],
                         'pluginOptions' => [
                             'autoclose' => true,
                             'minViewMode' => 2,
@@ -61,16 +65,16 @@ $maphuong = userInfo()->ma_phuong;
                         'prompt' => 'Chọn quận huyện...',
                         'id' => 'drop-quan',
                         'options' => [
-                            userInfo()->ma_quan => ['Selected' => true],
+                            $maquan => ['Selected' => true],
                         ],
-                        'v-model' => 'maquan'
+                        'v-model' => 'form.maquan'
                     ]); ?>
                 </div>
                 <div class="col-md-6">
                     <?= $form->field($model, 'maphuong')->widget(DepDrop::className(), [
                         'options' => [
                             'prompt' => 'Chọn phường...',
-                            'v-model' => 'maphuong'
+                            'v-model' => 'form.maphuong'
                         ],
                         'pluginOptions' => [
                             'depends' => ['drop-quan'],
@@ -114,25 +118,30 @@ $maphuong = userInfo()->ma_phuong;
 
 </div>
 <script src="<?= asset('assets/vue/vue-component/dist/library.js') ?>"></script>
+<script src="https://cdn.jsdelivr.net/npm/urijs@1.19.2/src/jquery.URI.min.js"></script>
+<?php
+$this->registerJsVar('pageData', [
+    'form' => $model->toArray(),
+])
+?>
+
 <script>
     $(function () {
         let thongkeMixin = VueCore.mixins.thongke
-        let tkApp = new Vue({
+
+        window.vueApp = new Vue({
             el: '#tkApp',
             mixins: [thongkeMixin],
             data: {
                 formId: 'formTK',
-                loai_tk: '<?=$model->loai_tk?>',
-                maquan: '<?=$model->maquan?>',
-                maphuong: '<?=$model->maphuong?>',
-                year: '',
                 list_url: {
                     loaihinh: '/pt_nguyco/thongke/loaihinh',
                     hanhchinh: '/pt_nguyco/thongke/loaihinh',
                     xuphat: '/pt_nguyco/thongke/xuphat'
                 },
                 field: {},
-                resp: []
+                resp: [],
+                ...window.pageData
             },
             components: {},
             filters: {
@@ -152,6 +161,20 @@ $maphuong = userInfo()->ma_phuong;
                 }
             },
             methods: {
+                getLoaihinhUri(code, col, value){
+                    if(value){
+                        let uri = URI("/pt_nguyco")
+                        if(this.form.loai_tk === 'loaihinh'){
+                            uri.setSearch(_.pick(this.form, ['loai_tk', 'maquan', 'maphuong', 'month']))
+                            uri.setSearch({loaihinh_id: code, col_tk: col})
+                        }
+
+                        window.open(uri.toString())
+                    } else {
+                        alert('Chỉ hiển thị danh sách những ô có giá trị khác 0')
+                    }
+
+                },
                 beforePost({loai_tk}) {
                     this.loai_tk = loai_tk
                 },

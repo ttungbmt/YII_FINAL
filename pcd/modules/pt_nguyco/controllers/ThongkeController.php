@@ -38,7 +38,7 @@ class ThongkeController extends BackendController
                     $field = ['table' => 'hc_quan', 'name' => 'tenquan', 'code' => 'maquan', 'key' => 'maquan', 'order' => 'order'];
                 }
             } else {
-                $field = ['table' => 'dm_loaihinh', 'name' => 'ten_lh', 'code' => 'loaihinh_id', 'key' => 'id', 'order' => 'id'];
+                $field = ['table' => 'dm_loaihinh', 'name' => 'ten_lh', 'code' => 'loaihinh_id', 'key' => 'id', 'order' => 'order'];
             }
 
             $q0 = (new Query())->select([
@@ -77,6 +77,7 @@ class ThongkeController extends BackendController
                 ->from(['pgs' => $q0])
                 ->groupBy('code');
 
+
             $q2 = (new Query())->select([
                 $field['key'],
                 'name' => $field['name'],
@@ -97,25 +98,8 @@ class ThongkeController extends BackendController
                     'luot_gs' => is_string($i['luot_gs']) ? (float)$i['luot_gs'] : $i['luot_gs']
                 ]);
             });
+
             $data_e = $data0;
-
-            if($model->loai_tk == 'loaihinh'){
-                $data1 = $data0->whereNotIn('id', [20, 21, 22]);
-                $data2 = $data0->whereIn('id', [20, 21, 22]);
-                $data3 = collect([
-                    'name' => 'Khác',
-                    'dauthang' => $data2->sum('dauthang'),
-                    'daxoa' => $data2->sum('daxoa'),
-                    'moi' => $data2->sum('moi'),
-                    'gs' => $data2->sum('gs'),
-                    'luot_gs' => $data2->sum('luot_gs'),
-                    'lq' => $data2->sum('lq'),
-                    'dx_xp' => $data2->sum('dx_xp'),
-                    'xp' => $data2->sum('xp'),
-                ]);
-                $data_e = $data1->push($data3)->all();
-            }
-
 
             return $this->asJson([
                 'data' => $data_e

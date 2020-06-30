@@ -39,4 +39,17 @@ class ThongkeForm extends DynamicModel {
             'maphuong' => 'Phường',
         ];
     }
+
+    public function fields()
+    {
+        return [
+            'loai_tk',
+            'maquan',
+            'maphuong',
+            'month',
+            'year',
+        ];
+    }
+
+
 }
