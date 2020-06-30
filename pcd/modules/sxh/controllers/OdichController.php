@@ -150,12 +150,12 @@ class OdichController extends AppController
         $ids = request('cabenhIds', []);
         $maquan = request()->post('maquan', userInfo()->maquan);
         $maphuong = request()->post('maphuong', userInfo()->maphuong);
+        $html = request()->post('html', true);
 
         $q_cb = (new Query())->select(new Expression("ST_Union(ST_Buffer(geom::geography, {$distance})::geometry)"))->from('cabenh_sxh')->andFilterWhere(['gid' => $ids])->createCommand()->getRawSql();
         $to_ah = collect((new Query())->select('khupho, tento, tenphuong, tenquan, maphuong, maquan')->from(['ranh_to'])
             ->where("ST_Intersects(({$q_cb}), geom)")
-            ->all())
-        ;
+            ->all());
 
 
         $giap_qh = HcQuan::find()->select('maquan')->andWhere(new Expression("ST_Intersects(geom, (SELECT geom FROM hc_quan WHERE maquan = '{$maquan}'))"))->andWhere(['<>', 'maquan', $maquan])->pluck('maquan');
@@ -164,6 +164,18 @@ class OdichController extends AppController
         $px = $to_ah->where('maphuong', $maphuong)->sortBy('khupho', SORT_NATURAL);
         $lien_px = $to_ah->whereIn('maphuong', $giap_px)->sortBy('khupho', SORT_NATURAL);
         $lien_qh = $to_ah->whereIn('maquan', $giap_qh)->sortBy('khupho', SORT_NATURAL);
+
+        if($html == false){
+            $fn = function ($i, $khupho){
+                return ['khupho' => $khupho, 'to_dp' => $i->sortBy('tento', SORT_NATURAL)->filter(function ($i) { return $i['tento'];})->implode('tento', ', '), 'maquan' => data_get($i, '0.maquan'), 'maphuong' => data_get($i, '0.maphuong')];
+            };
+
+            return $this->asJson([
+                1 => $px->groupBy('khupho')->map($fn)->values(),
+                2 => $lien_px->groupBy('khupho')->map($fn)->values(),
+                3 => $lien_qh->groupBy('khupho')->map($fn)->values(),
+            ]);
+        }
 
         return $this->renderPartial('to_ah', [
             'px' => $px,

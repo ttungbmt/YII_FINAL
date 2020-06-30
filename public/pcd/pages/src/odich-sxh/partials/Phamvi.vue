@@ -24,7 +24,7 @@
                         <div class="font-bold underline text-warning">
                             {{getTenPx(pxs)}}
                         </div>
-                        <span class="font-bold" v-for="kp in pxs">Khu phố/ấp {{kp.khupho}} ({{kp.to_dp | countToDp}}): </span> {{kp.to_dp}}
+                        <div v-for="kp in pxs"><span class="font-bold">Khu phố/ấp {{kp.khupho}} ({{kp.to_dp | countToDp}}): </span> {{kp.to_dp}}</div>
                     </div>
                 </div>
                 <div v-if="!_.isEmpty(getPhamVi(3))">
@@ -37,7 +37,9 @@
                             <div class="font-bold underline text-warning">
                                 {{getTenPx(pxs)}}
                             </div>
-                            <span class="font-bold" v-for="kp in pxs">Khu phố/ấp {{kp.khupho}} ({{kp.to_dp | countToDp}}): </span> {{kp.to_dp}}
+                            <div v-for="kp in pxs">
+                                <span class="font-bold">Khu phố/ấp {{kp.khupho}} ({{kp.to_dp | countToDp}}): </span> {{kp.to_dp}}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -46,7 +48,7 @@
 
         <button type="button" class="btn-small mt-2" @click="updatePhamvi">Nhập phạm vi xử lý</button>
 
-        <b-modal :ref="modalRef" title="Phạm vi ổ dịch cần xử lý" v-bind="modalOptions">
+        <div v-if="phamvi_px_panel">
             <table class="table table-borderless">
                 <thead>
                 <tr>
@@ -87,7 +89,6 @@
                 </table>
             </div>
 
-
             <div v-if="!_.isEmpty(phamvis[3])">
                 <div class="font-semibold uppercase ml-3 mt-3">
                     Liên quận/ huyện
@@ -124,10 +125,11 @@
             </div>
 
             <div class="mt-3 text-right">
-                <b-button variant="danger" @click="handleCancel(modalRef)">Hủy</b-button>
-                <b-button variant="primary" @click="handleOk(modalRef)">Lưu</b-button>
+                <b-button variant="danger" @click="handleCancel()">Hủy</b-button>
+                <b-button variant="success" @click="handleAutoToAn()"> <i class="icon-spinner2 spinner" v-if="$wait.is('auto-to-ah')"></i> Nhập tự động</b-button>
+                <b-button variant="primary" @click="handleOk()">Lưu</b-button>
             </div>
-        </b-modal>
+        </div>
     </div>
 </template>
 <script>
@@ -147,6 +149,13 @@
             phamvi_px: pGet('form/values.phamvi_px'),
             cabenhIds(){
                 return map(this.$store.get('form/values.cabenhs'), 'gid')
+            },
+            postToAhData(){
+                return {
+                    cabenhIds: this.cabenhIds,
+                    maquan: this.maquan,
+                    maphuong: this.maphuong,
+                }
             }
         },
         filters: {
@@ -177,27 +186,40 @@
                     3: [],
                 },
                 phamvi: 1,
+                phamvi_px_panel: false,
             };
         },
         methods: {
-            onChange(){
-
+            handleAutoToAn(){
+                this.$wait.start('auto-to-ah');
+                let data = {
+                    ...this.postToAhData,
+                    html: false,
+                }
+                this.$http.post(`/sxh/odich/to-ah`, data).then(({data}) => {
+                    this.phamvis = data
+                    this.$wait.end('auto-to-ah');
+                })
             },
             handleCancel(name){
-                this.$refs[name].hide()
+                this.phamvi_px_panel = false
+                name && this.$refs[name].hide()
             },
             handleOk(name){
-                this.$store.commit('updateField', {path: 'form/values.phamvi_px', value: this.phamvis})
+                let phamvis = this.phamvis
+                phamvis[1] = phamvis[1].filter(v => v.khupho && v.to_dp)
+                phamvis[2] = phamvis[2].filter(v => v.maphuong && v.khupho && v.to_dp)
+                phamvis[3] = phamvis[3].filter(v => v.maquan && v.maphuong && v.khupho && v.to_dp)
+                console.log(phamvis)
+
+                this.$store.commit('updateField', {path: 'form/values.phamvi_px', value: phamvis})
                 this.$store.commit('updateField', {path: 'form/values.phamvi_px_html', value: $('#phamvi-px-html').html()})
-                this.$refs[name].hide()
+                this.phamvi_px_panel = false
+                name && this.$refs[name].hide()
             },
             updatePhamviGis(){
                 this.$wait.start(KEY_LOADING);
-                let data = {
-                    cabenhIds: this.cabenhIds,
-                    maquan: this.maquan,
-                    maphuong: this.maphuong,
-                }
+                let data = this.postToAhData
 
                 this.$http.post(`/sxh/odich/to-ah`, data).then(({data}) => {
                     this.html = data
@@ -216,7 +238,7 @@
             },
             updatePhamvi(){
                 this.phamvis = isEqual(keys(this.phamvi_px), ['1', '2', '3']) ? cloneDeep(this.phamvi_px) : { 1: [], 2: [], 3: []}
-                this.$refs[this.modalRef].show()
+                this.phamvi_px_panel = !this.phamvi_px_panel
             },
 
             addPhamvi(){
