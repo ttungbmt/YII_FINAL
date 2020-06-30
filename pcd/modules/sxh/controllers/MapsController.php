@@ -201,6 +201,8 @@ class MapsController extends AppController {
         foreach (data_get($postData, 'items', []) as $k => $i){
             $feature = opt($i);
             $url = data_get($feature, 'infoUrl');
+            if($feature->key == 'cabenh_sxh') $url = $url.'&&cql_filter='.urlencode('ngaymacbenh_nv>='.Carbon::now()->subMonths(3)->format('Y-m-d'));
+
             $req = $client->get(Url::to($url, true));
 
             try {
