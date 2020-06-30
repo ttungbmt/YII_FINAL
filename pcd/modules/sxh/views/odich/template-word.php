@@ -13,6 +13,10 @@
         .phamvi-html {
             font-size:11pt
         }
+        .WordSection2 div {font-size: 11pt;}
+        .WordSection4 div {font-size: 11pt;}
+        .wrapper-col-pv {margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt;margin-bottom:.0001pt;line-height:150%;tab-stops:right dotted 467.8pt}
+        .col-pv {margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt;margin-bottom:.0001pt;line-height:150%;tab-stops:right dotted 467.8pt}
     </style>
     <!--[if gte mso 9]><xml>
         <o:DocumentProperties>
@@ -901,6 +905,40 @@
             mso-paper-source:0;}
         div.WordSection1
         {page:WordSection1;}
+        @page WordSection2
+        {size:612.0pt 792.0pt;
+            margin:72.0pt 72.0pt 72.0pt 72.0pt;
+            mso-header-margin:36.0pt;
+            mso-footer-margin:36.0pt;
+            mso-columns:2 even 36.0pt;
+            mso-paper-source:0;}
+        div.WordSection2
+        {page:WordSection2;}
+        @page WordSection3
+        {size:612.0pt 792.0pt;
+            margin:72.0pt 72.0pt 72.0pt 72.0pt;
+            mso-header-margin:36.0pt;
+            mso-footer-margin:36.0pt;
+            mso-paper-source:0;}
+        div.WordSection3
+        {page:WordSection3;}
+        @page WordSection4
+        {size:612.0pt 792.0pt;
+            margin:72.0pt 72.0pt 72.0pt 72.0pt;
+            mso-header-margin:36.0pt;
+            mso-footer-margin:36.0pt;
+            mso-columns:2 even 36.0pt;
+            mso-paper-source:0;}
+        div.WordSection4
+        {page:WordSection4;}
+        @page WordSection5
+        {size:612.0pt 792.0pt;
+            margin:72.0pt 72.0pt 72.0pt 72.0pt;
+            mso-header-margin:36.0pt;
+            mso-footer-margin:36.0pt;
+            mso-paper-source:0;}
+        div.WordSection5
+        {page:WordSection5;}
         /* List Definitions */
         @list l0
         {mso-list-id:102237582;
@@ -1124,7 +1162,6 @@
 <body lang=EN-US style='tab-interval:36.0pt'>
 
 <div class=WordSection1>
-
     <table class=MsoTableGrid border=0 cellspacing=0 cellpadding=0 width=680
            style='width:510.05pt;border-collapse:collapse;border:none;mso-yfti-tbllook:
  1184;mso-padding-alt:0cm 5.4pt 0cm 5.4pt;mso-border-insideh:none;mso-border-insidev:
@@ -1354,24 +1391,58 @@ tab-stops:right dotted 467.8pt'><![if !supportLists]><span style='font-size:
 13.0pt;line-height:150%;font-family:"Calibri",sans-serif;mso-fareast-font-family:
 Calibri'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span style='font-size:13.0pt;line-height:150%'>Sau khi xác định mối liên quan giữa các ca bệnh và nhận thấy có sự hình thành của ổ dịch sốt xuất huyết tại các khu phố/ấp và các tổ trên hệ thống GIS: </p>
+</div>
+<span style='font-size:13.0pt;line-height:150%;font-family:"Times New Roman",serif;
+mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast;
+mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA'><br
+            clear=all style='page-break-before:auto;mso-break-type:section-break'>
+</span>
 
-    <div class="phamvi-html">
-        <?=$if($m->phamvi_gis, ' ')?>
-    </div>
+<div class=WordSection2>
+    <?=$m->phamvi_gis?>
+</div>
 
-    <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt;
+<span style='font-size:13.0pt;line-height:150%;font-family:"Times New Roman",serif;
+mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast;
+mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA'><br
+            clear=all style='page-break-before:auto;mso-break-type:section-break'>
+</span>
+
+<div class=WordSection3>
+
+    <p style='margin-top:6pt;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt;
 margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lfo4;
 tab-stops:right dotted 467.8pt'><![if !supportLists]><span style='font-size:
 13.0pt;line-height:150%;font-family:"Calibri",sans-serif;mso-fareast-font-family:
 Calibri'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span></span><![endif]><span style='font-size:13.0pt;line-height:150%'>Xác định phạm vi ổ dịch cần xử lý bao gồm các khu phố/ấp và các tổ:</p>
+</span></span></span><![endif]><span style='font-size:13.0pt;line-height:150%'>Xác định phạm vi ổ dịch cần xử lý bao gồm các khu phố/ấp và các tổ:<o:p></o:p></span></p>
 
-    <p class=MsoListParagraph><span style='font-size:13.0pt'><o:p>&nbsp;</o:p></span></p>
+    <span style='font-size:13.0pt;line-height:150%;font-family:"Times New Roman",serif;
+mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast;
+mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA'><u9:p></span></div>
 
-    <div class="phamvi-html">
-        <?=$if($m->phamvi_px, '')?>
-    </div>
+<span style='font-size:13.0pt;line-height:150%;font-family:"Times New Roman",serif;
+mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast;
+mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA'><br
+            clear=all style='page-break-before:auto;mso-break-type:section-break'>
+</span>
 
+<div class=WordSection4>
+    <?=$m->phamvi_px?>
+
+
+
+    <span style='font-size:12.0pt;line-height:150%;font-family:"Times New Roman",serif;
+mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast;
+mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA'><u9:p></span>
+</div>
+
+<span style='font-size:12.0pt;line-height:150%;font-family:"Times New Roman",serif;
+mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast;
+mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA'><br
+            clear=all style='page-break-before:auto;mso-break-type:section-break'>
+</span>
+<div class=WordSection5>
     <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt;
 margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lfo4;
 tab-stops:right dotted 467.8pt'><![if !supportLists]><span style='font-size:

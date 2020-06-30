@@ -8,7 +8,7 @@ $r_khupho = function ($khupho, $p){
     ));
 }
 ?>
-<div style="columns: auto 2">
+<div class="wrapper-col-pv" style="columns: auto 2">
     <?php foreach ($px->groupBy('khupho') as $khupho => $p):?>
         <?= $r_khupho($khupho, $p)?>
     <?php endforeach;?>

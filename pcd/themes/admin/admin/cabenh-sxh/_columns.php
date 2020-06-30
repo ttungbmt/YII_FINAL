@@ -184,7 +184,7 @@ return [
         'attribute' => 'loaixacminh_cb',
         'filter' => Html::activeDropDownList($searchModel, 'loaixacminh_cb', $dm_xacminh_cb, $s_options),
         'value' => function ($model, $key, $index) use ($dm_xacminh_cb) {
-            return data_get($dm_xacminh_cb, is_null($model->loaixacminh_cb) ? '' : $model->loaixacminh_cb);
+            return data_get($dm_xacminh_cb, is_null($model->loai_xm_cb) ? '' : $model->loai_xm_cb);
         },
     ],
     [
