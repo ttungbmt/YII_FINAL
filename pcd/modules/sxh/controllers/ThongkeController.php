@@ -5,10 +5,14 @@ namespace pcd\modules\sxh\controllers;
 use pcd\controllers\AppController;
 use pcd\models\HcPhuong;
 use pcd\models\HcQuan;
+use pcd\modules\dm\models\DmKhupho;
+use pcd\modules\dm\models\DmToDp;
+use pcd\modules\sxh\forms\KhuphoForm;
 use pcd\modules\sxh\models\DietLq;
 use pcd\modules\sxh\models\Odich;
 use pcd\modules\sxh\models\PhunHc;
 use ttungbmt\db\Query;
+use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 
 class ThongkeController extends AppController
@@ -157,5 +161,44 @@ class ThongkeController extends AppController
 
 
         return $this->render('odich');
+    }
+
+    public function actionKhupho(){
+        $model = new KhuphoForm();
+        if($model->load(request()->all())){
+            $maquan = $model->maquan;
+            $maphuong = $model->maphuong;
+
+
+            $q0 = (new Query())
+                ->select('kp.maquan, kp.maphuong, kp.khupho, COUNT(tdp.*) to_dp')
+                ->from(['kp' => DmKhupho::tableName()])
+                ->leftJoin(['tdp' => DmToDp::tableName()], "kp.khupho = tdp.khupho AND kp.maphuong = tdp.maphuong")
+                ->andFilterWhere(['kp.maphuong' => $maphuong])
+                ->groupBy(new Expression('1,2,3'))
+            ;
+
+            $field = $maquan ? (
+                !$maphuong ? ['code' => 'maphuong', 'name' => 'tenphuong', 'label' => 'Phường xã'] : []
+            ) : ['code' => 'maquan', 'name' => 'tenquan', 'label' => 'Quận huyện'];
+
+            $q = $maphuong ? $q0 : (new Query())
+                ->select("px.{$field['code']} code, px.{$field['name']} name, COUNT(kp.khupho) khupho, SUM(kp.to_dp)::int to_dp")
+                ->from(['px' => HcPhuong::tableName()])
+                ->leftJoin(['kp' => $q0], "kp.maphuong = px.maphuong")
+                ->andFilterWhere(['kp.maphuong' => $maphuong])
+                ->andFilterWhere(['kp.maquan' => $maquan])
+                ->groupBy(new Expression('1,2'))
+            ;
+
+            $data = collect($q->all())
+                ->sortBy('khupho', SORT_NATURAL)
+                ->sortBy('name', SORT_NATURAL)
+                ->values();
+
+            return $this->asJson(['data' => $data->all(), 'field' => $field]);
+        }
+
+        return $this->render('khupho', compact('model'));
     }
 }

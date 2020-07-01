@@ -127,8 +127,10 @@ $header = function ($title){
 
                     <?=$li('Ranh tổ', '/dm/ranhto', 'icon-file-text')?>
                 <?php endif; ?>
-                <?=$li('Khu phố', '/dm/khupho', 'icon-file-text')?>
+                <?=$li('Khu phố/ấp', '/dm/khupho', 'icon-file-text')?>
                 <?=$li('Tổ dân phố', '/dm/to-dp', 'icon-file-text')?>
+                <?=$header('Thống kê')?>
+                <?=$li('Thống kê khu phố/ấp', '/sxh/thongke/khupho', 'icon-file-text')?>
 
                 <?php if(role('admin')):?>
                     <?=$header('Quản trị hệ thống')?>
