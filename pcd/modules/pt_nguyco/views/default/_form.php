@@ -185,7 +185,7 @@ ttungbmt\yii\alpine\AlpineAsset::register($this);
             },
             computed: {
                 shownTenLH() {
-                    let khac = _.chain(this.dm_loaihinh).filter({ten_lh: 'Khác'}).map(v => _.toString(v.id)).value()
+                    let khac = _.chain(this.dm_loaihinh).filter(v => _.includes([20,21,22], v.id)).map(v => _.toString(v.id)).value()
                     return _.includes(khac, this.m.loaihinh_id + '')
                 },
                 shownKyCamket() {
