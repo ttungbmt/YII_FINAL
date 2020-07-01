@@ -1,7 +1,7 @@
 <?php
 namespace common\supports;
 
-use pcd\constants\RoleConst;
+use pcd\consts\RoleConst;
 
 class RoleManager
 {

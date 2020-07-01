@@ -72,7 +72,6 @@ class SxhController extends BackendController {
 
     protected function rules(&$model)
     {
-
         $model->dm_loaibenh = $this->data_get('dm_loaibenh');
         $model->dm_bv = $this->data_get('dm_bv');
         $model->dm_quan = $this->data_get('dm_quan');
@@ -91,7 +90,6 @@ class SxhController extends BackendController {
 
             $models[$k] = new CabenhSxh();
         }
-
 
         // Validate model and relation 2rd
         if (

@@ -23,6 +23,7 @@ trait SxhTrait {
     public $ngaysinh;
     public $tuoi;
     public $vitri;
+    public $dienthoai;
     public $sonha;
     public $duong;
     public $to_dp;
@@ -253,7 +254,7 @@ trait SxhTrait {
             ],
             [
                 'name'  => 'tinh',
-                'label' => 'Tỉnh', 'component' => 'field-select', 'options' => 'tinh', 'md' => 6, 'rules' => 'required',
+                'label' => 'Tỉnh', 'component' => 'field-select', 'md' => 6, 'rules' => 'required',
             ],
             [
                 'name'  => 'tinh_dc_khac',

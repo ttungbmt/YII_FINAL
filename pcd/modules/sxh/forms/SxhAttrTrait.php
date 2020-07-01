@@ -21,6 +21,7 @@ trait SxhAttrTrait {
             'phai',
             'ngaysinh',
             'tuoi',
+            'dienthoai',
             'vitri',
             'sonha',
             'duong',

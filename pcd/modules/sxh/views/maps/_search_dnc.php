@@ -79,18 +79,6 @@ $dm_nhom = api('pt_nguyco/dm/nhom');
 </script>
 
 <?php
-//Yii::$app->assetManager->bundles = [
-//    'yii\web\YiiAsset' => false,
-//    'yii\web\JqueryAsset' => false,
-//    'kartik\form\ActiveFormAsset' => false,
-//    'yii\widgets\ActiveFormAsset' => false,
-//    'yii\bootstrap\BootstrapAsset' => false,
-//    'yii\bootstrap\BootstrapPluginAsset' => false,
-//    'kartik\depdrop\DepDropAsset' => false,
-//    'kartik\depdrop\DepDropExtAsset' => false,
-//    'kartik\base\WidgetAsset' => false,
-//    'yii\validators\ValidationAsset' => false,
-//];
 $readyJs = Arr::pull($this->js, \yii\web\View::POS_READY);
 if($readyJs){
     $this->registerJs("$(function(){\n" . implode("\n", $readyJs) . "\n});");

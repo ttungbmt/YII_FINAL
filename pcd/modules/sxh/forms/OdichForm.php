@@ -41,8 +41,8 @@ class OdichForm extends Odich
             'diet_lqs' => 'dietLqs',
             'phun_hcs' => 'phunHcs',
             'cabenhs' => function($model){
-                $ids = array_map('trim',explode(',', request()->get('cabenh_ids')));
-                $cabenhs = $model->cabenhs ? $model->cabenhs : CabenhSxh::find()->andWhere(['in', 'gid', $ids])->all();
+                $ids = collect(explode(',', request()->get('cabenh_ids')))->map(function ($i){return trim($i);})->filter();
+                $cabenhs = $ids->isEmpty() ? $model->cabenhs : CabenhSxh::find()->andWhere(['in', 'gid', $ids->all()])->all();
                 $sxhPolys = collect($this->sxhPolys);
 
                 return ArrayHelper::toArray($cabenhs, [

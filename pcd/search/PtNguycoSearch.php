@@ -5,8 +5,7 @@ use pcd\supports\RoleHc;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use pcd\models\PtNguyco;
-use yii\db\QueryInterface;
+use pcd\modules\pt_nguyco\models\PtNguyco;
 use yii\helpers\Html;
 
 /**
@@ -22,7 +21,7 @@ class PtNguycoSearch extends PtNguyco
     {
         return [
             [['gid'], 'integer'],
-            [['dienthoai', 'maso', 'ten_cs', 'sonha', 'tenduong', 'khupho', 'to_dp', 'maphuong', 'maquan', 'nhom', 'loaihinh', 'tochuc_gs', 'ngaycapnhat', 'ngayxoa', 'ghichu', 'phancap_ql', 'thuchien', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'safe'],
+            [['dienthoai', 'maso', 'ten_cs', 'sonha', 'tenduong', 'khupho', 'to_dp', 'maphuong', 'maquan', 'nhom', 'loaihinh_id', 'tochuc_gs', 'ngaycapnhat', 'ngayxoa', 'ghichu', 'phancap_ql', 'thuchien', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'safe'],
             [['date_from', 'date_to'], 'date', 'format' => 'php:d/m/Y'],
         ];
     }
@@ -41,8 +40,7 @@ class PtNguycoSearch extends PtNguyco
         $roles = RoleHc::init();
         $query = $this->find()->with(['quan', 'phuong']);
 
-
-        $this->load($params, 'form');
+        $this->load($params, '');
 
         $pageSize = request('length', 10);
         $value = request('search.value');
@@ -138,8 +136,14 @@ class PtNguycoSearch extends PtNguyco
                 'attribute' => 'loaihinh',
                 'width' => '130px',
                 'value'     => function ($model) {
-                    if($model->loaihinh_id) return data_get($model, 'lh.ten_lh');
-                    return $model->loaihinh;
+                    if($model->loaihinh_id && $lh = $model->dm_loaihinh)  {
+                        $str = $lh->ten_lh;
+                        if(in_array($lh->id, [20,21,22]) && $model->loaihinh){
+                            $str = $str." ({$model->loaihinh})";
+                        }
+                        return $str;
+                    };
+                    return '';
                 }
             ],
             ['label' => 'Điện thoại', 'attribute' => 'dienthoai'],

@@ -1,6 +1,5 @@
 <?php
 namespace pcd\modules\pt_nguyco\models\search;
-
 use Carbon\Carbon;
 use pcd\modules\pt_nguyco\models\PhieuGs;
 use pcd\modules\pt_nguyco\models\PtNguyco;
@@ -147,8 +146,6 @@ class PtNguycoSearch extends PtNguyco
 
         $roles->filterHc($query);
 
-
-//        dd($query->createCommand()->getRawSql());
         return $dataProvider;
     }
 

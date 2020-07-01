@@ -34,11 +34,14 @@ class SxhForm extends MyForm
     {
         $xacminh = $this->{$attribute};
 
-
         if (is_array($xacminh)) {
             foreach ($xacminh as $k => $v) {
                 $index = $k + 1;
                 $i = optional((object)$v);
+
+                if($k === 0 && $i->duong == ''){
+                    $this->addError("xacminh.{$k}.duong", "Đường ($index) buộc nhập");
+                }
 
                 if (!$i->tinh && !($index % 2 == 0 && $i->is_diachi == 0 || is_null($i->is_diachi))) {
                     $this->addError("xacminh.{$k}.tinh", "Tỉnh ($index) buộc nhập");
@@ -47,8 +50,8 @@ class SxhForm extends MyForm
                 if ($i->tinh === 'HCM' && (($i->is_diachi == 1 && $index % 2 == 0) || $index % 2 != 0)) {
                     if ($index % 2 != 0) {
                         if ($i->is_diachi == 1) {
-                            if (!$i->khupho) $this->addError("xacminh.{$k}.khupho", "Khu phố ($index) bắt buộc nhập");
-                            if (!$i->to_dp) $this->addError("xacminh.{$k}.to_dp", "Tổ dân phố ({$index}) bắt buộc nhập");
+                            if ($i->khupho == '') $this->addError("xacminh.{$k}.khupho", "Khu phố ($index) bắt buộc nhập");
+                            if ($i->to_dp == '') $this->addError("xacminh.{$k}.to_dp", "Tổ dân phố ({$index}) bắt buộc nhập");
                         }
 
                         if((count($xacminh)-1) == $index){
@@ -58,11 +61,6 @@ class SxhForm extends MyForm
 
                     }
 
-//                    if($index % 2 != 0){
-//                        // Không bắt buộc nhập tổ khu phố cho px2
-//                        if (!$i->khupho) $this->addError("xacminh.{$k}.khupho", "Khu phố ($index) bắt buộc nhập");
-//                        if (!$i->to_dp) $this->addError("xacminh.{$k}.to_dp", "Tổ dân phố ({$index}) bắt buộc nhập");
-//                    }
 
                     if (!$i->qh) $this->addError("xacminh.{$k}.qh", "Quận huyện ($index) buộc nhập");
                     if (!$i->px) $this->addError("xacminh.{$k}.px", "Phường xã ($index) buộc nhập");
@@ -94,7 +92,7 @@ class SxhForm extends MyForm
         return [
             [['loaidieutra', 'xacminh', 'loai_xm_cb', 'ngaymacbenh_nv', 'loaicabenh', 'list_chuyenca', 'is_chuyenca'], 'safe'],
             [['chuandoan_bd', 'chuandoan_bd_khac', 'me', 'ngaybaocao', 'ma_icd', 'shs', 'ht_dieutri', 'ngaynhanthongbao', 'ngaydieutra', 'maso', 'hoten', 'phai', 'ngaysinh', 'tuoi', 'vitri', 'to_dp', 'khupho', 'px', 'qh', 'tinh', 'tinh_dc_khac', 'benhnoikhac', 'sonhakhac', 'duongkhac', 'tokhac', 'khuphokhac', 'tinhkhac', 'qhkhac', 'pxkhac', 'tinhnoikhac', 'songuoicutru', 'cutruduoi15', 'tpbv', 'tpbv_bv', 'phcd', 'nhapvien', 'nhapvien_bv', 'ngaymacbenh', 'ngaynhapvien', 'nghenghiep', 'xetnghiem', 'ngaylaymau', 'loai_xn', 'ketqua_xn', 'dclamviec', 'dclamviec_tinh', 'dclamviecqh', 'dclamviecpx', 'noilamviec_sxh', 'nhacobnsxh', 'nhaconguoibenh', 'bvpk', 'nhatho', 'dinh', 'congvien', 'noihoihop', 'noixd', 'cafe', 'noichannuoi', 'noibancay', 'vuaphelieu', 'noikhac', 'noikhac_ghichu', 'diemden_px', 'diemden_pxkhac', 'diemden_qhkhac', 'gdcosxh', 'gdsonguoisxh', 'gdso15t', 'gdthuocsxh', 'gdthuocsxhsonguoi', 'gdthuocsxh15t', 'bi', 'ci', 'cachidiem', 'dietlangquang', 'giamsattheodoi', 'xulyonho', 'xulyorong', 'cathuphat', 'odichmoi', 'odichcu', 'odichcu_xuly', 'xuly', 'xuly_ngay', 'xuatvien', 'ngayxuatvien', 'chuandoan', 'chuandoan_khac', 'nguoidieutra', 'nguoidieutra_sdt'], 'safe'],
-            [['vitri', 'chuandoan', 'dclamviec_tinh', 'dclamviecqh', 'dclamviecpx'], 'safe'],
+            [['dienthoai', 'vitri', 'chuandoan', 'dclamviec_tinh', 'dclamviecqh', 'dclamviecpx'], 'safe'],
             ['xacminh', 'xacminhValidator', 'skipOnEmpty' => false, 'on' => ['xacminh']],
             [['chuandoan_bd'], 'required', 'on' => ['xacminh']],
             [['ht_dieutri'], 'required', 'on' => ['xacminh']],
@@ -266,7 +264,7 @@ class SxhForm extends MyForm
         $this->tinh = $lastXm->tinh;
         $this->tinh_dc_khac = $lastXm->tinh_dc_khac;
         $this->diachi_cc_id = $lastXm->id;
-
+        $this->dienthoai = $lastXm->dienthoai;
     }
 
     public function loadForm($id)
@@ -550,6 +548,9 @@ class SxhForm extends MyForm
         ]) : [
             $this->toTransform(new XacminhCb, [
                 XacminhCb::className() => array_merge($fields, [
+                    'dienthoai' => function () {
+                        return $this->dienthoai;
+                    },
                     'px' => function () {
                         return $this->px;
                     },

@@ -65,7 +65,13 @@ class MapsController extends AppController {
             'app_name' => params('app_name'),
             'app_logo' => params('assets.logo'),
             'description' => params('app_name'),
-
+            'headerMenu' => [
+                ['url' => '/maps', 'text' =>  'Home'],
+                ['url' => '/maps/ds-sxh', 'text' =>  'Ca bệnh'],
+                ['url' => '/maps/odich', 'text' =>  'Ổ dịch'],
+                ['url' => '/maps/pt-nguyco', 'text' =>  'Điểm nguy cơ'],
+                ['url' => '/maps/thongke', 'text' =>  'Thống kê',],
+            ]
         ];
 
         return $this->asJson($data);
@@ -138,19 +144,6 @@ class MapsController extends AppController {
                     "zIndex" => 10
                 ],
             ],
-//            [
-//                "title"     => "Ca bệnh test",
-//                "type" => 'wms',
-//                "key" => "cabenh_sxh",
-//                'active'  => true,
-//                "options" => [
-//                    "cql_filter" => $fn_cql($_3mAgo),
-//                    "url"        => "/geoserver/ows?",
-//                    "layers"     => "dichte:v_phieu_dt",
-//                    "zIndex" => 10,
-//                    'styles' => 'point_custom'
-//                ],
-//            ],
             [
                 "title"     => "Ca bệnh nghi ngờ",
                 "type" => 'wms',
@@ -198,6 +191,7 @@ class MapsController extends AppController {
         $postData = request()->all();
         $respData = [];
 
+
         foreach (data_get($postData, 'items', []) as $k => $i){
             $feature = opt($i);
             $url = data_get($feature, 'infoUrl');
@@ -207,6 +201,7 @@ class MapsController extends AppController {
 
             try {
                 $resp = $req->send()->getData();
+
                 $info = data_get($resp, 'features.0');
                 $date = data_get($info, 'properties.ngaymacbenh_nv');
                 if($date){

@@ -29,7 +29,8 @@
     export default {
         name: 'map-part',
         computed: {
-            ...mapState(['form', 'schema'])
+            ...mapState(['form', 'schema', 'dm'])
         },
+
     }
 </script>

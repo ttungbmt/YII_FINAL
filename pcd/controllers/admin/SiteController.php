@@ -66,7 +66,7 @@ class SiteController extends AppController {
     }
 
     public function actionDocGuide() {
-        $url = roleCond()->docGuideUrl();
+        $url = '/pcd/storage/docs/TL_GIS 2020.pdf';
         return $this->render('doc_guide', compact('url'));
     }
 
@@ -173,7 +173,6 @@ class SiteController extends AppController {
             ]);
         }
 
-//        dd($q->createCommand()->getRawSql());
 
         $role->filterCabenhSxh($q);
 

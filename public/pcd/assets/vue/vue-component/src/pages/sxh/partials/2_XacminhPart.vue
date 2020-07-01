@@ -49,7 +49,7 @@
                     </b-row>
                     <b-row>
                         <b-col md="6">
-                            <field-sxh :id="`field-${k}-tinh`" :name="`xacminh[${k}][tinh]`" nameKey="tinh" :path="`xacminh.items.${k}.tinh`" :label="schema['tinh'].label+` (${k+1})`"/>
+                            <field-sxh :id="`field-${k}-tinh`" :name="`xacminh[${k}][tinh]`" nameKey="tinh" :path="`xacminh.items.${k}.tinh`" :label="schema['tinh'].label+` (${k+1})`" :options="getDmTinh(k)"/>
                         </b-col>
                         <b-col v-if="v.tinh ==='HCM'">
                             <field-sxh :id="`field-${k}-qh`" :name="`xacminh[${k}][qh]`" nameKey="qh" :path="`xacminh.items.${k}.qh`" :label="schema['qh'].label+` (${k+1})`"/>
@@ -93,6 +93,7 @@
     </div>
 </template>
 <script>
+    import {isNil, reject} from 'lodash-es'
     import { mapState, mapGetters } from 'vuex'
 
     export default {
@@ -103,5 +104,10 @@
             ]),
             ...mapState(['form', 'schema', 'xacminh', 'dm', 'shownDieutra'])
         },
+        methods: {
+            getDmTinh(index){
+                return (!isNil(index) && index % 2 === 0) ?  reject(this.dm.tinh, {value: 'TinhKhac'}) : this.dm.tinh
+            }
+        }
     }
 </script>

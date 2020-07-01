@@ -49466,7 +49466,7 @@
 
 	var script$6 = {
 	  name: 'map-part',
-	  computed: _objectSpread2$1({}, Vuex.mapState(['form', 'schema']))
+	  computed: _objectSpread2$1({}, Vuex.mapState(['form', 'schema', 'dm']))
 	};
 
 	/* script */
@@ -49591,7 +49591,14 @@
 
 	var script$7 = {
 	  name: 'xacminh-part',
-	  computed: _objectSpread2$1({}, Vuex.mapGetters(['lastXm']), {}, Vuex.mapState(['form', 'schema', 'xacminh', 'dm', 'shownDieutra']))
+	  computed: _objectSpread2$1({}, Vuex.mapGetters(['lastXm']), {}, Vuex.mapState(['form', 'schema', 'xacminh', 'dm', 'shownDieutra'])),
+	  methods: {
+	    getDmTinh: function getDmTinh(index) {
+	      return !lodash.isNil(index) && index % 2 === 0 ? lodash.reject(this.dm.tinh, {
+	        value: 'TinhKhac'
+	      }) : this.dm.tinh;
+	    }
+	  }
 	};
 
 	/* script */
@@ -49812,7 +49819,8 @@
 	                                    _vm.schema["tinh"].label +
 	                                    " (" +
 	                                    (k + 1) +
-	                                    ")"
+	                                    ")",
+	                                  options: _vm.getDmTinh(k)
 	                                }
 	                              })
 	                            ],
