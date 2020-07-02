@@ -12,6 +12,7 @@ $this->registerJsFile('https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue
 $this->registerJsVar('pageData', [
     'form' => $model->toArray()
 ]);
+$extra = !$maquan || !$maphuong ? [ 'prompt' => 'Chọn quận huyện...'] : [];
 ?>
 
 <div id="vue-app">
@@ -20,14 +21,13 @@ $this->registerJsVar('pageData', [
             <div class="card">
                 <div class="card-body">
                     <?php $form = ActiveForm::begin(['id' => 'tk-form', 'method' => 'GET']) ?>
-                    <?= $form->field($model, 'maquan')->dropDownList(api('/dm/quan?role=true'), [
-                        'prompt' => 'Chọn quận huyện...',
+                    <?= $form->field($model, 'maquan')->dropDownList(api('/dm/quan?role=true'), array_merge([
                         'id' => 'drop-quan',
                         'options' => [
                             $maquan => ['Selected' => true],
                         ],
                         'v-model' => 'form.maquan'
-                    ]) ?>
+                    ], $extra)) ?>
 
                     <?= $form->field($model, 'maphuong')->widget(DepDrop::className(), [
                         'options' => ['v-model' => 'form.maphuong'],
@@ -54,7 +54,7 @@ $this->registerJsVar('pageData', [
         </div>
 
         <div class="col-md-9">
-            <b-progress :value="100" variant="success" striped :animated="animate" v-if="loading"></b-progress>
+            <b-progress :value="100" variant="primary" striped :animated="true" v-if="loading"></b-progress>
 
             <div v-if="!_.isEmpty(data) && !loading">
                 <div class="card">
@@ -75,8 +75,8 @@ $this->registerJsVar('pageData', [
                             <td>{{i.to_dp}}</td>
                         </tr>
                         <tr class="font-bold">
-                            <td :colspan="showColHc ? 2 : 1">Tổng cộng</td>
-                            <td>{{_.sumBy(data, 'khupho')}}</td>
+                            <td :colspan="2">Tổng cộng</td>
+                            <td v-if="showColHc">{{_.sumBy(data, 'khupho')}}</td>
                             <td>{{_.sumBy(data, 'to_dp')}}</td>
                         </tr>
                         </tbody>
@@ -104,6 +104,7 @@ $options = ['depends' => [\common\assets\AppPluginAsset::className()]];
             field: {},
             data: []
         },
+
         mounted() {
             $(`#tk-form`).submit(this.onSubmit)
         },
