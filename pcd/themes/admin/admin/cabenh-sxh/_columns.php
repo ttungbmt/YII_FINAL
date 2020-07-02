@@ -58,7 +58,7 @@ return [
         'updateOptions' => ['title' => lang('Update'), 'data-toggle' => 'tooltip'],
         'visibleButtons' => [
             'delete' => function ($model) {
-                return role('admin|quan');
+                return role('admin|quan') || userInfo()->maphuong === '76526953';
             },
             'view' => false,
             'download' => function ($model) {
