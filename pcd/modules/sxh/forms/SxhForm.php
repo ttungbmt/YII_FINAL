@@ -99,7 +99,7 @@ class SxhForm extends MyForm
             [['nguoidieutra_sdt', 'me'], 'string'],
             [['tuoi', 'ngaysinh'], AtLeastValidator::className(), 'in' => ['tuoi', 'ngaysinh'], 'message' => 'Điền ít nhất 1 trường: tuổi hoặc ngày sinh', 'on' => ['xacminh']],
 
-            [['ngaybaocao', 'hoten', 'ngaynhanthongbao', 'ngaydieutra', 'ngaybaocao', 'phai', 'ngaydieutra', 'nguoidieutra'], 'required', 'on' => ['xacminh']],
+            [['px', 'qh', 'ngaybaocao', 'hoten', 'ngaynhanthongbao', 'ngaydieutra', 'ngaybaocao', 'phai', 'ngaydieutra', 'nguoidieutra'], 'required', 'on' => ['xacminh']],
             [['sonha', 'duong', 'to_dp', 'khupho', 'px', 'qh', 'tinh', 'tinh_dc_khac'], 'safe'],
             [['lat', 'lng'], 'number'],
             [['geom'], 'geom', 'geoprocessing' => [$this, 'validateGeom']],
