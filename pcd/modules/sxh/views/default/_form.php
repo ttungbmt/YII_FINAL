@@ -3,13 +3,14 @@
 use kartik\depdrop\DepDropExtAsset;
 use pcd\models\Benhvien;
 use kartik\depdrop\DepDropAsset;
-use pcd\models\HcQuan;
 use pcd\models\Loaibenh;
 use pcd\supports\RoleHc;
+
 DepDropAsset::register($this);
 DepDropExtAsset::register($this);
 
 $role = RoleHc::init();
+
 $dm = [
     'qh'           => api('/dm/quan'),
     'chuandoan_bd' => Loaibenh::pluck('tenbenh', 'mabenh'),

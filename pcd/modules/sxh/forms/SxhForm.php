@@ -251,7 +251,7 @@ class SxhForm extends MyForm
         $lastXm = optional((object)(last($this->xacminh)));
         $count = count($this->xacminh);
 
-        if($lastXm->is_diachi == 0 && $count > 1 && $count%2 == 0) {
+        if(($lastXm->is_diachi == 0 || ($lastXm->is_diachi == 1 && $this->tinh != 'HCM')) && $count > 1 && $count%2 == 0) {
             $lastXm = optional((object)($this->xacminh[$count-2]));
         }
 
