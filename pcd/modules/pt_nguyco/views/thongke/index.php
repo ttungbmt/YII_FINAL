@@ -159,7 +159,8 @@ $this->registerJsVar('pageData', [
             },
             methods: {
                 getLoaihinhUri(code, col, value){
-                    if(value){
+                    if(value != 0){
+
                         let uri = URI("/pt_nguyco")
 
                         uri.setSearch(_.pick(this.form, ['loai_tk', 'maquan', 'maphuong']))
@@ -168,7 +169,7 @@ $this->registerJsVar('pageData', [
                         switch (this.form.loai_tk) {
                             case "loaihinh": uri.setSearch({loaihinh_id: code, month: this.form.month}); break;
                             case "hanhchinh": uri.setSearch({maphuong: code, month: this.form.month}); break;
-                            case "xuphat": uri.setSearch({year: this.form.year, month: code}); break;
+                            case "xuphat": uri.setSearch({year: this.form.year, month: value ? `${value}/${this.form.year}` : null, maphuong: code}); break;
                         }
 
                         window.open(uri.toString())

@@ -141,11 +141,14 @@ class PtNguycoSearch extends PtNguyco
             }
         }
 
-        if($this->loai_tk){
-            $this->month && $q2->having(new Expression("MAX ( CASE WHEN TO_CHAR( ngay_gs, 'MM/YYYY' ) = '{$this->month}' THEN 1 END ) = 1"));
+        if($this->loai_tk == 'xuphat'){
+            if($this->month){
+                $q2->having(new Expression("MAX ( CASE WHEN ( TO_CHAR( ngay_gs, 'MM/YYYY' ) = '{$this->month}' AND ngayxuphat IS NOT NULL ) THEN 1 END ) = 1"));
+            } else {
+                $q2->having(new Expression("MAX ( CASE WHEN ( TO_CHAR( ngay_gs, 'YYYY' ) = '{$this->year}' AND ngayxuphat IS NOT NULL ) THEN 1 END ) = 1"));
+            }
             $query->andWhere(['gid' => $q2]);
         }
-
 
         $query->andFilterDate(['ngaycapnhat' => [$this->date_from, $this->date_to]]);
 

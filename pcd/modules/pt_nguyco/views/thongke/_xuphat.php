@@ -24,38 +24,38 @@
     <tbody>
     <tr v-for="v in resp">
         <td>{{v.ten}}</td>
-        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(1, null, v.thang1)">{{v.thang1 ? v.thang1 : 0}}</button></td>
-        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(2, null, v.thang2)">{{v.thang2 ? v.thang2 : 0}}</button></td>
-        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(3, null, v.thang3)">{{v.thang3 ? v.thang3 : 0}}</button></td>
-        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(4, null, v.thang4)">{{v.thang4 ? v.thang4 : 0}}</button></td>
-        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(5, null, v.thang5)">{{v.thang5 ? v.thang5 : 0}}</button></td>
-        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(6, null, v.thang6)">{{v.thang6 ? v.thang6 : 0}}</button></td>
-        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(7, null, v.thang7)">{{v.thang7 ? v.thang7 : 0}}</button></td>
-        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(8, null, v.thang8)">{{v.thang8 ? v.thang8 : 0}}</button></td>
-        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(9, null, v.thang9)">{{v.thang9 ? v.thang9 : 0}}</button></td>
-        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(10, null, v.thang10)">{{v.thang10 ? v.thang10 : 0}}</button></td>
-        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(11, null, v.thang11)">{{v.thang11 ? v.thang11 : 0}}</button></td>
-        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(12, null, v.thang12)">{{v.thang12 ? v.thang12 : 0}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(v.code, null, '01')">{{v.thang1 ? v.thang1 : 0}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(v.code, null, '02')">{{v.thang2 ? v.thang2 : 0}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(v.code, null, '03')">{{v.thang3 ? v.thang3 : 0}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(v.code, null, '04')">{{v.thang4 ? v.thang4 : 0}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(v.code, null, '05')">{{v.thang5 ? v.thang5 : 0}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(v.code, null, '06')">{{v.thang6 ? v.thang6 : 0}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(v.code, null, '07')">{{v.thang7 ? v.thang7 : 0}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(v.code, null, '08')">{{v.thang8 ? v.thang8 : 0}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(v.code, null, '09')">{{v.thang9 ? v.thang9 : 0}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(v.code, null, 10)">{{v.thang10 ? v.thang10 : 0}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(v.code, null, 11)">{{v.thang11 ? v.thang11 : 0}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(v.code, null, 12)">{{v.thang12 ? v.thang12 : 0}}</button></td>
         <td class="font-weight-semibold text-center">
-            <button class="btn btn-link" @click="getLoaihinhUri(null, null, v.thang1+ v.thang2+ v.thang3+ v.thang4+ v.thang5+ v.thang6+ v.thang7+ v.thang8+ v.thang9+ v.thang10+ v.thang11+ v.thang12)">{{v.thang1+ v.thang2+ v.thang3+ v.thang4+ v.thang5+ v.thang6+ v.thang7+ v.thang8+ v.thang9+ v.thang10+ v.thang11+ v.thang12}}
+            <button class="btn btn-link" @click="getLoaihinhUri(v.code, null, null)">{{v.thang1+ v.thang2+ v.thang3+ v.thang4+ v.thang5+ v.thang6+ v.thang7+ v.thang8+ v.thang9+ v.thang10+ v.thang11+ v.thang12}}
         </td>
     </tr>
     </tbody>
     <tfoot>
     <tr>
         <td>Tổng</td>
-        <td class="text-center">{{_.sumBy(resp, 'thang1')}}</td>
-        <td class="text-center">{{_.sumBy(resp, 'thang2')}}</td>
-        <td class="text-center">{{_.sumBy(resp, 'thang3')}}</td>
-        <td class="text-center">{{_.sumBy(resp, 'thang4')}}</td>
-        <td class="text-center">{{_.sumBy(resp, 'thang5')}}</td>
-        <td class="text-center">{{_.sumBy(resp, 'thang6')}}</td>
-        <td class="text-center">{{_.sumBy(resp, 'thang7')}}</td>
-        <td class="text-center">{{_.sumBy(resp, 'thang8')}}</td>
-        <td class="text-center">{{_.sumBy(resp, 'thang9')}}</td>
-        <td class="text-center">{{_.sumBy(resp, 'thang10')}}</td>
-        <td class="text-center">{{_.sumBy(resp, 'thang11')}}</td>
-        <td class="text-center">{{_.sumBy(resp, 'thang12')}}</td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, '01')">{{_.sumBy(resp, 'thang1')}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, '02')">{{_.sumBy(resp, 'thang2')}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, '03')">{{_.sumBy(resp, 'thang3')}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, '04')">{{_.sumBy(resp, 'thang4')}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, '05')">{{_.sumBy(resp, 'thang5')}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, '06')">{{_.sumBy(resp, 'thang6')}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, '07')">{{_.sumBy(resp, 'thang7')}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, '08')">{{_.sumBy(resp, 'thang8')}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, '09')">{{_.sumBy(resp, 'thang9')}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, 10)">{{_.sumBy(resp, 'thang10')}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, 11)">{{_.sumBy(resp, 'thang11')}}</button></td>
+        <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, 12)">{{_.sumBy(resp, 'thang12')}}</button></td>
         <td class="text-center">{{_.sumBy(resp, 'thang1')+ _.sumBy(resp, 'thang2')+ _.sumBy(resp, 'thang3')+ _.sumBy(resp,
             'thang4')+ _.sumBy(resp, 'thang5')+ _.sumBy(resp, 'thang6')+ _.sumBy(resp, 'thang7')+
             _.sumBy(resp, 'thang8')+ _.sumBy(resp, 'thang9')+ _.sumBy(resp, 'thang10')+ _.sumBy(resp,
