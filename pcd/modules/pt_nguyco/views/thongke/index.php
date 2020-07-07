@@ -168,7 +168,13 @@ $this->registerJsVar('pageData', [
 
                         switch (this.form.loai_tk) {
                             case "loaihinh": uri.setSearch({loaihinh_id: code, month: this.form.month}); break;
-                            case "hanhchinh": uri.setSearch({maphuong: code, month: this.form.month}); break;
+                            case "hanhchinh":
+                                if(this.form.maquan && this.form.maphuong){
+                                    uri.setSearch({khupho: code, month: this.form.month});
+                                } else {
+                                    uri.setSearch({maphuong: code, month: this.form.month});
+                                }
+                                break;
                             case "xuphat": uri.setSearch({year: this.form.year, month: value ? `${value}/${this.form.year}` : null, maphuong: code}); break;
                         }
 

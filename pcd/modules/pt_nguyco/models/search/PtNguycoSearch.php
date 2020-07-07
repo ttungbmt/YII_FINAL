@@ -127,7 +127,7 @@ class PtNguycoSearch extends PtNguyco
                 case 'luot_gs':
                     break;
                 case 'lq':
-                    $q2->having(new Expression("MAX ( CASE WHEN ( TO_CHAR( ngay_gs, 'MM/YYYY' ) = '{$this->month}' AND vc_lq = 1 ) THEN 1 END ) = 1"));
+                    $q2->having(new Expression("MAX ( CASE WHEN ( TO_CHAR( ngay_gs, 'MM/YYYY' ) = '{$this->month}' AND vc_lq > 0 ) THEN 1 END ) = 1"));
                     $query->andWhere(['gid' => $q2]);
                     break;
                 case 'dx_xp':

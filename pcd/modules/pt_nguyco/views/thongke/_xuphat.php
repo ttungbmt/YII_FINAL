@@ -56,7 +56,8 @@
         <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, 10)">{{_.sumBy(resp, 'thang10')}}</button></td>
         <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, 11)">{{_.sumBy(resp, 'thang11')}}</button></td>
         <td class="text-center"><button class="btn btn-link" @click="getLoaihinhUri(null, null, 12)">{{_.sumBy(resp, 'thang12')}}</button></td>
-        <td class="text-center">{{_.sumBy(resp, 'thang1')+ _.sumBy(resp, 'thang2')+ _.sumBy(resp, 'thang3')+ _.sumBy(resp,
+        <td class="text-center">
+            {{_.sumBy(resp, 'thang1')+ _.sumBy(resp, 'thang2')+ _.sumBy(resp, 'thang3')+ _.sumBy(resp,
             'thang4')+ _.sumBy(resp, 'thang5')+ _.sumBy(resp, 'thang6')+ _.sumBy(resp, 'thang7')+
             _.sumBy(resp, 'thang8')+ _.sumBy(resp, 'thang9')+ _.sumBy(resp, 'thang10')+ _.sumBy(resp,
             'thang11')+ _.sumBy(resp, 'thang12')}}

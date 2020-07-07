@@ -48,7 +48,7 @@ class ThongkeController extends BackendController
                 'ngaycapnhat',
                 'gs' => new Expression("MAX(CASE WHEN TO_CHAR(ngay_gs, 'MM/YYYY') = '{$month}' THEN 1 END)"),
                 'luot_gs' => new Expression("COUNT(CASE WHEN TO_CHAR(ngay_gs, 'MM/YYYY') = '{$month}' THEN 1 END)"),
-                'lq' => new Expression("MAX(CASE WHEN (TO_CHAR(ngay_gs, 'MM/YYYY') = '{$month}' AND vc_lq = 1) THEN 1 END)"),
+                'lq' => new Expression("MAX(CASE WHEN (TO_CHAR(ngay_gs, 'MM/YYYY') = '{$month}' AND vc_lq > 0) THEN 1 END)"),
                 'dx_xp' => new Expression("MAX(CASE WHEN (TO_CHAR(ngay_gs, 'MM/YYYY') = '{$month}' AND dexuat_xp = 1) THEN 1 END)"),
                 'xp' => new Expression("MAX(CASE WHEN (TO_CHAR(ngay_gs, 'MM/YYYY') = '{$month}' AND xuphat = 1) THEN 1 END)"),
             ])
