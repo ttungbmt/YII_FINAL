@@ -33,7 +33,8 @@ class DmToDp extends App
     {
         return [
             [['maquan', 'maphuong', 'khupho', 'to_dp'], 'string', 'max' => 255],
-            [['maquan', 'maphuong', 'khupho', 'to_dp'], 'required']
+            [['maquan', 'maphuong', 'khupho', 'to_dp'], 'required'],
+            [['to_dp'], 'unique', 'targetAttribute' => ['to_dp', 'khupho', 'maquan', 'maphuong'], 'message' => 'Tổ dân phố đã tồn tại'],
         ];
     }
 
@@ -49,6 +50,15 @@ class DmToDp extends App
             'khupho' => 'Khu phố',
             'to_dp' => 'Tổ dân phố',
         ];
+    }
+
+
+    public function beforeSave($insert)
+    {
+        $this->khupho = trim($this->khupho);
+        $this->to_dp = trim($this->to_dp);
+
+        return parent::beforeSave($insert);
     }
 
     public function getQuan(){

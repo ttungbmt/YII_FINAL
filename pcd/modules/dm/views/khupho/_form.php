@@ -35,7 +35,7 @@ if($maphuong = (string)userInfo()->maphuong && !$model->maphuong) {
             'url' => url(['/api/dm/phuong?role=true']),
             'initialize' => $model->maquan == true,
             'placeholder' => 'Chọn phường...',
-            'ajaxSettings' => ['data' => ['value' => $maphuong]],
+            'ajaxSettings' => ['data' => ['value' => $model->maphuong]],
         ],
     ]) ?>
 

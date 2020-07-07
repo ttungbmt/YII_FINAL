@@ -2,6 +2,7 @@
 
 namespace pcd\modules\dm\models;
 
+use Illuminate\Support\Str;
 use pcd\models\App;
 use pcd\models\HcPhuong;
 use pcd\models\HcQuan;
@@ -32,7 +33,8 @@ class DmKhupho extends App
     {
         return [
             [['maquan', 'maphuong', 'khupho'], 'string', 'max' => 255],
-            [['maquan', 'maphuong', 'khupho'], 'required']
+            [['maquan', 'maphuong', 'khupho'], 'required'],
+            [['khupho'], 'unique', 'targetAttribute' => ['maquan', 'maphuong', 'khupho'], 'message' => 'Khu phố/ấp đã tồn tại'],
         ];
     }
 
@@ -48,6 +50,13 @@ class DmKhupho extends App
             'khupho' => 'Khu phố',
         ];
     }
+
+    public function beforeSave($insert)
+    {
+        $this->khupho = trim($this->khupho);
+        return parent::beforeSave($insert);
+    }
+
 
     public function getQuan()
     {
