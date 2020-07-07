@@ -144,17 +144,18 @@ trait SxhTrait {
         $maphuong = userInfo()->maphuong;
         $maquan = userInfo()->maquan;
         $lastXm = opt(last($this->xacminh));
+        $prevLastXm = opt($this->xacminh[count($this->xacminh)-2]);
         $qh1 = opt(head($this->xacminh))->qh; $px1 = opt(head($this->xacminh))->px;
 
-        if($lastXm->is_diachi == 0 && is_null($lastXm->is_benhnhan) && count($this->xacminh) > 1){
-            $prevLastXm = opt($this->xacminh[count($this->xacminh)-2]);
-            $qh2 = $prevLastXm->qh; $px2 = $prevLastXm->px;
-        } else {
-            $qh2 = opt($lastXm)->qh; $px2 = opt($lastXm)->px;
-        }
 
         $disabled_px1 = $id ? true : false;
         $disabled_px2 = $id ? true : false;
+
+        if($lastXm->is_diachi == 0 && is_null($lastXm->is_benhnhan) && count($this->xacminh) > 1){
+            $qh2 = $prevLastXm->qh; $px2 = $prevLastXm->px;
+        } else {
+            $qh2 = opt($lastXm)->qh; $px2 = opt($lastXm)->tinh <> 'HCM' ? $prevLastXm->px: opt($lastXm)->px;
+        }
 
         if($maphuong == $px1 || (role('quan') && $maquan == $qh1)) $disabled_px1 = false;
         if($maphuong == $px2 || (role('quan') && $maquan == $qh2)) $disabled_px2 = false;
