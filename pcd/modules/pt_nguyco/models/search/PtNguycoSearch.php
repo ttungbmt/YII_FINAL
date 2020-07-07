@@ -19,13 +19,14 @@ class PtNguycoSearch extends PtNguyco
     public $year;
     public $month;
     public $col_tk;
+    public $loai_tk;
 
 
     public function rules()
     {
         return [
             [['gid', 'loaihinh_id'], 'integer'],
-            [['col_tk', 'month', 'dienthoai', 'maso', 'ten_cs', 'sonha', 'tenduong', 'khupho', 'to_dp', 'maphuong', 'maquan', 'nhom', 'loaihinh', 'tochuc_gs', 'ngaycapnhat', 'ngayxoa', 'ghichu', 'phancap_ql', 'thuchien', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'safe'],
+            [['loai_tk', 'col_tk', 'year', 'month', 'dienthoai', 'maso', 'ten_cs', 'sonha', 'tenduong', 'khupho', 'to_dp', 'maphuong', 'maquan', 'nhom', 'loaihinh', 'tochuc_gs', 'ngaycapnhat', 'ngayxoa', 'ghichu', 'phancap_ql', 'thuchien', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'safe'],
             [['date_from', 'date_to'], 'date', 'format' => 'php:d/m/Y'],
 
         ];
@@ -103,7 +104,7 @@ class PtNguycoSearch extends PtNguyco
             ])
         ;
 
-        if($this->month){
+        if($this->col_tk){
             switch ($this->col_tk){
                 case 'dauthang':
                     $dateMonth = $this->getDateMonth();
@@ -140,6 +141,10 @@ class PtNguycoSearch extends PtNguyco
             }
         }
 
+        if($this->loai_tk){
+            $this->month && $q2->having(new Expression("MAX ( CASE WHEN TO_CHAR( ngay_gs, 'MM/YYYY' ) = '{$this->month}' THEN 1 END ) = 1"));
+            $query->andWhere(['gid' => $q2]);
+        }
 
 
         $query->andFilterDate(['ngaycapnhat' => [$this->date_from, $this->date_to]]);

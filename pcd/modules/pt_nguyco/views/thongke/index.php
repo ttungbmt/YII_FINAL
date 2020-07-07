@@ -2,7 +2,7 @@
 $this->title = 'Thống kê xử phạt ĐNC';
 
 use kartik\form\ActiveForm;
-use yii\helpers\Html;
+use pcd\supports\Helper;use yii\helpers\Html;
 use kartik\depdrop\DepDrop;
 
 $model->year = $model->year ? $model->year : date('Y');
@@ -61,14 +61,11 @@ $maphuong = userInfo()->ma_phuong;
 
             <div class="row">
                 <div class="col-md-6">
-                    <?= $form->field($model, 'maquan')->dropDownList(api('/dm/quan?role=true'), [
-                        'prompt' => 'Chọn quận huyện...',
+                    <?= $form->field($model, 'maquan')->dropDownList(api('/dm/quan?role=true'), Helper::addPrompt(role('admin'), 'Chọn quận huyện...', [
                         'id' => 'drop-quan',
-                        'options' => [
-                            $maquan => ['Selected' => true],
-                        ],
+                        'options' => [$maquan => ['Selected' => true],],
                         'v-model' => 'form.maquan'
-                    ]); ?>
+                    ])); ?>
                 </div>
                 <div class="col-md-6">
                     <?= $form->field($model, 'maphuong')->widget(DepDrop::className(), [
@@ -106,10 +103,10 @@ $maphuong = userInfo()->ma_phuong;
             </div>
             <div class="table-responsive" v-if="shownResp">
 
-                <div v-if="loai_tk!='xuphat'">
+                <div v-if="form.loai_tk!='xuphat'">
                     <?= $this->render('_loaihinh') ?>
                 </div>
-                <div v-if="loai_tk=='xuphat'">
+                <div v-if="form.loai_tk=='xuphat'">
                     <?= $this->render('_xuphat') ?>
                 </div>
             </div>
@@ -152,11 +149,11 @@ $this->registerJsVar('pageData', [
             },
             computed: {
                 postUrl() {
-                    return this.list_url[this.loai_tk]
+                    return this.list_url[this.form.loai_tk]
                 }
             },
             watch: {
-                loai_tk(){
+                ['form.loai_tk'](){
                     this.resp = []
                 }
             },
@@ -164,9 +161,14 @@ $this->registerJsVar('pageData', [
                 getLoaihinhUri(code, col, value){
                     if(value){
                         let uri = URI("/pt_nguyco")
-                        if(this.form.loai_tk === 'loaihinh'){
-                            uri.setSearch(_.pick(this.form, ['loai_tk', 'maquan', 'maphuong', 'month']))
-                            uri.setSearch({loaihinh_id: code, col_tk: col})
+
+                        uri.setSearch(_.pick(this.form, ['loai_tk', 'maquan', 'maphuong']))
+                        uri.setSearch({col_tk: col})
+
+                        switch (this.form.loai_tk) {
+                            case "loaihinh": uri.setSearch({loaihinh_id: code, month: this.form.month}); break;
+                            case "hanhchinh": uri.setSearch({maphuong: code, month: this.form.month}); break;
+                            case "xuphat": uri.setSearch({year: this.form.year, month: code}); break;
                         }
 
                         window.open(uri.toString())
