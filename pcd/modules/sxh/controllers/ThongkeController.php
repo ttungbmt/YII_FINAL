@@ -173,7 +173,7 @@ class ThongkeController extends AppController
             $q0 = (new Query())
                 ->select('kp.maquan, kp.maphuong, kp.khupho, COUNT(tdp.*) to_dp')
                 ->from(['kp' => DmKhupho::tableName()])
-                ->leftJoin(['tdp' => DmToDp::tableName()], "kp.khupho = tdp.khupho AND kp.maphuong = tdp.maphuong")
+                ->leftJoin(['tdp' => DmToDp::tableName()], "kp.khupho = tdp.khupho AND kp.maphuong = tdp.maphuong AND kp.maquan = tdp.maquan")
                 ->andFilterWhere(['kp.maphuong' => $maphuong])
                 ->groupBy(new Expression('1,2,3'))
             ;
@@ -185,11 +185,13 @@ class ThongkeController extends AppController
             $q = $maphuong ? $q0 : (new Query())
                 ->select("px.{$field['code']} code, px.{$field['name']} name, COUNT(kp.khupho) khupho, SUM(kp.to_dp)::int to_dp")
                 ->from(['px' => HcPhuong::tableName()])
-                ->leftJoin(['kp' => $q0], "kp.maphuong = px.maphuong")
+                ->leftJoin(['kp' => $q0], "kp.maphuong = px.maphuong AND kp.maquan = px.maquan")
                 ->andFilterWhere(['kp.maphuong' => $maphuong])
                 ->andFilterWhere(['kp.maquan' => $maquan])
                 ->groupBy(new Expression('1,2'))
             ;
+
+//            dd($q->createCommand()->getRawSql());
 
             $data = collect($q->all())
                 ->sortBy('khupho', SORT_NATURAL)

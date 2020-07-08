@@ -49,7 +49,7 @@ $this->registerJsVar('pageData', [
                 <template v-slot:default="{form}">
                     <div class="card-body">
 
-                        <?php $form = ActiveForm::begin(); ?>
+                        <?php $form = ActiveForm::begin(['id' => 'form-to-dp']); ?>
 
                         <div class="dm-to-dp-form">
 

@@ -65,6 +65,7 @@ class DmController extends ApiController
             $value = is_numeric($value) ? $value : userInfo()->maphuong;
             $query->andFilterWhere(['khupho' => $value]);
         }
+
         $list = $query->orderBy('khupho')->map(function ($item) {
             return ['id' => $item->khupho, 'name' => $item->khupho];
         });

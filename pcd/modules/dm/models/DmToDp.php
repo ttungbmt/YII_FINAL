@@ -2,6 +2,7 @@
 
 namespace pcd\modules\dm\models;
 
+use nanson\postgis\behaviors\GeometryBehavior;
 use pcd\models\App;
 use pcd\models\HcPhuong;
 use pcd\models\HcQuan;
@@ -18,6 +19,7 @@ use Yii;
  */
 class DmToDp extends App
 {
+    public $geometryType = GeometryBehavior::GEOMETRY_POLYGON;
     /**
      * {@inheritdoc}
      */
@@ -32,6 +34,7 @@ class DmToDp extends App
     public function rules()
     {
         return [
+            [['geom'], 'safe'],
             [['maquan', 'maphuong', 'khupho', 'to_dp'], 'string', 'max' => 255],
             [['maquan', 'maphuong', 'khupho', 'to_dp'], 'required'],
             [['to_dp'], 'unique', 'targetAttribute' => ['to_dp', 'khupho', 'maquan', 'maphuong'], 'message' => 'Tổ dân phố đã tồn tại'],

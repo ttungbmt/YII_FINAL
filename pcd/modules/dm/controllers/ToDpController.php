@@ -2,13 +2,14 @@
 namespace pcd\modules\dm\controllers;
 
 use pcd\controllers\AppController;
-use pcd\modules\dm\models\DmToDp;
+use pcd\modules\dm\models\Ranhto;
 use pcd\modules\dm\models\search\DmToDpSearch;
 use ttungbmt\actions\CreateAction;
 use ttungbmt\actions\DeleteAction;
 use ttungbmt\actions\IndexAction;
 use ttungbmt\actions\UpdateAction;
 use ttungbmt\actions\ViewAction;
+use yii\db\Expression;
 
 class ToDpController extends AppController
 {
@@ -40,5 +41,12 @@ class ToDpController extends AppController
                 'modelClass' => $this->modelClass
             ]
         ]);
+    }
+
+    public function actionRanhgioi(){
+        $latlng = request()->post('latlng');
+        $data = Ranhto::find()->andWhere(new Expression("ST_Intersects (geom, ST_SetSRID(ST_Point($latlng[1], $latlng[0]), 4326))"))->one();
+        if($data) return $this->asJson(['data' => $data->toGeometry()]);
+        return $this->asJson(['data' => null]);
     }
 }
