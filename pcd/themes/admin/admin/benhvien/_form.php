@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\models\Benhvien */
 /* @var $form yii\widgets\ActiveForm */
+$this->title = 'Bệnh viện'
 ?>
 
 <div class="benhvien-form">

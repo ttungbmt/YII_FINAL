@@ -20,7 +20,7 @@ CrudAsset::register($this);
             'toolbar'=> [
                 ['content'=>
                     Html::a('Thêm mới', ['create'],
-                    ['role'=>'modal-remote','title'=> 'Thêm mới','class'=>'btn btn-default']).
+                    ['data-pjax' => 0, 'title'=> 'Thêm mới','class'=>'btn btn-primary']).
                     Html::a('<i class="icon-reload-alt"></i>', [''],
                     ['data-pjax'=>1, 'class'=>'btn btn-default', 'title'=>'Làm mới danh sách']).
                     //'{toggleData}'.
