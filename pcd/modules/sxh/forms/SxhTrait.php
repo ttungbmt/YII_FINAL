@@ -145,7 +145,7 @@ trait SxhTrait {
         $maquan = userInfo()->maquan;
         $lastXm = opt(last($this->xacminh));
         $qh1 = opt(head($this->xacminh))->qh; $px1 = opt(head($this->xacminh))->px;
-
+        $qh2 = opt($lastXm)->qh; $px2 = opt($lastXm)->px;
 
         $disabled_px1 = $id ? true : false;
         $disabled_px2 = $id ? true : false;
@@ -157,10 +157,8 @@ trait SxhTrait {
             }
 
             if(opt($lastXm)->tinh <> 'HCM') $px2 = $prevLastXm->px;
-        } else {
-            $qh2 = opt($lastXm)->qh; $px2 = opt($lastXm)->px;
-
         }
+
 
         if($maphuong == $px1 || (role('quan') && $maquan == $qh1)) $disabled_px1 = false;
         if($maphuong == $px2 || (role('quan') && $maquan == $qh2)) $disabled_px2 = false;
