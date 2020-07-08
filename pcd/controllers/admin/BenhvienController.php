@@ -108,7 +108,7 @@ class BenhvienController extends AppController
             *   Process for non-ajax request
             */
             if ($model->load($request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->mabenhvien]);
+                return $this->redirect('index');
             } else {
                 return $this->render('create', [
                     'model' => $model,
@@ -169,7 +169,7 @@ class BenhvienController extends AppController
             *   Process for non-ajax request
             */
             if ($model->load($request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->mabenhvien]);
+                return $this->redirect('index');
             } else {
                 return $this->render('update', [
                     'model' => $model,

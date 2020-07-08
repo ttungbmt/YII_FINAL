@@ -45,6 +45,7 @@ class BenhvienSearch extends Benhvien
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['mabenhvien' => SORT_DESC]]
         ]);
 
         $this->load($params);
