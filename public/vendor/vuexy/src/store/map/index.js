@@ -18,7 +18,10 @@ export default {
     },
 
     actions: {
-
+        builder({commit, state}, payload){
+            payload.config && commit('config/init', payload.config)
+            payload.layers && commit('layers/init', payload.layers)
+        }
     },
 
     mutations: {

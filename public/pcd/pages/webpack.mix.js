@@ -27,6 +27,7 @@ mix
             jquery: '$',
         }
     })
-    .js('src/odich-sxh/index.js', 'odich-sxh/main.js')
-    .js('src/odich-sxh-thongke/index.js', 'odich-sxh-thongke/main.js')
+    // .js('src/odich-sxh/index.js', 'odich-sxh/main.js')
+    // .js('src/odich-sxh-thongke/index.js', 'odich-sxh-thongke/main.js')
+    .js('src/dm-to-dp/index.js', 'dm-to-dp/main.js')
     .disableNotifications();

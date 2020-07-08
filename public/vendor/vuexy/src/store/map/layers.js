@@ -1,4 +1,4 @@
-import {omit} from 'lodash-es'
+import {omit, isArray, map} from 'lodash-es'
 
 export default {
     namespaced: true,
@@ -71,14 +71,58 @@ export default {
     ]),
     getters: {
         getAll(state){
-            return state.map((v, k) => ({
-                component: 'l-tile-layer',
-                'layer-type': 'base',
-                name: v.title,
-                visible: v.active,
-                url: v.options.url,
-                options: omit(v.options, ['url'])
-            }))
+            return state.map(v => json2Component(v))
         }
+    },
+    mutations: {
+        ['add'](state, payload){
+            if(isArray(payload)){
+                payload.map(v => state.push(v))
+            } else {
+                state.push(payload)
+            }
+        },
+        ['init'](state, payload){
+            map(payload, layer => {
+                state.push(layer)
+            })
+        },
     }
+}
+
+const json2Component = (json) => {
+    const {
+        active: visible = false,
+        title: name = 'None',
+        type,
+        control,
+        options = {}
+    } = json
+
+
+    let props = {
+        name,
+        visible,
+        'layer-type': control === 'basemap' ? 'base' : 'overlay',
+        options: omit(options, ['url'])
+    }
+
+    if(type === 'wms'){
+        props['base-url'] = options.url
+    } else {
+        props.url = options.url
+    }
+
+    switch (type) {
+        case 'wms':
+            props.component = 'l-wms-tile-layer'
+            props.transparent = true
+            props.format = 'image/png'
+            break
+        default:
+            props.component = 'l-tile-layer'
+            break
+    }
+
+    return props
 }
