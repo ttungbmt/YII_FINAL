@@ -1834,6 +1834,12 @@ Calibri'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman
                 <p align=center style='margin-bottom:0cm;margin-bottom:.0001pt;text-align:
   center'><span style='font-size:11.0pt'>Lần PHC <o:p></o:p></span></p>
             </td>
+            <td width=52 style='width:39.1pt;border:solid black 1.0pt;border-left:none;
+  mso-border-left-alt:solid black .75pt;mso-border-alt:solid black .75pt;
+  padding:.75pt 5.05pt .75pt 5.05pt'>
+                <p align=center style='margin-bottom:0cm;margin-bottom:.0001pt;text-align:
+  center'><span style='font-size:11.0pt'>Ngày PHC <o:p></o:p></span></p>
+            </td>
             <td width=61 style='width:46.1pt;border:solid black 1.0pt;border-left:none;
   mso-border-left-alt:solid black .75pt;mso-border-alt:solid black .75pt;
   padding:.75pt 5.05pt .75pt 5.05pt'>
@@ -1898,6 +1904,10 @@ Calibri'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman
                 <p align=center style='margin-bottom:0cm;margin-bottom:.0001pt;text-align:
   center'><span style='font-size:11.0pt'>Lần <?=$k+1?> <o:p></o:p></span></p>
             </td>
+            <td width=52 valign=top style='width:39.1pt;border-top:none;border-left:none;
+  border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;mso-border-top-alt:
+  solid black .75pt;mso-border-left-alt:solid black .75pt;mso-border-alt:solid black .75pt;
+  padding:.75pt 5.05pt .75pt 5.05pt;font-size:11.0pt'><?=$v->ngayxuly?></td>
             <td width=61 valign=top style='width:46.1pt;border-top:none;border-left:none;
   border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;mso-border-top-alt:
   solid black .75pt;mso-border-left-alt:solid black .75pt;mso-border-alt:solid black .75pt;
