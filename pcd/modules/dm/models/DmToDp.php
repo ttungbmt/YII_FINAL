@@ -34,7 +34,7 @@ class DmToDp extends App
     public function rules()
     {
         return [
-            [['geom'], 'safe'],
+            [['geom', 'source'], 'safe'],
             [['maquan', 'maphuong', 'khupho', 'to_dp'], 'string', 'max' => 255],
             [['maquan', 'maphuong', 'khupho', 'to_dp'], 'required'],
             [['to_dp'], 'unique', 'targetAttribute' => ['to_dp', 'khupho', 'maquan', 'maphuong'], 'message' => 'Tổ dân phố đã tồn tại'],

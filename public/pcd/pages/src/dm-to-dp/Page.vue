@@ -45,9 +45,6 @@
         mounted(){
             $("#form-to-dp").submit(this.onSubmit)
 
-
-
-
             this.$nextTick(() => {
                 const map = this.$refs.map.mapObject,
                     drawnItems = this.$refs.features.mapObject
@@ -92,6 +89,7 @@
 
                         let layer = event.layer;
                         drawnItems.addLayer(layer)
+                        this.form.source = 1
                     })
                     .on('click', addPopup)
                     .on(L.Draw.Event.TOOLBAROPENED, function(event) {
@@ -114,10 +112,10 @@
                 data.geom = geometry.type === 'MultiPolygon' ? geometry.coordinates[0] : geometry.coordinates
 
                 $.post($(e.target).attr('action'), {DmToDp: data}, (data) => {
-                    if(data.redirectUrl) {
-                        window.location.href = data.redirectUrl
-                        return null
-                    }
+                    // if(data.redirectUrl) {
+                    //     window.location.href = data.redirectUrl
+                    //     return null
+                    // }
 
                     if(data.errors) this.errors = data.errors
                 })
@@ -128,6 +126,7 @@
 
                     drawItems.clearLayers()
                     drawItems.addLayer(L.geoJson(data));
+                    this.form.source = 0
                 })
             },
         },

@@ -20,14 +20,34 @@ if ($maphuong = (string)userInfo()->maphuong && !$model->maphuong) {
     $model->maquan = $maquan;
     $model->maphuong = $maphuong;
 }
+
+try {
+    $geojson = \pcd\modules\dm\models\DmToDp::find()->select('ST_AsGeoJSON(ST_PointOnSurface(geom)) geom')->andWhere(['gid' => $model->gid])->asArray()->one();
+    $center = array_reverse(data_get(json_decode($geojson['geom'], true), 'coordinates'));
+} catch (Exception $e){
+    $center = [10.779927, 106.691651];
+}
+
 $role = RoleHc::init();
 $this->registerJsVar('pageData', [
     'form' => $model->toArray(),
     'map' => [
         'config' => [
-            'center' => [10.779927, 106.691651]
+            'center' => $center,
+            'zoom' => 18
         ],
         'layers' => [
+            [
+                'type' => 'wms',
+                'key' => 'ranhphuong',
+                'title' => 'Ranh phường',
+                'options' => [
+                    'url'        => '/geoserver/ows?',
+                    'layers'     => 'dichte:hc_phuong',
+                    'cql_filter' => $role->getGapranhCQL('', 'phuong'),
+                    'zIndex' => 3
+                ],
+            ],
             [
                 'type' => 'wms',
                 'key' => 'ranhto-cu',
