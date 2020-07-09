@@ -39,6 +39,7 @@ class SxhForm extends MyForm
                 $index = $k + 1;
                 $i = optional((object)$v);
 
+
                 if($k === 0 && $i->duong == ''){
                     $this->addError("xacminh.{$k}.duong", "Đường ($index) buộc nhập");
                 }
@@ -49,10 +50,10 @@ class SxhForm extends MyForm
 
                 if ($i->tinh === 'HCM' && (($i->is_diachi == 1 && $index % 2 == 0) || $index % 2 != 0)) {
                     if ($index % 2 != 0) {
-                        if ($i->is_diachi == 1) {
-                            if ($i->khupho == '') $this->addError("xacminh.{$k}.khupho", "Khu phố ($index) bắt buộc nhập");
-                            if ($i->to_dp == '') $this->addError("xacminh.{$k}.to_dp", "Tổ dân phố ({$index}) bắt buộc nhập");
-                        }
+//                        if ($i->is_diachi == 1) {
+//                            if ($i->khupho == '') $this->addError("xacminh.{$k}.khupho", "Khu phố ($index) bắt buộc nhập");
+//                            if ($i->to_dp == '') $this->addError("xacminh.{$k}.to_dp", "Tổ dân phố ({$index}) bắt buộc nhập");
+//                        }
 
                         if((count($xacminh)-1) == $index){
                             if (role('phuong') && $i->px != userInfo()->maphuong) $this->addError("xacminh.{$k}.px", "Phường xã ($index) này không được chọn");
