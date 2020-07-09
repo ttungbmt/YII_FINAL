@@ -31,7 +31,7 @@ class SxhForm extends MyForm
     const SCENARIO_XACMINH = 'xacminh';
     const SCENARIO_DIEUTRA = 'dieutra';
 
-    protected function checkRequiredCkDate(){
+    protected function checkRequiredDate(){
         return Carbon::createFromFormat('d/m/Y', $this->ngaydieutra) >= Carbon::parse('2020-07-09');
     }
 
@@ -39,12 +39,13 @@ class SxhForm extends MyForm
     {
         $xacminh = $this->{$attribute};
 
+
         if (is_array($xacminh)) {
             foreach ($xacminh as $k => $v) {
                 $index = $k + 1;
                 $i = optional((object)$v);
 
-                if($k === 0 && $i->duong == '' && $this->checkRequiredCkDate()){
+                if(($i->is_diachi == 1 && $i->tinh == 'HCM') && $i->duong == '' && $this->checkRequiredDate()){
                     $this->addError("xacminh.{$k}.duong", "Đường ($index) buộc nhập");
                 }
 
@@ -52,9 +53,11 @@ class SxhForm extends MyForm
                     $this->addError("xacminh.{$k}.tinh", "Tỉnh ($index) buộc nhập");
                 }
 
+                // TH: 2 4 6
                 if ($i->tinh === 'HCM' && (($i->is_diachi == 1 && $index % 2 == 0) || $index % 2 != 0)) {
+                    // TH: 1 3 5
                     if ($index % 2 != 0) {
-                        if ($i->is_diachi == 1 && $index !== 1) {
+                        if ($i->is_diachi == 1 && $this->checkRequiredDate()) {
                             if ($i->khupho == '') $this->addError("xacminh.{$k}.khupho", "Khu phố ($index) bắt buộc nhập");
                             if ($i->to_dp == '') $this->addError("xacminh.{$k}.to_dp", "Tổ dân phố ({$index}) bắt buộc nhập");
                         }
@@ -257,7 +260,7 @@ class SxhForm extends MyForm
         $lastXm = optional((object)(last($this->xacminh)));
         $count = count($this->xacminh);
 
-        if(($lastXm->is_diachi == 0 || ($lastXm->is_diachi == 1 && $this->tinh != 'HCM')) && $count > 1 && $count%2 == 0) {
+        if(($lastXm->is_diachi == 0 || ($lastXm->is_diachi == 1 && $lastXm->tinh != 'HCM')) && $count > 1 && $count%2 == 0) {
             $lastXm = optional((object)($this->xacminh[$count-2]));
         }
 
@@ -523,6 +526,7 @@ class SxhForm extends MyForm
         $fields = [
             'id', 'is_diachi', 'is_benhnhan', 'dienthoai', 'sonha', 'duong', 'to_dp', 'khupho', 'tinh', 'tinh_dc_khac', 'px', 'qh',
             'disabled' => function ($model, $key, $index) use ($xacminh, $is_phuong, $maphuong) {
+
                 if ($index == 0) {
                     if ($is_phuong && $this->px && $this->px !== $maphuong) {
                         return true;

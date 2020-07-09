@@ -77,6 +77,8 @@ class PtNguycoSearch extends PtNguyco
             $query->andWhere('updated_at IS NULL');
         } elseif ($filter === '2'){
             $query->andWhere(new Expression("ST_Intersects(geom , (SELECT ST_Union(geom) geom FROM hc_quan)) = false"));
+        } elseif ($filter === '3'){
+            $query->andWhere(new Expression("geom IS NULL"));
         }
 
         $query->andFilterWhere([

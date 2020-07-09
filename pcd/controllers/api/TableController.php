@@ -3,6 +3,7 @@ namespace pcd\controllers\api;
 
 use common\controllers\MyApiController;
 use Illuminate\Support\Arr;
+use pcd\models\CabenhSxh;
 use pcd\models\HcPhuong;
 use pcd\models\HcQuan;
 use ttungbmt\db\Query;
@@ -25,10 +26,32 @@ class TableController extends MyApiController
             'boundary' => Arr::get($boundary, 'boundary'),
         ];
 
-        dd(Json::encode($data));
-
         return $data;
 
+    }
+
+    public function actionCheckCc(){
+        $cbs = collect(CabenhSxh::find()->with(['xacminhCbs', 'xacminhCbs.phuong', 'chuyenCas'])
+            ->andWhere(['=', 'loaidieutra' , 1])
+            ->andWhere('px <> maphuong')
+            ->andWhere(['>=', 'ngaybaocao' , '2019-01-01'])
+            ->andWhere(['<', 'ngaybaocao' , '2020-01-01'])
+            ->all())->filter(function ($i){
+            $xm = $i->xacminhCbs;
+            return true
+                ;
+        });
+//        dd($cbs->all());
+
+        foreach ($cbs as $cb){
+            $cb->maphuong = $cb->px;
+            $cb->maquan = $cb->qh;
+
+            $cb->save();
+        }
+
+
+       return [];
     }
 }
 
