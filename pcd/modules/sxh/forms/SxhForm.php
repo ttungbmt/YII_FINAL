@@ -2,6 +2,7 @@
 
 namespace pcd\modules\sxh\forms;
 
+use Carbon\Carbon;
 use codeonyii\yii2validators\AtLeastValidator;
 use common\forms\MyForm;
 use common\models\User;
@@ -30,6 +31,10 @@ class SxhForm extends MyForm
     const SCENARIO_XACMINH = 'xacminh';
     const SCENARIO_DIEUTRA = 'dieutra';
 
+    protected function checkRequiredCkDate(){
+        return Carbon::createFromFormat('d/m/Y', $this->ngaydieutra) >= Carbon::parse('2020-07-09');
+    }
+
     public function xacminhValidator($attribute, $params, $validator)
     {
         $xacminh = $this->{$attribute};
@@ -39,10 +44,9 @@ class SxhForm extends MyForm
                 $index = $k + 1;
                 $i = optional((object)$v);
 
-
-//                if($k === 0 && $i->duong == ''){
-//                    $this->addError("xacminh.{$k}.duong", "Đường ($index) buộc nhập");
-//                }
+                if($k === 0 && $i->duong == '' && $this->checkRequiredCkDate()){
+                    $this->addError("xacminh.{$k}.duong", "Đường ($index) buộc nhập");
+                }
 
                 if (!$i->tinh && !($index % 2 == 0 && $i->is_diachi == 0 || is_null($i->is_diachi))) {
                     $this->addError("xacminh.{$k}.tinh", "Tỉnh ($index) buộc nhập");
@@ -50,10 +54,10 @@ class SxhForm extends MyForm
 
                 if ($i->tinh === 'HCM' && (($i->is_diachi == 1 && $index % 2 == 0) || $index % 2 != 0)) {
                     if ($index % 2 != 0) {
-//                        if ($i->is_diachi == 1) {
-//                            if ($i->khupho == '') $this->addError("xacminh.{$k}.khupho", "Khu phố ($index) bắt buộc nhập");
-//                            if ($i->to_dp == '') $this->addError("xacminh.{$k}.to_dp", "Tổ dân phố ({$index}) bắt buộc nhập");
-//                        }
+                        if ($i->is_diachi == 1 && $index !== 1) {
+                            if ($i->khupho == '') $this->addError("xacminh.{$k}.khupho", "Khu phố ($index) bắt buộc nhập");
+                            if ($i->to_dp == '') $this->addError("xacminh.{$k}.to_dp", "Tổ dân phố ({$index}) bắt buộc nhập");
+                        }
 
                         if((count($xacminh)-1) == $index){
                             if (role('phuong') && $i->px != userInfo()->maphuong) $this->addError("xacminh.{$k}.px", "Phường xã ($index) này không được chọn");
@@ -94,13 +98,13 @@ class SxhForm extends MyForm
             [['loaidieutra', 'xacminh', 'loai_xm_cb', 'ngaymacbenh_nv', 'loaicabenh', 'list_chuyenca', 'is_chuyenca'], 'safe'],
             [['chuandoan_bd', 'chuandoan_bd_khac', 'me', 'ngaybaocao', 'ma_icd', 'shs', 'ht_dieutri', 'ngaynhanthongbao', 'ngaydieutra', 'maso', 'hoten', 'phai', 'ngaysinh', 'tuoi', 'vitri', 'to_dp', 'khupho', 'px', 'qh', 'tinh', 'tinh_dc_khac', 'benhnoikhac', 'sonhakhac', 'duongkhac', 'tokhac', 'khuphokhac', 'tinhkhac', 'qhkhac', 'pxkhac', 'tinhnoikhac', 'songuoicutru', 'cutruduoi15', 'tpbv', 'tpbv_bv', 'phcd', 'nhapvien', 'nhapvien_bv', 'ngaymacbenh', 'ngaynhapvien', 'nghenghiep', 'xetnghiem', 'ngaylaymau', 'loai_xn', 'ketqua_xn', 'dclamviec', 'dclamviec_tinh', 'dclamviecqh', 'dclamviecpx', 'noilamviec_sxh', 'nhacobnsxh', 'nhaconguoibenh', 'bvpk', 'nhatho', 'dinh', 'congvien', 'noihoihop', 'noixd', 'cafe', 'noichannuoi', 'noibancay', 'vuaphelieu', 'noikhac', 'noikhac_ghichu', 'diemden_px', 'diemden_pxkhac', 'diemden_qhkhac', 'gdcosxh', 'gdsonguoisxh', 'gdso15t', 'gdthuocsxh', 'gdthuocsxhsonguoi', 'gdthuocsxh15t', 'bi', 'ci', 'cachidiem', 'dietlangquang', 'giamsattheodoi', 'xulyonho', 'xulyorong', 'cathuphat', 'odichmoi', 'odichcu', 'odichcu_xuly', 'xuly', 'xuly_ngay', 'xuatvien', 'ngayxuatvien', 'chuandoan', 'chuandoan_khac', 'nguoidieutra', 'nguoidieutra_sdt'], 'safe'],
             [['dienthoai', 'vitri', 'chuandoan', 'dclamviec_tinh', 'dclamviecqh', 'dclamviecpx'], 'safe'],
-            ['xacminh', 'xacminhValidator', 'skipOnEmpty' => false, 'on' => ['xacminh']],
             [['chuandoan_bd'], 'required', 'on' => ['xacminh']],
             [['ht_dieutri'], 'required', 'on' => ['xacminh']],
             [['nguoidieutra_sdt', 'me'], 'string'],
             [['tuoi', 'ngaysinh'], AtLeastValidator::className(), 'in' => ['tuoi', 'ngaysinh'], 'message' => 'Điền ít nhất 1 trường: tuổi hoặc ngày sinh', 'on' => ['xacminh']],
 
             [['px', 'qh', 'ngaybaocao', 'hoten', 'ngaynhanthongbao', 'ngaydieutra', 'ngaybaocao', 'phai', 'ngaydieutra', 'nguoidieutra'], 'required', 'on' => ['xacminh']],
+            ['xacminh', 'xacminhValidator', 'skipOnEmpty' => false, 'on' => ['xacminh']],
             [['sonha', 'duong', 'to_dp', 'khupho', 'px', 'qh', 'tinh', 'tinh_dc_khac'], 'safe'],
             [['lat', 'lng'], 'number'],
             [['geom'], 'geom', 'geoprocessing' => [$this, 'validateGeom']],
@@ -229,9 +233,13 @@ class SxhForm extends MyForm
         };
 
         if (role('phuong')) {
-            $field = ['table' => HcPhuong::tableName(), 'key' => 'maphuong', 'value' => userInfo()->maphuong];
-            $bool = Arr::first((new Query())->select(new Expression("ST_Intersects( $e1, (" . $e2($field) . ")) bool"))->one());
-            $message = 'Tọa độ không nằm trong phạm vi cập nhật phường xã của bạn';
+            $maphuong = userInfo()->maphuong;
+            $field = ['table' => HcPhuong::tableName(), 'key' => 'maphuong', 'value' => $maphuong];
+            if($maphuong != '78527622'){
+                $bool = Arr::first((new Query())->select(new Expression("ST_Intersects( $e1, (" . $e2($field) . ")) bool"))->one());
+                $message = 'Tọa độ không nằm trong phạm vi cập nhật phường xã của bạn';
+            }
+
         }
 
         if (role('quan')) {
