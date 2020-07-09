@@ -40,9 +40,9 @@ class SxhForm extends MyForm
                 $i = optional((object)$v);
 
 
-                if($k === 0 && $i->duong == ''){
-                    $this->addError("xacminh.{$k}.duong", "Đường ($index) buộc nhập");
-                }
+//                if($k === 0 && $i->duong == ''){
+//                    $this->addError("xacminh.{$k}.duong", "Đường ($index) buộc nhập");
+//                }
 
                 if (!$i->tinh && !($index % 2 == 0 && $i->is_diachi == 0 || is_null($i->is_diachi))) {
                     $this->addError("xacminh.{$k}.tinh", "Tỉnh ($index) buộc nhập");
