@@ -13,7 +13,7 @@ use yii\helpers\Json;
 class TableController extends MyApiController
 {
     public function actionHello(){
-        $field = (object)['table' => HcPhuong::tableName(), 'code' => 'maphuong', 'value' => '78327502', 'tolerance' => '1/1e5', 'distance' => 200];
+        $field = (object)['table' => HcPhuong::tableName(), 'code' => 'maphuong', 'value' => '78527622', 'tolerance' => '1/1e5', 'distance' => 200];
 
         $codes = collect((new Query())->select($field->code)->from($field->table)->andWhere(new Expression("ST_Intersects(geom, (SELECT geom FROM {$field->table} WHERE {$field->code} = '{$field->value}'))"))->all())->pluck($field->code)->all();
         $extent = (new Query())->select(new Expression("ST_AsGeoJSON(ST_Envelope(ST_Union(geom))) extent"))->from($field->table)->andWhere([$field->code => $codes])->one();
@@ -25,7 +25,7 @@ class TableController extends MyApiController
             'boundary' => Arr::get($boundary, 'boundary'),
         ];
 
-//        dd(Json::encode($data));
+        dd(Json::encode($data));
 
         return $data;
 

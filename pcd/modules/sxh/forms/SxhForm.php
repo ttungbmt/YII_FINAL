@@ -235,11 +235,8 @@ class SxhForm extends MyForm
         if (role('phuong')) {
             $maphuong = userInfo()->maphuong;
             $field = ['table' => HcPhuong::tableName(), 'key' => 'maphuong', 'value' => $maphuong];
-            if($maphuong != '78527622'){
-                $bool = Arr::first((new Query())->select(new Expression("ST_Intersects( $e1, (" . $e2($field) . ")) bool"))->one());
-                $message = 'Tọa độ không nằm trong phạm vi cập nhật phường xã của bạn';
-            }
-
+            $bool = Arr::first((new Query())->select(new Expression("ST_Intersects( $e1, (" . $e2($field) . ")) bool"))->one());
+            $message = 'Tọa độ không nằm trong phạm vi cập nhật phường xã của bạn';
         }
 
         if (role('quan')) {
