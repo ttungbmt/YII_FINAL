@@ -12,13 +12,14 @@ use kartik\widgets\DepDrop;
 
 $this->title = ($model->isNewRecord ? 'Thêm mới' : 'Cập nhật') . ' tổ dân phố';
 
-if (($maquan = (string)userInfo()->maquan) && !$model->maquan) {
-    $model->maquan = $maquan;
-}
+$maquan = (string)userInfo()->maquan;
+if ($maquan && !$model->maquan) $model->maquan = $maquan;
 
-if ($maphuong = (string)userInfo()->maphuong && !$model->maphuong) {
+$maphuong = (string)userInfo()->maphuong;
+if ($maphuong && !$model->maphuong) {
     $model->maquan = $maquan;
     $model->maphuong = $maphuong;
+
 }
 
 try {
@@ -89,7 +90,7 @@ $this->registerJsVar('pageData', [
                                             'url' => url(['/api/dm/phuong?role=true']),
                                             'initialize' => $model->maquan == true,
                                             'placeholder' => 'Chọn phường...',
-                                            'ajaxSettings' => ['data' => ['value' => $maphuong]],
+                                            'ajaxSettings' => ['data' => ['value' => $model->maphuong]],
                                         ],
                                     ]) ?>
                                 </div>
