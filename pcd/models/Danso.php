@@ -78,7 +78,9 @@ class Danso extends App
         }
 
         if(!$this->load($data)) return false;
+
         $this->type = $this->px ? 2 : 1;
+        $this->ma_hc = $this->px ? $this->px : $this->qh;
 
         return $this->save();
     }
