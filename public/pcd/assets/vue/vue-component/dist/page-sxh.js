@@ -49022,7 +49022,6 @@
 	            lastXm = lodash.last(val),
 	            preLastXm = lodash.head(lodash.takeRight(val, 2)),
 	            prepreLastXm = lodash.head(lodash.takeRight(val, 3));
-	        console.log(val);
 
 	        if (lastXm.is_benhnhan == 0 && !lodash.isNull(lastXm.is_diachi)) {
 	          commit('ADD_XM');
@@ -55322,7 +55321,6 @@
 	    },
 	    'form.xuatvien': function formXuatvien(val) {
 	      this.form.chuandoan = val == 0 ? 1 : null;
-	      console.log(this.form.chuandoan);
 	    }
 	  },
 	  data: function data() {

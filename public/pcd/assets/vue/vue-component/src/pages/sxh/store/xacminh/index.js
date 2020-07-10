@@ -72,8 +72,6 @@ const module = {
                     preLastXm = head(takeRight(val, 2)),
                     prepreLastXm = head(takeRight(val, 3))
 
-                console.log(val);
-
                 if (lastXm.is_benhnhan == 0 && !isNull(lastXm.is_diachi)) {
                     commit('ADD_XM')
                     console.log(1);

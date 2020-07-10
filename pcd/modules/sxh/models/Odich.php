@@ -49,6 +49,8 @@ use pcd\models\OdichSxhPoly;
 
 class Odich extends App
 {
+    protected $timestamps = true;
+
     protected $dates = ['ngayxacdinh', 'ngayphathien', 'ngaydukien_kt', 'ngayketthuc', 'ngaybatdau_gs', 'ngayketthuc_td'];
 
     /**

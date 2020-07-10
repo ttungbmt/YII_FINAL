@@ -111,7 +111,6 @@
             },
             'form.xuatvien': function (val) {
                 this.form.chuandoan = val == 0 ? 1 : null
-                console.log(this.form.chuandoan)
             },
         },
         data() {

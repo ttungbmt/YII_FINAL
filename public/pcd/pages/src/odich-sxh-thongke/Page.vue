@@ -28,7 +28,6 @@
                 <div class="bg-white">
                     <m-table id="tb-thongke" :fields="fields" :items="data" :options="tbOptions"></m-table>
                 </div>
-
             </div>
 
         </v-wait>

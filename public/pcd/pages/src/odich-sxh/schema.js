@@ -229,8 +229,8 @@ export default [
             {key: 'to_dp', label: 'Tổ dân phố'},
             {key: 'sonocgia_tt', label: 'Số nóc gia thực tế'},
             {key: 'sonocgia_xl', label: 'Số nóc gia xử lý'},
-            {key: 'somaylon', label: 'Số máy nhỏ'},
-            {key: 'somaynho', label: 'Số máy lớn'},
+            {key: 'somaynho', label: 'Số máy nhỏ'},
+            {key: 'somaylon', label: 'Số máy lớn'},
             {key: 'loai_hc', label: 'Loại hóa chất'},
             {key: 'solit_hc', label: 'Số lít hóa chất chưa pha (lít)'},
             {key: 'songuoi_tg', label: 'Số người tham gia'},
@@ -261,8 +261,8 @@ export default [
                 {
                     component: 'm-grid', cols: 2,
                     schema: [
-                        {component: 'm-field', label: 'Số máy nhỏ', type: 'integer', model: 'somaylon', rules: ruleInteger},
-                        {component: 'm-field', label: 'Số máy lớn', type: 'integer', model: 'somaynho', rules: ruleInteger},
+                        {component: 'm-field', label: 'Số máy nhỏ', type: 'integer', model: 'somaynho', rules: ruleInteger},
+                        {component: 'm-field', label: 'Số máy lớn', type: 'integer', model: 'somaylon', rules: ruleInteger},
                     ]
                 },
                 {component: 'm-field', label: 'Loại hóa chất', model: 'loai_hc'},
