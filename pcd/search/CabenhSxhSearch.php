@@ -120,21 +120,12 @@ class CabenhSxhSearch extends CabenhSxh
             }
         }
 
-
-
-        if($et = $this->excepted_tv){
-            if($et == 1){
-                $query->andWhere(['not', ['is_trave' => 1]]);
-            }
-        }
-
-
         $roles->filterChuyenCa($this->loaica, $query);
 
 
 //        dd($params);
 //        dd($query->createCommand()->getRawSql());
-
+//
         return $dataProvider;
     }
 

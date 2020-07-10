@@ -106,8 +106,11 @@ $data['dm_loai_ks'] = [
 ];
 
 $data['dm_ngay_cabenh'] = [
-    1 => 'Ngày báo cáo',
-    2 => 'Ngày nhập viện',
+    'ngaybaocao' => 'Ngày báo cáo',
+    'ngaynhapvien' => 'Ngày nhập viện',
+    'ngayxuatvien' => 'Ngày xuất viện',
+    'ngaydieutra' => 'Ngày điều tra',
 ];
+
 
 return $data;

@@ -23,9 +23,9 @@
         <tfoot>
         <tr class="table-active table-border-double">
             <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh'])?>">Tổng</a></td>
-            <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['xmcb' => 1]])?>"><?=$tk_xacminh->values()->pluck('cdc_cbn')->sum()?></a></td>
-            <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['xmcb' => 2]])?>"><?=$tk_xacminh->values()->pluck('cdc_kbn')->sum()?></a></td>
-            <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['xmcb' => 3]])?>"><?=$tk_xacminh->values()->pluck('kdc_kbn')->sum()?></a></td>
+            <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['group_xm' => 1], $params)])?>"><?=$tk_xacminh->values()->pluck('cdc_cbn')->sum()?></a></td>
+            <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['group_xm' => 2], $params)])?>"><?=$tk_xacminh->values()->pluck('cdc_kbn')->sum()?></a></td>
+            <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['group_xm' => 3], $params)])?>"><?=$tk_xacminh->values()->pluck('kdc_kbn')->sum()?></a></td>
             <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh'])?>"><?=$tk_xacminh->values()->pluck('total')->sum()?></a></td>
         </tr>
         </tfoot>

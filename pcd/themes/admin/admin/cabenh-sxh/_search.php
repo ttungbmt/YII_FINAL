@@ -14,7 +14,7 @@ $role->initFormHc($model);
     'options' => ['id' => 'cabenh-search', 'data-pjax' => true]
 ]) ?>
 <div class="row">
-    <div class="col-md-2 col-xs-2">
+    <div class="col-md-5">
         <?= $form->field($model, 'maquan')->dropDownList(api('/dm/quan?role=true'), [
             'prompt'  => 'Chọn quận huyện...',
             'id'      => 'drop-quan',
@@ -23,7 +23,7 @@ $role->initFormHc($model);
             ]
         ])->label(false); ?>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-5">
         <?= $form->field($model, 'maphuong')->widget(DepDrop::className(), [
             'options'       => ['prompt' => 'Chọn phường...'],
             'pluginOptions' => [
@@ -36,18 +36,21 @@ $role->initFormHc($model);
         ])->label(false) ?>
     </div>
     <div class="col-md-2">
-        <?= $form->field($model, 'date_from')->dropDownList(api('dm_ngay_cabenh'))->label(false); ?>
+        <button type="submit" class="form-control btn btn-primary"><i class="icon-search4 text-size-base"></i></button>
     </div>
-    <div class="col-md-2">
-        <?= $form->field($model, 'date_from')
-            ->widget(DatePicker::classname(), ['options' => ['placeholder' => 'Từ ngày mắc bệnh']])->label(false); ?>
+    <div class="col-md-5">
+        <?= $form->field($model, 'field_date')->dropDownList(api('dm_ngay_cabenh'))->label(false); ?>
     </div>
-    <div class="col-md-2">
-        <?= $form->field($model, 'date_to')->widget(DatePicker::classname(), ['options' => ['placeholder' => 'Đến ngày']])->label(false) ?>
-    </div>
-    <div class="col-md-2">
-        <button type="submit" class="form-control btn btn-primary"><i class="icon-search4 text-size-base"></i>
-        </button>
+    <div class="col-md-5">
+        <div class="row">
+            <div class="col-md-6">
+                <?= $form->field($model, 'date_from')->widget(DatePicker::classname(), ['options' => ['placeholder' => 'Từ ngày']])->label(false); ?>
+            </div>
+            <div class="col-md-6">
+                <?= $form->field($model, 'date_to')->widget(DatePicker::classname(), ['options' => ['placeholder' => 'Đến ngày']])->label(false) ?>
+            </div>
+        </div>
     </div>
 </div>
+
 <?php ActiveForm::end() ?>
