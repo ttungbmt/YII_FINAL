@@ -112,7 +112,7 @@ class MapsController extends AppController {
                 ],
             ],
             [
-                "title"     => "Ranh tổ",
+                "title"     => "Ranh tổ (2016)",
                 "type" => 'wms',
                 "key" => "ranhto",
                 "options" => [
@@ -123,11 +123,11 @@ class MapsController extends AppController {
                 ],
             ],
             [
-                "title"     => "Ranh tổ (vẽ)",
+                "title"     => "Ranh tổ",
                 "type" => 'wms',
                 "options" => [
-                    "url"        => "/geoserver1/ows?",
-                    "layers"     => "pcd:ranhto_draft",
+                    "url"        => "/geoserver/ows?",
+                    "layers"     => "dichte:dm_to_dp",
                     "cql_filter" => $fn_cql(),
                     "zIndex" => 4
                 ],

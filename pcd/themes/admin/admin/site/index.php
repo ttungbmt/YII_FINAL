@@ -163,7 +163,7 @@ $max2 = collect($week2)->merge($week4)->max('p_year');
         <?= DatePicker::widget([
             'name' => 'date_from',
             'type' => DatePicker::TYPE_INPUT,
-            'value' => request()->get('date_from', Carbon::create(2020,1,1)->format('d/m/Y')),
+            'value' => $date_from = request()->get('date_from', Carbon::create(2020,1,1)->format('d/m/Y')),
             'pluginOptions' => [
                 'autoclose' => true,
                 'format' => 'dd/mm/yyyy'
@@ -177,7 +177,7 @@ $max2 = collect($week2)->merge($week4)->max('p_year');
         <?= DatePicker::widget([
             'name' => 'date_to',
             'type' => DatePicker::TYPE_INPUT,
-            'value' => request()->get('date_to', date('d/m/Y')),
+            'value' => $date_to = request()->get('date_to', date('d/m/Y')),
             'pluginOptions' => [
                 'autoclose' => true,
                 'format' => 'dd/mm/yyyy'

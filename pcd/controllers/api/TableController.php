@@ -33,19 +33,24 @@ class TableController extends MyApiController
     public function actionCheckCc(){
         $cbs = collect(CabenhSxh::find()->with(['xacminhCbs', 'xacminhCbs.phuong', 'chuyenCas'])
             ->andWhere(['=', 'loaidieutra' , 1])
-            ->andWhere('px <> maphuong')
-            ->andWhere(['>=', 'ngaybaocao' , '2019-01-01'])
-            ->andWhere(['<', 'ngaybaocao' , '2020-01-01'])
+            ->andWhere(['>=', 'ngaybaocao' , '2020-06-01'])
+            ->andWhere(['gid' => 163727])
             ->all())->filter(function ($i){
-            $xm = $i->xacminhCbs;
-            return true
-                ;
-        });
-//        dd($cbs->all());
+                $xm = $i->xacminhCbs;
+                return count($xm) == 2 && count($i->chuyenCas) > 0
+//                    && $i->px !== $xm[1]['px']
+                    ;
+            });
+        dd($cbs->all());
 
         foreach ($cbs as $cb){
-            $cb->maphuong = $cb->px;
-            $cb->maquan = $cb->qh;
+            $xm = $cb->xacminhCbs;
+//            dd($cb);
+
+            $cb->maphuong = $xm[1]['px'];
+            $cb->px = $xm[1]['px'];
+            $cb->maquan = $xm[1]['qh'];
+            $cb->qh = $xm[1]['qh'];
 
             $cb->save();
         }

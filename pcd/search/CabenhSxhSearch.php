@@ -14,8 +14,17 @@ class CabenhSxhSearch extends CabenhSxh
     public $date_from;
     public $date_to;
     public $loaica;
-    public $xmcb;
+    public $group_xm;
     public $excepted_tv;
+    public $field_date;
+
+    public function init()
+    {
+        parent::init();
+        $this->field_date = 'ngaybaocao';
+        $this->date_from = '01/01/2019';
+    }
+
 
     public static function tableName()
     {
@@ -25,7 +34,7 @@ class CabenhSxhSearch extends CabenhSxh
     public function rules()
     {
         return [
-            [['loaidieutra', 'loaicabenh', 'loaibaocao', 'chuandoan', 'loaixacminh_cb', 'ht_dieutri', 'is_nghingo', 'loai_xm_cb', 'xmcb', 'excepted_tv'], 'integer'],
+            [['loaidieutra', 'loaicabenh', 'loaibaocao', 'chuandoan', 'loaixacminh_cb', 'ht_dieutri', 'is_nghingo', 'loai_xm_cb', 'group_xm', 'excepted_tv'], 'integer'],
             [['chuandoan_bd', 'hoten', 'phai', 'tuoi', 'dienthoai', 'sonha', 'duong', 'to_dp', 'khupho', 'maquan', 'maphuong', 'nghenghiep'], 'string'],
             [['ngaybaocao', 'ngaynhapvien', 'ngayxuatvien', 'date_from', 'date_to'], 'date', 'format' => 'php:d/m/Y'],
             [['loaica'], 'integer']
@@ -78,16 +87,15 @@ class CabenhSxhSearch extends CabenhSxh
             'loai_xm_cb' => $this->loai_xm_cb,
         ]);
 
+
+
         if($this->date_from){
-            $query->andFilterWhere(['>=', 'COALESCE(ngaymacbenh, ngaynhapvien)', dateToDb($this->date_from)]);
+            $query->andFilterWhere(['>=', $this->field_date, dateToDb($this->date_from)]);
         }
 
         if($this->date_to){
-            $query->andFilterWhere(['<=', 'COALESCE(ngaymacbenh, ngaynhapvien)', dateToDb($this->date_to)]);
+            $query->andFilterWhere(['<=', $this->field_date, dateToDb($this->date_to)]);
         }
-
-        $query->andFilterDate(['>=', 'ngaybaocao', '2019-01-01']);
-
 
         $query
             ->andFilterSearch(['ilike', 'hoten', $this->hoten])
@@ -102,15 +110,16 @@ class CabenhSxhSearch extends CabenhSxh
             ->andFilterWhere(['=', 'ngaynhapvien', $this->ngaynhapvien])
             ->andFilterWhere(['=', 'ngayxuatvien', $this->ngayxuatvien]);
 
-        if($xm = $this->xmcb){
-            if($xm == 1){
+        if($group_xm = $this->group_xm){
+            if($group_xm == 1){
                 $query->andWhere(['in', 'loai_xm_cb', [7, 8]]);
-            } else if($xm == 2) {
+            } else if($group_xm == 2) {
                 $query->andWhere(['in', 'loai_xm_cb', [4, 5, 6]]);
             } else{
                 $query->andWhere(['in', 'loai_xm_cb', [1, 2, 3]]);
             }
         }
+
 
 
         if($et = $this->excepted_tv){
@@ -122,6 +131,8 @@ class CabenhSxhSearch extends CabenhSxh
 
         $roles->filterChuyenCa($this->loaica, $query);
 
+
+//        dd($params);
 //        dd($query->createCommand()->getRawSql());
 
         return $dataProvider;

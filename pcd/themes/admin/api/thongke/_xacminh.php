@@ -12,11 +12,11 @@
         <tbody>
         <?php foreach ($tk_xacminh as $ma => $item):?>
             <tr>
-                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => [$item['field'] => $ma]])?>"><?=data_get($item, 'ten')? : 'Không rõ'?></a></td>
-                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['xmcb' => 1, $item['field'] => $ma]])?>"><?=data_get($item, 'cdc_cbn')?></a></td>
-                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['xmcb' => 2, $item['field'] => $ma]])?>"><?=data_get($item, 'cdc_kbn')?></a></td>
-                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['xmcb' => 3, $item['field'] => $ma]])?>"><?=data_get($item, 'kdc_kbn')?></a></td>
-                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => [$item['field'] => $ma]])?>"><?=data_get($item, 'total')?></a></td>
+                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge([$item['field'] => $ma], $params)])?>"><?=data_get($item, 'ten')? : 'Không rõ'?></a></td>
+                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['group_xm' => 1, $item['field'] => $ma], $params)])?>"><?=data_get($item, 'cdc_cbn')?></a></td>
+                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['group_xm' => 2, $item['field'] => $ma], $params)])?>"><?=data_get($item, 'cdc_kbn')?></a></td>
+                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['group_xm' => 3, $item['field'] => $ma], $params)])?>"><?=data_get($item, 'kdc_kbn')?></a></td>
+                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge([$item['field'] => $ma], $params)])?>"><?=data_get($item, 'total')?></a></td>
             </tr>
         <?php endforeach;?>
         </tbody>

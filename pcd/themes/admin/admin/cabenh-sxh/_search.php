@@ -4,8 +4,9 @@ use kartik\widgets\ActiveForm;
 use kartik\widgets\DatePicker;
 use kartik\depdrop\DepDrop;
 
-$maquan = userInfo()->ma_quan;
-$maphuong = userInfo()->ma_phuong;
+$role = \pcd\supports\RoleHc::init();
+$role->initFormHc($model);
+
 ?>
 
 <?php $form = ActiveForm::begin([
@@ -18,7 +19,7 @@ $maphuong = userInfo()->ma_phuong;
             'prompt'  => 'Chọn quận huyện...',
             'id'      => 'drop-quan',
             'options' => [
-                userInfo()->ma_quan => ['Selected' => true],
+                $model->maquan => ['Selected' => true],
             ]
         ])->label(false); ?>
     </div>
@@ -28,13 +29,16 @@ $maphuong = userInfo()->ma_phuong;
             'pluginOptions' => [
                 'depends'      => ['drop-quan'],
                 'url'          => url(['/api/dm/phuong?role=true']),
-                'initialize'   => $maquan == true,
+                'initialize'   => $model->maquan == true,
                 'placeholder'  => 'Chọn phường...',
-                'ajaxSettings' => ['data' => ['value' => $maphuong]],
+                'ajaxSettings' => ['data' => ['value' => $model->maphuong]],
             ],
         ])->label(false) ?>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
+        <?= $form->field($model, 'date_from')->dropDownList(api('dm_ngay_cabenh'))->label(false); ?>
+    </div>
+    <div class="col-md-2">
         <?= $form->field($model, 'date_from')
             ->widget(DatePicker::classname(), ['options' => ['placeholder' => 'Từ ngày mắc bệnh']])->label(false); ?>
     </div>

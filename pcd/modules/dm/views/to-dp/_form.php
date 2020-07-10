@@ -52,12 +52,23 @@ $this->registerJsVar('pageData', [
             [
                 'type' => 'wms',
                 'key' => 'ranhto-cu',
-                'title' => 'Ranh tổ cũ',
+                'title' => 'Ranh tổ (2016)',
                 'options' => [
                     'url'        => '/geoserver/ows?',
                     'layers'     => 'dichte:ranh_to',
                     'cql_filter' => $role->getGapranhCQL('', null),
                     'zIndex' => 3
+                ],
+            ],
+            [
+                'type' => 'wms',
+                'key' => 'ranhto-cu',
+                'title' => 'Ranh tổ',
+                'options' => [
+                    'url'        => '/geoserver/ows?',
+                    'layers'     => 'dichte:dm_to_dp',
+                    'cql_filter' => $role->getGapranhCQL('', null),
+                    'zIndex' => 4
                 ],
             ]
         ]

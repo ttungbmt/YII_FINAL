@@ -81,7 +81,7 @@ class MapController extends MyApiController
                 ],
             ],
             [
-                "title"     => "Ranh tổ",
+                "title"     => "Ranh tổ (2016)",
                 "key"       => "pg_ranhto",
                 "onControl" => true,
                 "component" => [
@@ -92,12 +92,12 @@ class MapController extends MyApiController
                 ],
             ],
             [
-                "title"     => "Ranh tổ (vẽ)",
+                "title"     => "Ranh tổ",
                 "key"       => "pg_ranhto",
                 "onControl" => true,
                 "component" => [
                     "url"        => "/geoserver1/ows?",
-                    "layers"     => "pcd:ranhto_draft",
+                    "layers"     => "pcd:dm_to_dp",
                     "cql_filter" => $fn_cql()
                 ],
             ],

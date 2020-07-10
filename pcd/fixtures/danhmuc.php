@@ -105,4 +105,9 @@ $data['dm_loai_ks'] = [
     2 => 'Lăng quăng và muỗi',
 ];
 
+$data['dm_ngay_cabenh'] = [
+    1 => 'Ngày báo cáo',
+    2 => 'Ngày nhập viện',
+];
+
 return $data;
