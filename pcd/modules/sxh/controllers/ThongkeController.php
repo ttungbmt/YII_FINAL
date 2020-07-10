@@ -73,6 +73,7 @@ class ThongkeController extends AppController
                 ->select('dlq.*, od.loai_od, od.tenquan, od.tenphuong, od.sonocgia')->from(['dlq' => DietLq::tableName()])
                 ->leftJoin(['od' => $od], 'od.odich_id = dlq.odich_id')
                 ->andFilterDate(['ngayxuly' => [$date_from, $date_to]])
+                ->andFilterWhere(['od.maquan' => $hc])
             ;
 
             if($loai_tk == 2){
@@ -191,7 +192,6 @@ class ThongkeController extends AppController
                 ->groupBy(new Expression('1,2'))
             ;
 
-//            dd($q->createCommand()->getRawSql());
 
             $data = collect($q->all())
                 ->sortBy('khupho', SORT_NATURAL)
