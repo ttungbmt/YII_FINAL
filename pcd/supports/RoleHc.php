@@ -37,7 +37,7 @@ class TpAction extends BaseObject{
     public $qh;
     public $px;
 
-    public function initFormHc(&$obj){
+    public function initFormHc(&$obj, $keys = []){
         return $obj;
     }
 
@@ -106,8 +106,8 @@ class TpAction extends BaseObject{
 
 class QuanAction extends TpAction
 {
-    public function initFormHc(&$obj){
-        if(!$obj->maquan) $obj->maquan = (string)$this->maquan;
+    public function initFormHc(&$obj, $keys = ['maquan']){
+        if(!$obj->{$keys[0]}) $obj->{$keys[0]} = (string)$this->maquan;
 
         return $obj;
     }
@@ -197,10 +197,10 @@ class QuanAction extends TpAction
 
 class PhuongAction extends QuanAction
 {
-    public function initFormHc(&$obj){
-        if(!$obj->maphuong) {
-            $obj->maquan = (string)$this->maquan;
-            $obj->maphuong = (string)$this->maphuong;
+    public function initFormHc(&$obj, $keys = ['maquan', 'maphuong']){
+        if(!$obj->{$keys[1]}) {
+            $obj->{$keys[0]} = (string)$this->maquan;
+            $obj->{$keys[1]} = (string)$this->maphuong;
         }
 
         return $obj;

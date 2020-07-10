@@ -1,6 +1,7 @@
 <?php
 namespace pcd\models;
 
+use pcd\supports\RoleHc;
 use Yii;
 
 /**
@@ -26,6 +27,15 @@ class Danso extends App
     {
         return 'danso';
     }
+
+    public function init()
+    {
+        parent::init();
+
+        $role = RoleHc::init();
+        $role->initFormHc($this, ['qh', 'px']);
+    }
+
 
     /**
      * {@inheritdoc}
@@ -72,7 +82,7 @@ class Danso extends App
     public function loadAndSave($data){
         if($this->type == 1){
             $this->qh = $this->ma_hc;
-        } else {
+        } elseif ($this->type == 2) {
             $this->qh = data_get(HcPhuong::find()->andWhere(['maphuong' => $this->ma_hc])->one(), 'maquan');
             $this->px = $this->ma_hc;
         }
