@@ -2,7 +2,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-$this->title = ($model->isNewRecord ? 'Thêm mới' : 'Cập nhật') . ' Loại hình';
+$this->title = ($model->isNewRecord ? 'Thêm mới Loại hình' : "Cập nhật Loại hình {$model->gid}");
 ?>
 
 <?php $form = ActiveForm::begin(); ?>

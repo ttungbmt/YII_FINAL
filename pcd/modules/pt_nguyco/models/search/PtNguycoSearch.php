@@ -74,7 +74,7 @@ class PtNguycoSearch extends PtNguyco
         if($filter === '0'){
             $query->andWhere('loaihinh_id IS NULL');
         } elseif ($filter === '1'){
-            $query->andWhere('updated_at IS NULL');
+            $query->andWhere('updated_by = 1');
         } elseif ($filter === '2'){
             $query->andWhere(new Expression("ST_Intersects(geom , (SELECT ST_Union(geom) geom FROM hc_quan)) = false"));
         } elseif ($filter === '3'){
@@ -123,10 +123,9 @@ class PtNguycoSearch extends PtNguyco
                     $query->andWhere("ngaycapnhat <= '{$dateMonth}' AND (ngayxoa >= '{$dateMonth}' OR ngayxoa IS NULL)");
                     break;
                 case 'gs':
+                case 'luot_gs':
                     $q2->having(new Expression("MAX ( CASE WHEN TO_CHAR( ngay_gs, 'MM/YYYY' ) = '{$this->month}' THEN 1 END ) = 1"));
                     $query->andWhere(['gid' => $q2]);
-                    break;
-                case 'luot_gs':
                     break;
                 case 'lq':
                     $q2->having(new Expression("MAX ( CASE WHEN ( TO_CHAR( ngay_gs, 'MM/YYYY' ) = '{$this->month}' AND vc_lq > 0 ) THEN 1 END ) = 1"));

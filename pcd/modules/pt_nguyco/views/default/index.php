@@ -29,7 +29,7 @@ $null_lh = \pcd\models\PtNguyco::find()
     ->count()
 ;
 $null_updated = \pcd\models\PtNguyco::find()
-    ->andWhere('updated_by = 1')
+    ->andWhere('updated_at IS NULL')
     ->andFilterWhere(['maquan' => $maquan, 'maphuong' => $maphuong])
     ->count();
 $wrong_geom = (new \yii\db\Query())

@@ -57,7 +57,7 @@ $month = $month > 10 ? "$month": "0".$month;
                         'options'       => ['prompt' => 'Chọn phường...'],
                         'pluginOptions' => [
                             'depends'      => ['drop-quan'],
-                            'url'          => url(['/api/dm/phuong']),
+                            'url'          => url(['/api/dm/phuong?role=true']),
                             'initialize'   => $maquan == true,
                             'placeholder'  => 'Chọn phường...',
                             'ajaxSettings' => ['data' => ['value' => $maphuong]],

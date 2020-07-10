@@ -13,7 +13,7 @@ use kartik\widgets\DatePicker;
 /* @var $model pcd\models\PtNguyco */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = ($model->isNewRecord ? 'Thêm mới' : 'Cập nhật') . ' Điểm nguy cơ';
+$this->title = ($model->isNewRecord ? 'Thêm mới ĐNC' : "Cập nhật ĐNC #{$model->gid}");
 $k1 = collect($model->kehoachs);
 $khs = collect(range(1, 12))->map(function ($m) use ($k1) {
     $d = $k1->firstWhere('month', $m);
