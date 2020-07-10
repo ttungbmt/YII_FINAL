@@ -401,6 +401,8 @@ class SxhForm extends MyForm
         $dt->attributes = $this->toArray();
         if ($this->lat && $this->lng) {
             $cb->geom = [$this->lng, $this->lat];
+        } else {
+            $cb->geom = null;
         }
 
 
