@@ -61,14 +61,18 @@ class MyModel extends ActiveRecord
         if($ids->isEmpty()){
             $this->unlinkAll($name, true);
 
-            foreach ($data as $d){
+            foreach ($data as $r){
                 $model = new $modelClass;
-                $model->setAttributes($d);
+                $model->setAttributes($r);
                 $this->link($name, $model);
             }
         } else {
             $deleted = $relatedIds->diff($ids)->values();
             $updated = $relatedIds->intersect($ids)->values();
+            $createdRecords = $records->filter(function ($i) use($key){
+                return !isset($i[$key]);
+            });
+
             if($deleted->isNotEmpty()){
                 $deletedModels = $modelClass::find()->where([$key => $deleted])->all();
                 foreach ($deletedModels as $d){
@@ -82,6 +86,14 @@ class MyModel extends ActiveRecord
                     $record = $records->firstWhere($dataKey, $u->id);
                     $u->setAttributes($record);
                     $this->link($name, $u);
+                }
+            }
+
+            if($createdRecords->isNotEmpty()){
+                foreach ($createdRecords as $r){
+                    $model = new $modelClass;
+                    $model->setAttributes($r);
+                    $this->link($name, $model);
                 }
             }
         }

@@ -386,9 +386,6 @@ class SxhForm extends MyForm
         $this->ngaymacbenh_nv = $this->ngaymacbenh ? $this->ngaymacbenh : $this->ngaynhapvien;
         !$this->phcd || $this->loaicabenh = 3;
         $lastXm = last($this->xacminh);
-//        is_trave
-//        tp_guive
-//        is_nghingo
 
         // Lock phân quyền
         $cb = $id ? (CabenhSxh::findOne($id) ? CabenhSxh::findOne($id) : new CabenhSxh()) : new CabenhSxh();
@@ -398,12 +395,8 @@ class SxhForm extends MyForm
         $cb->maphuong = $this->px;
         $cb->tenquan = data_get(HcQuan::findOne(['maquan' => $this->qh]), 'tenquan');
         $cb->tenphuong = data_get(HcPhuong::findOne(['maphuong' => $this->px]), 'tenphuong');
+        $cb->geom = $this->lat && $this->lng ? [$this->lng, $this->lat] : null;
         $dt->attributes = $this->toArray();
-        if ($this->lat && $this->lng) {
-            $cb->geom = [$this->lng, $this->lat];
-        } else {
-            $cb->geom = null;
-        }
 
 
         // Cập nhật thông tin người nhận
