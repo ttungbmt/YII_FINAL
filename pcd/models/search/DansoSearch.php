@@ -70,12 +70,16 @@ class DansoSearch extends Danso
         $query->andFilterWhere(['ilike', 'ma_hc', $this->ma_hc]);
 
         if(role('phuong')){
-            $query->andWhere(['type' => 2]);
-        } else {
-            $query->andWhere(['type' => 1]);
-            if(role('quan')){
-                $query->andWhere(['ma_hc' => userInfo()->maquan]);
-            }
+            $query->andWhere([
+                'type' => 2,
+                'ma_hc' => userInfo()->maphuong
+            ]);
+        }
+        else if(role('quan')){
+            $query->andWhere([
+                'type' => 1,
+                'ma_hc' => userInfo()->maquan
+            ]);
         }
 
 

@@ -17,6 +17,7 @@ class Danso extends App
     protected $timestamps = true;
 
     public $qh;
+    public $px;
 
     /**
      * {@inheritdoc}
@@ -36,7 +37,10 @@ class Danso extends App
             [['nam', 'danso', 'uoctinh'], 'integer'],
             [['ma_hc'], 'string', 'max' => 255],
             [['danso', 'nam'], 'integer'],
-            [['ma_hc', 'type', 'nam', 'danso', 'uoctinh'], 'required'],
+            [['qh', 'ma_hc', 'type', 'nam', 'danso', 'uoctinh'], 'required'],
+            [['px'], 'required', 'when' => function(){
+                return role('phuong');
+            }],
         ];
     }
 
@@ -52,6 +56,8 @@ class Danso extends App
             'danso' => 'Dân số',
             'uoctinh' => 'Ước tính',
             'type' => 'Dân số',
+            'qh' => 'Quận huyện',
+            'px' => 'Phường xã',
         ];
     }
     
@@ -64,9 +70,15 @@ class Danso extends App
     }
 
     public function loadAndSave($data){
-        if($this->type == 2) $this->qh = opt(HcPhuong::find()->andWhere(['maphuong' => $this->ma_hc])->one())->maquan;
+        if($this->type == 1){
+            $this->qh = $this->ma_hc;
+        } else {
+            $this->qh = data_get(HcPhuong::find()->andWhere(['maphuong' => $this->ma_hc])->one(), 'maquan');
+            $this->px = $this->ma_hc;
+        }
 
         if(!$this->load($data)) return false;
+        $this->type = $this->px ? 2 : 1;
 
         return $this->save();
     }
