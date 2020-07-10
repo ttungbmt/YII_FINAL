@@ -14,8 +14,10 @@ use Yii;
  */
 class Danso extends App
 {
+    protected $timestamps = true;
+
     public $qh;
-    public $px;
+
     /**
      * {@inheritdoc}
      */
@@ -45,7 +47,7 @@ class Danso extends App
     {
         return [
             'id' => '#',
-            'ma_hc' => 'Quận',
+            'ma_hc' => 'Hành chính',
             'nam' => 'Năm',
             'danso' => 'Dân số',
             'uoctinh' => 'Ước tính',
@@ -55,5 +57,17 @@ class Danso extends App
     
     public function getQuan(){
         return $this->hasOne(HcQuan::className(), ['maquan' => 'ma_hc']);
+    }
+
+    public function getPhuong(){
+        return $this->hasOne(HcPhuong::className(), ['maphuong' => 'ma_hc']);
+    }
+
+    public function loadAndSave($data){
+        if($this->type == 2) $this->qh = opt(HcPhuong::find()->andWhere(['maphuong' => $this->ma_hc])->one())->maquan;
+
+        if(!$this->load($data)) return false;
+
+        return $this->save();
     }
 }

@@ -121,5 +121,7 @@ class TkForm extends MyModel
 
         $this->dataTK['tk_kpa'] = $query->all();
         $this->dataTK['tk_kpa'] = collect($this->dataTK['tk_kpa'])->sortBy($sortKey, SORT_NATURAL)->values()->all();
+
+//        dd($this->dataTK, $query->createCommand()->getRawSql());
     }
 }

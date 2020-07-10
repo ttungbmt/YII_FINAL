@@ -220,9 +220,7 @@ class MyModel extends ActiveRecord
                 ],
                 'value'      => function ($event) use($tableSchema){
                     $type = data_get($tableSchema, 'columns.created_at.type');
-                    if($type == 'integer'){
-                        return time();
-                    }
+                    if($type == 'integer') return time();
 
                     return Carbon::now();
                 },

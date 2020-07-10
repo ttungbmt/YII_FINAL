@@ -52,7 +52,7 @@ class DansoController extends AppController
     {
         $model = new Danso();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->loadAndSave(request()->all())) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -72,7 +72,7 @@ class DansoController extends AppController
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->loadAndSave(request()->all())) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

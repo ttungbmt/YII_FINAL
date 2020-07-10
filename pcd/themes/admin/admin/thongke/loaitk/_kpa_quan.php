@@ -16,7 +16,6 @@
                     <th rowspan="2">Tổng cộng</th>
                 </tr>
                 <tr>
-                    <th v-if="" v-for="item in cb">{{item.khupho1}}</th>
                     <th v-if="cap=='quan'" v-for="item in tk_kpa">{{item.ten_px}}</th>
                     <th v-if="cap=='phuong'" v-for="item in tk_kpa">{{item.khupho1 ? item.khupho1 : 'KHONG RO'}}</th>
                 </tr>

@@ -109,7 +109,6 @@ class ThongkeController extends AppController
 
                 $sxh = $this->filterDichte($tkThang)['sxh'];
                 $tcm = $this->filterDichte($tkThang)['tcm'];
-//                dd($tcm);
                 if (!$tcm && $sxh) {
 
                 } elseif ($tcm && !$sxh) {

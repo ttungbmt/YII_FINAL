@@ -13,6 +13,7 @@ use yii\widgets\Pjax;
 $this->title = Yii::t('app', 'Dân số');
 $this->params['breadcrumbs'][] = $this->title;
 $type = role('phuong') ? 2 : 1;
+$columns = require __DIR__.'/_columns.php'
 ?>
 <div class="danso-index">
 
@@ -27,33 +28,7 @@ $type = role('phuong') ? 2 : 1;
             )
             ],
         ],
-        'columns' => [
-            ['class' => 'kartik\grid\SerialColumn'],
-            [
-                'class' => 'kartik\grid\ActionColumn',
-                'width' => '100px',
-                'urlCreator' => function ($action, $model, $key, $index) {
-                    return Url::to([$action, 'id' => $key]);
-                },
-                'viewOptions' => ['role' => 'modal-remote', 'title' => 'View', 'data-toggle' => 'tooltip'],
-                'updateOptions' => ['role' => 'modal-remote', 'title' => 'Update', 'data-toggle' => 'tooltip'],
-                'deleteOptions' => ['role' => 'modal-remote', 'title' => 'Delete',
-                    'data-request-method'  => 'post',
-                    'data-confirm-ok'      => 'Chấp nhận',
-                    'data-confirm-cancel'  => 'Đóng',
-                    'data-toggle'          => 'tooltip',
-                    'data-confirm-title'   => 'Bạn có chắc chắn?',
-                    'data-confirm-message' => 'Are you sure want to delete this item'],
-            ],
-            [
-                'label' => 'Quận huyện',
-                'attribute' => 'ma_hc',
-                'value' => 'quan.tenquan',
-            ],
-            'nam',
-            'danso',
-            'uoctinh',
-        ],
+        'columns' => $columns,
         'panel' => [
             'type' => 'primary',
             'heading' => 'Dân số',

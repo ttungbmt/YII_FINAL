@@ -12,7 +12,6 @@
                     <th style="text-align: center" rowspan="2">Tổng cộng</th>
                 </tr>
                 <tr>
-                    <th style="text-align: center" v-if="" v-for="item in cb">{{item.khupho1}}</th>
                     <th style="text-align: center" v-if="cap=='quan'" v-for="item in tk_kpa">{{item.ten_px}}</th>
                     <th style="text-align: center" v-if="cap=='phuong'" v-for="item in tk_kpa">{{item.khupho1 ? item.khupho1 : 'KHONG RO'}}</th>
                 </tr>
@@ -20,7 +19,7 @@
             <tbody>
                 <tr>
                     <td style="font-weight: bold">Thu thập ca bệnh</td>
-                    <td style="font-weight: bold" v-for="item in tk_kpa">{{item.kdc_qhk + item.kdc_pxk + item.kdc_tk + item.cdc_kbn_pxk + item.cdc_kbn_qhk + item.cdc_kbn_tk + item.cdc_cbn_sot + item.cdc_cbn_benhkhac + item.cdc_cbn_sxh}}</td>
+                    <td style="font-weight: bold" v-for="item in tk_kpa">{{item.kdc_qhk + item.kdc_pxk + item.kdc_tk + item.cdc_kbn_pxk + item.cdc_kbn_qhk + item.cdc_kbn_tk + item.cdc_cbn_ssv + item.cdc_cbn_khac + item.cdc_cbn_sxh}}</td>
                     <td style="font-weight: bold" >{{ttcb_tc}}</td>
                 </tr>
                 <tr>
@@ -67,13 +66,13 @@
                 </tr>
                 <tr>
                     <td style="font-weight: bold">3. Có địa chỉ có BN</td>
-                    <td style="font-weight: bold" v-for="item in tk_kpa">{{item.cdc_cbn_sot + item.cdc_cbn_benhkhac + item.cdc_cbn_sxh}}</td>
+                    <td style="font-weight: bold" v-for="item in tk_kpa">{{item.cdc_cbn_ssv + item.cdc_cbn_khac + item.cdc_cbn_sxh}}</td>
                     <td style="font-weight: bold">{{ cdc_cbn }}</td>
                 </tr>
                 <tr>
                     <td>K. phải SXH</td>
-                    <td v-for="item in tk_kpa">{{item.cdc_cbn_sot + item.cdc_cbn_benhkhac}}</td>
-                    <td>{{sumCols('cdc_cbn_sot') + sumCols('cdc_cbn_benhkhac')}}</td>
+                    <td v-for="item in tk_kpa">{{item.cdc_cbn_ssv + item.cdc_cbn_khac}}</td>
+                    <td>{{sumCols('cdc_cbn_ssv') + sumCols('cdc_cbn_khac')}}</td>
                 </tr>
                 <tr>
                     <td>SXH</td>
@@ -106,7 +105,7 @@
                 return this.sumCols('cdc_kbn_pxk') + this.sumCols('cdc_kbn_qhk') + this.sumCols('cdc_kbn_tk')
             },
             cdc_cbn: function(){
-                return this.sumCols('cdc_cbn_sot') + this.sumCols('cdc_cbn_benhkhac') +  this.sumCols('cdc_cbn_sxh');
+                return this.sumCols('cdc_cbn_ssv') + this.sumCols('cdc_cbn_khac') +  this.sumCols('cdc_cbn_sxh');
             },
             ttcb_tc: function(){
                 return this.kdc + this.cdc_kbn + this.cdc_cbn;
