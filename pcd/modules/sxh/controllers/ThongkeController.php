@@ -137,7 +137,10 @@ class ThongkeController extends AppController
                 $so_px = is_null($hc) ? [
                     ['key' => 'px_phc', 'label' => 'Số PX có ổ dịch mới được xử lý'],
                     ['key' => 'px_od_xldr', 'label' => 'Số PX xử lý ổ dịch diện rộng'],
-                ] : [];
+                ] : [
+                    ['key' => 'px_phc', 'label' => 'PX có ổ dịch mới được xử lý'],
+                    ['key' => 'px_od_xldr', 'label' => 'PX có xử lý ổ dịch diện rộng']
+                ];
 
                 return $this->asJson([
                     'fields' => array_merge([

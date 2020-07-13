@@ -60,19 +60,10 @@ $exportMenu =  ExportMenu::widget(['dataProvider' => $dataProvider, 'columns' =>
                          Html::a('<i class="icon-reload-alt"></i>', [''],
                              ['data-pjax' => 1, 'class' => 'btn btn-default', 'title' => lang('Reset Grid')]) .
                          '{toggleData}'
-//                         '{export}'
                      )
                 ],
                 $exportMenu,
             ],
-//            'export'           => [
-//                'fontAwesome'      => true,
-//                'showConfirmAlert' => false,
-//                'itemsAfter'       => [
-//                    '<li role="presentation" class="divider"></li>',
-//                    '<li class="dropdown-header">Xuất tất cả dữ liệu</li>',
-//                ]
-//            ],
             'striped'          => true,
             'condensed'        => true,
             'responsive'       => $is_partial ? false : true,

@@ -274,7 +274,7 @@ trait SxhTrait {
             ],
             [
                 'name'  => 'benhnoikhac',
-                'label' => 'Bệnh nơi khác', 'component' => 'field-radio', 'options' => 'yesno',
+                'label' => 'Bệnh nơi khác', 'component' => 'field-radio', 'options' => 'yesno', 'disabled' => $disabled_px2,
             ],
             [
                 'name'  => 'sonhakhac',

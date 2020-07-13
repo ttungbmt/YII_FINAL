@@ -1,13 +1,14 @@
 <?php
-use Carbon\Carbon;
-
-$date_from = request()->get('date_from', Carbon::create(2020,1,1)->format('d/m/Y'));
-$date_to = request()->get('date_to', date('d/m/Y'));
 $params = [
     'date_from' => $date_from,
     'date_to' => $date_to,
     'field_date' => 'ngaybaocao'
 ];
+
+$this->registerJsVar('pageData', [
+    'stats' => [],
+])
+
 ?>
 <div class="card">
     <!--Thống kê-->
@@ -19,15 +20,31 @@ $params = [
 
     <div class="tab-content">
         <div class="tab-pane fade show active" id="tab1">
-            <?= $this->render('_dieutra', ['tk_dieutra' => $tk_dieutra, 'params' => $params])?>
+            <?=$this->render('_dieutra', ['tk_dieutra' => $tk_dieutra, 'params' => $params, 'field' => $field])?>
         </div>
 
         <div class="tab-pane fade" id="tab2">
-            <?= $this->render('_xacminh', ['tk_xacminh' => $tk_xacminh, 'params' => $params])?>
+            <?=$this->render('_xacminh', ['tk_xacminh' => $tk_xacminh, 'params' => $params, 'field' => $field])?>
         </div>
 
         <div class="tab-pane fade" id="tab3">
-            <?= $this->render('_chuyenca', ['tk_chuyenca' => $tk_chuyenca, 'params' => $params])?>
+            <?=$this->render('_chuyenca', ['tk_chuyenca' => $tk_chuyenca, 'params' => $params, 'field' => $field])?>
         </div>
     </div>
 </div>
+
+<div id="vue-app">
+
+
+</div>
+
+<script>
+    let vueApp = new Vue({
+        el: '#vue-app',
+        data: {
+
+        }
+    })
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/excellentexport@3.4.3/dist/excellentexport.min.js"></script>

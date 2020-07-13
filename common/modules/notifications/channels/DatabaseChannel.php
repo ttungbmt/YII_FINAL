@@ -29,24 +29,25 @@ class DatabaseChannel extends Component implements ChannelInterface
     public function send(NotifiableInterface $recipient, NotificationInterface $notification)
     {
         /** @var DatabaseMessage $message */
+
         $message = $notification->exportFor('database');
+
         try {
+            $message = $notification->exportFor('database');
             list($notifiableType, $notifiableId) = $recipient->routeNotificationFor('database');
+
             $model = new $this->model;
             $model->setAttributes([
             'level'           => $message->level,
             'subject'         => $message->subject,
             'body'            => $message->body,
             'data'            => $message->data,
-            'url'             => $message->url,
             'notifiable_type' => $notifiableType,
             'notifiable_id'   => $notifiableId,
         ]);
-//            $this->model->validate();
-//            dd($this->model->getErrors());
             return $model->save(true);
         } catch (\Exception $e) {
-            dump($e);
+            dd($e);
         }
     }
 }

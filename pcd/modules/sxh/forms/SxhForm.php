@@ -308,15 +308,28 @@ class SxhForm extends MyForm
     {
         if ($cb->isNewRecord) return null;
 
-        $dbXacminh = $this->getListXacminh($cb->xacminhCbs);
+        $listDbXacminh = $this->getListXacminh($cb->xacminhCbs);
+        $this->xacminh = $this->xacminh ? $this->xacminh : $listDbXacminh;
 
         foreach ($this->xacminh as $k => $v) {
-            if (data_get($dbXacminh, $k)) {
-                $this->xacminh[$k] = array_merge(data_get($dbXacminh, $k), $v ? $v : []);
+            if (data_get($listDbXacminh, $k)) {
+                $index = $k+1;
+                $dbXm = data_get($listDbXacminh, $k);
+                $this->xacminh[$k] = array_merge($dbXm, $v ? $v : []);
+
+                $xm = $this->xacminh[$k];
+                if($index%2!=1 && $xm['is_diachi'] == 0 && is_null($xm['is_benhnhan'])){
+                    $this->setNullAttrs($this->xacminh[$k], ['is_benhnhan', 'dienthoai', 'sonha', 'duong', 'to_dp', 'khupho', 'tinh', 'tinh_dc_khac', 'px', 'qh']);
+                }
             }
         }
         if (opt($formData)->xacminh) unset($formData['xacminh']);
+    }
 
+    protected function setNullAttrs(&$obj, $attrs){
+        foreach ($attrs as $attr){
+            $obj[$attr] = null;
+        }
     }
 
     public function validateForm($id, &$data)
@@ -415,6 +428,7 @@ class SxhForm extends MyForm
         $cb->syncOne('xacminhCbs', $this->xacminh);
 
         $this->id = $cb->id;
+
         return true;
     }
 
@@ -423,6 +437,7 @@ class SxhForm extends MyForm
         $ch = new Chuyenca();
         $lastXm = opt(last($this->xacminh));
         $preLastXm = opt(head(array_slice($this->xacminh, -2)));
+        $px_nhan = $lastXm->px;
 
         $ch->setAttributes([
             'qh_chuyen' => $preLastXm->qh,
@@ -442,25 +457,11 @@ class SxhForm extends MyForm
         $dt->nguoidieutra_sdt = null;
         $this->list_chuyenca = self::getListChuyenca($cb->getChuyenCas()->with(['nhan', 'chuyen'])->all());
 
-//        if(role('quan') || role('phuong')){
-//            $ids = [];
-//            if($qh_nhan){
-//                $qs = UserInfo::find()->where("maquan = '{$qh_nhan}' AND maphuong IS NULL")->pluck('user_id')->all();
-//                $ids = array_merge($ids, $qs ? $qs : []);
-//            }
-//
-//            if($px_nhan) {
-//                $ids = array_merge($ids, UserInfo::find()->where(['maphuong' => $px_nhan])->pluck('user_id')->all());
-//            }
-//            $users = User::findAll($ids);
-//            $noty = new ChuyencaNoty(
-//                $cb->gid,
-//                $chCa->id,
-//                $isTrave
-//            );
-//            Notification::send($users, $noty);
-//        }
+        $users = User::find()->select('u.*')->alias('u')->leftJoin(['i' => UserInfo::tableName()], 'i.user_id = u.id')->andWhere(['i.maphuong' => $px_nhan])->all();
+        $noty = new ChuyencaNoty($ch, $cb);
+        Notification::send($users, $noty);
     }
+
 
     protected function checkIsChuyenTiep($cb)
     {
@@ -508,42 +509,52 @@ class SxhForm extends MyForm
         $is_phuong = role('phuong');
         $maphuong = userInfo()->maphuong;
 
-        if (count($xacminh) == 2) {
-            $lastXm = opt(last($xacminh));
-            $preLastXm = opt(head(array_slice($xacminh, -2)));
-            if ($lastXm->tinh == 'HCM' && ($lastXm->qh != $preLastXm->qh || $lastXm->px != $preLastXm->px)) {
-                $locked = true;
-            }
-        } elseif (count($xacminh) > 2) {
-            $locked = true;
-        }
+//        if (count($xacminh) == 2) {
+//            $lastXm = opt(last($xacminh));
+//            $preLastXm = opt(head(array_slice($xacminh, -2)));
+//            if ($lastXm->tinh == 'HCM' && ($lastXm->qh != $preLastXm->qh || $lastXm->px != $preLastXm->px)) {
+//                $locked = true;
+//            }
+//        } elseif (count($xacminh) > 2) {
+//            $locked = true;
+//        }
 
         $fields = [
             'id', 'is_diachi', 'is_benhnhan', 'dienthoai', 'sonha', 'duong', 'to_dp', 'khupho', 'tinh', 'tinh_dc_khac', 'px', 'qh',
             'disabled' => function ($model, $key, $index) use ($xacminh, $is_phuong, $maphuong) {
+                if(count($xacminh) == 1) return false;
 
-                if ($index == 0) {
-                    if ($is_phuong && $this->px && $this->px !== $maphuong) {
-                        return true;
+                if(count($xacminh) > 2){
+                    $lastUnlocked = count($xacminh)%2!=1 ? count($xacminh) - 1 : count($xacminh);
+                    if($is_phuong && $index+1 >= $lastUnlocked && $this->px && $this->px == $maphuong){
+                        return false;
                     }
-
-                    $px = data_get($xacminh, '0.px');
-                    return $px && role('phuong')? !($px == $maphuong) : false;
-                };
-                $lastIndex = count($xacminh) - 1;
-
-                if(count($xacminh) > 2 && $index == $lastIndex - 1){
-                    return false;
                 }
 
-                if ($index == $lastIndex) {
-                    $preLastXm = $xacminh[$index - 1];
-                    $lastXm = $model;
-                    if ($lastXm->tinh == 'HCM' && ($lastXm->qh != $preLastXm->qh || $lastXm->px != $preLastXm->px)) {
-                        return true;
-                    }
-                    return false;
-                };
+//                if ($index == 0) {
+//                    if ($is_phuong && $this->px && $this->px !== $maphuong) {
+//                        return true;
+//                    }
+//
+//                    $px = data_get($xacminh, '0.px');
+//                    return $px && role('phuong')? !($px == $maphuong) : false;
+//                };
+//                $lastIndex = count($xacminh) - 1;
+//
+//                if(count($xacminh) > 2 && $index == $lastIndex - 1){
+//                    return false;
+//                }
+//
+//                if ($index == $lastIndex) {
+//                    $preLastXm = $xacminh[$index - 1];
+//                    $lastXm = $model;
+//
+//                    if ($lastXm->tinh == 'HCM' && ($lastXm->qh != $preLastXm->qh || $lastXm->px != $preLastXm->px)) {
+//                        return true;
+//                    }
+//
+//                    return false;
+//                };
 
                 return true;
             }];

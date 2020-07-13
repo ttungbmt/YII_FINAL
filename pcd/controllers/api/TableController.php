@@ -22,9 +22,11 @@ class TableController extends MyApiController
 
         $data = [
             'items' => $codes,
-            'extent' => Arr::get($extent, 'extent'),
-            'boundary' => Arr::get($boundary, 'boundary'),
+            'extent' => Json::decode(Arr::get($extent, 'extent')),
+            'boundary' => Json::decode(Arr::get($boundary, 'boundary')),
         ];
+
+//        dd(json_encode($data));
 
         return $data;
 

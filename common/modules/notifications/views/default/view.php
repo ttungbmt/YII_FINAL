@@ -16,7 +16,7 @@
             <ul class="media-list">
                 <?php if(count($notifications) > 0):?>
                     <?php foreach ($notifications as $m):?>
-                        <li class="media act-read" data-read-url="<?=url(['/notifications/default/read', 'id' => $m->id])?>" data-go-url="<?=$m->url?>">
+                        <li class="media act-read" data-read-url="<?=url(['/notifications/default/read', 'id' => $m->id])?>" data-go-url="<?=data_get($m->data, 'actionUrl')?>">
                             <div class="mr-3">
                                 <div class="btn bg-success-400 rounded-round btn-icon"><i class="icon-aid-kit"></i></div>
                             </div>

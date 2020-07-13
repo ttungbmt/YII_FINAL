@@ -122,10 +122,6 @@ class CabenhSxhSearch extends CabenhSxh
 
         $roles->filterChuyenCa($this->loaica, $query);
 
-
-//        dd($params);
-//        dd($query->createCommand()->getRawSql());
-//
         return $dataProvider;
     }
 

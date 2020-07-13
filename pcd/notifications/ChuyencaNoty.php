@@ -12,40 +12,31 @@ class ChuyencaNoty implements NotificationInterface
 {
     use NotificationTrait;
 
-    private $cabenh_id;
-    private $chuyenca_id;
-    private $is_trave;
+    private $chuyenca;
+    private $cabenh;
 
-    public function __construct($cabenh_id, $chuyenca_id, $is_trave)
+    public function __construct($chuyenca, $cabenh)
     {
-        $this->cabenh_id = $cabenh_id;
-        $this->chuyenca_id = $chuyenca_id;
-        $this->is_trave = $is_trave;
+        $this->chuyenca = $chuyenca;
+        $this->cabenh = $cabenh;
     }
 
     public function exportForDatabase()
     {
-        $actMessage = $this->is_trave ? ' trả ca về ' : ' chuyển ca cho ';
-        $chCa = Chuyenca::findOne($this->chuyenca_id);
-        $chuyen = $chCa->chuyen->tenphuong.' - '.$chCa->chuyen->tenquan;
-        $nhan = $chCa->nhan->tenphuong.' - '.$chCa->nhan->tenquan;
+        $ten_px_chuyen = data_get($this->chuyenca->chuyen, 'tenphuong', '');
+        $ten_qh_chuyen = data_get($this->chuyenca->chuyen, 'tenquan', '');
+
+        $ten_px_nhan = data_get($this->chuyenca->nhan, 'tenphuong', '');
+        $ten_qh_nhan = data_get($this->chuyenca->nhan, 'tenquan', '');
+
+        $actMessage = $this->chuyenca->is_chuyentiep ? "chuyển ca cho" : "trả ca về";
 
         return \Yii::createObject([
             'class' => DatabaseMessage::className(),
-            'subject' => "<b>".$chuyen."</b>".$actMessage."<b>".$nhan."</b>",
-            'body' => '',
-            'url' => url(['/admin/cabenh-sxh/update', 'id' => $this->cabenh_id]),
-        ]);
-    }
-
-    public function exportForMail() {
-        return Yii::createObject([
-            'class' => '\tuyakhov\notifications\messages\MailMessage',
-            'view' => ['html' => 'invoice-paid'],
-            'viewData' => [
-                'invoiceNumber' => $this->invoice->id,
-                'amount' => $this->invoice->amount
-            ]
+            'subject' => "<b>{$ten_qh_chuyen} - {$ten_px_chuyen}</b> ".$actMessage." <b>{$ten_qh_nhan} - {$ten_px_nhan}</b>",
+            'data' => [
+                'actionUrl' => url(['/sxh/default/update', 'id' => $this->cabenh->gid])
+            ],
         ]);
     }
 }

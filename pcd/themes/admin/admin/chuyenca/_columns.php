@@ -33,16 +33,7 @@ $columns[] = [
     'attribute' => 'sdt_chuyen',
 ];
 
-$columns[] = [
-    'class'     => '\kartik\grid\DataColumn',
-    'attribute' => 'date_chuyen',
-];
 
-//$columns[] = [
-//    'class'     => '\kartik\grid\DataColumn',
-//    'attribute' => 'created_at',
-//    'format' => ['date', 'php:d/m/Y - h:m:i']
-//];
 
 $columns[] = [
     'class'     => '\kartik\grid\DataColumn',
@@ -63,7 +54,9 @@ $columns[] = [
 
 $columns[] = [
     'class'     => '\kartik\grid\DataColumn',
-    'attribute' => 'date_nhan',
+    'attribute' => 'created_at',
+    'format' => ['date', 'php:d/m/Y - h:m:i'],
+    'label' => 'Thời gian chuyển/nhận'
 ];
 
 $columns[] = [
