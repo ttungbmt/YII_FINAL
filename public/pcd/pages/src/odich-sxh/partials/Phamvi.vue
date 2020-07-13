@@ -213,9 +213,11 @@
                 console.log(phamvis)
 
                 this.$store.commit('updateField', {path: 'form/values.phamvi_px', value: phamvis})
-                this.$store.commit('updateField', {path: 'form/values.phamvi_px_html', value: $('#phamvi-px-html').html()})
                 this.phamvi_px_panel = false
                 name && this.$refs[name].hide()
+                // this.$nextTick.then(function () {
+                //     this.$store.commit('updateField', {path: 'form/values.phamvi_px_html', value: })
+                // })
             },
             updatePhamviGis(){
                 this.$wait.start(KEY_LOADING);

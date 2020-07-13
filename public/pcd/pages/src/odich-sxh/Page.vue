@@ -79,6 +79,8 @@
                     data[name] = map(data[name], (v, k) => ({...v, tt: k+1}))
                 })
 
+                data.phamvi_px_html = $('#phamvi-px-html').html()
+
                 if(!isEmpty(errors)){
                     this.$noty.error(message)
                     return null

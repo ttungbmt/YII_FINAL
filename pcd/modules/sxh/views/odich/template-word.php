@@ -1365,7 +1365,7 @@ mso-fareast-font-family:Calibri'><span style='mso-list:Ignore'>-<span
     <p style='margin-top:6.0pt;margin-right:0cm;margin-bottom:0cm;margin-left:21.25pt;
 margin-bottom:.0001pt;text-indent:-17.85pt;line-height:150%;mso-list:l0 level1 lfo4;
 tab-stops:right dotted 467.8pt'><span style='font-size:13.0pt;line-height:150%;
-color:white;mso-color-alt:windowtext'>Loại ổ dịch: <?=$m->loai_od?><span style='mso-tab-count:1 dotted'>.......................................................................................................................... </span><o:p></o:p></span></p>
+color:white;mso-color-alt:windowtext'>Loại ổ dịch: <?=$if($m->loai_od, "<span style='mso-tab-count:1 dotted'>.......................................................................................................................... </span>")?><o:p></o:p></span></p>
 
     <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:21.3pt; margin-bottom:.0001pt;text-indent:-18.0pt;line-height:150%;mso-list:l0 level1 lfo4; tab-stops:right dotted 467.8pt'><span style='font-size:13.0pt;line-height:150%'>Ngày xác định ổ dịch: <?=$if($m->ngayxacdinh, "<span style='mso-tab-count:1 dotted'>......................................................................................................... </span>")?><o:p></o:p></span></p>
 
@@ -1429,8 +1429,6 @@ mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA'><br
 
 <div class=WordSection4>
     <?=$m->phamvi_px?>
-
-
 
     <span style='font-size:12.0pt;line-height:150%;font-family:"Times New Roman",serif;
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast;
@@ -1989,10 +1987,6 @@ margin-bottom:.0001pt;text-indent:-17.85pt;mso-list:l0 level1 lfo4'><![if !suppo
                 style='font-size:13.0pt;font-family:"Calibri",sans-serif;mso-fareast-font-family:
 Calibri'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span></span></span><![endif]><span style='font-size:13.0pt'>Ổ dịch kết thúc theo dõi ngày: <?=$m->ngayketthuc_td?><o:p></o:p></span></p>
-
-    <div id="part-danhgia">
-        <p>Ổ dịch diện rộng</p><p>Ổ dịch xử lý 2 lần</p>
-    </div>
 
     <p align=center style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
 margin-left:1.0cm;margin-bottom:.0001pt;text-align:center'><strong><o:p>&nbsp;</o:p></strong></p>
