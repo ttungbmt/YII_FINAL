@@ -21,11 +21,14 @@
 
 </template>
 <script>
+    import Vue from 'vue'
     import L from 'leaflet'
     import {isEmpty, clone, get} from 'lodash-es'
-    import '@ttungbmt/vue-leaflet'
+    import VueLeaflet from '@ttungbmt/vue-leaflet'
     import { get as pGet } from 'vuex-pathify'
     import $ from 'jquery'
+
+    Vue.use(VueLeaflet)
 
     export default {
         name: 'page-to-dp',
