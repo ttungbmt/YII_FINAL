@@ -11,4 +11,4 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('assets/js/yii2-leaflet.js', 'assets/js/yii2-leaflet.js')
+mix.js('assets/js/yii2-leaflet.js', 'assets/js/yii2-leaflet.modern.js')

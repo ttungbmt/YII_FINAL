@@ -24,7 +24,7 @@ class Yii2LeafletAsset extends AssetBundle
         ];
 
         $this->js = [
-            'js/yii2-leaflet.js',
+            'js/yii2-leaflet.modern.js',
         ];
 
     }

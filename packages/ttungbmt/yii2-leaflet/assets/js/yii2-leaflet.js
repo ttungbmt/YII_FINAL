@@ -1,7 +1,5 @@
 $(function () {
     class MapApp {
-        options = {}
-        $els = {}
 
         constructor(options = {}) {
             this.options = this.transformOpts(options)
@@ -44,6 +42,9 @@ $(function () {
             $(inpLng).val('');
         }
     }
+
+    MapApp.option = {}
+    MapApp.$els = {}
 
     window.yii2Leaflet = {
         apps: {},
