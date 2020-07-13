@@ -1925,11 +1925,11 @@ Calibri'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman
             <td width=54 valign=top style='width:40.35pt;border-top:none;border-left:
   none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
   mso-border-top-alt:solid black .75pt;mso-border-left-alt:solid black .75pt;
-  mso-border-alt:solid black .75pt;padding:.75pt 5.05pt .75pt 5.05pt;font-size:11.0pt'><?=$v->somaylon?></td>
+  mso-border-alt:solid black .75pt;padding:.75pt 5.05pt .75pt 5.05pt;font-size:11.0pt'><?=$v->somaynho?></td>
             <td width=54 valign=top style='width:40.35pt;border-top:none;border-left:
   none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;
   mso-border-top-alt:solid black .75pt;mso-border-left-alt:solid black .75pt;
-  mso-border-alt:solid black .75pt;padding:.75pt 5.05pt .75pt 5.05pt;font-size:11.0pt'><?=$v->somaynho?></td>
+  mso-border-alt:solid black .75pt;padding:.75pt 5.05pt .75pt 5.05pt;font-size:11.0pt'><?=$v->somaylon?></td>
             <td width=55 valign=top style='width:41.0pt;border-top:none;border-left:none;
   border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;mso-border-top-alt:
   solid black .75pt;mso-border-left-alt:solid black .75pt;mso-border-alt:solid black .75pt;
