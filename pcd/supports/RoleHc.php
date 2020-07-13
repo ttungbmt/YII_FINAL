@@ -245,12 +245,15 @@ class PhuongAction extends QuanAction
     }
 
     public function btnChuyenCa(){
+        $loaica = data_get(request()->all(), 'CabenhSxhSearch.loaica', 0);
+        $activeClass = function ($v) use($loaica){return $loaica == $v ? 'primary' : 'default';};
+
         return (
-            Html::a('Tất cả', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 0]], ['class' => 'btn btn-default btn-raised']) .
-            Html::a('Ca PX', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 1]], ['class' => 'btn btn-default btn-raised']) .
-            Html::a('Ca chuyển', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 2]], ['class' => 'btn btn-default btn-raised']) .
-            Html::a('Ca nhận', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 3]], ['class' => 'btn btn-default btn-raised']).
-            Html::a('Ca trả về', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 4]], ['class' => 'btn btn-default btn-raised'])
+            Html::a('Tất cả', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 0]], ['class' => 'btn btn-'.$activeClass(0).' btn-raised']) .
+            Html::a('Ca PX', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 1]], ['class' => 'btn btn-'.$activeClass(1).' btn-raised']) .
+            Html::a('Ca chuyển', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 2]], ['class' => 'btn btn-'.$activeClass(2).' btn-raised']) .
+            Html::a('Ca nhận', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 3]], ['class' => 'btn btn-'.$activeClass(3).' btn-raised']).
+            Html::a('Ca trả về', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 4]], ['class' => 'btn btn-'.$activeClass(4).' btn-raised'])
         );
     }
 
@@ -271,7 +274,7 @@ class PhuongAction extends QuanAction
             $query->andFilterWhere(['gid' => $ca]);
         } elseif ($loaica == 1) {
             // Ca TP
-            $ca = $ca->where(['type' => 2, 'px_nhan' => $this->maphuong]);
+            $ca = $ca->where(['px_nhan' => $this->maphuong]);
             $this->filterCabenhSxh($query);
             $query->andFilterWhere(['NOT IN', 'gid', $ca]);
         } else {

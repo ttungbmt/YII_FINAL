@@ -109,13 +109,13 @@
                 let data = clone(this.form),
                     geometry = get(this.$refs.features.mapObject.toGeoJSON(), 'features.0.geometry')
 
-                data.geom = geometry.type === 'MultiPolygon' ? geometry.coordinates[0] : geometry.coordinates
+                if(geometry) data.geom = geometry.type === 'MultiPolygon' ? geometry.coordinates[0] : geometry.coordinates
 
                 $.post($(e.target).attr('action'), {DmToDp: data}, (data) => {
-                    // if(data.redirectUrl) {
-                    //     window.location.href = data.redirectUrl
-                    //     return null
-                    // }
+                    if(data.redirectUrl) {
+                        window.location.href = data.redirectUrl
+                        return null
+                    }
 
                     if(data.errors) this.errors = data.errors
                 })
