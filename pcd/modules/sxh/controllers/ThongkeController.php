@@ -104,8 +104,7 @@ class ThongkeController extends AppController
             $phc_px = (new Query()) ->select("od.{$field['key']}, COUNT(DISTINCT od.maphuong) px_phc")->from(['tb' => PhunHc::tableName()])->leftJoin(['od' => Odich::tableName()], 'od.id = tb.odich_id')->groupBy('od.'.$field['key'])->having('MAX (tt) = 1');
 
             $dlq = (new Query()) ->select('odich_id, MAX ( tt ) m_tt_dlq, SUM ( solit_hc ) solit_hc ')->from(['phc' => PhunHc::tableName()])->groupBy('odich_id');
-            $dlq_px = (new Query()) ->select("od.{$field['key']}, COUNT(DISTINCT od.maphuong) px_dlq")->from(['tb' => DietLq::tableName()])->leftJoin(['od' => Odich::tableName()], 'od.id = tb.odich_id')->groupBy('od.'.$field['key'])->having('MAX (tt) = 1');
-
+            $dlq_px = (new Query()) ->select("od.{$field['key']}, COUNT(DISTINCT od.maphuong) px_dlq")->from(['tb' => DietLq::tableName()])->leftJoin(['od' => Odich::tableName()], 'od.id = tb.odich_id')->groupBy('od.'.$field['key']);
 
             $tb3_od = (new Query())
                 ->select([
@@ -115,6 +114,7 @@ class ThongkeController extends AppController
                     'mxl3' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 3 THEN 1 END )',
                     'mxl4' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 4 THEN 1 END )',
                     'tong_odxl' => 'SUM ( CASE WHEN loai_od IS NOT NULL THEN 1 END )',
+                    'px_od_xldr' => 'COUNT(DISTINCT CASE WHEN loai_od = 2 THEN maphuong END)',
                     'solit_hc' => 'SUM (phc.solit_hc)',
                     'soluot_dlq' => 'SUM (dlq.m_tt_dlq)',
                     'dncs_count' => 'SUM(od.dncs_count)',
@@ -134,26 +134,34 @@ class ThongkeController extends AppController
                 ->orderBy('order');
 
             if($loai_tk == 3){
+                $so_px = is_null($hc) ? [
+                    ['key' => 'px_phc', 'label' => 'Số PX có ổ dịch mới được xử lý'],
+                    ['key' => 'px_od_xldr', 'label' => 'Số PX xử lý ổ dịch diện rộng'],
+                ] : [];
+
                 return $this->asJson([
-                    'fields' => [
+                    'fields' => array_merge([
                         ['key' => 'name', 'label' => $field['label'], 'thStyle' => 'min-width: 150px'],
                         ['key' => 'mxl1', 'label' => 'Số ổ dịch mới xử lý'],
                         ['key' => 'mxl2', 'label' => 'Số ổ dịch mới xử lý diện rộng'],
                         ['key' => 'mxl3', 'label' => 'Số ổ dịch mới liên PX'],
                         ['key' => 'mxl4', 'label' => 'Số ổ dịch mới liên QH'],
-                        ['key' => 'tong_odxl', 'label' => 'Tổng số ổ dịch mới được xử lý'],
-                        ['key' => 'px_phc', 'label' => 'Số PX có ổ dịch mới được xử lý'],
-                        ['key' => 'ngayxuly', 'label' => 'Số PX xử lý ổ dịch diện rộng'],
-                        ['key' => 'ngayxuly', 'label' => 'Tổng số ổ dịch được xử lý'],
+                        ['key' => 'tong_odmxl', 'label' => 'Tổng số ổ dịch mới được xử lý'],
+                    ], $so_px, [
+                        ['key' => 'tong_odxl', 'label' => 'Tổng số ổ dịch được xử lý'],
                         ['key' => 'solit_hc', 'label' => 'Số lít hóa chất (chưa pha)'],
                         ['key' => 'px_dlq', 'label' => 'Số PX tổ chức diệt lăng quăng'],
                         ['key' => 'soluot_dlq', 'label' => 'Số lượt diệt lăng quăng'],
                         ['key' => 'dncs_count', 'label' => 'Số điểm nguy cơ trong ổ dịch'],
                         ['key' => 'dncs_odxp', 'label' => 'Số điểm nguy cơ trong ổ dịch xử phạt'],
-                    ],
+                    ]),
                     'data' => collect($tb3->all())->map(function ($i) use($dm_loai_od){
-                        return array_merge($i, [
+                        $tong_odmxl = collect($i)->only(['mxl1', 'mxl2', 'mxl3', 'mxl4'])->sum();
+                        $px_od_xldr = $i['px_od_xldr'];
 
+                        return array_merge($i, [
+                            'tong_odmxl' => $tong_odmxl == 0 ? null : $tong_odmxl,
+                            'px_od_xldr' => $px_od_xldr == 0 ? null : $px_od_xldr,
                         ]);
                     })
                 ]);
