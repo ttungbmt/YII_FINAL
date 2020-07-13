@@ -20,12 +20,12 @@ class PtNguycoSearch extends PtNguyco
     public $month;
     public $col_tk;
     public $loai_tk;
-
+    public $daxoa;
 
     public function rules()
     {
         return [
-            [['gid', 'loaihinh_id'], 'integer'],
+            [['daxoa', 'gid', 'loaihinh_id'], 'integer'],
             [['loai_tk', 'col_tk', 'year', 'month', 'dienthoai', 'maso', 'ten_cs', 'sonha', 'tenduong', 'khupho', 'to_dp', 'maphuong', 'maquan', 'nhom', 'loaihinh', 'tochuc_gs', 'ngaycapnhat', 'ngayxoa', 'ghichu', 'phancap_ql', 'thuchien', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'safe'],
             [['date_from', 'date_to'], 'date', 'format' => 'php:d/m/Y'],
 
@@ -93,6 +93,8 @@ class PtNguycoSearch extends PtNguyco
         $query->andFilterSearch(['ilike', 'ten_cs', $this->ten_cs]);
         $query->andFilterSearch(['ilike', 'sonha', $this->sonha]);
         $query->andFilterSearch(['ilike', 'tenduong', $this->tenduong]);
+
+        if($this->daxoa) $query->andWhere('ngayxoa IS NOT NULL');
 
 
         $q2 = (new Query())->select('pt_nguyco_id gid')
