@@ -16,7 +16,8 @@ class AlpineAsset extends AssetBundle
         $this->sourcePath = dirname(__DIR__).'/assets/js';
 
         $this->js = [
-            'https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js',
+            ['https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js', 'type' => 'module'],
+            ['https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine-ie11.min.js', 'nomodule' => true, 'defer' => true],
             'alpine-helper.js'
         ];
     }
