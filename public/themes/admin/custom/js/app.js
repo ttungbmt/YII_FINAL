@@ -44,7 +44,9 @@ $(function () {
 
     $('a[data-action]').click(function (e) {
         e.preventDefault()
-        let {selector, toggle, action, options, ...rest} = $(this).data()
+        let {selector, toggle, action, options} = $(this).data(),
+            rest = _.omit($(this).data(), ['selector', 'toggle', 'action', 'options'])
+
         switch (action) {
             case 'download':
                 $(selector).tableExport(Object.assign({type: 'excel'}, rest, options))
