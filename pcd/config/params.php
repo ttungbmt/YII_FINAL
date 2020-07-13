@@ -1,6 +1,6 @@
 <?php
 return [
-    'version' => '0.0.10',
+    'version' => '0.0.11',
     'adminEmail' => 'ttungbmt@gmail.com',
     'author' => 'Trương Thanh Tùng',
     'keywords' => 'Maps, HCMGIS',

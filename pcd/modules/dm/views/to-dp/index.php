@@ -25,7 +25,7 @@ $this->title = "Danh mục tổ dân phố";
             'toolbar' => [
                 ['content' =>
                     Html::a('Thêm mới', ['create'],
-                        ['role' => 'modal-remote', 'title' => 'Thêm mới tổ dân phố', 'class' => 'btn btn-primary',]) .
+                        ['data-pjax' => 0, 'title' => 'Thêm mới tổ dân phố', 'class' => 'btn btn-primary',]) .
                     Html::a('<i class="icon-reload-alt"></i>', [''],
                         ['data-pjax' => 1, 'class' => 'btn btn-default', 'title' => lang('Reset Grid')]) .
                     '{toggleData}' .
