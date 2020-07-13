@@ -6,11 +6,9 @@ class AlpineInstance {
 }
 
 function alpine(options) {
-    // new AlpineInstance(data)
-    return {
-        ...options.data,
-        ...options.methods
-    }
-
+    return _.merge(
+        options.data,
+        options.methods
+    )
 }
 

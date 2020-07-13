@@ -24,13 +24,13 @@ $leaflet->setMap([
     ],
 ]);
 
-$cluster = new \ttungbmt\leaflet\plugins\markercluster\MarkerCluster([
-    'name' => 'cluster',
-    'clientEvents' => [
-
-    ]
-]);
-$leaflet->installPlugin($cluster);
+//$cluster = new \ttungbmt\leaflet\plugins\markercluster\MarkerCluster([
+//    'name' => 'cluster',
+//    'clientEvents' => [
+//
+//    ]
+//]);
+//$leaflet->installPlugin($cluster);
 
 if ($model->geom && count($model->geom) == 2 && is_numeric($model->geom[0]) && is_numeric($model->geom[1])) {
     $latlng = [$model->geom[1], $model->geom[0]];
@@ -44,7 +44,7 @@ if ($model->geom && count($model->geom) == 2 && is_numeric($model->geom[0]) && i
         'popupContent' => '123'
     ]);
 //    $featureGroup->addLayer($marker);
-    $cluster->addMarker($marker);
+//    $cluster->addMarker($marker);
 }
 ?>
 
