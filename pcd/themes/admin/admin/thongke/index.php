@@ -16,7 +16,6 @@ $month = $month > 10 ? "$month": "0".$month;
 ?>
 
 <div id="thongke" xmlns="http://www.w3.org/1999/html">
-<!--    <form id="formtk" action="" @submit.prevent="onSubmit">-->
 
     <?php $form = ActiveForm::begin([
         'action' => 'ajax',
