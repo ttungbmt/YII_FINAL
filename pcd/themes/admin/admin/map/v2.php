@@ -32,8 +32,8 @@
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
 
 
-    <link href="<?= asset('/assets/map/v2/static/css/5.chunk.css?v='.params('version')) ?>" rel="stylesheet">
-    <link href="<?= asset('/assets/map/v2/static/css/main.chunk.css?v='.params('version')) ?>" rel="stylesheet">
+    <link href="<?= asset('/assets/map/v2/static/css/5.chunk.css?v='.params('map_version')) ?>" rel="stylesheet">
+    <link href="<?= asset('/assets/map/v2/static/css/main.chunk.css?v='.params('map_version')) ?>" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuex@3.1.2/dist/vuex.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-freeze-table@1.3.0/dist/js/freeze-table.min.js"></script>
@@ -153,7 +153,7 @@
         s()
     }([])
 </script>
-<script src="<?= asset('/assets/map/v2/static/js/5.chunk.js?v='.params('version')) ?>"></script>
-<script src="<?= asset('/assets/map/v2/static/js/main.chunk.js?v='.params('version')) ?>"></script>
+<script src="<?= asset('/assets/map/v2/static/js/5.chunk.js?v='.params('map_version')) ?>"></script>
+<script src="<?= asset('/assets/map/v2/static/js/main.chunk.js?v='.params('map_version')) ?>"></script>
 </body>
 </html>
