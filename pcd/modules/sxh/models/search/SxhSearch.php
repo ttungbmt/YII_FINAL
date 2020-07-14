@@ -42,6 +42,7 @@ class SxhSearch extends \pcd\models\CabenhSxh {
             ->with(['hcPhuong', 'hcQuan', 'xacminhCbs']);
 
         $this->load($params, 'form');
+        $this->setAttributes($params);
 
 //        $page = request('page', 1);
         $pageSize = request('length', 10);
@@ -89,6 +90,7 @@ class SxhSearch extends \pcd\models\CabenhSxh {
                 $this->date_type => [$this->date_from, $this->date_to]
             ]);
         }
+
 
         return $dataProvider;
     }
