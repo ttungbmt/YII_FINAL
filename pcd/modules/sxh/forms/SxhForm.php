@@ -377,7 +377,7 @@ class SxhForm extends MyForm
             if (empty($warnings)) {
                 $this->loaidieutra = ($this->ht_dieutri == 1 && !is_null($this->xuatvien) && $this->xuatvien == 0) ? 2 : 3;
             } else {
-                $this->loaidieutra = 1;
+                $this->loaidieutra = 0;
             }
 
             return true;
