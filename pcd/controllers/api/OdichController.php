@@ -24,11 +24,17 @@ class OdichController extends MyApiController
         ];
     }
 
+    protected function getTableCabenhOd(){
+        return (new Query())->from(CabenhSxh::tableName())->andWhere(new Expression("((ht_dieutri = '1' AND chuandoan = '1') OR (ht_dieutri = '0' AND loai_xm_cb IN (7,8)))"));
+    }
+
     public function actionTimCabenh($table = 'cabenh_sxh'){
 
         $cabenhIds = request('cabenhIds');
         $dataInput = collect($cabenhIds);
         $radius = 200;
+        $table = $this->getTableCabenhOd();
+
         list($ids1, $dataMap1) = $this->timCabenhLienQuan($cabenhIds, $table, $radius, 'sau');
         list($ids2, $dataMap2) = $this->timCabenhLienQuan($cabenhIds, $table, $radius,'truoc');
 
@@ -37,7 +43,6 @@ class OdichController extends MyApiController
 
         $cabenhs = collect(($table == 'cabenh_sxh_nn' ? CabenhSxhNn::className() : CabenhSxh::className())::find()->where(['gid' => $ids])
             ->indexBy('gid')->all())->map(function ($i) {return $i->toArray(
-            // ['hoten', 'ngaymacbenh_nv', 'gid']
         );});
 
         $dataInput = $dataInput->map(function($item) use($cabenhs){
@@ -280,7 +285,8 @@ class OdichController extends MyApiController
     public function actionTimOdich($table = 'cabenh_sxh')
     {
         $typeFind = request('table') ? request('table') : $table;
-        $table = 'cabenh_sxh';
+        $table = $this->getTableCabenhOd();
+
         if(role('admin') && $typeFind === 'cabenh_sxh'){
             return [];
         } elseif (!role('admin') && $typeFind === 'cabenh_sxh_nn'){
@@ -329,7 +335,9 @@ class OdichController extends MyApiController
                 }
             } else {
                 $subQuery = (new Query())->select('gid, ngaymacbenh_nv, geom, is_nghingo, maquan, maphuong')
-                    ->from($table)->where(['is_nghingo' => $typeFind == 'cabenh_sxh' ? null : 1])->andWhere(['gid' => $ids]);
+                    ->from($table)
+//                    ->where(['is_nghingo' => $typeFind == 'cabenh_sxh' ? null : 1])
+                    ->andWhere(['gid' => $ids]);
                 $query = $query
                     ->from(['sxh1' => $subQuery, 'sxh2' => $table])
                     ->andWhere(['<=', $numday, $day2])
@@ -354,8 +362,8 @@ class OdichController extends MyApiController
 
             $query->andWhere('sxh1.gid <> sxh2.gid')
                 ->andWhere("ST_DWithin (sxh1.geom::geography, sxh2.geom::geography, {$radius})")
-                ->andWhere(['sxh1.is_nghingo' => $typeFind == 'cabenh_sxh' ? null : 1])
-                ->andWhere(['sxh2.is_nghingo' => $typeFind == 'cabenh_sxh' ? null : 1])
+//                ->andWhere(['sxh1.is_nghingo' => $typeFind == 'cabenh_sxh' ? null : 1])
+//                ->andWhere(['sxh2.is_nghingo' => $typeFind == 'cabenh_sxh' ? null : 1])
                 ->orderBy(['sxh1.ngaymacbenh_nv' => SORT_ASC, 'sxh2.ngaymacbenh_nv' => SORT_ASC]);
 
             $q = collect($query->all());
