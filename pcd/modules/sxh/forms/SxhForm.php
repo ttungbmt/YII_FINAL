@@ -31,7 +31,7 @@ class SxhForm extends MyForm
     const SCENARIO_DIEUTRA = 'dieutra';
 
     protected function checkRequiredDate(){
-        return Carbon::createFromFormat('d/m/Y', $this->ngaydieutra) >= Carbon::parse('2020-07-09');
+        return Carbon::createFromFormat('d/m/Y', $this->ngaydieutra) >= Carbon::parse('2020-07-15');
     }
 
     public function xacminhValidator($attribute, $params, $validator)
