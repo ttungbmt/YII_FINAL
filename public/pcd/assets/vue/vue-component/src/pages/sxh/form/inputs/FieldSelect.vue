@@ -54,6 +54,7 @@
             options: [Array, Object],
             prompt: [Boolean, String],
             depends: Array,
+            params: Array,
             url: String
         },
         data: () => ({
@@ -83,19 +84,22 @@
         mounted() {
             if (this.url && this.depends) {
 
+                console.log(this.params)
+
                 let depdropOptions = {
                     depends: this.depends,
                     url: this.url,
-                    language: 'vi'
+                    language: 'vi',
+                    ajaxSettings: {
+                        data: {value: this.innerValue}
+                    },
+                    params: this.params
                 }
 
                 if(this.parentsHasValue()){
                     depdropOptions = {
                         ...depdropOptions,
                         initialize: true,
-                        ajaxSettings: {
-                            data: {value: this.innerValue}
-                        },
                     }
                 }
 

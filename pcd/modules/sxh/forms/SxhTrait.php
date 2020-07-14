@@ -151,14 +151,14 @@ trait SxhTrait {
         $disabled_px2 = $id ? true : false;
 
         if(is_null($lastXm->is_benhnhan) && count($this->xacminh) > 1){
+            $prevLastXm = opt($this->xacminh[count($this->xacminh)-2]);
+
             if($lastXm->is_diachi == 0){
-                $prevLastXm = opt($this->xacminh[count($this->xacminh)-2]);
                 $qh2 = $prevLastXm->qh; $px2 = $prevLastXm->px;
             }
 
             if(opt($lastXm)->tinh <> 'HCM') $px2 = $prevLastXm->px;
         }
-
 
         if($maphuong == $px1 || (role('quan') && $maquan == $qh1)) $disabled_px1 = false;
         if($maphuong == $px2 || (role('quan') && $maquan == $qh2)) $disabled_px2 = false;
@@ -249,12 +249,12 @@ trait SxhTrait {
                 'label' => 'Đường',
             ],
             [
-                'name'  => 'to_dp',
-                'label' => 'Tổ',
+                'name'  => 'khupho',
+                'label' => 'Khu phố', 'component' => 'field-select', 'url' => '/api/dm/khupho', 'prompt' => true
             ],
             [
-                'name'  => 'khupho',
-                'label' => 'Khu phố',
+                'name'  => 'to_dp',
+                'label' => 'Tổ', 'component' => 'field-select', 'url' => '/api/dm/to_dp', 'prompt' => true
             ],
             [
                 'name'  => 'tinh',
@@ -318,7 +318,7 @@ trait SxhTrait {
             ],
             [
                 'name'  => 'tpbv',
-                'label' => 'TP báo về(TPBV)', 'component' => 'field-radio', 'options' => 'yesno', 'disabled' => $disabled_px2
+                'label' => 'TP báo về (TPBV)', 'component' => 'field-radio', 'options' => 'yesno', 'disabled' => $disabled_px2
             ],
             [
                 'name'  => 'tpbv_bv',

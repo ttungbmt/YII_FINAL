@@ -29,8 +29,8 @@
                         <div role="group" class="form-group" id="__BVID__113">
                             <label class="d-block">
                                 <span>Vị trí (cũ)</span>
-                                <b-badge class="ml-2" content="Tìm kiếm trên Google" v-tippy :href="`https://www.google.com/maps/search/${form.vitri}`" variant="info" target="_blank">Google</b-badge>
-                                <b-badge content="Tìm kiếm trên Vietbando" v-tippy :href="`http://maps.vietbando.com/maps/?sk=${form.vitri}`" variant="secondary" target="_blank">Vietbando</b-badge>
+                                <b-badge class="ml-2" content="Tìm kiếm trên Google" v-tippy :href="`https://www.google.com/maps/search/${encodeURIComponent(form.vitri)}`" variant="info" target="_blank">Google</b-badge>
+                                <b-badge content="Tìm kiếm trên Vietbando" v-tippy :href="`http://maps.vietbando.com/maps/?sk=${encodeURIComponent(form.vitri)}`" variant="secondary" target="_blank">Vietbando</b-badge>
                             </label>
                             <div>
                                 {{form.vitri}}
@@ -39,12 +39,19 @@
 
                     </b-col>
                 </b-row>
-                <!--!(v.is_diachi == 0 && (k+1) % 2 ==0)-->
                 <div v-if="(k+1)%2 != 0 || ((k+1)%2 == 0 &&  v.is_diachi == 1)">
-                    <!--v-if="!_.isNull(v.is_diachi) || !_.isNull(v.is_benhnhan)"-->
                     <b-row>
-                        <b-col :key="k1" v-for="(i, k1) in only(schema, ['sonha', 'duong', 'to_dp', 'khupho'])">
-                            <field-sxh :id="`field-${k}-${i.name}`" :name="`xacminh[${k}][${i.name}]`" :nameKey="i.name" :path="`xacminh.items.${k}.${i.name}`" :label="schema[i.name].label+` (${k+1})`"/>
+                        <b-col>
+                            <field-sxh :id="`field-${k}-sonha`" :name="`xacminh[${k}][sonha]`" nameKey="sonha" :path="`xacminh.items.${k}.sonha`" :label="schema['sonha'].label+` (${k+1})`"/>
+                        </b-col>
+                        <b-col>
+                            <field-sxh :id="`field-${k}-duong`" :name="`xacminh[${k}][duong]`" nameKey="duong" :path="`xacminh.items.${k}.duong`" :label="schema['duong'].label+` (${k+1})`"/>
+                        </b-col>
+                        <b-col>
+                            <field-sxh :id="`field-${k}-khupho`" :name="`xacminh[${k}][khupho]`" nameKey="khupho" :path="`xacminh.items.${k}.khupho`" :label="schema['khupho'].label+` (${k+1})`" :depends="[`field-${k}-px`]"/>
+                        </b-col>
+                        <b-col>
+                            <field-sxh :id="`field-${k}-to_dp`" :name="`xacminh[${k}][to_dp]`" nameKey="to_dp" :path="`xacminh.items.${k}.to_dp`" :label="schema['to_dp'].label+` (${k+1})`" :depends="[`field-${k}-khupho`]" :params="[`field-${k}-qh`, `field-${k}-px`]"/>
                         </b-col>
                     </b-row>
                     <b-row>
@@ -72,7 +79,7 @@
             </b-row>
             <div v-if="form.benhnoikhac==1">
                 <b-row>
-                    <b-col :key="k" v-for="(i, k) in only(schema, ['sonhakhac', 'duongkhac', 'tokhac', 'khuphokhac'])" :md="i.md">
+                    <b-col :key="k" v-for="(i, k) in only(schema, ['sonhakhac', 'duongkhac', 'khuphokhac', 'tokhac'])" :md="i.md">
                         <field-sxh :name="i.name"/>
                     </b-col>
                 </b-row>

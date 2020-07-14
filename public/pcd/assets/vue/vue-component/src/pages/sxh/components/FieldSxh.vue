@@ -96,6 +96,7 @@
 
                 if (this.$attrs.depends) {
                     $attrs.depends = this.$attrs.depends
+                    $attrs.params = this.$attrs.params
                 }
                 return $attrs
             },

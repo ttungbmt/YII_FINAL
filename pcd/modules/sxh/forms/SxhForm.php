@@ -18,7 +18,6 @@ use pcd\models\HcQuan;
 use pcd\models\XacminhCb;
 use pcd\notifications\ChuyencaNoty;
 use ttungbmt\db\Query;
-use ttungbmt\leaflet\types\Point;
 use yii\base\Arrayable;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
@@ -507,16 +506,6 @@ class SxhForm extends MyForm
     {
         $is_phuong = role('phuong');
         $maphuong = userInfo()->maphuong;
-
-//        if (count($xacminh) == 2) {
-//            $lastXm = opt(last($xacminh));
-//            $preLastXm = opt(head(array_slice($xacminh, -2)));
-//            if ($lastXm->tinh == 'HCM' && ($lastXm->qh != $preLastXm->qh || $lastXm->px != $preLastXm->px)) {
-//                $locked = true;
-//            }
-//        } elseif (count($xacminh) > 2) {
-//            $locked = true;
-//        }
 
         $fields = [
             'id', 'is_diachi', 'is_benhnhan', 'dienthoai', 'sonha', 'duong', 'to_dp', 'khupho', 'tinh', 'tinh_dc_khac', 'px', 'qh',

@@ -7718,7 +7718,7 @@
 
 	var e=function(){return (e=Object.assign||function(e){for(var t,r=1,s=arguments.length;r<s;r++){ for(var a in t=arguments[r]){ Object.prototype.hasOwnProperty.call(t,a)&&(e[a]=t[a]); } }return e}).apply(this,arguments)},t={kebab:/-(\w)/g,styleProp:/:(.*)/,styleList:/;(?![^(]*\))/g};function r(e,t){return t?t.toUpperCase():""}function s(e){for(var s,a={},c=0,o=e.split(t.styleList);c<o.length;c++){var n=o[c].split(t.styleProp),i=n[0],l=n[1];(i=i.trim())&&("string"==typeof l&&(l=l.trim()),a[(s=i,s.replace(t.kebab,r))]=l);}return a}function a(){
 	var arguments$1 = arguments;
-	for(var t,r,a={},c=arguments.length;c--;){ for(var o=0,n=Object.keys(arguments[c]);o<n.length;o++){ switch(t=n[o]){case"class":case"style":case"directives":if(Array.isArray(a[t])||(a[t]=[]),"style"===t){var i=void 0;i=Array.isArray(arguments$1[c].style)?arguments$1[c].style:[arguments$1[c].style];for(var l=0;l<i.length;l++){var y=i[l];"string"==typeof y&&(i[l]=s(y));}arguments$1[c].style=i;}a[t]=a[t].concat(arguments$1[c][t]);break;case"staticClass":if(!arguments$1[c][t]){ break; }void 0===a[t]&&(a[t]=""),a[t]&&(a[t]+=" "),a[t]+=arguments$1[c][t].trim();break;case"on":case"nativeOn":a[t]||(a[t]={});for(var p=0,f=Object.keys(arguments[c][t]||{});p<f.length;p++){ r=f[p],a[t][r]?a[t][r]=[].concat(a[t][r],arguments$1[c][t][r]):a[t][r]=arguments$1[c][t][r]; }break;case"attrs":case"props":case"domProps":case"scopedSlots":case"staticStyle":case"hook":case"transition":a[t]||(a[t]={}),a[t]=e({},arguments$1[c][t],a[t]);break;case"slot":case"key":case"ref":case"tag":case"show":case"keepAlive":default:a[t]||(a[t]=arguments$1[c][t]);} } }return a}
+	for(var t,r,a={},c=arguments.length;c--;){ for(var o=0,n=Object.keys(arguments[c]);o<n.length;o++){ switch(t=n[o]){case"class":case"style":case"directives":if(Array.isArray(a[t])||(a[t]=[]),"style"===t){var i=void 0;i=Array.isArray(arguments$1[c].style)?arguments$1[c].style:[arguments$1[c].style];for(var l=0;l<i.length;l++){var y=i[l];"string"==typeof y&&(i[l]=s(y));}arguments$1[c].style=i;}a[t]=a[t].concat(arguments$1[c][t]);break;case"staticClass":if(!arguments$1[c][t]){ break; }void 0===a[t]&&(a[t]=""),a[t]&&(a[t]+=" "),a[t]+=arguments$1[c][t].trim();break;case"on":case"nativeOn":a[t]||(a[t]={});for(var p=0,f=Object.keys(arguments[c][t]||{});p<f.length;p++){ r=f[p],a[t][r]?a[t][r]=[].concat(a[t][r],arguments$1[c][t][r]):a[t][r]=arguments$1[c][t][r]; }break;case"attrs":case"props":case"domProps":case"scopedSlots":case"staticStyle":case"hook":case"transition":a[t]||(a[t]={}),a[t]=e({},arguments$1[c][t],a[t]);break;case"slot":case"key":case"ref":case"tag":case"show":case"keepAlive":default:a[t]||(a[t]=arguments$1[c][t]);} } }return a}//# sourceMappingURL=lib.esm.js.map
 
 	function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
@@ -14546,6 +14546,7 @@
 	Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 	Popper.placements = placements;
 	Popper.Defaults = Defaults;
+	//# sourceMappingURL=popper.js.map
 
 	function _classCallCheck$3(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -30409,6 +30410,7 @@
 	    return content;
 	  }
 	});
+	//# sourceMappingURL=portal-vue.esm.js.map
 
 	var NAME$x = 'BToaster';
 	var props$Z = {
@@ -42151,7 +42153,7 @@
 
 	})));
 
-
+	//# sourceMappingURL=es6-promise.map
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)));
 
@@ -42971,7 +42973,7 @@
 	/***/ })
 	/******/ ]);
 	});
-
+	//# sourceMappingURL=noty.js.map
 	});
 
 	var Noty = unwrapExports(noty);
@@ -48022,6 +48024,7 @@
 	    }
 	    return script;
 	}
+	//# sourceMappingURL=normalize-component.mjs.map
 
 	/* script */
 	var __vue_script__$1 = script$1;
@@ -48184,6 +48187,7 @@
 	    options: [Array, Object],
 	    prompt: [Boolean, String],
 	    depends: Array,
+	    params: Array,
 	    url: String
 	  },
 	  data: function data() {
@@ -48211,20 +48215,22 @@
 	  },
 	  mounted: function mounted() {
 	    if (this.url && this.depends) {
+	      console.log(this.params);
 	      var depdropOptions = {
 	        depends: this.depends,
 	        url: this.url,
-	        language: 'vi'
+	        language: 'vi',
+	        ajaxSettings: {
+	          data: {
+	            value: this.innerValue
+	          }
+	        },
+	        params: this.params
 	      };
 
 	      if (this.parentsHasValue()) {
 	        depdropOptions = _objectSpread2$1({}, depdropOptions, {
-	          initialize: true,
-	          ajaxSettings: {
-	            data: {
-	              value: this.innerValue
-	            }
-	          }
+	          initialize: true
 	        });
 	      }
 
@@ -49718,7 +49724,7 @@
 	                                      content: "Tìm kiếm trên Google",
 	                                      href:
 	                                        "https://www.google.com/maps/search/" +
-	                                        _vm.form.vitri,
+	                                        encodeURIComponent(_vm.form.vitri),
 	                                      variant: "info",
 	                                      target: "_blank"
 	                                    }
@@ -49736,7 +49742,7 @@
 	                                      content: "Tìm kiếm trên Vietbando",
 	                                      href:
 	                                        "http://maps.vietbando.com/maps/?sk=" +
-	                                        _vm.form.vitri,
+	                                        encodeURIComponent(_vm.form.vitri),
 	                                      variant: "secondary",
 	                                      target: "_blank"
 	                                    }
@@ -49768,36 +49774,93 @@
 	                    [
 	                      _c(
 	                        "b-row",
-	                        _vm._l(
-	                          _vm.only(_vm.schema, [
-	                            "sonha",
-	                            "duong",
-	                            "to_dp",
-	                            "khupho"
-	                          ]),
-	                          function(i, k1) {
-	                            return _c(
-	                              "b-col",
-	                              { key: k1 },
-	                              [
-	                                _c("field-sxh", {
-	                                  attrs: {
-	                                    id: "field-" + k + "-" + i.name,
-	                                    name: "xacminh[" + k + "][" + i.name + "]",
-	                                    nameKey: i.name,
-	                                    path: "xacminh.items." + k + "." + i.name,
-	                                    label:
-	                                      _vm.schema[i.name].label +
-	                                      " (" +
-	                                      (k + 1) +
-	                                      ")"
-	                                  }
-	                                })
-	                              ],
-	                              1
-	                            )
-	                          }
-	                        ),
+	                        [
+	                          _c(
+	                            "b-col",
+	                            [
+	                              _c("field-sxh", {
+	                                attrs: {
+	                                  id: "field-" + k + "-sonha",
+	                                  name: "xacminh[" + k + "][sonha]",
+	                                  nameKey: "sonha",
+	                                  path: "xacminh.items." + k + ".sonha",
+	                                  label:
+	                                    _vm.schema["sonha"].label +
+	                                    " (" +
+	                                    (k + 1) +
+	                                    ")"
+	                                }
+	                              })
+	                            ],
+	                            1
+	                          ),
+	                          _vm._v(" "),
+	                          _c(
+	                            "b-col",
+	                            [
+	                              _c("field-sxh", {
+	                                attrs: {
+	                                  id: "field-" + k + "-duong",
+	                                  name: "xacminh[" + k + "][duong]",
+	                                  nameKey: "duong",
+	                                  path: "xacminh.items." + k + ".duong",
+	                                  label:
+	                                    _vm.schema["duong"].label +
+	                                    " (" +
+	                                    (k + 1) +
+	                                    ")"
+	                                }
+	                              })
+	                            ],
+	                            1
+	                          ),
+	                          _vm._v(" "),
+	                          _c(
+	                            "b-col",
+	                            [
+	                              _c("field-sxh", {
+	                                attrs: {
+	                                  id: "field-" + k + "-khupho",
+	                                  name: "xacminh[" + k + "][khupho]",
+	                                  nameKey: "khupho",
+	                                  path: "xacminh.items." + k + ".khupho",
+	                                  label:
+	                                    _vm.schema["khupho"].label +
+	                                    " (" +
+	                                    (k + 1) +
+	                                    ")",
+	                                  depends: ["field-" + k + "-px"]
+	                                }
+	                              })
+	                            ],
+	                            1
+	                          ),
+	                          _vm._v(" "),
+	                          _c(
+	                            "b-col",
+	                            [
+	                              _c("field-sxh", {
+	                                attrs: {
+	                                  id: "field-" + k + "-to_dp",
+	                                  name: "xacminh[" + k + "][to_dp]",
+	                                  nameKey: "to_dp",
+	                                  path: "xacminh.items." + k + ".to_dp",
+	                                  label:
+	                                    _vm.schema["to_dp"].label +
+	                                    " (" +
+	                                    (k + 1) +
+	                                    ")",
+	                                  depends: ["field-" + k + "-khupho"],
+	                                  params: [
+	                                    "field-" + k + "-qh",
+	                                    "field-" + k + "-px"
+	                                  ]
+	                                }
+	                              })
+	                            ],
+	                            1
+	                          )
+	                        ],
 	                        1
 	                      ),
 	                      _vm._v(" "),
@@ -49929,8 +49992,8 @@
 	                    _vm.only(_vm.schema, [
 	                      "sonhakhac",
 	                      "duongkhac",
-	                      "tokhac",
-	                      "khuphokhac"
+	                      "khuphokhac",
+	                      "tokhac"
 	                    ]),
 	                    function(i, k) {
 	                      return _c(
@@ -55724,6 +55787,7 @@
 
 	      if (this.$attrs.depends) {
 	        $attrs.depends = this.$attrs.depends;
+	        $attrs.params = this.$attrs.params;
 	      }
 
 	      return $attrs;

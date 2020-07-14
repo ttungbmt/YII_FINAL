@@ -7,6 +7,7 @@ use pcd\models\HcPhuong;
 use pcd\models\HcQuan;
 use pcd\models\Loaibenh;
 use pcd\modules\dm\models\DmKhupho;
+use pcd\modules\dm\models\DmToDp;
 use pcd\supports\RoleHc;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBasicAuth;
@@ -66,9 +67,29 @@ class DmController extends ApiController
             $query->andFilterWhere(['khupho' => $value]);
         }
 
-        $list = $query->orderBy('khupho')->map(function ($item) {
+        $list = collect($query->orderBy('khupho')->map(function ($item) {
             return ['id' => $item->khupho, 'name' => $item->khupho];
-        });
+        }))->sortBy('name', SORT_NATURAL)->values()->all();
+
+        return [
+            'output' => $list, 'selected' => $value
+        ];
+    }
+
+    public function actionTo_dp()
+    {
+        $data = request()->all();
+        $value = data_get($data, 'value');
+        $khupho = data_get($data, 'depdrop_parents.0');
+        $maquan = data_get($data, 'depdrop_params.0');
+        $maphuong = data_get($data, 'depdrop_params.1');
+
+        $data = DmToDp::find()->where(['maquan' => $maquan, 'maphuong' => $maphuong, 'khupho' => $khupho])->all();
+
+        $list = collect($data)->map(function ($item) {
+            return ['id' => $item->to_dp, 'name' => $item->to_dp];
+        })->sortBy('name', SORT_NATURAL)->values()->all();
+
         return [
             'output' => $list, 'selected' => $value
         ];
