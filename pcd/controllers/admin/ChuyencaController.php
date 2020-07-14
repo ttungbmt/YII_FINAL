@@ -21,15 +21,12 @@ class ChuyencaController extends AppController
     protected $modelClass = 'pcd\models\Chuyenca';
 
     public function actionIndex(){
+        $searchModel = new ChuyencaSearch();
+        $dataProvider = $searchModel->search(request()->queryParams);
 
-        if(role('phuong')) {
-            $searchModel = new ChuyencaSearch();
-            $dataProvider = $searchModel->search(request()->queryParams);
-
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-            ]);
-        }
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 }

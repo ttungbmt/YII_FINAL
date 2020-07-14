@@ -51,7 +51,7 @@ $header = function ($title){
                     <a href="#" class="nav-link"><i class="icon-history"></i> <span>Bệnh SXH</span></a>
                     <ul class="nav nav-group-sub" data-submenu-title="Bệnh truyền nhiễm" style="display: block">
                         <?=$li('Danh sách', '/admin/cabenh-sxh')?>
-                        <?=$li('Ca chuyển', '/admin/chuyenca')?>
+                        <?=$li('Ca chuyển', ['/admin/chuyenca', 'ChuyencaSearch' => ['loaica' => 2]])?>
                         <?=$li('Thống kê', '/admin/thongke')?>
                         <?=$li('Nhập excel', '/import/sxh', null, 'sxh.import')?>
 

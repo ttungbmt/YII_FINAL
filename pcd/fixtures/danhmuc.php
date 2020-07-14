@@ -91,6 +91,7 @@ $data['dm_loaiodich'] = [
     2 => 'Ổ dịch diện rộng',
     3 => 'Ổ dịch liên phường',
     4 => 'Ổ dịch liên quận',
+    5 => 'Ổ dịch ca dương tính',
 ];
 
 $data['dm_mucdich_gs'] = [

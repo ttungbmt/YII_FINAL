@@ -1,10 +1,7 @@
 <?php
-
 namespace pcd\supports;
 
-use common\models\User;
 use kartik\helpers\Html;
-use paulzi\jsonBehavior\JsonField;
 use pcd\models\Chuyenca;
 use pcd\models\HcPhuong;
 use pcd\models\HcQuan;
@@ -18,7 +15,6 @@ class RoleHc
         $userId = user()->id;
         $info = userInfo();
         $roles = collect(getRoles());
-//        $data = auth()->getPermissionsByUser($userId)['ytdp1']->data;
         $data = [];
 
         if ($roles->contains('phuong')) {
@@ -75,13 +71,13 @@ class TpAction extends BaseObject{
 
     public function btnChuyenCa(){
         return (
-            Html::a('Tất cả', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 0]], ['class' => 'btn btn-default btn-raised']) .
-            Html::a('Ca TP', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 1]], ['class' => 'btn btn-default btn-raised']) .
-            Html::a('Ca chuyển', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 2]], ['class' => 'btn btn-default btn-raised'])
+            Html::a('Tất cả', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 0]], ['class' => 'btn btn-'.Helper::statusClassCc(0).' btn-raised']) .
+            Html::a('Ca TP', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 1]], ['class' => 'btn btn-'.Helper::statusClassCc(1).' btn-raised']) .
+            Html::a('Ca chuyển', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 2]], ['class' => 'btn btn-'.Helper::statusClassCc(2).' btn-raised'])
         );
     }
 
-    public function filterChuyenca($loaica, &$query){
+    public function filterChuyenca($loaica, &$query, $key = 'gid'){
         $ca = Chuyenca::find();
 
         if ($loaica == 2) {
@@ -143,45 +139,42 @@ class QuanAction extends TpAction
     }
 
     public function showBtnSave($model){
-//        dd( 1, data_get($model, 'qh'), $this->maquan);
-
         return data_get($model, 'qh') == $this->maquan;
     }
 
     public function btnChuyenCa(){
         return (
-            Html::a('Tất cả', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 0]], ['class' => 'btn btn-default btn-raised']) .
-            Html::a('Ca QH', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 1]], ['class' => 'btn btn-default btn-raised']) .
-            Html::a('Ca chuyển', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 2]], ['class' => 'btn btn-default btn-raised']) .
-            Html::a('Ca nhận', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 3]], ['class' => 'btn btn-default btn-raised']).
-            Html::a('Ca trả về', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 4]], ['class' => 'btn btn-default btn-raised'])
+            Html::a('Tất cả', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 0]], ['class' => 'btn btn-'.Helper::statusClassCc(0).' btn-raised']) .
+            Html::a('Ca QH', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 1]], ['class' => 'btn btn-'.Helper::statusClassCc(1).' btn-raised']) .
+            Html::a('Ca chuyển', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 2]], ['class' => 'btn btn-'.Helper::statusClassCc(2).' btn-raised']) .
+            Html::a('Ca nhận', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 3]], ['class' => 'btn btn-'.Helper::statusClassCc(3).' btn-raised']).
+            Html::a('Ca trả về', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 4]], ['class' => 'btn btn-'.Helper::statusClassCc(4).' btn-raised'])
         );
     }
 
-    public function filterChuyenca($loaica, &$query){
-        $ca = Chuyenca::find();
+    public function filterChuyenca($loaica, &$query, $key = 'gid'){
+        $ca = Chuyenca::find()->select(['gid' => 'cabenh_id']);
 
         if ($loaica == 2) {
             // Ca chuyển
-            $ca = $ca->where(['type' => 1, 'qh_chuyen' => $this->maquan])->pluck('cabenh_id')->unique()->all();
+            $ca = $ca->where(['is_chuyentiep' => 1, 'qh_chuyen' => (string)$this->maphuong]);
             $query->andFilterWhere(['gid' => $ca]);
         } elseif ($loaica == 3) {
             // Ca nhận
-            $ca = $ca->where(['type' => 1, 'qh_nhan' => $this->maquan])->pluck('cabenh_id')->unique()->all();
+            $ca = $ca->where(['is_chuyentiep' => 1, 'qh_nhan' => (string)$this->maphuong]);
             $query->andFilterWhere(['gid' => $ca]);
         } elseif ($loaica == 4) {
             // Ca trả về
-            $ca = $ca->where(['type' => 2, 'qh_nhan' => $this->maquan])->pluck('cabenh_id')->unique()->all();
+            $ca = $ca->where(['is_chuyentiep' => 0, 'qh_nhan' => $this->maphuong]);
             $query->andFilterWhere(['gid' => $ca]);
         } elseif ($loaica == 1) {
-            // Ca trả về
-            $ca = $ca->where(['type' => 2, 'qh_nhan' => $this->maquan])->pluck('cabenh_id')->unique()->all();
+            // Ca TP
+            $ca = $ca->where(['qh_nhan' => $this->maphuong]);
             $this->filterCabenhSxh($query);
             $query->andFilterWhere(['NOT IN', 'gid', $ca]);
         } else {
             $this->filterCabenhSxh($query);
         }
-
     }
 
     public function getDmQp(){
@@ -245,19 +238,16 @@ class PhuongAction extends QuanAction
     }
 
     public function btnChuyenCa(){
-        $loaica = data_get(request()->all(), 'CabenhSxhSearch.loaica', 0);
-        $activeClass = function ($v) use($loaica){return $loaica == $v ? 'primary' : 'default';};
-
         return (
-            Html::a('Tất cả', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 0]], ['class' => 'btn btn-'.$activeClass(0).' btn-raised']) .
-            Html::a('Ca PX', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 1]], ['class' => 'btn btn-'.$activeClass(1).' btn-raised']) .
-            Html::a('Ca chuyển', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 2]], ['class' => 'btn btn-'.$activeClass(2).' btn-raised']) .
-            Html::a('Ca nhận', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 3]], ['class' => 'btn btn-'.$activeClass(3).' btn-raised']).
-            Html::a('Ca trả về', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 4]], ['class' => 'btn btn-'.$activeClass(4).' btn-raised'])
+            Html::a('Tất cả', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 0]], ['class' => 'btn btn-'.Helper::statusClassCc(0).' btn-raised']) .
+            Html::a('Ca PX', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 1]], ['class' => 'btn btn-'.Helper::statusClassCc(1).' btn-raised']) .
+            Html::a('Ca chuyển', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 2]], ['class' => 'btn btn-'.Helper::statusClassCc(2).' btn-raised']) .
+            Html::a('Ca nhận', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 3]], ['class' => 'btn btn-'.Helper::statusClassCc(3).' btn-raised']).
+            Html::a('Ca trả về', ['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 4]], ['class' => 'btn btn-'.Helper::statusClassCc(4).' btn-raised'])
         );
     }
 
-    public function filterChuyenca($loaica, &$query){
+    public function filterChuyenca($loaica, &$query, $key = 'gid'){
         $ca = Chuyenca::find()->select(['gid' => 'cabenh_id']);
 
         if ($loaica == 2) {

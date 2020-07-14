@@ -17,6 +17,7 @@ class ChuyencaSearch extends Chuyenca
     public $tenphuong;
     public $tenquan;
     public $loaica;
+
     public function rules()
     {
         return [
@@ -26,6 +27,12 @@ class ChuyencaSearch extends Chuyenca
         ];
     }
 
+    public function init()
+    {
+        parent::init();
+        $this->loaica = $this->loaica ? $this->loaica : 2;
+    }
+
     public function scenarios()
     {
         return Model::scenarios();
@@ -33,10 +40,8 @@ class ChuyencaSearch extends Chuyenca
 
     public function search($params)
     {
-        $maphuong = userInfo()->ma_phuong;
-        $query = $this->find()
-            ->with(['cabenhSxh', 'nhan', 'chuyen'])
-        ;
+        $roles = RoleHc::init();
+        $query = $this->find()->with(['cabenhSxh', 'nhan', 'chuyen']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -45,35 +50,35 @@ class ChuyencaSearch extends Chuyenca
 
         $this->load($params);
 
-
         if (!$this->validate()) {
             $query->where('0=1');
             return $dataProvider;
         }
 
-        $roles = RoleHc::init();
+        $ca = Chuyenca::find()->select(['gid' => 'cabenh_id']);
+        if(role('phuong')){
+            $field = ['prefix' => 'px', 'value' => userInfo()->maphuong];
+        } else {
+            $field = ['prefix' => 'qh', 'value' => userInfo()->maquan];
+        }
 
-        $ca = Chuyenca::find();
-        if ($this->loaica == 3) {
+        if ($this->loaica == 2) {
+            // Ca chuyển
+            $ca = $ca->where(['is_chuyentiep' => 1, $field['prefix'].'_chuyen' => $field['value']]);
+            $query->andFilterWhere(['cabenh_id' => $ca]);
+        } elseif ($this->loaica == 3) {
             // Ca nhận
-            $ca = $ca->where(['type' => 1, 'px_nhan' => $maphuong])->pluck('cabenh_id')->unique()->all();
+            $ca = $ca->where(['is_chuyentiep' => 1, $field['prefix'].'_nhan' => $field['value']]);
             $query->andFilterWhere(['cabenh_id' => $ca]);
         } elseif ($this->loaica == 4) {
             // Ca trả về
-            $ca = $ca->where(['type' => 2, 'px_nhan' => $maphuong])->pluck('cabenh_id')->unique()->all();
+            $ca = $ca->where(['is_chuyentiep' => 0, $field['prefix'].'_nhan' => $field['value']]);
             $query->andFilterWhere(['cabenh_id' => $ca]);
         } elseif ($this->loaica == 1) {
-            // Ca trả về
-            $ca = $ca->where(['type' => 2, 'px_nhan' => $maphuong])->pluck('cabenh_id')->unique()->all();
-            $roles->filterCabenhSxh($query);
+            // Ca TP
+            $ca = $ca->where([$field['prefix'].'_nhan' => $field['value']]);
             $query->andFilterWhere(['NOT IN', 'cabenh_id', $ca]);
-        } else {
-            // Ca chuyển
-            $ca = $ca->where(['type' => 1, 'px_chuyen' => $maphuong])->pluck('cabenh_id')->unique()->all();
-            $query->andFilterWhere(['cabenh_id' => $ca]);
         }
-
-
 
         return $dataProvider;
     }

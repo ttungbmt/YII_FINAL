@@ -11,8 +11,8 @@
 
                 <tr>
                     <th rowspan="2">Thông tin ca bệnh</th>
-                    <th v-if="cap=='quan'" v-for="item in tk_kpa">PX</th>
-                    <th v-if="cap=='phuong'" v-for="item in tk_kpa">KP - ấp</th>
+                    <th v-if="cap=='quan'" :colspan="tk_kpa.length" class="text-center">PX</th>
+                    <th v-if="cap=='phuong'" :colspan="tk_kpa.length" class="text-center">KP - ấp</th>
                     <th rowspan="2">Tổng cộng</th>
                 </tr>
                 <tr>
@@ -28,7 +28,7 @@
                     <td class="font-weight-semibold">{{ttcb_tc}}</td>
                 </tr>
                 <tr class="table-success">
-                    <td class="font-weight-semibold">1. Không có địa chỉ tại PX</td>
+                    <td class="font-weight-semibold">1. Không địa chỉ - không bn</td>
                     <td v-for="item in tk_kpa" class="font-weight-semibold">
                         {{item.kdc_qhk + item.kdc_pxk + item.kdc_tk}}
                     </td>

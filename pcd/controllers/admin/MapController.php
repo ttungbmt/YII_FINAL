@@ -8,7 +8,7 @@ class MapController extends AppController
     public $layout = '@common/themes/admin/layouts/map';
 
     public function actionIndex(){
-        return $this->render('index');
+        return $this->redirect('map/v2');
     }
 
     public function actionV2(){

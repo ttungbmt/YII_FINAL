@@ -521,7 +521,8 @@ class SxhForm extends MyForm
         $fields = [
             'id', 'is_diachi', 'is_benhnhan', 'dienthoai', 'sonha', 'duong', 'to_dp', 'khupho', 'tinh', 'tinh_dc_khac', 'px', 'qh',
             'disabled' => function ($model, $key, $index) use ($xacminh, $is_phuong, $maphuong) {
-                if(count($xacminh) <= 1 ) return false;
+                if(count($xacminh) == 0) return false;
+                if(count($xacminh) == 1 && $xacminh[0]['px'] == $maphuong) return false;
 
                 if(count($xacminh) > 2){
                     $lastUnlocked = count($xacminh)%2!=1 ? count($xacminh) - 1 : count($xacminh);

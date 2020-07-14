@@ -10,7 +10,7 @@ $columns = [
         'attribute' => 'hoten',
         'format'    => 'raw',
         'value'     => function ($model) {
-            return \yii\helpers\Html::a(data_get($model, 'cabenhSxh.hoten'), ['/admin/cabenh-sxh/update', 'id' => $model->cabenh_id], ['target' => '_blank', 'data-pjax' => 0]);
+            return \yii\helpers\Html::a(data_get($model, 'cabenhSxh.hoten'), ['/sxh/default/update', 'id' => $model->cabenh_id], ['target' => '_blank', 'data-pjax' => 0]);
         },
         'group'     => true,
     ],

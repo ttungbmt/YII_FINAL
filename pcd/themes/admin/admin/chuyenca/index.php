@@ -2,6 +2,7 @@
 
 use johnitvn\ajaxcrud\CrudAsset;
 use kartik\grid\GridView;
+use pcd\supports\Helper;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 
@@ -14,6 +15,7 @@ $this->title = "Chuyển ca";
 $partial = app('request')->get('partial') || app('request')->isAjax || (isset($partial) ? $partial : false);
 $suffix = '-pcd';
 $tableId = 'crud-datatable' . $suffix;
+$path = 'ChuyencaSearch.loaica';
 ?>
 <div class="chuyenca-index">
     <div id="ajaxCrudDatatable">
@@ -45,9 +47,9 @@ $tableId = 'crud-datatable' . $suffix;
                 'type' => 'primary',
                 'heading' => 'Danh sách Chuyển ca',
                 'before'  =>  Html::tag('div', (
-                    Html::a('Ca chuyển', ['/admin/chuyenca', 'ChuyencaSearch' => ['loaica' => 2]], ['class' => 'btn btn-default btn-raised']).
-                    Html::a('Ca nhận', ['/admin/chuyenca', 'ChuyencaSearch' => ['loaica' => 3]], ['class' => 'btn btn-default btn-raised']).
-                    Html::a('Ca trả về', ['/admin/chuyenca', 'ChuyencaSearch' => ['loaica' => 4]], ['class' => 'btn btn-default btn-raised'])
+                    Html::a('Ca chuyển', ['/admin/chuyenca', 'ChuyencaSearch' => ['loaica' => 2]], ['class' => 'btn btn-'. Helper::statusClassCc(2, $path).' btn-raised']).
+                    Html::a('Ca nhận', ['/admin/chuyenca', 'ChuyencaSearch' => ['loaica' => 3]], ['class' => 'btn btn-'. Helper::statusClassCc(3, $path).' btn-raised']).
+                    Html::a('Ca trả về', ['/admin/chuyenca', 'ChuyencaSearch' => ['loaica' => 4]], ['class' => 'btn btn-'. Helper::statusClassCc(4, $path).' btn-raised'])
                 ), ['class' => 'btn-group'])
             ]
         ]) ?>
