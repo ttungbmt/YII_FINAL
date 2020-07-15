@@ -350,9 +350,8 @@ class SxhForm extends MyForm
         $this->load($formData, '');
         $this->updateXacminh($cb, $formData);
         $this->loadDcCuoi($formData);
-        if ($this->lat && $this->lng) {
-            $this->geom = [$this->lng, $this->lat];
-        }
+        $this->geom = $this->lat && $this->lng ? [$this->lng, $this->lat] : null;
+
 
         $this->validate();
 

@@ -83,9 +83,6 @@
         },
         mounted() {
             if (this.url && this.depends) {
-
-                console.log(this.params)
-
                 let depdropOptions = {
                     depends: this.depends,
                     url: this.url,
