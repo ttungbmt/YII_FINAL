@@ -1,3 +1,6 @@
+<?php
+$field_hc = role('phuong') ? 'maphuong' : $field['code'];
+?>
 <div class="card-body">
     <table id="tb-cc" class="table">
         <thead>
@@ -10,9 +13,9 @@
         <tbody>
         <?php foreach ($tk_chuyenca as $ma => $item):?>
             <tr>
-                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => [$item['code'] => $ma]])?>"><?=data_get($item, 'name')? : 'Không rõ'?></a></td>
-                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 2, $item['code'] => $ma]])?>"><?=$chuyen = data_get($item, 'chuyen')??0?></a></td>
-                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => ['loaica' => 3, $item['code'] => $ma]])?>"><?=$nhan = data_get($item, 'nhan')??0?></a></td>
+                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge([$field_hc => $item['code']], $params)])?>"><?=data_get($item, 'name')? : 'Không rõ'?></a></td>
+                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['loaica' => 2, $field_hc => $item['code']], $params)])?>"><?=$chuyen = data_get($item, 'chuyen')??0?></a></td>
+                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['loaica' => 3, $field_hc => $item['code']], $params)])?>"><?=$nhan = data_get($item, 'nhan')??0?></a></td>
             </tr>
         <?php endforeach;?>
         </tbody>

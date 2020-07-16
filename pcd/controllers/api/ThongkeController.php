@@ -73,17 +73,19 @@ class ThongkeController extends MyApiController
             ])->groupBy(new Expression('1'))
         ;
 
-        $q_chuyen = (new Query())->select(['code' => $field['chuyen'], 'total' => 'COUNT(*)',])
+        $q_chuyen = (new Query())->select(['code' => $field['chuyen'], 'total' => 'COUNT(DISTINCT cabenh_id)',])
             ->from(['cc' => Chuyenca::tableName()])->groupBy(new Expression('1'))
             ->leftJoin(['cb' => CabenhSxh::tableName()], "cb.gid = cc.cabenh_id")
             ->andFilterDate(['ngaybaocao' => [$date_from, $date_to]]);
+
         !role('phuong') && $role->filterMaHc($q_chuyen);
 
-        $q_nhan = (new Query())->select(['code' => $field['nhan'], 'total' => 'COUNT(*)',])
+        $q_nhan = (new Query())->select(['code' => $field['nhan'], 'total' => 'COUNT(DISTINCT cabenh_id)',])
             ->from(['cc' => Chuyenca::tableName()])->groupBy(new Expression('1'))
             ->leftJoin(['cb' => CabenhSxh::tableName()], "cb.gid = cc.cabenh_id")
             ->andFilterDate(['ngaybaocao' => [$date_from, $date_to]]);
         !role('phuong') && $role->filterMaHc($q_nhan);
+//        dd($q_nhan->createCommand()->getRawSql());
 
         $field_cc = role('phuong') ? $field_px : $field;
         $q_cc =  (new Query())->select([

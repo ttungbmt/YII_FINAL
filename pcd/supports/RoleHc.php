@@ -7,6 +7,7 @@ use pcd\models\HcPhuong;
 use pcd\models\HcQuan;
 use Yii;
 use yii\base\BaseObject;
+use yii\db\Expression;
 
 class RoleHc
 {
@@ -78,7 +79,8 @@ class TpAction extends BaseObject{
     }
 
     public function filterChuyenca($loaica, &$query, $key = 'gid'){
-        $ca = Chuyenca::find();
+        $ca = Chuyenca::find()
+            ->select(new Expression('DISTINCT cabenh_id'));
 
         if ($loaica == 2) {
             $query->andFilterWhere(['<>', 'tinh', 'HCM']);
@@ -153,7 +155,9 @@ class QuanAction extends TpAction
     }
 
     public function filterChuyenca($loaica, &$query, $key = 'gid'){
-        $ca = Chuyenca::find()->select(['gid' => 'cabenh_id']);
+        $ca = Chuyenca::find()
+            ->select(new Expression('DISTINCT cabenh_id'));
+
 
         if ($loaica == 2) {
             // Ca chuyển
@@ -248,7 +252,9 @@ class PhuongAction extends QuanAction
     }
 
     public function filterChuyenca($loaica, &$query, $key = 'gid'){
-        $ca = Chuyenca::find()->select(['gid' => 'cabenh_id']);
+        $ca = Chuyenca::find()
+            ->select(new Expression('DISTINCT cabenh_id'))
+        ;
 
         if ($loaica == 2) {
             // Ca chuyển

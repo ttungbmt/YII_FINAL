@@ -54,7 +54,7 @@ class DmToDpSearch extends DmToDp
         $query = $this::find()->with(['quan', 'phuong']);
         $this->load($params);
 
-        $this->order === 'natural' && $query->orderBy(new Expression('LENGTH(khupho), khupho, LENGTH(to_dp), to_dp'));
+        ($this->order === 'natural' && !request()->has('sort')) && $query->orderBy(new Expression('LENGTH(khupho), khupho, LENGTH(to_dp), to_dp'));
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -62,7 +62,6 @@ class DmToDpSearch extends DmToDp
                 'gid' => SORT_DESC,
             ]],
         ]);
-
 
         if (!$this->validate()) {
             $query->where('0=1');

@@ -12,11 +12,11 @@
         <tbody>
         <?php foreach ($tk_xacminh as $ma => $item):?>
             <tr>
-                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge([$item['code'] => $ma], $params)])?>"><?=data_get($item, 'name')? : 'Không rõ'?></a></td>
-                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['group_xm' => 1, $item['code'] => $ma], $params)])?>"><?=$cdc_cbn = data_get($item, 'cdc_cbn')??0?></a></td>
-                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['group_xm' => 2, $item['code'] => $ma], $params)])?>"><?=$cdc_kbn = data_get($item, 'cdc_kbn')??0?></a></td>
-                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['group_xm' => 3, $item['code'] => $ma], $params)])?>"><?=$kdc_kbn = data_get($item, 'kdc_kbn')??0?></a></td>
-                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge([$item['code'] => $ma], $params)])?>"><?=$cdc_cbn+$cdc_kbn+$kdc_kbn?></a></td>
+                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge([$field['code'] => $item['code']], $params)])?>"><?=data_get($item, 'name')? : 'Không rõ'?></a></td>
+                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['group_xm' => 1, $field['code'] => $item['code']], $params)])?>"><?=$cdc_cbn = data_get($item, 'cdc_cbn')??0?></a></td>
+                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['group_xm' => 2, $field['code'] => $item['code']], $params)])?>"><?=$cdc_kbn = data_get($item, 'cdc_kbn')??0?></a></td>
+                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['group_xm' => 3, $field['code'] => $item['code']], $params)])?>"><?=$kdc_kbn = data_get($item, 'kdc_kbn')??0?></a></td>
+                <td><a target="_blank" href="<?=url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge([$field['code'] => $item['code']], $params)])?>"><?=$cdc_cbn+$cdc_kbn+$kdc_kbn?></a></td>
             </tr>
         <?php endforeach;?>
         </tbody>

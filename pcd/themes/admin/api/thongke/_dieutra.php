@@ -14,22 +14,22 @@
         <?php foreach ($tk_dieutra as $ma => $item): ?>
             <tr>
                 <td><a target="_blank"
-                       href="<?= url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge([$item['code'] => $ma], $params)]) ?>"><?= data_get($item, 'name') ?: 'Không rõ' ?></a>
+                       href="<?= url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge([$field['code'] => $item['code']], $params)]) ?>"><?= data_get($item, 'name') ?: 'Không rõ' ?></a>
                 </td>
                 <td><a target="_blank"
-                       href="<?= url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['loaidieutra' => 3, $item['code'] => $ma], $params)]) ?>"><?= $da_dt = data_get($item, 'da_dt') ?? 0 ?></a>
+                       href="<?= url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['loaidieutra' => 3, $field['code'] => $item['code']], $params)]) ?>"><?= $da_dt = data_get($item, 'da_dt') ?? 0 ?></a>
                 </td>
                 <td><a target="_blank"
-                       href="<?= url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['loaidieutra' => 1, $item['code'] => $ma], $params)]) ?>"><?= $dang_dt = data_get($item, 'dang_dt') ?? 0 ?></a>
+                       href="<?= url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['loaidieutra' => 1, $field['code'] => $item['code']], $params)]) ?>"><?= $dang_dt = data_get($item, 'dang_dt') ?? 0 ?></a>
                 </td>
                 <td><a target="_blank"
-                       href="<?= url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['loaidieutra' => 2, $item['code'] => $ma], $params)]) ?>"><?= $chua_xv = data_get($item, 'chua_xv') ?? 0 ?></a>
+                       href="<?= url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['loaidieutra' => 2, $field['code'] => $item['code']], $params)]) ?>"><?= $chua_xv = data_get($item, 'chua_xv') ?? 0 ?></a>
                 </td>
                 <td><a target="_blank"
-                       href="<?= url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['loaidieutra' => 0, $item['code'] => $ma], $params)]) ?>"><?= $chua_dt = data_get($item, 'chua_dt') ?? 0 ?></a>
+                       href="<?= url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge(['loaidieutra' => 0, $field['code'] => $item['code']], $params)]) ?>"><?= $chua_dt = data_get($item, 'chua_dt') ?? 0 ?></a>
                 </td>
                 <td><a target="_blank"
-                       href="<?= url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge([$item['code'] => $ma], $params)]) ?>"><?= $da_dt+$dang_dt+$chua_xv+$chua_dt ?></a>
+                       href="<?= url(['/admin/cabenh-sxh', 'CabenhSxhSearch' => array_merge([$field['code'] => $item['code']], $params)]) ?>"><?= $da_dt+$dang_dt+$chua_xv+$chua_dt ?></a>
                 </td>
             </tr>
         <?php endforeach; ?>

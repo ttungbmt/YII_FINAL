@@ -55,7 +55,7 @@ class CabenhSxhSearch extends CabenhSxh
     public function search($params)
     {
         $roles = RoleHc::init();
-        $query = $this->find()->where(['is_nghingo' => null])->with([
+        $query = $this->find()->with([
             'hcPhuong'
         ]);
 
@@ -75,8 +75,6 @@ class CabenhSxhSearch extends CabenhSxh
         }
 
         $query->andFilterWhere([
-            'maphuong' => $this->maphuong,
-            'maquan' => $this->maquan,
             'loaidieutra' => $this->loaidieutra,
             'loaicabenh' => $this->loaicabenh,
             'chuandoan_bd' => $this->chuandoan_bd,
@@ -87,7 +85,12 @@ class CabenhSxhSearch extends CabenhSxh
             'loai_xm_cb' => $this->loai_xm_cb,
         ]);
 
-
+        if(!in_array($this->loaica, [2,3,4])){
+            $query->andFilterWhere([
+                'maphuong' => $this->maphuong,
+                'maquan' => $this->maquan,
+            ]);
+        }
 
         if($this->date_from){
             $query->andFilterWhere(['>=', $this->field_date, dateToDb($this->date_from)]);
@@ -106,7 +109,6 @@ class CabenhSxhSearch extends CabenhSxh
             ->andFilterSearch(['ilike', 'khupho', $this->khupho])
             ->andFilterSearch(['ilike', 'duong', $this->duong])
             ->andFilterSearch(['ilike', 'nghenghiep', $this->nghenghiep])
-            ->andFilterWhere(['=', 'ngaybaocao', $this->ngaybaocao])
             ->andFilterWhere(['=', 'ngaynhapvien', $this->ngaynhapvien])
             ->andFilterWhere(['=', 'ngayxuatvien', $this->ngayxuatvien]);
 
@@ -121,6 +123,7 @@ class CabenhSxhSearch extends CabenhSxh
         }
 
         $roles->filterChuyenCa($this->loaica, $query);
+//        dd($this);
 
         return $dataProvider;
     }
