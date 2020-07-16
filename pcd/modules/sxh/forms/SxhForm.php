@@ -512,7 +512,7 @@ class SxhForm extends MyForm
                 if(count($xacminh) == 0) return false;
                 if(count($xacminh) == 1 && $xacminh[0]['px'] == $maphuong) return false;
 
-                if(count($xacminh) > 2){
+                if(count($xacminh) >= 2){
                     $lastUnlocked = count($xacminh)%2!=1 ? count($xacminh) - 1 : count($xacminh);
                     if($is_phuong && $index+1 >= $lastUnlocked && $this->px && $this->px == $maphuong){
                         return false;
