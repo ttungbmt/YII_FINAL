@@ -87,6 +87,7 @@ class ThongkeController extends MyApiController
         !role('phuong') && $role->filterMaHc($q_nhan);
 //        dd($q_nhan->createCommand()->getRawSql());
 
+
         $field_cc = role('phuong') ? $field_px : $field;
         $q_cc =  (new Query())->select([
             'code' => $field_cc['code'],
@@ -107,6 +108,7 @@ class ThongkeController extends MyApiController
 
         return $this->renderPartial('thongke', [
             'field' => $field,
+            'field_cc' => $field_cc,
             'tk_dieutra' => $tk_dieutra,
             'tk_xacminh' => $tk_xacminh,
             'tk_chuyenca' => $tk_chuyenca,

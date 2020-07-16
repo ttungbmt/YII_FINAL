@@ -28,7 +28,7 @@ $this->registerJsVar('pageData', [
         </div>
 
         <div class="tab-pane fade" id="tab3">
-            <?=$this->render('_chuyenca', ['tk_chuyenca' => $tk_chuyenca, 'params' => $params, 'field' => $field])?>
+            <?=$this->render('_chuyenca', ['tk_chuyenca' => $tk_chuyenca, 'params' => $params, 'field' => $field, 'field_cc' => $field_cc])?>
         </div>
     </div>
 </div>
