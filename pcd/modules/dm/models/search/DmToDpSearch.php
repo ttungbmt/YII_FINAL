@@ -7,17 +7,20 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use pcd\modules\dm\models\DmToDp;
+use yii\db\Expression;
 
 /**
  * DmToDp represents the model behind the search form about `pcd\modules\dm\models\DmToDp`.
  */
 class DmToDpSearch extends DmToDp
 {
+    public $order;
+
     public function rules()
     {
         return [
             [['gid'], 'integer'],
-            [['maquan', 'maphuong', 'khupho', 'to_dp'], 'safe'],
+            [['order', 'maquan', 'maphuong', 'khupho', 'to_dp'], 'safe'],
         ];
     }
 
@@ -34,6 +37,11 @@ class DmToDpSearch extends DmToDp
         }
     }
 
+    public function formName()
+    {
+        return '';
+    }
+
 
     public function scenarios()
     {
@@ -44,12 +52,17 @@ class DmToDpSearch extends DmToDp
     {
         $role = RoleHc::init();
         $query = $this::find()->with(['quan', 'phuong']);
+        $this->load($params);
+
+        $this->order === 'natural' && $query->orderBy(new Expression('LENGTH(khupho), khupho, LENGTH(to_dp), to_dp'));
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => ['defaultOrder' => [
+                'gid' => SORT_DESC,
+            ]],
         ]);
 
-        $this->load($params);
 
         if (!$this->validate()) {
             $query->where('0=1');

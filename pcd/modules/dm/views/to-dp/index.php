@@ -38,6 +38,7 @@ $this->title = "Danh mục tổ dân phố";
             'panel' => [
                 'type' => 'primary',
                 'heading' => $this->title,
+                'before'  => Html::a('Sắp xếp thứ tự', ['', 'order' => 'natural'], ['class' => 'btn badge bg-blue-400'])
             ]
         ]) ?>
     </div>
