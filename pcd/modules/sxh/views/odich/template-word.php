@@ -1331,7 +1331,7 @@ mso-fareast-font-family:Calibri'><span style='mso-list:Ignore'>-<span
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
                 <p class=MsoNormal align=center style='margin-bottom:8.0pt;text-align:center;
   line-height:106%'><span style='font-size:11.0pt;line-height:106%;mso-fareast-font-family:
-  "Times New Roman"'><?=$i->tenquan?></span></p>
+  "Times New Roman"'><?=$i->tenphuong?></span></p>
             </td>
             <td width=85 valign=top style='width:63.8pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
@@ -1339,7 +1339,7 @@ mso-fareast-font-family:Calibri'><span style='mso-list:Ignore'>-<span
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
                 <p class=MsoNormal align=center style='margin-bottom:8.0pt;text-align:center;
   line-height:106%'><span style='font-size:11.0pt;line-height:106%;mso-fareast-font-family:
-  "Times New Roman"'><?=$i->tenphuong?></span></p>
+  "Times New Roman"'><?=$i->tenquan?></span></p>
             </td>
             <td width=92 valign=top style='width:69.1pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
