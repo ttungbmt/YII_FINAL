@@ -90,7 +90,7 @@ class PtNguyco extends App
             if($gs->ngay_gs && $this->ngayxoa){
                 $gs = Carbon::createFromFormat('d/m/Y', $gs->ngay_gs);
                 $nx = Carbon::createFromFormat('d/m/Y', $this->ngayxoa);
-                if($nx <= $gs){
+                if($nx < $gs){
                     $this->addError($attribute, "Ngày xóa phải lớn hơn ngày giám sát của các đợt giám sát");
                 }
 
