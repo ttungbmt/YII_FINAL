@@ -37,7 +37,6 @@ class ThongkeController extends MyApiController
             $query->andFilterDate(['ngaybaocao' => [$date_from, $date_to]]);
             $role->filterMaHc($query);
 
-            $kro = collect($query->all())->firstWhere('code', null);
 
             $q = (new Query())->from(['hc' => $field['table']])
                 ->select([
@@ -50,7 +49,14 @@ class ThongkeController extends MyApiController
 
             $role->filterMaHc($q);
 
-            return collect($q->all())->push(array_merge($kro ? $kro : [],['name' => 'Không rõ', 'code' => null]));
+            $data = collect($q->all());
+
+            if(role('phuong')){
+                $kro = collect($query->all())->firstWhere('code', null);
+                $data->push(array_merge($kro ? $kro : [],['name' => 'Không rõ', 'code' => 'KHONG RO']));
+            }
+
+            return $data;
         };
 
         $q_dt = (new Query())

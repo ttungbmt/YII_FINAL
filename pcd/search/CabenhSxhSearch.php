@@ -100,6 +100,12 @@ class CabenhSxhSearch extends CabenhSxh
             $query->andFilterWhere(['<=', $this->field_date, dateToDb($this->date_to)]);
         }
 
+        if($this->khupho == 'KHONG RO'){
+            $this->khupho = null;
+            $query->andWhere('khupho IS NULL');
+        }
+
+
         $query
             ->andFilterSearch(['ilike', 'hoten', $this->hoten])
             ->andFilterSearch(['ilike', 'tuoi', $this->tuoi])
@@ -123,7 +129,6 @@ class CabenhSxhSearch extends CabenhSxh
         }
 
         $roles->filterChuyenCa($this->loaica, $query);
-//        dd($this);
 
         return $dataProvider;
     }
