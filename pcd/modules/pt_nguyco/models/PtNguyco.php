@@ -161,10 +161,10 @@ class PtNguyco extends App
             'khupho',
             'to_dp',
             'tenphuong' => function($model){
-                return $model->phuong->tenphuong;
+                return data_get($model, 'phuong.tenphuong', '');
             },
             'tenquan' => function($model){
-                return $model->quan->tenquan;
+                return data_get($model, 'quan.tenquan', '');
             },
             'diachi'=> function($model){
                 return collect([$model->sonha, $model->tenduong])->implode(' ');

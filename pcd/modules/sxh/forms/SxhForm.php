@@ -258,8 +258,12 @@ class SxhForm extends MyForm
         $lastXm = optional((object)(last($this->xacminh)));
         $count = count($this->xacminh);
 
-        if(($lastXm->is_diachi == 0 || ($lastXm->is_diachi == 1 && $lastXm->tinh != 'HCM')) && $count > 1 && $count%2 == 0) {
-            $lastXm = optional((object)($this->xacminh[$count-2]));
+        if($count > 1 && $count%2 == 0) {
+            if($lastXm->is_diachi == 0){
+                $lastXm = optional((object)($this->xacminh[$count-2]));
+            } elseif ($lastXm->is_diachi == 1 && $lastXm->tinh != 'HCM'){
+                $lastXm = optional((object)($this->xacminh[$count-1]));
+            }
         }
 
         $this->to_dp = $lastXm->to_dp;
@@ -351,7 +355,6 @@ class SxhForm extends MyForm
         $this->updateXacminh($cb, $formData);
         $this->loadDcCuoi($formData);
         $this->geom = $this->lat && $this->lng ? [$this->lng, $this->lat] : null;
-
 
         $this->validate();
 
@@ -518,32 +521,6 @@ class SxhForm extends MyForm
                         return false;
                     }
                 }
-
-//                if ($index == 0) {
-//                    if ($is_phuong && $this->px && $this->px !== $maphuong) {
-//                        return true;
-//                    }
-//
-//                    $px = data_get($xacminh, '0.px');
-//                    return $px && role('phuong')? !($px == $maphuong) : false;
-//                };
-//                $lastIndex = count($xacminh) - 1;
-//
-//                if(count($xacminh) > 2 && $index == $lastIndex - 1){
-//                    return false;
-//                }
-//
-//                if ($index == $lastIndex) {
-//                    $preLastXm = $xacminh[$index - 1];
-//                    $lastXm = $model;
-//
-//                    if ($lastXm->tinh == 'HCM' && ($lastXm->qh != $preLastXm->qh || $lastXm->px != $preLastXm->px)) {
-//                        return true;
-//                    }
-//
-//                    return false;
-//                };
-
                 return true;
             }];
 

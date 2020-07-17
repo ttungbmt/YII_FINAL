@@ -258,10 +258,12 @@ class OdichController extends AppController
         $ids = request('cabenhIds', []);
         $odich_id = request('odich_id', null);
         $distance = 200;
+
         $sql = CabenhSxh::find()->select(new Expression("ST_Union(ST_Buffer(geom::geography, {$distance})::geometry) geom"))->andWhere(['gid' => $ids])->createCommand()->getRawSql();
         $data = ArrayHelper::toArray(PtNguyco::find()->with(['quan', 'phuong', 'dm_loaihinh'])->andWhere(new Expression("ST_Intersects(geom, ({$sql}))"))->all(), [
             PtNguyco::class => PtNguyco::rawFields()
         ]);
+
 
         return $this->asJson([
             'data' => $data

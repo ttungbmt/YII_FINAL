@@ -48212,7 +48212,6 @@
 	  },
 	  mounted: function mounted() {
 	    if (this.url && this.depends) {
-	      console.log(this.params);
 	      var depdropOptions = {
 	        depends: this.depends,
 	        url: this.url,
