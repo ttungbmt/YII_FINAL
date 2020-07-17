@@ -29,9 +29,11 @@ $null_lh = \pcd\models\PtNguyco::find()
     ->count()
 ;
 $null_updated = \pcd\models\PtNguyco::find()
-    ->andWhere('created_by = 1')
+    ->andWhere('updated_by = 1')
     ->andFilterWhere(['maquan' => $maquan, 'maphuong' => $maphuong])
-    ->count();
+    ->count()
+;
+
 $wrong_geom = (new \yii\db\Query())
     ->from('pt_nguyco')->andWhere(new \yii\db\Expression("ST_Intersects(geom , (SELECT ST_Union(geom) geom FROM hc_quan)) = false"))
     ->andFilterWhere(['maquan' => $maquan, 'maphuong' => $maphuong])

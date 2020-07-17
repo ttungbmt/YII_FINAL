@@ -74,7 +74,7 @@ class PtNguycoSearch extends PtNguyco
         if($filter === '0'){
             $query->andWhere('loaihinh_id IS NULL');
         } elseif ($filter === '1'){
-            $query->andWhere('created_by = 1');
+            $query->andWhere('updated_by = 1');
         } elseif ($filter === '2'){
             $query->andWhere(new Expression("ST_Intersects(geom , (SELECT ST_Union(geom) geom FROM hc_quan)) = false"));
         } elseif ($filter === '3'){
