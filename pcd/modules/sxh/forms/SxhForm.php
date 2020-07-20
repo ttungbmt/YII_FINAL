@@ -31,7 +31,7 @@ class SxhForm extends MyForm
     const SCENARIO_DIEUTRA = 'dieutra';
 
     protected function checkRequiredDate(){
-        return Carbon::createFromFormat('d/m/Y', $this->ngaydieutra) >= Carbon::parse('2020-07-15');
+        return Carbon::createFromFormat('d/m/Y', $this->ngaydieutra) >= Carbon::parse('2020-07-20');
     }
 
     public function xacminhValidator($attribute, $params, $validator)
@@ -43,7 +43,7 @@ class SxhForm extends MyForm
                 $index = $k + 1;
                 $i = optional((object)$v);
 
-                if(($i->is_diachi == 1 && $i->tinh == 'HCM') && $i->duong == '' && $this->checkRequiredDate()){
+                if($i->tinh == 'HCM' && $i->duong == '' && $this->checkRequiredDate()){
                     $this->addError("xacminh.{$k}.duong", "Đường ($index) buộc nhập");
                 }
 
