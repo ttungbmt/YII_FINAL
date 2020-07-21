@@ -1,5 +1,6 @@
 <?php
 
+use kartik\export\ExportMenu;
 use yii\helpers\Html;
 use yii\bootstrap\Modal;
 use kartik\grid\GridView;
@@ -11,6 +12,8 @@ use johnitvn\ajaxcrud\CrudAsset;
 CrudAsset::register($this);
 
 $this->title = "Ổ dịch";
+$gridColumns = require(__DIR__ . '/_columns.php');
+$exportMenu =  ExportMenu::widget(['dataProvider' => $dataProvider, 'columns' => $gridColumns]);
 ?>
 <div class="dm-odich-index">
     <div id="ajaxCrudDatatable">
@@ -20,7 +23,7 @@ $this->title = "Ổ dịch";
             'filterModel' => $searchModel,
             'filterSelector' => 'select[name="pagination"]',
             'pjax' => true,
-            'columns' => require(__DIR__ . '/_columns.php'),
+            'columns' => $gridColumns,
             'toolbar' => [
                 ['content' =>
 //                    Html::a('Thêm mới', ['create'],
@@ -28,7 +31,7 @@ $this->title = "Ổ dịch";
                     Html::a('<i class="icon-reload-alt"></i>', [''],
                         ['data-pjax' => 1, 'class' => 'btn btn-default', 'title' => lang('Reset Grid')]) .
                     '{toggleData}' .
-                    '{export}'
+                    $exportMenu
                 ],
             ],
             'striped' => true,

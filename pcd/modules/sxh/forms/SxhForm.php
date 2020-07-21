@@ -103,8 +103,10 @@ class SxhForm extends MyForm
             [['ht_dieutri'], 'required', 'on' => ['xacminh']],
             [['nguoidieutra_sdt', 'me'], 'string'],
             [['tuoi', 'ngaysinh'], AtLeastValidator::className(), 'in' => ['tuoi', 'ngaysinh'], 'message' => 'Điền ít nhất 1 trường: tuổi hoặc ngày sinh', 'on' => ['xacminh']],
-
-            [['px', 'qh', 'ngaybaocao', 'hoten', 'ngaynhanthongbao', 'ngaydieutra', 'ngaybaocao', 'phai', 'ngaydieutra', 'nguoidieutra'], 'required', 'on' => ['xacminh']],
+            [['px', 'qh'], 'required', 'when' => function($model){
+                return $model->tinh == 'HCM';
+            }],
+            [['ngaybaocao', 'hoten', 'ngaynhanthongbao', 'ngaydieutra', 'ngaybaocao', 'phai', 'ngaydieutra', 'nguoidieutra'], 'required', 'on' => ['xacminh']],
             ['xacminh', 'xacminhValidator', 'skipOnEmpty' => false, 'on' => ['xacminh']],
             [['sonha', 'duong', 'to_dp', 'khupho', 'px', 'qh', 'tinh', 'tinh_dc_khac'], 'safe'],
             [['lat', 'lng'], 'number'],
@@ -508,19 +510,31 @@ class SxhForm extends MyForm
     {
         $is_phuong = role('phuong');
         $maphuong = userInfo()->maphuong;
+        $unlockedIndex = 100;
 
         $fields = [
             'id', 'is_diachi', 'is_benhnhan', 'dienthoai', 'sonha', 'duong', 'to_dp', 'khupho', 'tinh', 'tinh_dc_khac', 'px', 'qh',
-            'disabled' => function ($model, $key, $index) use ($xacminh, $is_phuong, $maphuong) {
+            'disabled' => function ($model, $key, $index) use ($xacminh, $is_phuong, $maphuong, &$unlockedIndex) {
                 if(count($xacminh) == 0) return false;
                 if(count($xacminh) == 1 && $xacminh[0]['px'] == $maphuong) return false;
 
+                $stt = $index+1;
+                $total = count($xacminh);
+
                 if(count($xacminh) >= 2){
-                    $lastUnlocked = count($xacminh)%2!=1 ? count($xacminh) - 1 : count($xacminh);
-                    if($is_phuong && $index+1 >= $lastUnlocked && $this->px && $this->px == $maphuong){
-                        return false;
+                    // 1 3 5
+                    if($total%2==1 && $stt == $total && $xacminh[$index]['tinh'] == 'HCM' && $xacminh[$index]['px'] == $maphuong){
+                        $unlockedIndex = $index;
                     }
+
+                    // 2 4 6
+                    if($total%2!=1 && $stt == $total-1 && (($xacminh[$index+1]['is_diachi'] == 1 && $xacminh[$index+1]['tinh'] != 'HCM') || $xacminh[$index+1]['is_diachi'] == 0) && $xacminh[$index]['px'] == $maphuong){
+                        $unlockedIndex = $index;
+                    }
+
+                    if($index >= $unlockedIndex) return false;
                 }
+
                 return true;
             }];
 
