@@ -90,7 +90,7 @@
                     ajaxSettings: {
                         data: {value: this.innerValue}
                     },
-                    params: this.params
+                    params: this.params,
                 }
 
                 if(this.parentsHasValue()){

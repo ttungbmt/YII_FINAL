@@ -92,7 +92,6 @@ const module = {
                         )
                     ) {
                         rootState.is_xacminh || commit('ADD_XM')
-                        console.log(rootState.is_xacminh);
                         console.log(4);
                     }
 

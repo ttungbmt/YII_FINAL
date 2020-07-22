@@ -49038,7 +49038,6 @@
 
 	          if (lastXm.is_diachi == 1 && val.length % 2 == 0 && (lastXm.tinh && lastXm.tinh != preLastXm.tinh || lastXm.qh && lastXm.qh != preLastXm.qh || lastXm.px && lastXm.px != preLastXm.px)) {
 	            rootState.is_xacminh || commit('ADD_XM');
-	            console.log(rootState.is_xacminh);
 	            console.log(4);
 	          }
 
@@ -49764,7 +49763,8 @@
 	                2
 	              ),
 	              _vm._v(" "),
-	              (k + 1) % 2 != 0 || ((k + 1) % 2 == 0 && v.is_diachi == 1)
+	              ((k + 1) % 2 != 0 || ((k + 1) % 2 == 0 && v.is_diachi == 1)) &&
+	              v.is_benhnhan == null
 	                ? _c(
 	                    "div",
 	                    [
@@ -49811,51 +49811,55 @@
 	                            1
 	                          ),
 	                          _vm._v(" "),
-	                          _c(
-	                            "b-col",
-	                            [
-	                              _c("field-sxh", {
-	                                attrs: {
-	                                  id: "field-" + k + "-khupho",
-	                                  name: "xacminh[" + k + "][khupho]",
-	                                  nameKey: "khupho",
-	                                  path: "xacminh.items." + k + ".khupho",
-	                                  label:
-	                                    _vm.schema["khupho"].label +
-	                                    " (" +
-	                                    (k + 1) +
-	                                    ")",
-	                                  depends: ["field-" + k + "-px"]
-	                                }
-	                              })
-	                            ],
-	                            1
-	                          ),
+	                          v.tinh === "HCM" && v.px
+	                            ? _c(
+	                                "b-col",
+	                                [
+	                                  _c("field-sxh", {
+	                                    attrs: {
+	                                      id: "field-" + k + "-khupho",
+	                                      name: "xacminh[" + k + "][khupho]",
+	                                      nameKey: "khupho",
+	                                      path: "xacminh.items." + k + ".khupho",
+	                                      label:
+	                                        _vm.schema["khupho"].label +
+	                                        " (" +
+	                                        (k + 1) +
+	                                        ")",
+	                                      depends: ["field-" + k + "-px"]
+	                                    }
+	                                  })
+	                                ],
+	                                1
+	                              )
+	                            : _vm._e(),
 	                          _vm._v(" "),
-	                          _c(
-	                            "b-col",
-	                            [
-	                              _c("field-sxh", {
-	                                attrs: {
-	                                  id: "field-" + k + "-to_dp",
-	                                  name: "xacminh[" + k + "][to_dp]",
-	                                  nameKey: "to_dp",
-	                                  path: "xacminh.items." + k + ".to_dp",
-	                                  label:
-	                                    _vm.schema["to_dp"].label +
-	                                    " (" +
-	                                    (k + 1) +
-	                                    ")",
-	                                  depends: ["field-" + k + "-khupho"],
-	                                  params: [
-	                                    "field-" + k + "-qh",
-	                                    "field-" + k + "-px"
-	                                  ]
-	                                }
-	                              })
-	                            ],
-	                            1
-	                          )
+	                          v.tinh === "HCM" && v.px
+	                            ? _c(
+	                                "b-col",
+	                                [
+	                                  _c("field-sxh", {
+	                                    attrs: {
+	                                      id: "field-" + k + "-to_dp",
+	                                      name: "xacminh[" + k + "][to_dp]",
+	                                      nameKey: "to_dp",
+	                                      path: "xacminh.items." + k + ".to_dp",
+	                                      label:
+	                                        _vm.schema["to_dp"].label +
+	                                        " (" +
+	                                        (k + 1) +
+	                                        ")",
+	                                      depends: ["field-" + k + "-khupho"],
+	                                      params: [
+	                                        "field-" + k + "-qh",
+	                                        "field-" + k + "-px"
+	                                      ]
+	                                    }
+	                                  })
+	                                ],
+	                                1
+	                              )
+	                            : _vm._e()
 	                        ],
 	                        1
 	                      ),

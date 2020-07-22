@@ -39,7 +39,7 @@
 
                     </b-col>
                 </b-row>
-                <div v-if="(k+1)%2 != 0 || ((k+1)%2 == 0 &&  v.is_diachi == 1)">
+                <div v-if="((k+1)%2 != 0 || ((k+1)%2 == 0 &&  v.is_diachi == 1)) && v.is_benhnhan == null">
                     <b-row>
                         <b-col>
                             <field-sxh :id="`field-${k}-sonha`" :name="`xacminh[${k}][sonha]`" nameKey="sonha" :path="`xacminh.items.${k}.sonha`" :label="schema['sonha'].label+` (${k+1})`"/>
@@ -47,10 +47,10 @@
                         <b-col>
                             <field-sxh :id="`field-${k}-duong`" :name="`xacminh[${k}][duong]`" nameKey="duong" :path="`xacminh.items.${k}.duong`" :label="schema['duong'].label+` (${k+1})`"/>
                         </b-col>
-                        <b-col>
+                        <b-col v-if="v.tinh ==='HCM'&& v.px">
                             <field-sxh :id="`field-${k}-khupho`" :name="`xacminh[${k}][khupho]`" nameKey="khupho" :path="`xacminh.items.${k}.khupho`" :label="schema['khupho'].label+` (${k+1})`" :depends="[`field-${k}-px`]"/>
                         </b-col>
-                        <b-col>
+                        <b-col v-if="v.tinh ==='HCM'&& v.px">
                             <field-sxh :id="`field-${k}-to_dp`" :name="`xacminh[${k}][to_dp]`" nameKey="to_dp" :path="`xacminh.items.${k}.to_dp`" :label="schema['to_dp'].label+` (${k+1})`" :depends="[`field-${k}-khupho`]" :params="[`field-${k}-qh`, `field-${k}-px`]"/>
                         </b-col>
                     </b-row>
