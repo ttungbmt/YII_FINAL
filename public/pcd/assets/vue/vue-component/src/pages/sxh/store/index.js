@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import xacminh from './xacminh'
 import schema from './schema'
-import { map, isArray, last, takeRight, head, includes } from 'lodash-es'
+import { vueSet } from 'vue-deepset'
+import { map, isArray, last, takeRight, head, includes, defaults } from 'lodash-es'
 
 Vue.use(Vuex)
 
@@ -83,7 +84,7 @@ const store = new Vuex.Store({
                     // 7,8
                     if(lastXm.is_diachi && lastXm.is_benhnhan && (preLastXm.tinh == lastXm.tinh && preLastXm.qh == lastXm.qh && preLastXm.px == lastXm.px)){
                         status = form.chuandoan == 1 ? 8: 7
-                        console.log(`xm-${9}`)
+                        console.log(`xm-${9}`, form)
                     }
 
                     if(preLastXm.tinh != lastXm.tinh){
@@ -117,6 +118,15 @@ const store = new Vuex.Store({
         UPDATE_LATLNG(state, {lat, lng}){
             state.form.lat = lat
             state.form.lng = lng
+        },
+        UPDATE_NULL_FIELDS(state, {path, value}){
+            map(value, (v, k) => vueSet(state, `path.${k}`, null))
+        },
+        UPDATE_FIELDS(state, {path, value}){
+            map(value, (v, k) =>  vueSet(state, `path.${k}`, v))
+        },
+        UPDATE_FIELD(state, {path, value}){
+            vueSet(state, path, value)
         },
         UPDATE_FORM(state, {xacminh, ...form}){
             state.form = {...state.form, ...form}

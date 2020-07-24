@@ -42,7 +42,7 @@
 </template>
 <script>
     import * as partials from './partials'
-    import { mapKeys, last, takeRight, head, isString, isPlainObject, isEmpty  } from 'lodash-es'
+    import { mapKeys, last, takeRight, head, isString, isPlainObject, isEmpty, isUndefined, isNil  } from 'lodash-es'
     import { mapState, mapGetters } from 'vuex'
 
     const noty = () => {
@@ -93,24 +93,24 @@
             }
         },
         watch: {
-            'form.cachidiem': function (val) {
-                if(val == 0) {
-                    this.setNullFormAttrs(['dietlangquang', 'giamsattheodoi', 'xulyonho', 'xulyorong'])
-                    this.form.cathuphat = 1
-                } else {
-                    this.form.cathuphat = 0
+            'form.cachidiem': function (val, oldVal) {
+                if(!isNil(oldVal)){
+                    if(val == 0) {
+                        this.$store.commit('UPDATE_NULL_FIELDS', {path: 'form', value: ['dietlangquang', 'giamsattheodoi', 'xulyonho', 'xulyorong']})
+                        this.$store.commit('UPDATE_FIELD', {path: 'form.cathuphat', value: 1})
+                    } else {
+                        this.$store.commit('UPDATE_FIELD', {path: 'form.cathuphat', value: 0})
+                    }
                 }
             },
-            'form.cathuphat': function (val) {
-                if(val == 0) {
-                    this.setNullFormAttrs(['odichmoi', 'odichcu', 'xuly', 'xuly_ngay'])
-                }
+            'form.cathuphat': function (val, oldVal) {
+                if(!isNil(oldVal) && val == 0) this.$store.commit('UPDATE_NULL_FIELDS', {path: 'form', value: ['odichmoi', 'odichcu', 'xuly', 'xuly_ngay']})
             },
-            'form.odichmoi': function (val) {
-                this.form.odichcu = val == 0 ? 1 : null
+            'form.odichmoi': function (val, oldVal) {
+                if(!isNil(oldVal) && val == 0)  this.$store.commit('UPDATE_FIELD', {path: 'form.odichcu', value: 1})
             },
-            'form.xuatvien': function (val) {
-                this.form.chuandoan = val == 0 ? 1 : null
+            'form.xuatvien': function (val, oldVal) {
+                if(!isNil(oldVal) && val == 0) this.$store.commit('UPDATE_FIELD', {path: 'form.chuandoan', value: 1})
             },
         },
         data() {

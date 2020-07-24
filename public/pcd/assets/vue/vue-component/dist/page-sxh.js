@@ -49078,6 +49078,300 @@
 
 	var schema = {};
 
+	var vueDeepset = createCommonjsModule(function (module, exports) {
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	exports.vueSet = vueSet;
+	exports.vuexSet = vuexSet;
+	exports.VUEX_DEEP_SET = VUEX_DEEP_SET;
+	exports.extendMutation = extendMutation;
+	exports.vueModel = vueModel;
+	exports.vuexModel = vuexModel;
+	exports.deepModel = deepModel;
+	exports.install = install;
+
+
+
+	var _vue2 = _interopRequireDefault(Vue);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var invalidKey = /^\d|[^a-zA-Z0-9_]/gm;
+	var intKey = /^\d+$/;
+
+	function isNumberLike(value) {
+	  return String(value).match(/^\d+$/);
+	}
+
+	function toPath(pathString) {
+	  if (Array.isArray(pathString)) { return pathString; }
+	  if (typeof pathString === 'number') { return [pathString]; }
+	  pathString = String(pathString);
+
+	  // taken from lodash - https://github.com/lodash/lodash
+	  var pathRx = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(\.|\[\])(?:\4|$))/g;
+	  var pathArray = [];
+
+	  pathString.replace(pathRx, function (match, number, quote, string) {
+	    pathArray.push(quote ? string : number !== undefined ? Number(number) : match);
+	    return pathArray[pathArray.length - 1];
+	  });
+	  return pathArray;
+	}
+
+	function hasOwnProperty(object, property) {
+	  return Object.prototype.hasOwnProperty.call(object, property);
+	}
+
+	function deepsetError(message) {
+	  return new Error('[vue-deepset]: ' + message);
+	}
+
+	function isObjectLike(object) {
+	  return (typeof object === 'undefined' ? 'undefined' : _typeof(object)) === 'object' && object !== null;
+	}
+
+	function pathJoin(base, path) {
+	  try {
+	    var connector = path.match(/^\[/) ? '' : '.';
+	    return '' + (base || '') + (base ? connector : '') + path;
+	  } catch (error) {
+	    return '';
+	  }
+	}
+
+	function pushPaths(object, current, paths) {
+	  paths.push(current);
+	  if (isObjectLike(object)) {
+	    getPaths(object, current, paths);
+	  }
+	}
+
+	function forEach(object, iteratee) {
+	  var isArray = Array.isArray(object);
+	  var keys = isArray ? object : Object.keys(object);
+	  keys.forEach(function (value, index) {
+	    return isArray ? iteratee(value, index) : iteratee(object[value], value);
+	  });
+	}
+
+	function has(object, path) {
+	  var obj = object;
+	  var parts = toPath(path);
+	  while (parts.length) {
+	    var key = parts.shift();
+	    if (!hasOwnProperty(obj, key)) {
+	      return false;
+	    } else if (!parts.length) {
+	      return true;
+	    }
+	    obj = obj[key];
+	  }
+	  return false;
+	}
+
+	function getPaths(object) {
+	  var current = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+	  var paths = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
+	  if (Array.isArray(object)) {
+	    forEach(object, function (val, idx) {
+	      pushPaths(val, (current + '.' + idx).replace(/^\./, ''), paths);
+	      pushPaths(val, (current + '[' + idx + ']').replace(/^\./, ''), paths);
+	      pushPaths(val, (current + '["' + idx + '"]').replace(/^\./, ''), paths);
+	    });
+	  } else if (isObjectLike(object)) {
+	    forEach(object, function (val, key) {
+	      if (key.match(intKey) !== null) {
+	        // is index
+	        pushPaths(val, (current + '.' + key).replace(/^\./, ''), paths);
+	        pushPaths(val, (current + '[' + key + ']').replace(/^\./, ''), paths);
+	        pushPaths(val, (current + '["' + key + '"]').replace(/^\./, ''), paths);
+	      } else if (!key.match(invalidKey)) {
+	        pushPaths(val, (current + '.' + key).replace(/^\./, ''), paths);
+	      }
+	      // always add the absolute array notation path
+	      pushPaths(val, (current + '["' + key + '"]').replace(/^\./, ''), paths);
+	    });
+	  }
+	  return [].concat(new Set(paths));
+	}
+
+	function _get(obj, path, defaultValue) {
+	  try {
+	    var o = obj;
+	    var fields = toPath(path);
+	    while (fields.length) {
+	      var prop = fields.shift();
+	      o = o[prop];
+	      if (!fields.length) {
+	        return o;
+	      }
+	    }
+	  } catch (err) {
+	    return defaultValue;
+	  }
+	  return defaultValue;
+	}
+
+	function getProxy(vm, base, options) {
+	  var isVuex = typeof base === 'string';
+	  var object = isVuex ? _get(vm.$store.state, base) : base;
+
+	  return new Proxy(object, {
+	    get: function get(target, property) {
+	      return _get(target, property);
+	    },
+	    set: function set(target, property, value) {
+	      isVuex ? vuexSet.call(vm, pathJoin(base, property), value) : vueSet(target, property, value);
+	      return true;
+	    },
+	    deleteProperty: function deleteProperty() {
+	      return true;
+	    },
+	    enumerate: function enumerate(target) {
+	      return Object.keys(target);
+	    },
+	    ownKeys: function ownKeys(target) {
+	      return Object.keys(target);
+	    },
+	    has: function has(target, property) {
+	      return true;
+	    },
+	    defineProperty: function defineProperty(target) {
+	      return target;
+	    },
+	    getOwnPropertyDescriptor: function getOwnPropertyDescriptor(target, property) {
+	      return {
+	        value: _get(target, property),
+	        writable: false,
+	        enumerable: true,
+	        configurable: true
+	      };
+	    }
+	  });
+	}
+
+	function buildVueModel(vm, object, options) {
+	  var model = {};
+	  forEach(getPaths(object), function (path) {
+	    Object.defineProperty(model, path, {
+	      configurable: true,
+	      enumerable: true,
+	      get: function get() {
+	        return _get(object, path);
+	      },
+	      set: function set(value) {
+	        return vueSet(object, path, value);
+	      }
+	    });
+	  });
+	  return model;
+	}
+
+	function buildVuexModel(vm, vuexPath, options) {
+	  var model = Object.create(null);
+	  var object = _get(vm.$store.state, vuexPath);
+	  var paths = getPaths(object);
+	  forEach(paths, function (path) {
+	    var propPath = pathJoin(vuexPath, path);
+	    Object.defineProperty(model, path, {
+	      configurable: true,
+	      enumerable: true,
+	      get: function get() {
+	        return _get(vm.$store.state, propPath);
+	      },
+	      set: function set(value) {
+	        return vuexSet.call(vm, propPath, value);
+	      }
+	    });
+	  });
+	  return model;
+	}
+
+	function vueSet(obj, path, value) {
+	  var fields = Array.isArray(path) ? path : toPath(path);
+	  var prop = fields.shift();
+
+	  if (!fields.length) { return _vue2.default.set(obj, prop, value); }
+	  if (!hasOwnProperty(obj, prop) || obj[prop] === null) {
+	    var objVal = fields.length >= 1 && isNumberLike(fields[0]) ? [] : {};
+	    _vue2.default.set(obj, prop, objVal);
+	  }
+	  vueSet(obj[prop], fields, value);
+	}
+
+	function vuexSet(path, value) {
+	  if (!isObjectLike(this.$store)) {
+	    throw deepsetError('could not find vuex store object on instance');
+	  }
+	  var method = this.$store.commit ? 'commit' : 'dispatch';
+	  this.$store[method]('VUEX_DEEP_SET', { path: path, value: value });
+	}
+
+	function VUEX_DEEP_SET(state, _ref) {
+	  var path = _ref.path,
+	      value = _ref.value;
+
+	  vueSet(state, path, value);
+	}
+
+	function extendMutation() {
+	  var mutations = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+	  return Object.assign(mutations, { VUEX_DEEP_SET: VUEX_DEEP_SET });
+	}
+
+	function vueModel(object, options) {
+	  var opts = Object.assign({}, options);
+	  if (!isObjectLike(object)) {
+	    throw deepsetError('invalid object specified for vue model');
+	  } else if (opts.useProxy === false || typeof Proxy === 'undefined') {
+	    return buildVueModel(this, object);
+	  }
+	  return getProxy(this, object);
+	}
+
+	function vuexModel(vuexPath, options) {
+	  var opts = Object.assign({}, options);
+	  if (typeof vuexPath !== 'string' || vuexPath === '') {
+	    throw deepsetError('invalid vuex path string');
+	  } else if (!isObjectLike(this.$store) || !isObjectLike(this.$store.state)) {
+	    throw deepsetError('no vuex state found');
+	  } else if (!has(this.$store.state, vuexPath)) {
+	    throw deepsetError('cannot find path "' + vuexPath + '" in Vuex store');
+	  } else if (opts.useProxy === false || typeof Proxy === 'undefined') {
+	    return buildVuexModel(this, vuexPath);
+	  }
+	  return getProxy(this, vuexPath);
+	}
+
+	function deepModel(base, options) {
+	  return typeof base === 'string' ? vuexModel.call(this, base, options) : vueModel.call(this, base, options);
+	}
+
+	function install(VueInstance) {
+	  VueInstance.prototype.$deepModel = deepModel;
+	  VueInstance.prototype.$vueSet = vueSet;
+	  VueInstance.prototype.$vuexSet = vuexSet;
+	}
+	});
+
+	unwrapExports(vueDeepset);
+	var vueDeepset_1 = vueDeepset.vueSet;
+	var vueDeepset_2 = vueDeepset.vuexSet;
+	var vueDeepset_3 = vueDeepset.VUEX_DEEP_SET;
+	var vueDeepset_4 = vueDeepset.extendMutation;
+	var vueDeepset_5 = vueDeepset.vueModel;
+	var vueDeepset_6 = vueDeepset.vuexModel;
+	var vueDeepset_7 = vueDeepset.deepModel;
+	var vueDeepset_8 = vueDeepset.install;
+
 	Vue.use(Vuex__default);
 	var store = new Vuex__default.Store({
 	  strict: true,
@@ -49158,7 +49452,7 @@
 	          // 7,8
 	          if (lastXm.is_diachi && lastXm.is_benhnhan && preLastXm.tinh == lastXm.tinh && preLastXm.qh == lastXm.qh && preLastXm.px == lastXm.px) {
 	            status = form.chuandoan == 1 ? 8 : 7;
-	            console.log("xm-".concat(9));
+	            console.log("xm-".concat(9), form);
 	          }
 
 	          if (preLastXm.tinh != lastXm.tinh) {
@@ -49194,9 +49488,28 @@
 	      state.form.lat = lat;
 	      state.form.lng = lng;
 	    },
-	    UPDATE_FORM: function UPDATE_FORM(state, _ref3) {
-	      var xacminh = _ref3.xacminh,
-	          form = _objectWithoutProperties(_ref3, ["xacminh"]);
+	    UPDATE_NULL_FIELDS: function UPDATE_NULL_FIELDS(state, _ref3) {
+	      var path = _ref3.path,
+	          value = _ref3.value;
+	      lodash.map(value, function (v, k) {
+	        return vueDeepset_1(state, "path.".concat(k), null);
+	      });
+	    },
+	    UPDATE_FIELDS: function UPDATE_FIELDS(state, _ref4) {
+	      var path = _ref4.path,
+	          value = _ref4.value;
+	      lodash.map(value, function (v, k) {
+	        return vueDeepset_1(state, "path.".concat(k), v);
+	      });
+	    },
+	    UPDATE_FIELD: function UPDATE_FIELD(state, _ref5) {
+	      var path = _ref5.path,
+	          value = _ref5.value;
+	      vueDeepset_1(state, path, value);
+	    },
+	    UPDATE_FORM: function UPDATE_FORM(state, _ref6) {
+	      var xacminh = _ref6.xacminh,
+	          form = _objectWithoutProperties(_ref6, ["xacminh"]);
 
 	      state.form = _objectSpread2$1({}, state.form, {}, form);
 	    },
@@ -55365,24 +55678,42 @@
 	    }
 	  }),
 	  watch: {
-	    'form.cachidiem': function formCachidiem(val) {
-	      if (val == 0) {
-	        this.setNullFormAttrs(['dietlangquang', 'giamsattheodoi', 'xulyonho', 'xulyorong']);
-	        this.form.cathuphat = 1;
-	      } else {
-	        this.form.cathuphat = 0;
+	    'form.cachidiem': function formCachidiem(val, oldVal) {
+	      if (!lodash.isNil(oldVal)) {
+	        if (val == 0) {
+	          this.$store.commit('UPDATE_NULL_FIELDS', {
+	            path: 'form',
+	            value: ['dietlangquang', 'giamsattheodoi', 'xulyonho', 'xulyorong']
+	          });
+	          this.$store.commit('UPDATE_FIELD', {
+	            path: 'form.cathuphat',
+	            value: 1
+	          });
+	        } else {
+	          this.$store.commit('UPDATE_FIELD', {
+	            path: 'form.cathuphat',
+	            value: 0
+	          });
+	        }
 	      }
 	    },
-	    'form.cathuphat': function formCathuphat(val) {
-	      if (val == 0) {
-	        this.setNullFormAttrs(['odichmoi', 'odichcu', 'xuly', 'xuly_ngay']);
-	      }
+	    'form.cathuphat': function formCathuphat(val, oldVal) {
+	      if (!lodash.isNil(oldVal) && val == 0) { this.$store.commit('UPDATE_NULL_FIELDS', {
+	        path: 'form',
+	        value: ['odichmoi', 'odichcu', 'xuly', 'xuly_ngay']
+	      }); }
 	    },
-	    'form.odichmoi': function formOdichmoi(val) {
-	      this.form.odichcu = val == 0 ? 1 : null;
+	    'form.odichmoi': function formOdichmoi(val, oldVal) {
+	      if (!lodash.isNil(oldVal) && val == 0) { this.$store.commit('UPDATE_FIELD', {
+	        path: 'form.odichcu',
+	        value: 1
+	      }); }
 	    },
-	    'form.xuatvien': function formXuatvien(val) {
-	      this.form.chuandoan = val == 0 ? 1 : null;
+	    'form.xuatvien': function formXuatvien(val, oldVal) {
+	      if (!lodash.isNil(oldVal) && val == 0) { this.$store.commit('UPDATE_FIELD', {
+	        path: 'form.chuandoan',
+	        value: 1
+	      }); }
 	    }
 	  },
 	  data: function data() {
@@ -55761,7 +56092,11 @@
 	    },
 	    modelValue: {
 	      get: function get() {
-	        return lodash.get(this, this.innerPath);
+	        if (this.name == 'chuandoan') {
+	          console.log(this.$store.state.form, lodash.get(this.$store.state, this.innerPath));
+	        }
+
+	        return lodash.get(this.$store.state, this.innerPath);
 	      },
 	      set: function set(newValue) {
 	        if (!lodash.isArray(newValue)) {

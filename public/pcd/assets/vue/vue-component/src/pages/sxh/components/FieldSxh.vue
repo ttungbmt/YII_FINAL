@@ -71,7 +71,11 @@
             },
             modelValue: {
                 get: function () {
-                    return get(this, this.innerPath)
+                    if(this.name == 'chuandoan'){
+                        console.log(this.$store.state.form, get(this.$store.state, this.innerPath))
+                    }
+
+                    return get(this.$store.state, this.innerPath)
                 },
                 set: function (newValue) {
                     if(!isArray(newValue)){
