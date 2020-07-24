@@ -152,7 +152,8 @@ class CabenhSxh extends App
             'ngaysinh' => 'Ngày sinh ',
             'ngaymacbenh_nv' => 'Ngày mắc bệnh',
             'lat' => 'Lat',
-            'lng' => 'Long'
+            'lng' => 'Long',
+            'dclamviec' => 'Địa chỉ làm việc',
         ];
     }
 

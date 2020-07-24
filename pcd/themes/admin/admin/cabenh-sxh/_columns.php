@@ -154,6 +154,12 @@ return [
     ],
     [
         'class' => '\kartik\grid\DataColumn',
+        'attribute' => 'ngaymacbenh',
+        'filterType' => GridView::FILTER_DATE,
+        'format' => 'exceldate',
+    ],
+    [
+        'class' => '\kartik\grid\DataColumn',
         'attribute' => 'ngaynhapvien',
         'filterType' => GridView::FILTER_DATE,
         'format' => 'exceldate',
@@ -164,6 +170,7 @@ return [
         'filterType' => GridView::FILTER_DATE,
         'format' => 'exceldate',
     ],
+
     [
         'class' => '\kartik\grid\DataColumn',
         'label' => 'Tình trạng'
@@ -190,6 +197,10 @@ return [
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'nghenghiep',
+    ],
+    [
+        'class' => '\kartik\grid\DataColumn',
+        'attribute' => 'dclamviec',
     ],
     [
         'class' => '\kartik\grid\DataColumn',
