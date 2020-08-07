@@ -26,6 +26,8 @@ class PhieuGs extends App
         return 'phieu_gs';
     }
 
+
+
     /**
      * {@inheritdoc}
      */
@@ -38,8 +40,12 @@ class PhieuGs extends App
             [['ngay_gs', 'nguoi_gs', 'vc_nc', 'vc_lq', 'mucdich_gs'], 'required'],
             [['vc_nc', 'vc_lq'], 'default', 'value' => null],
             [['vc_nc', 'vc_lq'], 'validateVatchua'],
-            [['ngayxuphat'], 'date', 'format' => 'php:d/m/Y'],
+            [['ngayxuphat', 'ngay_gs'], 'date', 'format' => 'php:d/m/Y'],
         ];
+    }
+
+    public function validateYear($attribute, $params){
+        return ;
     }
 
     /**

@@ -109,6 +109,7 @@ class PtNguycoSearch extends PtNguyco
         ;
 
 
+
         if($this->col_tk){
             switch ($this->col_tk){
                 case 'dauthang':

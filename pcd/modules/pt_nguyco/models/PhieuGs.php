@@ -45,7 +45,8 @@ class PhieuGs extends App
             [['ngayxuphat'], 'required', 'when' => function ($model) {
                 return $model->xuphat == '1';
             }],
-            ['ngay_gs', 'dateCompare', 'compareValue' => date('d/m/Y'), 'format' => 'd/m/Y', 'operator' => '<=']
+            ['ngay_gs', 'dateCompare', 'compareValue' => date('d/m/Y'), 'format' => 'd/m/Y', 'operator' => '<='],
+            ['ngay_gs', 'dateCompare', 'compareValue' => '01/01/2018', 'format' => 'd/m/Y', 'operator' => '>=']
         ];
     }
 

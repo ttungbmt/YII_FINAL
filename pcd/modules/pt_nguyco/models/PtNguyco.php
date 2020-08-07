@@ -237,9 +237,14 @@ class PtNguyco extends App
         $n = collect(data_get($data, 'PhieuGs'))->map(function ($i) use ($giamsats) {
             $id = data_get($i, 'id');
             $d = collect($giamsats)->firstWhere('id', $id);
-            return $d ? $d : new PhieuGs();
+            if($d) {
+                $d->load($i, '');
+                return $d;
+            }
+            return new PhieuGs();
         })->all();
         $giamsats = $n;
+
         if ($this->lat && $this->lng) {
             $this->geom = [$this->lng, $this->lat];
         }
@@ -247,9 +252,6 @@ class PtNguyco extends App
         if ($this->loaihinh_id) {
             $this->nhom = data_get(DmLoaihinh::findOne($this->loaihinh_id), 'nhom');
         }
-
-        Model::loadMultiple($giamsats, $data);
-
 
         if (
             $l1 &&

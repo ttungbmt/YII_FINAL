@@ -93,17 +93,6 @@ class DefaultController extends BackendController
         $d = $ms->unique()
             ->mapWithKeys(function ($i) use($year){return [$i => ['year' => $year, 'month' => $i, 'thucte' => 1]];})
         ;
-//        $end = collect();
-//        foreach (range(1,12) as $m){
-//            $tt = $d->firstWhere('month', $m);
-//            $dk = $k->firstWhere('month', $m);
-//            if($dk){
-//                $e = array_merge($dk, $tt ? $tt : []);
-//                $end->push($e);
-//            }
-//        }
-//        $end = $end->all();
-//        $model->syncOne('kehoachs', $end);
 
         $data = collect($giamsats)->map(function ($i) {
             return array_merge($i->toArray(), [
@@ -114,8 +103,6 @@ class DefaultController extends BackendController
         })->all();
 
         $model->syncOne('giamsats', $data);
-//        dd($data);
-
     }
 
     public function actionDelete($id)

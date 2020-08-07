@@ -170,6 +170,7 @@ class PtNguyco extends App
         $giamsats = $n;
         Model::loadMultiple($giamsats, $data);
 
+
         if (
             $l1 &&
             $this->validate() &&

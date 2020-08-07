@@ -68,6 +68,8 @@ class PhieuGsSearch extends PhieuGs
 
         $query->andFilterDate(['ngay_gs' => [$this->date_from, $this->date_to]]);
         $roles->filterHc($query);
+//        dd($query->createCommand()->getRawSql());
+
         return $dataProvider;
     }
 }
