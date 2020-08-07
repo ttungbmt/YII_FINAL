@@ -23,9 +23,12 @@ $maphuong = userInfo()->ma_phuong;
     tfoot td {
         font-weight: bold
     }
+
+    [v-cloak] > * { display:none }
+    [v-cloak]::before { content: "loading…" }
 </style>
 
-<div id="tkApp">
+<div id="tkApp" v-cloak>
     <div class="card">
         <div class="card-body">
             <?php $form = ActiveForm::begin([

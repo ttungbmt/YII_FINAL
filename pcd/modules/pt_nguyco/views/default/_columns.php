@@ -12,7 +12,7 @@ return [
         },
         'visibleButtons' => [
             'delete'   => function ($model) {
-                return role('quan|admin|phuong');
+                return role('quan|admin');
             },
             'view' => false,
         ],
