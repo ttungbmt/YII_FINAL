@@ -1,6 +1,6 @@
 <?php
 return [
-    'map_version' => '0.0.1',
+    'map_version' => '0.0.2',
     'version' => '0.0.16',
 
     'adminEmail' => 'ttungbmt@gmail.com',

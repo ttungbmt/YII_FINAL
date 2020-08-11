@@ -2,6 +2,7 @@
 namespace pcd\search;
 
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use pcd\models\CabenhSxh;
 use pcd\models\Chuyenca;
 use pcd\supports\RoleHc;
@@ -17,6 +18,7 @@ class CabenhSxhSearch extends CabenhSxh
     public $group_xm;
     public $excepted_tv;
     public $field_date;
+    public $cabenh_ids;
 
     public function init()
     {
@@ -37,7 +39,8 @@ class CabenhSxhSearch extends CabenhSxh
             [['loaidieutra', 'loaicabenh', 'loaibaocao', 'chuandoan', 'loaixacminh_cb', 'ht_dieutri', 'is_nghingo', 'loai_xm_cb', 'group_xm', 'excepted_tv'], 'integer'],
             [['chuandoan_bd', 'hoten', 'phai', 'tuoi', 'dienthoai', 'sonha', 'duong', 'to_dp', 'khupho', 'maquan', 'maphuong', 'nghenghiep'], 'string'],
             [['ngaybaocao', 'ngaynhapvien', 'ngayxuatvien', 'date_from', 'date_to'], 'date', 'format' => 'php:d/m/Y'],
-            [['loaica'], 'integer']
+            [['loaica'], 'integer'],
+            [['cabenh_ids'], 'string']
         ];
     }
 
@@ -68,6 +71,7 @@ class CabenhSxhSearch extends CabenhSxh
         ]);
 
         $this->load($params);
+        $this->setAttributes(Arr::only($params, ['cabenh_ids']));
 
         if (!$this->validate()) {
             $query->where('0=1');
@@ -127,6 +131,8 @@ class CabenhSxhSearch extends CabenhSxh
                 $query->andWhere(['in', 'loai_xm_cb', [1, 2, 3]]);
             }
         }
+
+        if($this->cabenh_ids) $query->andFilterWhere(['in', 'gid', explode(',', $this->cabenh_ids)]);
 
         $roles->filterChuyenCa($this->loaica, $query);
 
