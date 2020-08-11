@@ -241,7 +241,9 @@ class PtNguyco extends App
                 $d->load($i, '');
                 return $d;
             }
-            return new PhieuGs();
+            $model = new PhieuGs();
+            $model->load($i, '');
+            return $model;
         })->all();
         $giamsats = $n;
 
