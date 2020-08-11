@@ -2,11 +2,13 @@ import {isNil} from 'lodash-es'
 
 let ruleDate = `before_or_equal:today`,
     ruleInteger = 'integer|min_value:0',
-    ruleNumber = 'min_value:0'
+    ruleNumber = 'min_value:0',
+    cabenh_ids = window.pageData.form.cabenhs.map(v => v.gid).join(',')
+
 
 export default [
     {component: 'm-heading', type: 'heading', serial: 'I', title: 'Tổng quan về ổ dịch', class: 'text-lg'},
-    {component: 'm-html', html: `<div class="mt-2 font-semibold"><div class="text-base uppercase">Danh sách ca bệnh trong ổ dịch</div></div>`},
+    {component: 'm-html', html: `<div class="mt-2 mb-2 font-semibold"><a href="/admin/cabenh-sxh?cabenh_ids=${cabenh_ids}" title="Mở danh sách chi tiết ca bệnh" target="_blank" class="flex"><div class="text-base uppercase">Danh sách ca bệnh trong ổ dịch</div> <i class="ml-2 mt-1 icon-link"></i></a></div>`},
     {
         component: 'm-table',
         class: 'mb-2',

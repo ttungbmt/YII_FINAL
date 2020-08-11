@@ -5,6 +5,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use pcd\models\CabenhSxh;
 use pcd\models\Chuyenca;
+use pcd\models\HcPhuong;
+use pcd\models\HcQuan;
 use pcd\supports\RoleHc;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -132,9 +134,21 @@ class CabenhSxhSearch extends CabenhSxh
             }
         }
 
-        if($this->cabenh_ids) $query->andFilterWhere(['in', 'gid', explode(',', $this->cabenh_ids)]);
 
         $roles->filterChuyenCa($this->loaica, $query);
+
+        if($this->cabenh_ids) {
+            if(role('phuong')){
+                $giapranh = data_get(HcPhuong::find()->andFilterWhere(['maphuong' => userInfo()->maphuong])->one(), 'giapranh.items');
+                $query->orFilterWhere(['in', 'maphuong', $giapranh]);
+            } elseif (role('quan')){
+                $giapranh = data_get(HcQuan::find()->andFilterWhere(['maquan' => userInfo()->maquan])->one(), 'giapranh.items');
+                $query->orFilterWhere(['in', 'maquan', $giapranh]);
+            }
+
+            $query->andFilterWhere(['in', 'gid', explode(',', $this->cabenh_ids)]);
+        };
+
 
         return $dataProvider;
     }
