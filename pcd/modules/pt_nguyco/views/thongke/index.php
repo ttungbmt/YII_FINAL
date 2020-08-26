@@ -26,6 +26,7 @@ $maphuong = userInfo()->ma_phuong;
 
     [v-cloak] > * { display:none }
     [v-cloak]::before { content: "loading…" }
+    thead {background: white}
 </style>
 
 <div id="tkApp" v-cloak>
@@ -119,6 +120,7 @@ $maphuong = userInfo()->ma_phuong;
 </div>
 <script src="<?= asset('assets/vue/vue-component/dist/library.js') ?>"></script>
 <script src="https://cdn.jsdelivr.net/npm/urijs@1.19.2/src/jquery.URI.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/floatthead@2.1.2/dist/jquery.floatThead.min.js"></script>
 <?php
 $this->registerJsVar('pageData', [
     'form' => $model->toArray(),
@@ -193,6 +195,10 @@ $this->registerJsVar('pageData', [
                 afterPost(resp) {
                     this.resp = resp.data
                     this.field = resp.field
+
+                    setTimeout(() => {
+                        $('.table').floatThead()
+                    }, 500)
                 },
 
                 renderChart(){
