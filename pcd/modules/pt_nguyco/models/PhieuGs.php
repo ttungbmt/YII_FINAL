@@ -33,7 +33,7 @@ class PhieuGs extends App
     {
         return [
             [['pt_nguyco_id'], 'default', 'value' => null],
-            [['pt_nguyco_id', 'vc_nc', 'vc_lq', 'dexuat_xp', 'xuphat'], 'integer'],
+            [['pt_nguyco_id', 'vc_nc', 'vc_lq', 'dexuat_xp', 'xuphat', 'vc_lq_dxl'], 'integer'],
             [[ 'ngay_gs', 'nguoi_gs', 'mucdich_gs'], 'string', 'max' => 255],
             [['ngay_gs', 'nguoi_gs', 'vc_nc', 'vc_lq', 'mucdich_gs', 'dexuat_xp'], 'required'],
             [['vc_nc', 'vc_lq'], 'default', 'value' => null],
@@ -68,6 +68,7 @@ class PhieuGs extends App
             'ngayxuphat' => 'Ngày xử phạt',
             'maquan' => 'Quận',
             'maphuong' => 'Phường',
+            'vc_lq_dxl' => 'Số có LQ đã xử lý',
         ];
     }
 

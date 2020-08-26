@@ -140,6 +140,7 @@ class PtNguyco extends App
             'loaihinh_id' => 'Loại hình',
             'ky_ck' => 'Ký cam kết',
             'ngayky_ck' => 'Ngày ký cam kết',
+            'vc_lq_dxl' => 'Số có LQ đã xử lý',
 
             'diachiText' => 'Địa chỉ',
         ];

@@ -33,8 +33,11 @@ $dm_mucdich_gs = api('dm_mucdich_gs');
         <div class="col-md-6">
             <?= $form->field($model, 'vc_nc')->textInput(['type' => 'number', 'min' => 0]) ?>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
             <?= $form->field($model, 'vc_lq')->textInput(['type' => 'number', 'min' => 0]) ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'vc_lq_dxl')->textInput(['type' => 'number', 'min' => 0]) ?>
         </div>
     </div>
     <div class="row">

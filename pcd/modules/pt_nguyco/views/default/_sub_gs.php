@@ -37,8 +37,11 @@ $dexuat_xp = $model->dexuat_xp;
         <div class="col-md-6">
             <?= $form->field($model, "[{$i}]vc_nc", ['template' => $template])->textInput(['type' => 'number', 'min' => 0]) ?>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
             <?= $form->field($model, "[{$i}]vc_lq", ['template' => $template])->textInput(['type' => 'number', 'min' => 0]) ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, "[{$i}]vc_lq_dxl", ['template' => $template])->textInput(['type' => 'number', 'min' => 0]) ?>
         </div>
     </div>
     <div class="row">
