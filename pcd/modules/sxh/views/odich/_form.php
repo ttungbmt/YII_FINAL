@@ -4,10 +4,13 @@ use yii\widgets\ActiveForm;
 
 $this->title = ($model->isNewRecord ? 'Thêm mới' : 'Cập nhật') . ' Ổ dịch';
 ?>
+    <style>
+        .ql-container {min-height: 100px}
+    </style>
 
-    <div id="page-app">
-        <page-form-odich></page-form-odich>
-    </div>
+<div id="page-app">
+    <page-form-odich></page-form-odich>
+</div>
 
 <?php $this->beginBlock('scripts'); ?>
 <?php

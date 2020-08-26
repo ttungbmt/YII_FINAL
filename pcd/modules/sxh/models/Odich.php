@@ -49,6 +49,10 @@ use pcd\models\OdichSxhPoly;
 
 class Odich extends App
 {
+    public $diet_lqs;
+    public $khaosat_cts;
+    public $phun_hcs;
+
     protected $timestamps = true;
 
     protected $dates = ['ngayxacdinh', 'ngayphathien', 'ngaydukien_kt', 'ngayketthuc', 'ngaybatdau_gs', 'ngayketthuc_td'];
@@ -71,8 +75,9 @@ class Odich extends App
     {
         return [
             [['ngayxacdinh', 'ngayphathien', 'ngaydukien_kt', 'ngayketthuc', 'ngaybatdau_gs', 'ngayketthuc_td'], 'date', 'format' => 'php:d/m/Y'],
-            [['donvi_xp', 'hdtt_hinhthuc', 'hdtt_thoigian', 'hdtt_diadiem', 'danhgia', 'nguoithuchien', 'dienthoai', 'dncs_count'], 'safe'],
+            [['donvi_xp', 'hdtt_hinhthuc', 'hdtt_thoigian', 'hdtt_diadiem', 'danhgia', 'nguoithuchien', 'dienthoai', 'dncs_count', 'nhandinh_gs'], 'safe'],
             [['loai_od', 'sonocgia'], 'integer'],
+            [['khaosat_cts', 'diet_lqs', 'phun_hcs', 'sonocgia'], 'required'],
         ];
     }
 
@@ -86,7 +91,9 @@ class Odich extends App
         return [
             'ngayxacdinh' => 'Ngày xác định',
             'ngayphathien' => 'Ngày phát hiện',
-            'loai_od' => 'Loại ổ dịch',
+            'diet_lqs' => 'Diệt lăng quăng',
+            'khaosat_cts' => 'Khảo sát côn trùng',
+            'phun_hcs' => 'Phun hóa chất',
         ];
     }
 
@@ -100,9 +107,10 @@ class Odich extends App
     }
 
     public function saveModel(){
+        $data = collect(request()->all());
+        $this->load($data->only(['diet_lqs', 'khaosat_cts', 'phun_hcs'])->all(), '');
         if(!$this->validate()) return false;
 
-        $data = collect(request()->all());
         $this->save();
 
         $toPoly = function ($data, $type, $key){
@@ -159,4 +167,6 @@ class Odich extends App
 //    public function getDncPolys(){
 //        return $this->hasMany(OdichSxhPoly::className(), ['odich_id' => 'id'])->andWhere(['resource_type' => 'dnc']);
 //    }
+
+
 }

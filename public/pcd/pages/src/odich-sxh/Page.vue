@@ -20,6 +20,7 @@
     import {map, isEmpty, get, last, sortBy} from 'lodash-es'
     import {get as pGet} from 'vuex-pathify'
     import moment from 'moment'
+    import * as vv from 'vee-validate';
 
     import Map from './partials/Map.vue'
     import Phamvi from './partials/Phamvi.vue'
@@ -49,6 +50,7 @@
                 },
 
                 loading: false,
+                errors: []
             }
         },
         watch: {
@@ -87,10 +89,13 @@
                 }
 
                 this.loading = true
+                this.errors = []
+
                 this.$http.post(window.location.href, data).then(({data}) => {
                     this.loading = false
                     if(data.errors) {
                         $form.setErrors(data.errors)
+                        this.errors = errors
                         this.$noty.error(data.message)
 
                         return false

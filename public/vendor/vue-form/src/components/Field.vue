@@ -117,7 +117,7 @@
             },
 
             computedComponent(){
-                if(includes(['text', 'password', 'integer', 'number', 'email', 'url', 'search', 'tel', 'range'], this.type)) {
+                if(includes(['text', 'password', 'integer', 'number', 'email', 'url', 'search', 'tel', 'range', 'hidden'], this.type)) {
                     return 'b-form-input'
                 }
 

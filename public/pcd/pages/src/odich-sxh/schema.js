@@ -7,6 +7,10 @@ let ruleDate = `before_or_equal:today`,
 
 
 export default [
+    {component: 'validation-provider', vid: 'diet_lqs'},
+    {component: 'validation-provider', vid: 'khaosat_cts'},
+    {component: 'validation-provider', vid: 'phun_hcs'},
+
     {component: 'm-heading', type: 'heading', serial: 'I', title: 'Tổng quan về ổ dịch', class: 'text-lg'},
     {component: 'm-html', html: `<div class="mt-2 mb-2 font-semibold"><a href="/admin/cabenh-sxh?cabenh_ids=${cabenh_ids}" title="Mở danh sách chi tiết ca bệnh" target="_blank" class="flex"><div class="text-base uppercase">Danh sách ca bệnh trong ổ dịch</div> <i class="ml-2 mt-1 icon-link"></i></a></div>`},
     {
@@ -206,9 +210,9 @@ export default [
                     }
                 ]
             },
+            {component: 'm-field', label: 'Nhận định kết quả giám sát, xử lý điểm nguy cơ trong ổ dịch', model: 'nhandinh_gs', type: 'editor', class: 'mt-4',},
             {
                 component: 'm-grid',
-                class: 'mt-2',
                 cols: 2,
                 schema: [
                     {component: 'm-field', label: 'Ngày bắt đầu giám sát', model: 'ngaybatdau_gs', type: 'date', placeholder: 'DD/MM/YYYY'},
@@ -279,11 +283,11 @@ export default [
         }
     },
     {component: 'm-heading', type: 'heading', serial: '5', title: 'Hoạt động truyền thông', class: 'text-base', pill: true},
+    {component: 'm-field', label: 'Hình thức truyền thông', type: 'editor', model: 'hdtt_hinhthuc'},
     {
         component: 'm-grid',
         type: 'group',
         schema: [
-            {component: 'm-field', label: 'Hình thức truyền thông', model: 'hdtt_hinhthuc'},
             {component: 'm-field', label: 'Thời gian', model: 'hdtt_thoigian'},
             {component: 'm-field', label: 'Địa điểm', class: 'col-span-2', model: 'hdtt_diadiem'},
         ]
