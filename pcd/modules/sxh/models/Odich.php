@@ -77,7 +77,9 @@ class Odich extends App
             [['ngayxacdinh', 'ngayphathien', 'ngaydukien_kt', 'ngayketthuc', 'ngaybatdau_gs', 'ngayketthuc_td'], 'date', 'format' => 'php:d/m/Y'],
             [['donvi_xp', 'hdtt_hinhthuc', 'hdtt_thoigian', 'hdtt_diadiem', 'danhgia', 'nguoithuchien', 'dienthoai', 'dncs_count', 'nhandinh_gs'], 'safe'],
             [['loai_od', 'sonocgia'], 'integer'],
-            [['khaosat_cts', 'diet_lqs', 'phun_hcs', 'sonocgia'], 'required'],
+            [['khaosat_cts', 'diet_lqs', 'phun_hcs'], 'required'],
+            [['maquan', 'maphuong', 'loai_od', 'ngayxacdinh', 'ngayphathien', 'ngaydukien_kt', 'sonocgia', 'ngaybatdau_gs', 'nguoithuchien'], 'required'],
+            [['ngayxacdinh', 'ngayphathien', 'ngaybatdau_gs'], 'dateCompare', 'compareValue' => date('d/m/Y'), 'format' => 'd/m/Y', 'operator' => '<='],
         ];
     }
 
@@ -91,6 +93,9 @@ class Odich extends App
         return [
             'ngayxacdinh' => 'Ngày xác định',
             'ngayphathien' => 'Ngày phát hiện',
+            'ngaydukien_kt' => 'Ngày dự kiến kết thúc',
+            'ngaybatdau_gs' => 'Ngày bắt đầu giám sát',
+            'nguoithuchien' => 'Người thực hiện',
             'diet_lqs' => 'Diệt lăng quăng',
             'khaosat_cts' => 'Khảo sát côn trùng',
             'phun_hcs' => 'Phun hóa chất',
