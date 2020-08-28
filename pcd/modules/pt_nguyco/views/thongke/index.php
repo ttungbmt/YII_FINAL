@@ -196,9 +196,9 @@ $this->registerJsVar('pageData', [
                     this.resp = resp.data
                     this.field = resp.field
 
-                    setTimeout(() => {
-                        $('.table').floatThead()
-                    }, 500)
+                    // setTimeout(() => {
+                    //     $('.table').floatThead()
+                    // }, 500)
                 },
 
                 renderChart(){

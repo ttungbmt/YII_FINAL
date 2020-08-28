@@ -120,6 +120,7 @@ $header = function ($title){
                 <?=$li('Dân số', '/admin/danso', 'icon-file-text')?>
 
                 <?php if(role('admin')):?>
+                    <?=$li('Hóa chất', '/dm/hoachat', 'icon-file-text')?>
                     <?=$li('Chỉ tiêu GS huyết thanh', '/admin/chitieu-ht', 'icon-file-text')?>
                     <?=$li('Loại bệnh', '/admin/loaibenh', 'icon-file-text')?>
                     <?=$li('Bệnh viện', '/admin/benhvien', 'icon-office')?>
