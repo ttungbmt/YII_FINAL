@@ -97,6 +97,7 @@ class DefaultController extends BackendController
         $data = collect($giamsats)->map(function ($i) {
             return array_merge($i->toArray(), [
                 'xuphat' => $i->xuphat === '' ? null : $i->xuphat,
+                'vc_lq_dxl' => $i->vc_lq_dxl === '' ? null : $i->vc_lq_dxl,
                 'ngay_gs' =>  $i->ngay_gs ? Carbon::createFromFormat('d/m/Y', $i->ngay_gs)->format('Y-m-d') : null,
                 'ngayxuphat' =>  $i->ngayxuphat ? Carbon::createFromFormat('d/m/Y', $i->ngayxuphat)->format('Y-m-d') : null,
             ]);
