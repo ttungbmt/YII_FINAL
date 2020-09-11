@@ -19,7 +19,6 @@ class DichbenhController extends BackendController {
     {
         return [
             'header' => ['bv', 'icd', 't_benh', 'shs', 'ho_ten', 'phai', 'tuoi', 'dia_chi', 'nghe_nghiep', 'me', 'dt', 'qh', 'px', 'ng_nv', 'ng_bc', 'nam_nv', 'thang_nv', 'tuan_nv', 'nam_bc', 'thang_bc', 'tuan_bc', 'hinh_thuc_dieu_tri', 'lat', 'lng'],
-            'sample' => '/gsnc/storage/samples/vt-khaosat-import.xlsx',
             'startDataRow' => 1
         ];
     }
@@ -83,7 +82,5 @@ class DichbenhController extends BackendController {
         foreach ($models as $m) {
             $m->save();
         }
-//
-//        $connection->createCommand()->batchInsert('ql_chitieu', ['chitieu_id', 'giatri', 'entity_type', 'entity_id'], $chitieus)->execute();
     }
 }

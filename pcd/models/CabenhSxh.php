@@ -96,6 +96,7 @@ class CabenhSxh extends App
             [['ngaybaocao', 'ngaynhanthongbao', 'ngaymacbenh', 'ngaynhapvien', 'ngayxuatvien', 'ngaysinh', 'ngaymacbenh_nv', 'ngaylaymau', 'geom'], 'safe'],
             [['chuandoan_bd', 'phai', 'nghenghiep', 'vitri', 'me', 'sonha', 'duong', 'to_dp', 'khupho'], 'string', 'max' => 255],
             [['shs', 'tp_guive'], 'safe'],
+            [['ten_qh_en', 'ten_px_en'], 'safe'],
             [['ma_icd'], 'string', 'max' => 15],
             [['hoten'], 'string', 'max' => 150],
             [['lat', 'lng'], 'number'],

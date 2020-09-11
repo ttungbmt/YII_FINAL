@@ -15,14 +15,6 @@ use pcd\supports\RoleHc;
 use yii\base\Model;
 
 class SxhController extends BackendController {
-//    public function actions() {
-//        return [
-//            'index' => [
-//                'class' => ImportAction::className(),
-//            ]
-//        ];
-//    }
-
     use ImportTrait;
     public $enableCsrfValidation = false;
     protected $modelImportClass = 'pcd\modules\import\forms\SxhImportForm';
@@ -97,17 +89,23 @@ class SxhController extends BackendController {
             Model::validateMultiple($models)
         ) {
 
-            $connection = \Yii::$app->db;
-            $transaction = $connection->beginTransaction();
-            try {
-                $this->saveModels($models, $data, $connection);
-                $transaction->commit();
+            $ms = collect($models);
+
+            if($ms->pluck('maquan')->filter()->count() === $ms->count()){
+                $connection = \Yii::$app->db;
+                $transaction = $connection->beginTransaction();
+                try {
+                    $this->saveModels($models, $data, $connection);
+                    $transaction->commit();
+                    return true;
+                } catch (\Exception $e) {
+                    $transaction->rollback();
+                    dd($e);
+                }
                 return true;
-            } catch (\Exception $e) {
-                $transaction->rollback();
-                dd($e);
+            } else {
+                $this->data['messages'] = 'Một vài dòng không tìm thấy mã quận. Vui lòng thông báo với Admin để kiểm tra.';
             }
-            return true;
         }
 
         $this->data['models'] = $models;

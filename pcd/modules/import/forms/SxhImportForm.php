@@ -85,6 +85,8 @@ class SxhImportForm extends DynamicImportForm {
         $data->push($f0);
 
         $data->push([
+            'ten_qh_en'     => 'qh',
+            'ten_px_en'     => 'px',
             'benhvien'     => 'bv',
             'ma_icd'       => 'icd',
             'chuandoan_bd' => function ($model) {
