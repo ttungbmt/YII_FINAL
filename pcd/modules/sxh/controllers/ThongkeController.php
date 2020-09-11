@@ -45,8 +45,8 @@ class ThongkeController extends AppController
             if($loai_tk == 1){
                 return $this->asJson([
                     'fields' => [
-                        ['key' => 'ngayxuly', 'label' => 'Ngày xử lý'],
-                        ['key' => 'loai_od', 'label' => 'Loại xử lý', 'format' => 'html'],
+                        ['key' => 'ngayxuly', 'label' => 'Ngày xử lý', 'format' => 'html'],
+                        ['key' => 'loai_od', 'label' => 'Loại xử lý'],
                         ['key' => 'tt', 'label' => 'Lần phun',],
                         ['key' => 'tenquan', 'label' => 'Quận/ huyện',],
                         ['key' => 'tenphuong', 'label' => 'Phường/ xã',],
@@ -62,8 +62,8 @@ class ThongkeController extends AppController
                     ],
                     'data' => collect($tb1->all())->map(function ($i) use($dm_loai_od){
                         return array_merge($i, [
-                            'ngayxuly' => dbToDate($i['ngayxuly']),
-                            'loai_od' => Html::a(data_get($dm_loai_od, $i['loai_od']), ['/sxh/odich/update', 'id' => $i['odich_id']], ['title' => 'Xem chi tiết', 'target' => '_blank']),
+                            'ngayxuly' => Html::a(dbToDate($i['ngayxuly']), ['/sxh/odich/update', 'id' => $i['odich_id']], ['title' => 'Xem chi tiết ổ dịch', 'target' => '_blank']),
+                            'loai_od' => data_get($dm_loai_od, $i['loai_od']),
                             'sonha_kphc' => number_format ($i['sonocgia_tt'] > 0 ? ($i['sonocgia_tt']-$i['sonocgia_xl'])*100/$i['sonocgia_tt'] : 0, '1'),
                             'sonocgia_tt' => $i['sonocgia_tt'],
                             'sonocgia_xl' => $i['sonocgia_xl'],
@@ -82,7 +82,7 @@ class ThongkeController extends AppController
             if($loai_tk == 2){
                 return $this->asJson([
                     'fields' => [
-                        ['key' => 'ngayxuly', 'label' => 'Ngày xử lý',],
+                        ['key' => 'ngayxuly', 'label' => 'Ngày xử lý', 'format' => 'html'],
                         ['key' => 'tt', 'label' => 'Lần diệt lăng quăng',],
                         ['key' => 'tenquan', 'label' => 'Quận/ huyện',],
                         ['key' => 'tenphuong', 'label' => 'Phường/ xã',],
@@ -92,7 +92,7 @@ class ThongkeController extends AppController
                     ],
                     'data' => collect($tb2->all())->map(function ($i){
                         return array_merge($i, [
-                            'ngayxuly' => dbToDate($i['ngayxuly']),
+                            'ngayxuly' => Html::a(dbToDate($i['ngayxuly']), ['/sxh/odich/update', 'id' => $i['odich_id']], ['title' => 'Xem chi tiết ổ dịch', 'target' => '_blank']),
                             'tt' => "Lần {$i['tt']}",
                             'tyle_sonha' => "{$i['sonha']} / {$i['sonocgia']}",
                         ]);
