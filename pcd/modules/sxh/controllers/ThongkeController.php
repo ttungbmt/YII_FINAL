@@ -14,6 +14,7 @@ use pcd\modules\sxh\models\PhunHc;
 use ttungbmt\db\Query;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 class ThongkeController extends AppController
 {
@@ -45,7 +46,7 @@ class ThongkeController extends AppController
                 return $this->asJson([
                     'fields' => [
                         ['key' => 'ngayxuly', 'label' => 'Ngày xử lý'],
-                        ['key' => 'loai_od', 'label' => 'Loại xử lý',],
+                        ['key' => 'loai_od', 'label' => 'Loại xử lý', 'format' => 'html'],
                         ['key' => 'tt', 'label' => 'Lần phun',],
                         ['key' => 'tenquan', 'label' => 'Quận/ huyện',],
                         ['key' => 'tenphuong', 'label' => 'Phường/ xã',],
@@ -62,8 +63,10 @@ class ThongkeController extends AppController
                     'data' => collect($tb1->all())->map(function ($i) use($dm_loai_od){
                         return array_merge($i, [
                             'ngayxuly' => dbToDate($i['ngayxuly']),
-                            'loai_od' => data_get($dm_loai_od, $i['loai_od']),
-                            'sonha_kphc' => number_format ($i['sonocgia_tt'] > 0 ? ($i['sonocgia_tt']-$i['sonocgia_xl'])*100/$i['sonocgia_tt'] : 0, '1')
+                            'loai_od' => Html::a(data_get($dm_loai_od, $i['loai_od']), ['/sxh/odich/update', 'id' => $i['odich_id']], ['title' => 'Xem chi tiết', 'target' => '_blank']),
+                            'sonha_kphc' => number_format ($i['sonocgia_tt'] > 0 ? ($i['sonocgia_tt']-$i['sonocgia_xl'])*100/$i['sonocgia_tt'] : 0, '1'),
+                            'sonocgia_tt' => $i['sonocgia_tt'],
+                            'sonocgia_xl' => $i['sonocgia_xl'],
                         ]);
                     })
                 ]);

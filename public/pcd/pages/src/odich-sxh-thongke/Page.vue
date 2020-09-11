@@ -71,7 +71,6 @@
             }
         },
         mounted() {
-
         },
         methods: {
             onSubmit(){

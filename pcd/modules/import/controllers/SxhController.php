@@ -1,13 +1,10 @@
 <?php
 namespace pcd\modules\import\controllers;
 
-use common\actions\ImportAction;
 use common\controllers\BackendController;
 use common\controllers\ImportTrait;
 use pcd\models\Benhvien;
 use pcd\models\CabenhSxh;
-use pcd\models\DmPhuong;
-use pcd\models\DmQuan;
 use pcd\models\HcPhuong;
 use pcd\models\HcQuan;
 use pcd\models\Loaibenh;
