@@ -1,4 +1,4 @@
-import {isNil} from 'lodash-es'
+import {isNil, isArray} from 'lodash-es'
 
 let ruleDate = `before_or_equal:today`,
     ruleInteger = 'integer|min_value:0',
@@ -237,7 +237,10 @@ export default [
             {key: 'sonocgia_xl', label: 'Số nóc gia xử lý'},
             {key: 'somaynho', label: 'Số máy nhỏ'},
             {key: 'somaylon', label: 'Số máy lớn'},
-            {key: 'loai_hc', label: 'Loại hóa chất'},
+            {key: 'loai_hc', label: 'Loại hóa chất', value: ({field, item}) => {
+                    if(isArray(item[field.key])) return item[field.key].join(', ')
+                    return item[field.key]
+                }},
             {key: 'solit_hc', label: 'Số lít hóa chất chưa pha (lít)'},
             {key: 'songuoi_tg', label: 'Số người tham gia'},
         ],
@@ -271,7 +274,7 @@ export default [
                         {component: 'm-field', label: 'Số máy lớn', type: 'integer', model: 'somaylon', rules: ruleInteger},
                     ]
                 },
-                {component: 'm-field', label: 'Loại hóa chất', model: 'loai_hc'},
+                {component: 'm-field', label: 'Loại hóa chất (nếu không có trong danh sách, vui lòng liên hệ với admin để thêm mới)', type: 'v-select', items: 'cat.hoachat', model: 'loai_hc', placeholder: 'Chọn...', multiple: true},
                 {
                     component: 'm-grid', cols: 2,
                     schema: [

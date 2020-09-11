@@ -39,7 +39,11 @@ class OdichForm extends Odich
             'nguoithuchien',
             'dienthoai',
             'diet_lqs' => 'dietLqs',
-            'phun_hcs' => 'phunHcs',
+            'phun_hcs' => function($model){
+                return collect($model->phunHcs)->map(function ($i){
+                    return array_merge($i->toArray(), ['loai_hc' => array_map('trim', explode(',', $i->loai_hc))]);
+                });
+            },
             'cabenhs' => function($model){
                 $ids = collect(explode(',', request()->get('cabenh_ids')))->map(function ($i){return trim($i);})->filter();
                 $cabenhs = $ids->isEmpty() ? $model->cabenhs : CabenhSxh::find()->andWhere(['in', 'gid', $ids->all()])->all();

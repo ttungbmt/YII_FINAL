@@ -7,6 +7,7 @@ use pcd\models\CabenhSxh;
 use pcd\models\HcPhuong;
 use pcd\models\HcQuan;
 use pcd\models\OdichSxhPoly;
+use pcd\modules\dm\models\DmHoachat;
 use pcd\modules\pt_nguyco\models\PtNguyco;
 use pcd\modules\sxh\forms\OdichForm;
 use pcd\modules\sxh\models\Odich;
@@ -78,6 +79,8 @@ class OdichController extends AppController
             return $role->getGapranhCQL($cql, $hc);
         };
 
+        $hoachat = DmHoachat::pluck('ten_hc', 'ten_hc');
+
         return [
             'formData' => $odich->toFormArray(),
             'map' => [
@@ -135,6 +138,7 @@ class OdichController extends AppController
             'cat' => [
                 'loai_od' => api('dm_loaiodich'),
                 'loai_ks' => api('dm_loai_ks'),
+                'hoachat' => $hoachat,
                 'qh' => collect(HcQuan::find()->select('tenquan,maquan,order')->orderBy('order')->pluck('tenquan', 'maquan'))->map(function ($i, $k){
                     return ['label' => $i, 'value' => (string)$k];
                 })->values()->all(),

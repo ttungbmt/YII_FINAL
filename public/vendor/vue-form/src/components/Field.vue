@@ -124,6 +124,8 @@
                 switch (this.type) {
                     case 'editor':
                         return 'v-editor'
+                    case 'v-select':
+                        return `v-select`
                     case 'select':
                     case 'textarea':
                         return `b-form-${this.type}`
@@ -142,6 +144,12 @@
 
                 if(this.type === 'select'){
                     attrs.options = this.computedItems
+                }
+
+                if(this.type === 'v-select'){
+                    attrs.options = this.computedItems
+                    console.log(this.$attrs)
+                    if(!isUndefined(this.$attrs.multiple)) attrs.multiple = this.$attrs.multiple
                 }
 
                 if(this.type === 'integer'){

@@ -130,10 +130,14 @@ class Odich extends App
         };
 
         $cabenhs = $toPoly($data->get('cabenhs'), 'sxh', 'gid');
+        $phunHcs = collect($data->get('phun_hcs'))->map(function ($i){
+            if(is_array($i['loai_hc'])) $i['loai_hc'] = collect($i['loai_hc'])->filter()->implode(', ');
+            return $i;
+        });
 
         $this->linkMany('sxhPolys', $cabenhs);
         $this->linkMany('dietLqs', $data->get('diet_lqs'));
-        $this->linkMany('phunHcs', $data->get('phun_hcs'));
+        $this->linkMany('phunHcs', $phunHcs);
 
         $xuly = $data->only(['xuly_id', 'phamvi_gis', 'phamvi_px', 'phamvi_px_html', 'khaosat_cts', 'dncs']);
 
