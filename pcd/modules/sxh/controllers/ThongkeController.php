@@ -118,9 +118,9 @@ class ThongkeController extends AppController
                 ->select([
                     $field['key'] => "od.{$field['key']}",
                     'mxl1' => 'SUM ( CASE WHEN min_tt = 1 AND (loai_od = 1 OR loai_od = 5)  THEN 1 END )',
-                    'mxl2' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 2 THEN 1 END )',
-                    'mxl3' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 3 THEN 1 END )',
-                    'mxl4' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 4 THEN 1 END )',
+                    'mxl2' => 'SUM ( CASE WHEN min_tt = 1 AND loai_od = 2 THEN 1 END )',
+                    'mxl3' => 'SUM ( CASE WHEN min_tt = 1 AND loai_od = 3 THEN 1 END )',
+                    'mxl4' => 'SUM ( CASE WHEN min_tt = 1 AND loai_od = 4 THEN 1 END )',
                     'tong_odxl' => 'SUM(phc.c_tt)',
                     'px_od_xldr' => 'COUNT(DISTINCT CASE WHEN loai_od = 2 THEN maphuong END)',
                     'solit_hc' => 'SUM (phc.solit_hc)',
