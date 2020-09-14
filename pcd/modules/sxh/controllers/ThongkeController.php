@@ -45,20 +45,21 @@ class ThongkeController extends AppController
             if($loai_tk == 1){
                 return $this->asJson([
                     'fields' => [
+                        ['key' => 'stt', 'label' => '#', 'type' => 'serial'],
                         ['key' => 'ngayxuly', 'label' => 'Ngày xử lý', 'format' => 'html'],
                         ['key' => 'loai_od', 'label' => 'Loại xử lý'],
-                        ['key' => 'tt', 'label' => 'Lần phun',],
+                        ['key' => 'tt', 'label' => 'Lần phun', 'tdAttr' => ['data-t' => 'n']],
                         ['key' => 'tenquan', 'label' => 'Quận/ huyện',],
                         ['key' => 'tenphuong', 'label' => 'Phường/ xã',],
                         ['key' => 'khupho', 'label' => 'Khu phố/ Ấp (tổ)',],
-                        ['key' => 'somaynho', 'label' => 'Số máy phun nhỏ đeo vai',],
-                        ['key' => 'somaylon', 'label' => 'Máy phun lớn trên xe',],
+                        ['key' => 'somaynho', 'label' => 'Số máy phun nhỏ đeo vai', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'somaylon', 'label' => 'Máy phun lớn trên xe', 'tdAttr' => ['data-t' => 'n']],
                         ['key' => 'loai_hc', 'label' => 'Tên hóa chất',],
-                        ['key' => 'solit_hc', 'label' => 'Số lít hóa chất (chưa pha)',],
-                        ['key' => 'sonha_kphc', 'label' => 'Tỷ lệ nóc gia không PHC (%)',],
-                        ['key' => 'songuoi_tg', 'label' => 'Tổng nhân sự tham gia',],
-                        ['key' => 'dncs_count', 'label' => 'Số điểm nguy cơ trong ổ dịch',],
-                        ['key' => 'dncs_odxp', 'label' => 'Số điểm nguy cơ trong ổ dịch xử phạt',],
+                        ['key' => 'solit_hc', 'label' => 'Số lít hóa chất (chưa pha)', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'sonha_kphc', 'label' => 'Tỷ lệ nóc gia không PHC (%)', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'songuoi_tg', 'label' => 'Tổng nhân sự tham gia', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'dncs_count', 'label' => 'Số điểm nguy cơ trong ổ dịch', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'dncs_odxp', 'label' => 'Số điểm nguy cơ trong ổ dịch xử phạt', 'tdAttr' => ['data-t' => 'n']],
                     ],
                     'data' => collect($tb1->all())->map(function ($i) use($dm_loai_od){
                         return array_merge($i, [
@@ -82,13 +83,14 @@ class ThongkeController extends AppController
             if($loai_tk == 2){
                 return $this->asJson([
                     'fields' => [
+                        ['key' => 'stt', 'label' => '#', 'type' => 'serial'],
                         ['key' => 'ngayxuly', 'label' => 'Ngày xử lý', 'format' => 'html'],
-                        ['key' => 'tt', 'label' => 'Lần diệt lăng quăng',],
+                        ['key' => 'tt', 'label' => 'Lần diệt lăng quăng', 'tdAttr' => ['data-t' => 'n']],
                         ['key' => 'tenquan', 'label' => 'Quận/ huyện',],
                         ['key' => 'tenphuong', 'label' => 'Phường/ xã',],
                         ['key' => 'khupho', 'label' => 'Khu phố/ Ấp (tổ)',],
-                        ['key' => 'tyle_sonha', 'label' => 'Số nhà diệt lăng quăng / tổng số nhà',],
-                        ['key' => 'songuoi', 'label' => 'Số người tham gia',],
+                        ['key' => 'tyle_sonha', 'label' => 'Số nhà diệt lăng quăng / tổng số nhà', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'songuoi', 'label' => 'Số người tham gia', 'tdAttr' => ['data-t' => 'n']],
                     ],
                     'data' => collect($tb2->all())->map(function ($i){
                         return array_merge($i, [
@@ -103,7 +105,7 @@ class ThongkeController extends AppController
 
             $field = $hc ? ['key' => 'maphuong', 'name' => 'tenphuong', 'label' => 'Phường xã', 'table' => HcPhuong::tableName(), 'filter' => ['maquan' => $hc]] : ['key' => 'maquan', 'name' => 'tenquan', 'label' => 'Quận huyện', 'table' => HcQuan::tableName(), 'filter' => ['maquan' => null]];
 
-            $phc = (new Query())->select('odich_id, MAX ( tt ) m_tt, SUM ( solit_hc ) solit_hc ')->from(['phc' => PhunHc::tableName()])->groupBy('odich_id')->andFilterDate(['ngayxuly' => [$date_from, $date_to]]);
+            $phc = (new Query())->select('odich_id, MAX ( tt ) m_tt, COUNT(tt) c_tt, SUM ( solit_hc ) solit_hc ')->from(['phc' => PhunHc::tableName()])->groupBy('odich_id')->andFilterDate(['ngayxuly' => [$date_from, $date_to]]);
             $phc_px = (new Query()) ->select("od.{$field['key']}, COUNT(DISTINCT od.maphuong) px_phc")->from(['tb' => PhunHc::tableName()])->leftJoin(['od' => Odich::tableName()], 'od.id = tb.odich_id')->groupBy('od.'.$field['key'])->having('MAX (tt) = 1');
 
             $dlq = (new Query())->select('odich_id, MAX ( tt ) m_tt_dlq')->from(['phc' => DietLq::tableName()])->groupBy('odich_id')->andFilterDate(['ngayxuly' => [$date_from, $date_to]]);
@@ -116,7 +118,8 @@ class ThongkeController extends AppController
                     'mxl2' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 2 THEN 1 END )',
                     'mxl3' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 3 THEN 1 END )',
                     'mxl4' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 4 THEN 1 END )',
-                    'tong_odxl' => 'SUM ( CASE WHEN loai_od IS NOT NULL THEN 1 END )',
+//                    'tong_odxl' => 'SUM ( CASE WHEN loai_od IS NOT NULL THEN 1 END )',
+                    'tong_odxl' => 'SUM(phc.c_tt)',
                     'px_od_xldr' => 'COUNT(DISTINCT CASE WHEN loai_od = 2 THEN maphuong END)',
                     'solit_hc' => 'SUM (phc.solit_hc)',
                     'soluot_dlq' => 'SUM (dlq.m_tt_dlq)',
@@ -138,28 +141,29 @@ class ThongkeController extends AppController
 
             if($loai_tk == 3){
                 $so_px = is_null($hc) ? [
-                    ['key' => 'px_phc', 'label' => 'Số PX có ổ dịch mới được xử lý'],
-                    ['key' => 'px_od_xldr', 'label' => 'Số PX xử lý ổ dịch diện rộng'],
+                    ['key' => 'px_phc', 'label' => 'Số PX có ổ dịch mới được xử lý', 'tdAttr' => ['data-t' => 'n']],
+                    ['key' => 'px_od_xldr', 'label' => 'Số PX xử lý ổ dịch diện rộng', 'tdAttr' => ['data-t' => 'n']],
                 ] : [
-                    ['key' => 'px_phc', 'label' => 'PX có ổ dịch mới được xử lý'],
-                    ['key' => 'px_od_xldr', 'label' => 'PX có xử lý ổ dịch diện rộng']
+                    ['key' => 'px_phc', 'label' => 'PX có ổ dịch mới được xử lý', 'tdAttr' => ['data-t' => 'n']],
+                    ['key' => 'px_od_xldr', 'label' => 'PX có xử lý ổ dịch diện rộng', 'tdAttr' => ['data-t' => 'n']]
                 ];
 
                 return $this->asJson([
                     'fields' => array_merge([
+                        ['key' => 'stt', 'label' => '#', 'type' => 'serial'],
                         ['key' => 'name', 'label' => $field['label'], 'thStyle' => 'min-width: 150px'],
-                        ['key' => 'mxl1', 'label' => 'Số ổ dịch mới xử lý'],
-                        ['key' => 'mxl2', 'label' => 'Số ổ dịch mới xử lý diện rộng'],
-                        ['key' => 'mxl3', 'label' => 'Số ổ dịch mới liên PX'],
-                        ['key' => 'mxl4', 'label' => 'Số ổ dịch mới liên QH'],
-                        ['key' => 'tong_odmxl', 'label' => 'Tổng số ổ dịch mới được xử lý'],
+                        ['key' => 'mxl1', 'label' => 'Số ổ dịch mới xử lý', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'mxl2', 'label' => 'Số ổ dịch mới xử lý diện rộng', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'mxl3', 'label' => 'Số ổ dịch mới liên PX', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'mxl4', 'label' => 'Số ổ dịch mới liên QH', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'tong_odmxl', 'label' => 'Tổng số ổ dịch mới được xử lý', 'tdAttr' => ['data-t' => 'n']],
                     ], $so_px, [
-                        ['key' => 'tong_odxl', 'label' => 'Tổng số ổ dịch được xử lý'],
-                        ['key' => 'solit_hc', 'label' => 'Số lít hóa chất (chưa pha)'],
-                        ['key' => 'px_dlq', 'label' => 'Số PX tổ chức diệt lăng quăng'],
-                        ['key' => 'soluot_dlq', 'label' => 'Số lượt diệt lăng quăng'],
-                        ['key' => 'dncs_count', 'label' => 'Số điểm nguy cơ trong ổ dịch'],
-                        ['key' => 'dncs_odxp', 'label' => 'Số điểm nguy cơ trong ổ dịch xử phạt'],
+                        ['key' => 'tong_odxl', 'label' => 'Tổng lượt ổ dịch được xử lý', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'solit_hc', 'label' => 'Số lít hóa chất (chưa pha)', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'px_dlq', 'label' => 'Số PX tổ chức diệt lăng quăng', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'soluot_dlq', 'label' => 'Số lượt diệt lăng quăng', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'dncs_count', 'label' => 'Số điểm nguy cơ trong ổ dịch', 'tdAttr' => ['data-t' => 'n']],
+                        ['key' => 'dncs_odxp', 'label' => 'Số điểm nguy cơ trong ổ dịch xử phạt', 'tdAttr' => ['data-t' => 'n']],
                     ]),
                     'data' => collect($tb3->all())->map(function ($i) use($dm_loai_od){
                         $tong_odmxl = collect($i)->only(['mxl1', 'mxl2', 'mxl3', 'mxl4'])->sum();
