@@ -29,6 +29,8 @@ let vi = {
         "required_if": "{_field_} là bắt buộc",
         "size": "{_field_} chỉ có thể chứa tệp nhỏ hơn {size}KB",
         "integer": "{_field_} phải là một số nguyên.",
+        "max_field_value": "{_field_} phải nhỏ hơn hoặc bằng {target}",
+        "min_field_value": "{_field_} phải lớn hoặc bằng {target}",
     }
 }
 

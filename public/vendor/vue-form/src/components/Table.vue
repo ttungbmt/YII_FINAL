@@ -25,8 +25,9 @@
         </div>
 
         <b-modal ref="modal-table" :title="form.title" v-if="form" v-bind="modalOptions">
-            <m-form :options="{model: form.path}">
+            <m-form :options="{model: form.path}" ref="modal-table-form">
                 <component v-bind:is="i.component" v-for="(i, k) in form.schema" v-bind="i" :key="k"></component>
+                <button type="submit" class="hidden btn-modal-table-form-submit">Submit</button>
             </m-form>
             <div class="mt-3 text-right">
                 <b-button variant="danger" @click="hideModal('modal-table')">Hủy</b-button>
@@ -169,23 +170,28 @@
                 this.$store.commit('form/resetModal')
                 this.showModal('modal-table')
             },
-
             handleOk(){
-                let old = this.innerItems,
-                    value = cloneDeep(this.$store.get(this.form.path))
+                $('.btn-modal-table-form-submit').trigger('click')
 
-                if(isNull(this.modelIndex)){
-                    this.updateForm({
-                        value: old.concat(value),
-                    })
-                } else {
-                    this.updateForm({
-                        path: [this.itemsPath, this.modelIndex].join('.'),
-                        value,
-                    })
+                setTimeout(() => {
+                    if(isEmpty(this.$refs['modal-table-form'].getErrors())){
+                        let old = this.innerItems,
+                            value = cloneDeep(this.$store.get(this.form.path))
 
-                }
-                this.hideModal('modal-table')
+                        if(isNull(this.modelIndex)){
+                            this.updateForm({
+                                value: old.concat(value),
+                            })
+                        } else {
+                            this.updateForm({
+                                path: [this.itemsPath, this.modelIndex].join('.'),
+                                value,
+                            })
+
+                        }
+                        this.hideModal('modal-table')
+                    }
+                }, 300)
             },
             getList(){
                 let attrs = this.getBtn('getList'),

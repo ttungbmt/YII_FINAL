@@ -25,17 +25,19 @@
         },
         methods: {
             onSubmit () {
-                let errors =  map(this.$refs.form.errors, v => v[0]).filter(v => v),
-                    value = has(this.options, 'model') ? this.$store.get(this.options.model): {}
+                let value = has(this.options, 'model') ? this.$store.get(this.options.model): {}
 
                 this.$emit('submit', value, {
                     $form: this.$refs.form,
-                    errors
+                    errors: this.getErrors()
                 })
 
             },
             filterErrors(errors){
                 return map(errors, v => head(v))
+            },
+            getErrors(){
+                return map(this.$refs.form.errors, v => v[0]).filter(v => v)
             }
         },
         mounted(){

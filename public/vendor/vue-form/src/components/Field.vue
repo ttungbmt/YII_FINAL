@@ -81,7 +81,7 @@
             id: String,
             label: String,
             sortValues: [String, Boolean],
-            rules: String,
+            rules: [String, Function],
             name: String,
             model: String,
             filterBy: [Object, Function],
@@ -148,7 +148,6 @@
 
                 if(this.type === 'v-select'){
                     attrs.options = this.computedItems
-                    console.log(this.$attrs)
                     if(!isUndefined(this.$attrs.multiple)) attrs.multiple = this.$attrs.multiple
                 }
 

@@ -1,4 +1,4 @@
-import {isNil, isArray} from 'lodash-es'
+import {isNil, isArray, toNumber} from 'lodash-es'
 
 let ruleDate = `before_or_equal:today`,
     ruleInteger = 'integer|min_value:0',
@@ -107,17 +107,17 @@ export default [
             title: 'Khảo sát côn trùng',
             schema: [
                 {key: 'action', label: '', class: 'p-2', type: 'action'},
-                {component: 'm-field', label: 'Ngày khảo sát', model: 'ngay_ks', type: 'date', placeholder: 'DD/MM/YYYY', rules: ruleDate},
-                {component: 'm-field', label: 'Loại khảo sát', model: 'loai_ks', type: 'select', items: 'cat.loai_ks', placeholder: 'Chọn...'},
-                {component: 'm-field', label: 'Nơi khảo sát (Tổ)', model: 'noi_ks'},
-                {component: 'm-field', label: 'Số nhà khảo sát', model: 'sonha_ks', type: 'integer', rules: ruleInteger},
+                {component: 'm-field', label: 'Ngày khảo sát', model: 'ngay_ks', type: 'date', placeholder: 'DD/MM/YYYY', rules: `${ruleDate}|required`},
+                {component: 'm-field', label: 'Loại khảo sát', model: 'loai_ks', type: 'select', items: 'cat.loai_ks', placeholder: 'Chọn...', rules: `required`},
+                {component: 'm-field', label: 'Nơi khảo sát (Tổ)', model: 'noi_ks', rules: `required`},
+                {component: 'm-field', label: 'Số nhà khảo sát', model: 'sonha_ks', type: 'integer', rules: `${ruleInteger}|required`},
                 {
                     component: 'm-grid',
                     cols: 3,
                     schema: [
-                        {component: 'm-field', label: 'BI', model: 'bi', type: 'integer', rules: ruleInteger},
-                        {component: 'm-field', label: 'CI%', model: 'ci', type: 'integer', rules: ruleInteger},
-                        {component: 'm-field', label: 'HILQ%', model: 'hilq', type: 'integer', rules: ruleInteger},
+                        {component: 'm-field', label: 'BI', model: 'bi', type: 'integer', rules: `${ruleInteger}|required`},
+                        {component: 'm-field', label: 'CI%', model: 'ci', type: 'integer', rules: `${ruleInteger}|required`},
+                        {component: 'm-field', label: 'HILQ%', model: 'hilq', type: 'integer', rules: `${ruleInteger}|required`},
                     ]
                 },
                 {
@@ -127,8 +127,8 @@ export default [
                         return this.$store.get('form/getModalValue', 'loai_ks') == 2
                     },
                     schema: [
-                        {component: 'm-field', label: 'DI', model: 'di', type: 'integer', rules: ruleNumber},
-                        {component: 'm-field', label: 'HI_muoi', model: 'hi_muoi', type: 'integer', rules: ruleInteger},
+                        {component: 'm-field', label: 'DI', model: 'di', type: 'integer', rules: `${ruleNumber}|required`},
+                        {component: 'm-field', label: 'HI_muoi', model: 'hi_muoi', type: 'integer', rules: `${ruleInteger}|required`},
                     ]
                 },
 
@@ -163,11 +163,11 @@ export default [
             title: 'Diệt lăng quăng ',
             path: 'form/modal.values',
             schema: [
-                {component: 'm-field', label: 'Ngày DLQ', model: 'ngayxuly', type: 'date', placeholder: 'DD/MM/YYYY', rules: ruleDate},
-                {component: 'm-field', label: 'Khu phố DLQ', model: 'khupho'},
+                {component: 'm-field', label: 'Ngày DLQ', model: 'ngayxuly', type: 'date', placeholder: 'DD/MM/YYYY', rules: `${ruleDate}|required`},
+                {component: 'm-field', label: 'Khu phố DLQ', model: 'khupho', rules: `required`},
                 {component: 'm-field', label: 'Tổ DLQ', model: 'to_dp'},
-                {component: 'm-field', label: 'Số nhà DLQ (vãng gia)', model: 'sonha', type: 'integer', rules: ruleInteger},
-                {component: 'm-field', label: 'Số người tham gia', model: 'songuoi', type: 'integer', rules: ruleInteger},
+                {component: 'm-field', label: 'Số nhà DLQ (vãng gia)', model: 'sonha', type: 'integer', rules: `${ruleInteger}|required`},
+                {component: 'm-field', label: 'Số người tham gia', model: 'songuoi', type: 'integer', rules: `${ruleInteger}|required`},
             ]
         }
     },
@@ -252,34 +252,52 @@ export default [
             path: 'form/modal.values',
             size: 'lg',
             schema: [
-                {component: 'm-field', label: 'Ngày PHC', model: 'ngayxuly', type: 'date', rules: ruleDate},
+                {component: 'm-field', label: 'Ngày PHC', model: 'ngayxuly', type: 'date', rules: `${ruleDate}|required`},
                 {
                     component: 'm-grid', cols: 2,
                     schema: [
+                        {component: 'm-field', label: 'Khu phố/ấp', model: 'khupho', rules: `required`},
                         {component: 'm-field', label: 'Tổ dân phố', model: 'to_dp'},
-                        {component: 'm-field', label: 'Khu phố/ấp', model: 'khupho'},
                     ]
                 },
                 {
                     component: 'm-grid', cols: 2,
                     schema: [
-                        {component: 'm-field', label: 'Số nóc gia thực tế', type: 'integer', model: 'sonocgia_tt', rules: ruleInteger},
-                        {component: 'm-field', label: 'Số nóc gia xử lý', type: 'integer', model: 'sonocgia_xl', rules: ruleInteger},
+                        {
+                            component: 'm-field',
+                            label: 'Số nóc gia thực tế',
+                            type: 'integer',
+                            model: 'sonocgia_tt',
+                            rules: function (v) {
+                                let value = toNumber($('input[name="sonocgia"]').val())
+                                if(value) return `${ruleInteger}|required|max_value:${value}`
+                                return `${ruleInteger}|required`
+                            }
+                        },
+                        {
+                            component: 'm-field',
+                            label: 'Số nóc gia xử lý',
+                            type: 'integer',
+                            model: 'sonocgia_xl',
+                            rules: `required|max_field_value:sonocgia_tt`
+
+
+                        },
                     ]
                 },
                 {
                     component: 'm-grid', cols: 2,
                     schema: [
-                        {component: 'm-field', label: 'Số máy nhỏ', type: 'integer', model: 'somaynho', rules: ruleInteger},
-                        {component: 'm-field', label: 'Số máy lớn', type: 'integer', model: 'somaylon', rules: ruleInteger},
+                        {component: 'm-field', label: 'Số máy nhỏ', type: 'integer', model: 'somaynho', rules: `${ruleInteger}|required`},
+                        {component: 'm-field', label: 'Số máy lớn', type: 'integer', model: 'somaylon', rules: `${ruleInteger}|required`},
                     ]
                 },
-                {component: 'm-field', label: 'Loại hóa chất (nếu không có trong danh sách, vui lòng liên hệ với admin để thêm mới)', type: 'v-select', items: 'cat.hoachat', model: 'loai_hc', placeholder: 'Chọn...', multiple: true},
+                {component: 'm-field', label: 'Loại hóa chất (nếu không có trong danh sách, vui lòng liên hệ với admin để thêm mới)', type: 'v-select', items: 'cat.hoachat', model: 'loai_hc', placeholder: 'Chọn...', multiple: true, rules: `required`},
                 {
                     component: 'm-grid', cols: 2,
                     schema: [
-                        {component: 'm-field', label: 'Số lít hóa chất chưa pha (lít)', type: 'integer', model: 'solit_hc', rules: ruleNumber},
-                        {component: 'm-field', label: 'Số người tham gia', type: 'integer', model: 'songuoi_tg', rules: ruleInteger},
+                        {component: 'm-field', label: 'Số lít hóa chất chưa pha (lít)', type: 'integer', model: 'solit_hc', rules: `${ruleNumber}|required`},
+                        {component: 'm-field', label: 'Số người tham gia', type: 'integer', model: 'songuoi_tg', rules: `${ruleInteger}|required`},
                     ]
                 },
             ]
