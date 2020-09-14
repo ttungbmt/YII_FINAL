@@ -21,6 +21,7 @@ class OdichSxhSearch extends OdichSxh
 {
     public $date_from;
     public $date_to;
+    public $field_date;
 
     /**
      * @inheritdoc
@@ -28,7 +29,7 @@ class OdichSxhSearch extends OdichSxh
     public function rules()
     {
         return [
-            [['maquan', 'maphuong'], 'string'],
+            [['maquan', 'maphuong', 'field_date'], 'string'],
             [['date_from', 'date_to'], 'date', 'format' => 'php:d/m/Y'],
         ];
     }
@@ -80,7 +81,7 @@ class OdichSxhSearch extends OdichSxh
             'maphuong' => $this->maphuong,
         ]);
 
-        $query->andFilterDate(['ngayxacdinh' => [$this->date_from, $this->date_to]]);
+        $query->andFilterDate([$this->field_date => [$this->date_from, $this->date_to]]);
 
         return $dataProvider;
     }
@@ -173,15 +174,16 @@ class OdichSxhSearch extends OdichSxh
                 'label'     => 'Tình trạng',
                 'attribute' => 'tinhtrang',
                 'value' => function($model){
-                    if($model->ngaydukienkt){
-                        $date = Carbon::createFromFormat('d/m/Y', $model->ngaydukienkt);
-                        if($date > Carbon::now()) {
-                            return 'Kết thúc';
-                        } else {
-                            return 'Đang hoạt động';
-                        }
+                    if($model->ngayketthuc_td){
+//                        $date = Carbon::createFromFormat('d/m/Y', $model->ngayketthuc_td);
+//                        if($date > Carbon::now()) {
+//                            return 'Kết thúc';
+//                        } else {
+//                            return 'Hoạt động';
+//                        }
+                        return 'Kết thúc';
                     }
-                    return '';
+                    return 'Hoạt động';
                 }
             ],
         ];

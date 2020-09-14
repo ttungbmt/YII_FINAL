@@ -10,6 +10,7 @@ $dm_loaicabenh = api('dm_loaicabenh');
 $dm_loaibaocao = api('dm_loaibaocao');
 $dm_chuandoan = api('dm_chuandoan');
 $dm_xacminh_cb = api('dm_xacminh_cb');
+$dm_benhvien = api('dm/benhvien');
 $dm_benh = \pcd\models\Loaibenh::pluck('tenbenh', 'mabenh')->all();
 $dm_phai = api('dm_phai');
 $dm_ht_dieutri = api('dm_ht_dieutri');
@@ -170,11 +171,6 @@ return [
         'filterType' => GridView::FILTER_DATE,
         'format' => 'exceldate',
     ],
-
-    [
-        'class' => '\kartik\grid\DataColumn',
-        'label' => 'Tình trạng'
-    ],
     [
         'class' => '\kartik\grid\DataColumn',
         'attribute' => 'chuandoan',
@@ -212,6 +208,18 @@ return [
     ],
     [
         'class' => '\kartik\grid\DataColumn',
+        'attribute' => 'benhvien',
+        'value' => function ($model, $key, $index) use($dm_benhvien){
+            $getBv = function ($val, $default = '') use ($dm_benhvien){return data_get($dm_benhvien, is_null($val) ? $default : $val);};
+
+            if($model->tpbv) return $getBv($model->tpbv_bv);
+            if($model->nhapvien) return $model->nhapvien_bv;
+
+            return $getBv($model->benhvien);
+        },
+    ],
+    [
+        'class' => '\kartik\grid\DataColumn',
         'label' => 'Loại xét nghiệm',
         'attribute' => 'loai_xn',
         'value' => function($model) use($dm_loai_xn){
@@ -242,5 +250,9 @@ return [
         'label' => 'Lng',
         'value' => 'geom.0',
         'format' => ['decimal', 6]
+    ],
+    [
+        'class' => '\kartik\grid\DataColumn',
+        'label' => 'Tình trạng'
     ],
 ];

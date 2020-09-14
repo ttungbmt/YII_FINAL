@@ -1,10 +1,5 @@
 <?php
-
-use kartik\grid\GridView;
-use pcd\models\DmLoaihinh;
 use yii\bootstrap4\Html;
-use yii\helpers\Url;
-
 
 $columns = array_merge([
     [

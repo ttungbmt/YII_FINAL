@@ -113,5 +113,13 @@ $data['dm_ngay_cabenh'] = [
     'ngaydieutra' => 'Ngày điều tra',
 ];
 
+$data['dm_ngay_odich'] = [
+    'ngayxacdinh' => 'Ngày xác định',
+    'ngayphathien' => 'Ngày phát hiện',
+    'ngaydukien_kt' => 'Ngày dự kiến kết thúc',
+    'ngaybatdau_gs' => 'Ngày bắt đầu giám sát',
+    'ngayketthuc_td' => 'Ngày kết thúc theo dõi',
+];
+
 
 return $data;

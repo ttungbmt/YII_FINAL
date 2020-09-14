@@ -17,6 +17,8 @@ $exportMenu =  ExportMenu::widget(['dataProvider' => $dataProvider, 'columns' =>
 ?>
 <div class="dm-odich-index">
     <div id="ajaxCrudDatatable">
+        <?= $this->render('_search', ['model' => $searchModel]) ?>
+
         <?= GridView::widget([
             'id' => 'crud-datatable',
             'dataProvider' => $dataProvider,

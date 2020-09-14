@@ -3,6 +3,7 @@
 namespace pcd\controllers\api;
 
 use common\controllers\ApiController;
+use pcd\models\Benhvien;
 use pcd\models\HcPhuong;
 use pcd\models\HcQuan;
 use pcd\models\Loaibenh;
@@ -110,6 +111,8 @@ class DmController extends ApiController
         return Loaibenh::pluck('tenbenh', 'mabenh');
     }
 
-
+    public function actionBenhvien(){
+        return Benhvien::pluck('tenbenhvien', 'tenvt');
+    }
 
 }
