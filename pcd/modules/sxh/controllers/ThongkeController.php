@@ -105,7 +105,7 @@ class ThongkeController extends AppController
 
             $field = $hc ? ['key' => 'maphuong', 'name' => 'tenphuong', 'label' => 'Phường xã', 'table' => HcPhuong::tableName(), 'filter' => ['maquan' => $hc]] : ['key' => 'maquan', 'name' => 'tenquan', 'label' => 'Quận huyện', 'table' => HcQuan::tableName(), 'filter' => ['maquan' => null]];
 
-            $phc = (new Query())->select('odich_id, MAX ( tt ) m_tt, COUNT(tt) c_tt, SUM ( solit_hc ) solit_hc ')->from(['phc' => PhunHc::tableName()])->groupBy('odich_id')->andFilterDate(['ngayxuly' => [$date_from, $date_to]]);
+            $phc = (new Query())->select('odich_id, MIN(tt) min_tt, MAX ( tt ) m_tt, COUNT(tt) c_tt, SUM ( solit_hc ) solit_hc ')->from(['phc' => PhunHc::tableName()])->groupBy('odich_id')->andFilterDate(['ngayxuly' => [$date_from, $date_to]]);
             $phc_px = (new Query()) ->select("od.{$field['key']}, COUNT(DISTINCT od.maphuong) px_phc")->from(['tb' => PhunHc::tableName()])->leftJoin(['od' => Odich::tableName()], 'od.id = tb.odich_id')
                 ->andFilterDate(['ngayxuly' => [$date_from, $date_to]])
                 ->groupBy('od.'.$field['key'])->having('MAX (tt) = 1');
@@ -117,7 +117,7 @@ class ThongkeController extends AppController
             $tb3_od = (new Query())
                 ->select([
                     $field['key'] => "od.{$field['key']}",
-                    'mxl1' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 1 THEN 1 END )',
+                    'mxl1' => 'SUM ( CASE WHEN min_tt = 1 AND (loai_od = 1 OR loai_od = 5)  THEN 1 END )',
                     'mxl2' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 2 THEN 1 END )',
                     'mxl3' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 3 THEN 1 END )',
                     'mxl4' => 'SUM ( CASE WHEN m_tt = 1 AND loai_od = 4 THEN 1 END )',
