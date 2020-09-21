@@ -108,6 +108,14 @@ class OdichSxhSearch extends OdichSxh
     public function getColumns() {
         $columns = [
             [
+                'label'     => 'Ca chỉ điểm',
+                'width' => '130px',
+                'attribute' => 'cachidiem',
+                'value' => function($model){
+                    return data_get($model->cabenhs, '0.hoten');
+                }
+            ],
+            [
                 'label'     => 'Ngày mắc bệnh ca đầu tiên',
                 'width' => '130px',
                 'attribute' => 'ngaymacbenh_1',
