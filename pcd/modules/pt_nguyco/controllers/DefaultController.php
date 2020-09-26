@@ -76,6 +76,8 @@ class DefaultController extends BackendController
 
     public function saveData(&$model, &$giamsats)
     {
+//        $model->save();
+        dd($model);
         $model->save();
 
         $ms = collect(request('PhieuGs'))->map(function ($i){$m = DateTime::createFromFormat("d/m/Y", data_get($i, 'ngay_gs'))->format('m');return intval($m);});

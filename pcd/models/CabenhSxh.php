@@ -45,6 +45,7 @@ use yii\helpers\ArrayHelper;
  * @property int $qh
  * @property int $ht_dieutri
  * @property int $loai_xm_cb
+ * @property string $deadline_at
  */
 class CabenhSxh extends App
 {
@@ -95,7 +96,7 @@ class CabenhSxh extends App
             [['benhvien', 'dienthoai', 'chuandoan_khac'], 'string'],
             [['ngaybaocao', 'ngaynhanthongbao', 'ngaymacbenh', 'ngaynhapvien', 'ngayxuatvien', 'ngaysinh', 'ngaymacbenh_nv', 'ngaylaymau', 'geom'], 'safe'],
             [['chuandoan_bd', 'phai', 'nghenghiep', 'vitri', 'me', 'sonha', 'duong', 'to_dp', 'khupho'], 'string', 'max' => 255],
-            [['shs', 'tp_guive'], 'safe'],
+            [['deadline_at', 'shs', 'tp_guive'], 'safe'],
             [['ten_qh_en', 'ten_px_en'], 'safe'],
             [['ma_icd'], 'string', 'max' => 15],
             [['hoten'], 'string', 'max' => 150],

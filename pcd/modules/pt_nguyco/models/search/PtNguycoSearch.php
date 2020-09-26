@@ -1,6 +1,7 @@
 <?php
 namespace pcd\modules\pt_nguyco\models\search;
 use Carbon\Carbon;
+use pcd\modules\pt_nguyco\models\DmLoaihinh;
 use pcd\modules\pt_nguyco\models\PhieuGs;
 use pcd\modules\pt_nguyco\models\PtNguyco;
 use pcd\supports\RoleHc;
@@ -21,14 +22,14 @@ class PtNguycoSearch extends PtNguyco
     public $col_tk;
     public $loai_tk;
     public $daxoa;
+    public $dangql;
 
     public function rules()
     {
         return [
-            [['daxoa', 'gid', 'loaihinh_id'], 'integer'],
+            [['dangql', 'daxoa', 'gid', 'loaihinh_id'], 'integer'],
             [['loai_tk', 'col_tk', 'year', 'month', 'dienthoai', 'maso', 'ten_cs', 'sonha', 'tenduong', 'khupho', 'to_dp', 'maphuong', 'maquan', 'nhom', 'loaihinh', 'tochuc_gs', 'ngaycapnhat', 'ngayxoa', 'ghichu', 'phancap_ql', 'thuchien', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'safe'],
             [['date_from', 'date_to'], 'date', 'format' => 'php:d/m/Y'],
-
         ];
     }
 
@@ -87,6 +88,11 @@ class PtNguycoSearch extends PtNguyco
             'loaihinh_id' => $this->loaihinh_id,
         ]);
 
+        if($this->nhom){
+            $lh_ids = DmLoaihinh::find()->andWhere(['nhom' => $this->nhom])->pluck('id');
+            $query->andFilterWhere(['loaihinh_id' => $lh_ids]);
+        }
+
         $query->andFilterSearch(['ilike', 'dienthoai', $this->dienthoai]);
         $query->andFilterSearch(['ilike', 'khupho', $this->khupho]);
         $query->andFilterSearch(['ilike', 'to_dp', $this->to_dp]);
@@ -95,6 +101,7 @@ class PtNguycoSearch extends PtNguyco
         $query->andFilterSearch(['ilike', 'tenduong', $this->tenduong]);
 
         if($this->daxoa) $query->andWhere('ngayxoa IS NOT NULL');
+        if($this->dangql) $query->andWhere('ngayxoa IS NULL');
 
 
         $q2 = (new Query())->select('pt_nguyco_id gid')

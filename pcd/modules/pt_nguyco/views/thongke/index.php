@@ -143,6 +143,7 @@ $this->registerJsVar('pageData', [
                 },
                 field: {},
                 resp: [],
+                nhoms: {},
                 ...window.pageData
             },
             components: {},
@@ -163,7 +164,11 @@ $this->registerJsVar('pageData', [
                 }
             },
             methods: {
+                filterByNhom(resp, ids){
+                    return resp.filter(v => _.includes(ids, v.code))
+                },
                 getLoaihinhUri(code, col, value){
+
                     if(value != 0){
 
                         let uri = URI("/pt_nguyco")
@@ -172,7 +177,13 @@ $this->registerJsVar('pageData', [
                         uri.setSearch({col_tk: col})
 
                         switch (this.form.loai_tk) {
-                            case "loaihinh": uri.setSearch({loaihinh_id: code, month: this.form.month}); break;
+                            case "loaihinh":
+                                if(_.isPlainObject(code)) {
+                                    uri.setSearch(_.merge({month: this.form.month}, code));
+                                } else {
+                                    uri.setSearch({loaihinh_id: code, month: this.form.month});
+                                }
+                                break;
                             case "hanhchinh":
                                 if(this.form.maquan && this.form.maphuong){
                                     uri.setSearch({khupho: code, month: this.form.month});
@@ -193,6 +204,7 @@ $this->registerJsVar('pageData', [
                     this.loai_tk = loai_tk
                 },
                 afterPost(resp) {
+                    this.nhoms = resp.nhoms
                     this.resp = resp.data
                     this.field = resp.field
 

@@ -60,6 +60,7 @@ return [
         'attribute' => 'nhom',
         'label' => 'Nhóm',
         'width' => '50px',
+        'filter' => false,
         'value' => function($model){
             return $model->loaihinh_id ? data_get($model->dm_loaihinh, 'nhom') : $model->nhom;
         }

@@ -1,6 +1,7 @@
 <?php
 namespace pcd\modules\import\controllers;
 
+use Carbon\Carbon;
 use common\controllers\BackendController;
 use common\controllers\ImportTrait;
 use pcd\models\Benhvien;
@@ -76,9 +77,11 @@ class SxhController extends BackendController {
             $data[$k] = $i->toArray();
             $data[$k]['maquan'] = $data[$k]['qh'];
             $data[$k]['maphuong'] = $data[$k]['px'];
+            $data[$k]['deadline_at'] = Carbon::now()->addHours(24);
 
             $models[$k] = new CabenhSxh();
         }
+
 
         // Validate model and relation 2rd
         if (

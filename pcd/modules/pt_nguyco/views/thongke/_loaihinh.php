@@ -35,6 +35,18 @@
     </tr>
     </tbody>
     <tfoot>
+    <tr v-for="(v, k) in nhoms">
+        <td colspan="2">Nhóm {{k}}</td>
+        <td><button class="btn btn-link" @click="getLoaihinhUri({nhom: k}, 'dauthang', _.sumBy(filterByNhom(resp, v), 'dauthang'))">{{_.sumBy(filterByNhom(resp, v), 'dauthang')}}</button></td>
+        <td><button class="btn btn-link" @click="getLoaihinhUri({nhom: k}, 'daxoa', _.sumBy(filterByNhom(resp, v), 'daxoa'))">{{_.sumBy(filterByNhom(resp, v), 'daxoa')}}</button></td>
+        <td><button class="btn btn-link" @click="getLoaihinhUri({nhom: k}, 'moi', _.sumBy(filterByNhom(resp, v), 'moi'))">{{_.sumBy(filterByNhom(resp, v), 'moi')}}</button></td>
+        <td><button class="btn btn-link" @click="getLoaihinhUri({nhom: k}, 'cuoithang', _.sumBy(filterByNhom(resp, v), 'dauthang') - _.sumBy(filterByNhom(resp, v), 'daxoa') + _.sumBy(filterByNhom(resp, v), 'moi'))">{{_.sumBy(filterByNhom(resp, v), 'dauthang') - _.sumBy(filterByNhom(resp, v), 'daxoa') + _.sumBy(filterByNhom(resp, v), 'moi')}}</button></td>
+        <td><button class="btn btn-link" @click="getLoaihinhUri({nhom: k}, 'gs', _.sumBy(filterByNhom(resp, v), 'gs'))">{{_.sumBy(filterByNhom(resp, v), 'gs')}}</button></td>
+        <td><button class="btn btn-link" @click="getLoaihinhUri({nhom: k}, 'luot_gs', _.sumBy(filterByNhom(resp, v), 'luot_gs'))">{{_.sumBy(filterByNhom(resp, v), 'luot_gs')}}</button></td>
+        <td><button class="btn btn-link" @click="getLoaihinhUri({nhom: k}, 'lq', _.sumBy(filterByNhom(resp, v), 'lq'))">{{_.sumBy(filterByNhom(resp, v), 'lq')}}</button></td>
+        <td><button class="btn btn-link" @click="getLoaihinhUri({nhom: k}, 'dx_xp', _.sumBy(filterByNhom(resp, v), 'dx_xp'))">{{_.sumBy(filterByNhom(resp, v), 'dx_xp')}}</button></td>
+        <td><button class="btn btn-link" @click="getLoaihinhUri({nhom: k}, 'xp', _.sumBy(filterByNhom(resp, v), 'xp'))">{{_.sumBy(filterByNhom(resp, v), 'xp')}}</button></td>
+    </tr>
     <tr>
         <td colspan="2">Tổng</td>
         <td><button class="btn btn-link" @click="getLoaihinhUri('', 'dauthang', _.sumBy(resp, 'dauthang'))">{{_.sumBy(resp, 'dauthang')}}</button></td>

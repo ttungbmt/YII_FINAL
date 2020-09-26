@@ -4,8 +4,10 @@ namespace pcd\modules\pt_nguyco\controllers;
 
 use Carbon\Carbon;
 use common\controllers\BackendController;
+use Illuminate\Support\Arr;
 use Mpdf\Tag\Q;
 use pcd\modules\pt_nguyco\forms\ThongkeForm;
+use pcd\modules\pt_nguyco\models\DmLoaihinh;
 use pcd\modules\pt_nguyco\models\PtNguyco;
 use yii\db\Expression;
 use yii\db\Query;
@@ -101,13 +103,19 @@ class ThongkeController extends BackendController
 
             $data_e = $data0;
 
+            $nhoms = collect(DmLoaihinh::find()->select('id, nhom, ten_lh')->asArray()->all())->groupBy('nhom')->map(function ($i){
+                return Arr::pluck($i, 'id');
+            })->all();
+
             return $this->asJson([
-                'data' => $data_e
+                'data' => $data_e,
+                'nhoms' => $nhoms
             ]);
         }
 
         return $this->asJson([
-            'data' => []
+            'data' => [],
+            'nhoms' => []
         ]);
     }
 

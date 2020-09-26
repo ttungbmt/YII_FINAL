@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use kartik\grid\GridView;
 use kartik\helpers\Html;
 use kartik\widgets\DatePicker;
@@ -81,6 +82,14 @@ return [
         'filter' => Html::activeDropDownList($searchModel, 'loaidieutra', $dm_loaidieutra, $s_options),
         'value' => function ($model, $key, $index) use ($dm_loaidieutra) {
             return data_get($dm_loaidieutra, is_null($model->loaidieutra) ? '' : $model->loaidieutra);
+        },
+    ],
+    [
+        'class' => 'kartik\grid\DataColumn',
+        'label' => 'Tiến độ làm việc',
+        'value' => function ($model, $key, $index){
+            if($model->deadline_at && Carbon::parse($model->deadline_at) < Carbon::now()) return 'Quá hạn';
+            return 'Đúng hạn';
         },
     ],
     [

@@ -90,6 +90,7 @@ $btnClass = function ($key){
                 'before'  =>  Html::tag('div', (
                     Html::tag('div', (
                             Html::a('Tất cả', ['', 'all' => 1], ['class' => 'btn '.$btnClass('all').' btn-raised']).
+                            Html::a('Đang quản lý', ['', 'dangql' => 1], ['class' => 'btn'.$btnClass('dangql').'btn-raised']).
                             Html::a('Đã xóa', ['', 'daxoa' => 1], ['class' => 'btn'.$btnClass('daxoa').'btn-raised'])
                     ), ['class' => 'btn-group']).
                     Html::tag('div', (

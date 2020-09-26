@@ -410,6 +410,7 @@ class SxhForm extends MyForm
         $cb->maphuong = $this->px;
         $cb->tenquan = data_get(HcQuan::findOne(['maquan' => $this->qh]), 'tenquan');
         $cb->tenphuong = data_get(HcPhuong::findOne(['maphuong' => $this->px]), 'tenphuong');
+        $cb->deadline_at = null;
         $cb->geom = $this->lat && $this->lng ? [$this->lng, $this->lat] : null;
         $dt->attributes = $this->toArray();
 
@@ -454,6 +455,8 @@ class SxhForm extends MyForm
         ]);
 
         $cb->link('chuyenCas', $ch);
+        $cb->deadline_at = Carbon::now()->addHours(24);
+        $cb->save();
         // Xóa thông tin người gửi trên form
         $dt->nguoidieutra = null;
         $dt->nguoidieutra_sdt = null;
