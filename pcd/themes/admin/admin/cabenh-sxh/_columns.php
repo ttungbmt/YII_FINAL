@@ -92,8 +92,9 @@ return [
         'class' => 'kartik\grid\DataColumn',
         'label' => 'Tiến độ làm việc',
         'filter' => Html::activeDropDownList($searchModel, 'tiendo_lv', $dm_tiendo_lv, $s_options),
+        'format' => 'html',
         'value' => function ($model, $key, $index){
-            if($model->deadline_at && Carbon::parse($model->deadline_at) < Carbon::now()) return 'Quá hạn';
+            if($model->deadline_at && Carbon::parse($model->deadline_at) < Carbon::now()) return Html::tag('span', 'Quá hạn', ['title' => $model->deadline_at." (".Carbon::parse($model->deadline_at)->diffForHumans(Carbon::now()).")"]);
             return 'Đúng hạn';
         },
     ],

@@ -159,6 +159,8 @@ class CabenhSxh extends App
         ];
     }
 
+
+
     public function getHcPhuong()
     {
         return $this->hasOne(HcPhuong::className(), ['maphuong' => 'maphuong']);

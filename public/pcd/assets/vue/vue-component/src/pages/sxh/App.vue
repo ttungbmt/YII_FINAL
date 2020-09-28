@@ -4,6 +4,24 @@
         <v-alert :messages="warnings"  class="text-violet-800 alpha-violet"
                  label="Vui lòng nhập đầy đủ thông tin để hoàn tất phiếu - ĐÃ ĐIỀU TRA"/>
 
+        <div v-if="!_.isEmpty(odichs)">
+            <div v-for="o in odichs">
+                <b-alert show dismissible class="border-0" v-if="o.action === 'show'">
+                    Ca bệnh nằm trong ổ dịch #{{o.id}} <a :href="o.url" target="_blank">Xem chi tiết</a>
+                </b-alert>
+                <b-alert show dismissible class="border-0" v-else variant="warning">
+                    <div v-if="o.action === 'update'">
+                        Phát hiện ca bệnh này nằm trong 1 ổ dịch cũ <a :href="o.url" target="_blank">Thêm vào ổ dịch</a>
+                    </div>
+                    <div v-else>
+                        Phát hiện ca bệnh này lập thành ổ dịch mới <a :href="o.url" target="_blank">Tạo mới ổ dịch</a>
+                    </div>
+                </b-alert>
+
+            </div>
+
+        </div>
+
         <div v-html="respHtml"></div>
 
         <validation-observer ref="observer" v-slot="{ passes, handleSubmit }">
@@ -76,7 +94,7 @@
         },
         computed: {
             ...mapGetters(['loai_xm_cb']),
-            ...mapState(['form', 'xacminh', 'shownDieutra', 'schema', 'dm', 'loading']),
+            ...mapState(['form', 'xacminh', 'shownDieutra', 'schema', 'dm', 'loading', 'odichs']),
             shownChuyenca() {
                 let xacminh = this.xacminh.items,
                     lastXm = last(xacminh),

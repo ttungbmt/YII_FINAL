@@ -110,6 +110,7 @@ trait SxhAttrTrait {
             'chuyenca',
             'list_chuyenca',
             'ngaymacbenh_nv',
+            'geom',
             'diachi_cc_id'
         ];
 

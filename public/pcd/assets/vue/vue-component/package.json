@@ -19,8 +19,9 @@
 	"homepage": "https://github.com/nova-world/vue-component#readme",
 	"dependencies": {
 		"@babel/polyfill": "^7.7.0",
+		"axios": "^0.20.0",
 		"bootstrap-datepicker": "^1.9.0",
-		"bootstrap-vue": "^2.1.0",
+		"bootstrap-vue": "^2.17.3",
 		"dependent-dropdown": "^1.4.9",
 		"excellentexport": "^3.4.0",
 		"jquery": "^3.4.1",
@@ -40,6 +41,7 @@
 		"vue-ladda": "^0.0.15",
 		"vue-resource": "^1.5.1",
 		"vue-tippy": "^4.2.1",
+		"vue-wait": "^1.4.8",
 		"vue2-filters": "^0.9.1",
 		"vue2-leaflet": "^2.4.1",
 		"vue2-leaflet-locatecontrol": "^1.0.1",

@@ -22,6 +22,7 @@ const store = new Vuex.Store({
         schema,
         user: {},
         loading: false,
+        odichs: []
     },
     getters: {
         loai_xm_cb({xacminh, dm, form}){
@@ -106,6 +107,15 @@ const store = new Vuex.Store({
 
             return status
         }
+    },
+    actions: {
+       checkOdich({state, commit, dispatch}){
+            dispatch('wait/start', 'checking.odich', { root: true });
+            axios.get(`/sxh/default/check-odich?cabenh_id=`+state.form.id).then(({data}) => {
+                commit('SET_ODICHS', data)
+                dispatch('wait/end', 'checking.odich', { root: true });
+            })
+       }
     },
 
     mutations: {
@@ -201,6 +211,9 @@ const store = new Vuex.Store({
         },
         XACMINH(state) {
             state.is_xacminh = true
+        },
+        SET_ODICHS(state, payload){
+            state.odichs = payload
         }
     }
 })

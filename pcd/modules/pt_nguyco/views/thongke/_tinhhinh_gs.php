@@ -1,6 +1,6 @@
 <table id="tb-export" class="table table-sm table-bordered" style="min-width: 1640px">
     <thead>
-    <tr>
+    <tr style="height: 70px">
         <th>STT</th>
         <th>Tên ĐNC</th>
         <th>Địa chỉ</th>

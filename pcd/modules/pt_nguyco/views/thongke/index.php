@@ -175,7 +175,7 @@ $this->registerJsVar('pageData', [
                 onExport(){
                     $('#tb-export').floatThead('destroy')
                     $('#btn-export')[0].click()
-                    $('#tb-export').floatThead()
+                    this.floatHead()
                 },
                 filterByNhom(resp, ids){
                     return resp.filter(v => _.includes(ids, v.code))
@@ -215,13 +215,22 @@ $this->registerJsVar('pageData', [
                 beforePost({loai_tk}) {
                     this.loai_tk = loai_tk
                 },
+
+                floatHead(){
+                    $('#tb-export').floatThead({
+                        responsiveContainer: function($table){
+                            return $table.closest('.table-responsive');
+                        },
+
+                    })
+                },
                 afterPost(resp) {
                     this.nhoms = resp.nhoms
                     this.resp = resp.data
                     this.field = resp.field
 
                     setTimeout(() => {
-                        $('#tb-export').floatThead()
+                        this.floatHead()
                     }, 500)
                 },
 

@@ -1,7 +1,7 @@
 <?php
 return [
     'map_version' => '0.0.2',
-    'version' => '0.0.22',
+    'version' => '0.0.23',
 
     'adminEmail' => 'ttungbmt@gmail.com',
     'author' => 'Trương Thanh Tùng',

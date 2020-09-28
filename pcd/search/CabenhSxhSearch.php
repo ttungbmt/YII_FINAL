@@ -151,13 +151,12 @@ class CabenhSxhSearch extends CabenhSxh
         };
 
         if($this->tiendo_lv == '1'){
-            $query->andWhere('deadline_at IS NULL OR NOW() <= deadline_at');
+            $query->andWhere("deadline_at IS NULL OR timezone('Asia/Ho_Chi_Minh', now()) <= deadline_at");
         }
 
         if($this->tiendo_lv == '2'){
-            $query->andWhere('NOW() > deadline_at');
+            $query->andWhere("timezone('Asia/Ho_Chi_Minh', now()) > deadline_at");
         }
-
 
         return $dataProvider;
     }

@@ -30,6 +30,7 @@ export default [
                 'vue': 'Vue',
                 'vuex': 'Vuex',
                 'leaflet': 'L',
+                'axios': 'axios',
                 // 'vuex-pathify': 'pathify ',
             }
         },

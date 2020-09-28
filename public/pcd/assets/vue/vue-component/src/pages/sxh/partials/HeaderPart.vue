@@ -16,6 +16,8 @@
         <div class="header-elements">
             <li class="list-inline-item">
                 <b-form-group class="text-right" v-if="unLockedBtn">
+                    <button class="btn btn-success" type="button" @click="checkOdich" v-if="form.id" :disabled="!form.geom"><i class="fa fa-spinner fa-spin" v-if="$wait.is('checking.odich')"></i> Phát hiện ổ dịch</button>
+
                     <v-ladda type="submit" :button-class="`btn btn-`+(shownChuyenca ? 'danger': 'primary')"
                              :loading="loading">
                         <span v-if="shownChuyenca">Lưu và chuyển ca</span>
@@ -31,8 +33,9 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex'
+    import { mapState, mapActions } from 'vuex'
     import { last, head, get, includes, isNull } from 'lodash-es'
+
 
     export default {
         name: 'header-part',
@@ -59,7 +62,11 @@
                 // }
 
                 return true
-            }
+            },
+        },
+        methods: {
+            ...mapActions(['checkOdich'])
         }
+
     }
 </script>
