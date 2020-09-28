@@ -27,18 +27,20 @@ class ThongkeController extends AppController
             $loai_tk = request()->post('loai_tk');
             $date_from = request()->post('date_from');
             $date_to = request()->post('date_to');
-            $hc = request()->post('hc');
+            $maquan = request()->post('maquan');
+            $maphuong = request()->post('maphuong');
             $dm_loai_od = api('dm_loaiodich');
 
             $od = (new Query())
-                ->select('id odich_id, sonocgia, loai_od, dncs_count, px.tenphuong, px.tenquan, px.maquan')->from(['od' => Odich::tableName()])
+                ->select('id odich_id, sonocgia, loai_od, dncs_count, px.tenphuong, px.maphuong, px.tenquan, px.maquan')->from(['od' => Odich::tableName()])
                 ->leftJoin(['px' => HcPhuong::tableName()], 'px.maphuong = od.maphuong')
             ;
 
             $tb1 = (new Query())
                 ->select('phc.*, od.loai_od, od.tenquan, od.tenphuong, od.dncs_count')->from(['phc' => PhunHc::tableName()])
                 ->leftJoin(['od' => $od], 'od.odich_id = phc.odich_id')
-                ->andFilterWhere(['od.maquan' => $hc])
+                ->andFilterWhere(['od.maquan' => $maquan])
+                ->andFilterWhere(['od.maphuong' => $maphuong])
                 ->andFilterDate(['ngayxuly' => [$date_from, $date_to]])
             ;
 
@@ -77,7 +79,7 @@ class ThongkeController extends AppController
                 ->select('dlq.*, od.loai_od, od.tenquan, od.tenphuong, od.sonocgia')->from(['dlq' => DietLq::tableName()])
                 ->leftJoin(['od' => $od], 'od.odich_id = dlq.odich_id')
                 ->andFilterDate(['ngayxuly' => [$date_from, $date_to]])
-                ->andFilterWhere(['od.maquan' => $hc])
+                ->andFilterWhere(['od.maquan' => $maquan])
             ;
 
             if($loai_tk == 2){
@@ -103,7 +105,7 @@ class ThongkeController extends AppController
             }
 
 
-            $field = $hc ? ['key' => 'maphuong', 'name' => 'tenphuong', 'label' => 'Phường xã', 'table' => HcPhuong::tableName(), 'filter' => ['maquan' => $hc]] : ['key' => 'maquan', 'name' => 'tenquan', 'label' => 'Quận huyện', 'table' => HcQuan::tableName(), 'filter' => ['maquan' => null]];
+            $field = $maquan ? ['key' => 'maphuong', 'name' => 'tenphuong', 'label' => 'Phường xã', 'table' => HcPhuong::tableName(), 'filter' => ['maquan' => $maquan]] : ['key' => 'maquan', 'name' => 'tenquan', 'label' => 'Quận huyện', 'table' => HcQuan::tableName(), 'filter' => ['maquan' => null]];
 
             $phc = (new Query())->select('odich_id, MIN(tt) min_tt, MAX ( tt ) m_tt, COUNT(tt) c_tt, SUM ( solit_hc ) solit_hc ')->from(['phc' => PhunHc::tableName()])->groupBy('odich_id')->andFilterDate(['ngayxuly' => [$date_from, $date_to]]);
             $phc_px = (new Query()) ->select("od.{$field['key']}, COUNT(DISTINCT od.maphuong) px_phc")->from(['tb' => PhunHc::tableName()])->leftJoin(['od' => Odich::tableName()], 'od.id = tb.odich_id')
@@ -142,7 +144,7 @@ class ThongkeController extends AppController
                 ->orderBy('order');
 
             if($loai_tk == 3){
-                $so_px = is_null($hc) ? [
+                $so_px = is_null($maquan) ? [
                     ['key' => 'px_phc', 'label' => 'Số PX có ổ dịch mới được xử lý', 'tdAttr' => ['data-t' => 'n']],
                     ['key' => 'px_od_xldr', 'label' => 'Số PX xử lý ổ dịch diện rộng', 'tdAttr' => ['data-t' => 'n']],
                 ] : [

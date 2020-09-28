@@ -11,6 +11,7 @@ $dm_loaitk = [
     'loaihinh' => 'Loại hình',
     'hanhchinh' => 'Hành chính',
     'xuphat' => 'Xử phạt',
+    'tinhhinh_gs' => 'Tình hình giám sát',
 ];
 $maquan = userInfo()->ma_quan;
 $maphuong = userInfo()->ma_phuong;
@@ -106,12 +107,14 @@ $maphuong = userInfo()->ma_phuong;
                             class="sr-only">100% hoàn thành</span></div>
             </div>
             <div class="table-responsive" v-if="shownResp">
-
-                <div v-if="form.loai_tk!='xuphat'">
-                    <?= $this->render('_loaihinh') ?>
+                <div v-if="form.loai_tk==='tinhhinh_gs'">
+                    <?= $this->render('_tinhhinh_gs') ?>
                 </div>
-                <div v-if="form.loai_tk=='xuphat'">
+                <div v-else-if="form.loai_tk==='xuphat'">
                     <?= $this->render('_xuphat') ?>
+                </div>
+                <div v-else>
+                    <?= $this->render('_loaihinh') ?>
                 </div>
             </div>
         </div>
@@ -139,7 +142,8 @@ $this->registerJsVar('pageData', [
                 list_url: {
                     loaihinh: '/pt_nguyco/thongke/loaihinh',
                     hanhchinh: '/pt_nguyco/thongke/loaihinh',
-                    xuphat: '/pt_nguyco/thongke/xuphat'
+                    xuphat: '/pt_nguyco/thongke/xuphat',
+                    tinhhinh_gs: '/pt_nguyco/thongke/tinhhinh-gs',
                 },
                 field: {},
                 resp: [],

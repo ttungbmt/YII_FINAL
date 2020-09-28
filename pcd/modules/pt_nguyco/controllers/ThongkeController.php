@@ -6,9 +6,11 @@ use Carbon\Carbon;
 use common\controllers\BackendController;
 use Illuminate\Support\Arr;
 use Mpdf\Tag\Q;
+use pcd\models\HcPhuong;
 use pcd\modules\pt_nguyco\forms\ThongkeForm;
 use pcd\modules\pt_nguyco\models\DmLoaihinh;
 use pcd\modules\pt_nguyco\models\PtNguyco;
+use pcd\supports\Helper;
 use yii\db\Expression;
 use yii\db\Query;
 
@@ -189,6 +191,40 @@ class ThongkeController extends BackendController
         return $this->asJson([
             'data' => $q3->all(),
             'field' => $field
+        ]);
+    }
+
+    public function actionTinhhinhGs(){
+        $q1 = (new Query())->select(new Expression("pt_nguyco_id, date_part('month', ngay_gs) as month, date_part('year', ngay_gs) as year, count(pt_nguyco_id)"))->from('phieu_gs')->groupBy(new Expression('1,2,3'));
+        $q2 = (new Query())->select(new Expression("pt_nguyco_id, json_agg(gs) as giamsats"))->from(['gs' => $q1])->groupBy(new Expression('1'));
+
+
+        $tb = PtNguyco::tableName();
+        $model = PtNguyco::find()->with('loaihinh')->select("{$tb}.gid, ten_cs, sonha, tenduong, px.maphuong, px.tenphuong, px.tenquan, px.maquan, nhom, loaihinh_id, ngaycapnhat, ngayxoa, gs.giamsats")
+            ->leftJoin(['gs' => $q2], "gs.pt_nguyco_id = {$tb}.gid")
+            ->leftJoin(['px' => HcPhuong::tableName()], "px.maphuong = {$tb}.maphuong")
+            ->andFilterWhere([
+                "{$tb}.maquan" => request('maquan'),
+                "{$tb}.maphuong" => request('maphuong'),
+            ])
+            ->asArray()
+            ->all()
+        ;
+
+        $data = collect($model)->map(function ($i) {
+            $i = array_merge($i, [
+                'loaihinh' => data_get($i, 'loaihinh.ten_lh'),
+                'diachi' => Helper::toDiachi(Arr::only($i, ['sonha', 'tenduong'])),
+                'giamsats' => $i['giamsats'] ? Arr::except(json_decode($i['giamsats'], true), ['month']) : [],
+                'ngaycapnhat' => dbToDate($i['ngaycapnhat']),
+            ]);
+
+            return $i;
+        });
+
+
+        return $this->asJson([
+            'data' => $data,
         ]);
     }
 }
