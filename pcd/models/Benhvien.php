@@ -53,4 +53,15 @@ class Benhvien extends App
             'diachi'      => Yii::t('app', 'Địa chỉ'),
         ];
     }
+
+    public function saveModel(){
+        $old_bv = $this->tenvt;
+
+        if(!$this->load(request()->post())) return false;
+        $bool = $this->save();
+
+        if($bool) DieutraSxh::updateAll(['tpbv_bv' => $this->tenvt], ['tpbv_bv' => $old_bv]);
+
+        return $bool;
+    }
 }

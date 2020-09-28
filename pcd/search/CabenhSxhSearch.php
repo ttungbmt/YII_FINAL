@@ -21,6 +21,7 @@ class CabenhSxhSearch extends CabenhSxh
     public $excepted_tv;
     public $field_date;
     public $cabenh_ids;
+    public $tiendo_lv;
 
     public function init()
     {
@@ -41,7 +42,7 @@ class CabenhSxhSearch extends CabenhSxh
             [['loaidieutra', 'loaicabenh', 'loaibaocao', 'chuandoan', 'loaixacminh_cb', 'ht_dieutri', 'is_nghingo', 'loai_xm_cb', 'group_xm', 'excepted_tv'], 'integer'],
             [['chuandoan_bd', 'hoten', 'phai', 'tuoi', 'dienthoai', 'sonha', 'duong', 'to_dp', 'khupho', 'maquan', 'maphuong', 'nghenghiep'], 'string'],
             [['ngaybaocao', 'ngaynhapvien', 'ngayxuatvien', 'date_from', 'date_to'], 'date', 'format' => 'php:d/m/Y'],
-            [['loaica'], 'integer'],
+            [['tiendo_lv', 'loaica'], 'integer'],
             [['cabenh_ids'], 'string']
         ];
     }
@@ -148,6 +149,14 @@ class CabenhSxhSearch extends CabenhSxh
 
             $query->andFilterWhere(['in', 'gid', explode(',', $this->cabenh_ids)]);
         };
+
+        if($this->tiendo_lv == '1'){
+            $query->andWhere('deadline_at IS NULL OR NOW() <= deadline_at');
+        }
+
+        if($this->tiendo_lv == '2'){
+            $query->andWhere('NOW() > deadline_at');
+        }
 
 
         return $dataProvider;

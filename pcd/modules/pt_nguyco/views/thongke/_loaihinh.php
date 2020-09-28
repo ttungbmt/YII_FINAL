@@ -35,7 +35,7 @@
     </tr>
     </tbody>
     <tfoot>
-    <tr v-for="(v, k) in nhoms">
+    <tr v-for="(v, k) in nhoms" v-if="form.loai_tk==='loaihinh'">
         <td colspan="2">Nhóm {{k}}</td>
         <td><button class="btn btn-link" @click="getLoaihinhUri({nhom: k}, 'dauthang', _.sumBy(filterByNhom(resp, v), 'dauthang'))">{{_.sumBy(filterByNhom(resp, v), 'dauthang')}}</button></td>
         <td><button class="btn btn-link" @click="getLoaihinhUri({nhom: k}, 'daxoa', _.sumBy(filterByNhom(resp, v), 'daxoa'))">{{_.sumBy(filterByNhom(resp, v), 'daxoa')}}</button></td>

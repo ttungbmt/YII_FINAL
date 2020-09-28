@@ -13,7 +13,7 @@ $dm_loaitk = [
     'xuphat' => 'Xử phạt',
     'tinhhinh_gs' => 'Tình hình giám sát',
 ];
-$maquan = userInfo()->ma_quan;
+$maquan = (string)userInfo()->ma_quan;
 $maphuong = userInfo()->ma_phuong;
 ?>
 <script src="https://www.amcharts.com/lib/4/core.js"></script>
@@ -97,8 +97,9 @@ $maphuong = userInfo()->ma_phuong;
 
 
     <div id="resp-html">
-        <div class="text-right mb-2">
-            <btn-export class="btn badge bg-blue-400" table-id="tb-export" v-if="shownResp">Xuất excel</btn-export>
+        <div class="text-right mb-2" v-if="shownResp">
+            <button @click="onExport" class="btn badge bg-blue-400">Xuất excel</button>
+            <btn-export class="hidden" table-id="tb-export" id="btn-export">Xuất excel</btn-export>
         </div>
 
         <div class="card">
@@ -124,9 +125,12 @@ $maphuong = userInfo()->ma_phuong;
 <script src="<?= asset('assets/vue/vue-component/dist/library.js') ?>"></script>
 <script src="https://cdn.jsdelivr.net/npm/urijs@1.19.2/src/jquery.URI.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/floatthead@2.1.2/dist/jquery.floatThead.min.js"></script>
+<script src="http://jpchip.github.io/stickytable/dist/jquery-stickytable.js"></script>
 <?php
 $this->registerJsVar('pageData', [
-    'form' => $model->toArray(),
+    'form' => array_merge($model->toArray(), [
+        'maquan' => is_null($model->maquan) ? '' : $model->maquan
+    ]),
 ])
 ?>
 
@@ -168,6 +172,11 @@ $this->registerJsVar('pageData', [
                 }
             },
             methods: {
+                onExport(){
+                    $('#tb-export').floatThead('destroy')
+                    $('#btn-export')[0].click()
+                    $('#tb-export').floatThead()
+                },
                 filterByNhom(resp, ids){
                     return resp.filter(v => _.includes(ids, v.code))
                 },
@@ -202,7 +211,6 @@ $this->registerJsVar('pageData', [
                     } else {
                         alert('Chỉ hiển thị danh sách những ô có giá trị khác 0')
                     }
-
                 },
                 beforePost({loai_tk}) {
                     this.loai_tk = loai_tk
@@ -212,9 +220,9 @@ $this->registerJsVar('pageData', [
                     this.resp = resp.data
                     this.field = resp.field
 
-                    // setTimeout(() => {
-                    //     $('.table').floatThead()
-                    // }, 500)
+                    setTimeout(() => {
+                        $('#tb-export').floatThead()
+                    }, 500)
                 },
 
                 renderChart(){

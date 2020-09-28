@@ -17,6 +17,10 @@ $dm_phai = api('dm_phai');
 $dm_ht_dieutri = api('dm_ht_dieutri');
 $dm_loai_xn = api('dm_loai_xn');
 $dm_kq_xn = api('dm_kq_xn');
+$dm_tiendo_lv = [
+    1 => 'Đúng hạn',
+    2 => 'Quá hạn',
+];
 
 $s_options = ['class' => 'form-control', 'prompt' => 'Tất cả'];
 
@@ -87,6 +91,7 @@ return [
     [
         'class' => 'kartik\grid\DataColumn',
         'label' => 'Tiến độ làm việc',
+        'filter' => Html::activeDropDownList($searchModel, 'tiendo_lv', $dm_tiendo_lv, $s_options),
         'value' => function ($model, $key, $index){
             if($model->deadline_at && Carbon::parse($model->deadline_at) < Carbon::now()) return 'Quá hạn';
             return 'Đúng hạn';

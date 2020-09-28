@@ -144,7 +144,7 @@ class BenhvienController extends AppController
                     'footer' => Html::button('Close', ['class' => 'btn btn-default pull-left', 'data-dismiss' => "modal"]) .
                         Html::button('Save', ['class' => 'btn btn-primary', 'type' => "submit"])
                 ];
-            } else if ($model->load($request->post()) && $model->save()) {
+            } else if ($model->saveModel()) {
                 return [
                     'forceReload' => '#crud-datatable-pjax',
                     'title' => "Bệnh viện #" . $id,
@@ -168,7 +168,7 @@ class BenhvienController extends AppController
             /*
             *   Process for non-ajax request
             */
-            if ($model->load($request->post()) && $model->save()) {
+            if ($model->saveModel()) {
                 return $this->redirect('index');
             } else {
                 return $this->render('update', [
