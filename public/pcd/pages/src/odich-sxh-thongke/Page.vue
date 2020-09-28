@@ -4,7 +4,10 @@
             <m-form @submit="onSubmit">
                 <div class="grid grid-cols-2 gap-4">
                     <m-field type="select" :items="dm_loai_tk" label="Loại thống kê" v-model="form.loai_tk"></m-field>
-                    <m-field type="select" items="cat.qh" label="Hành chính" :placeholder="form.maquan ? null : `Thành phố`" v-model="form.hc"></m-field>
+                    <div class="grid grid-cols-2 gap-4">
+                        <m-field type="select" items="cat.qh" label="Quận huyện" :placeholder="form.maquan ? null : `Tất cả`" v-model="form.maquan"></m-field>
+                        <m-field type="select" :items="dm_px" label="Phường xã" v-model="form.maphuong"></m-field>
+                    </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <m-field type="date" label="Từ ngày Ngày xử lý" v-model="form.date_from" placeholder="DD/MM/YYYY"></m-field>
@@ -36,6 +39,7 @@
 </template>
 <script>
     import {isEmpty} from 'lodash-es'
+    import axios from 'axios'
 
     export default {
         name: 'page-thongke-odich',
@@ -56,6 +60,7 @@
                 form: {
                     date_from: '',
                     date_to: '',
+                    maphuong: '',
                     ...pageData.form
                 },
                 info: '',
@@ -64,6 +69,9 @@
                 },
                 fields: [
                 ],
+                dm_px: [
+                    {label: 'Chọn phường xã', value: ''}
+                ],
                 exportOptions: {
                     selector: '#tb-thongke',
                     filename: 'BienbanXLOD.xlsx',
@@ -71,6 +79,7 @@
             }
         },
         mounted() {
+            if(this.form.maquan) this.getMaPhuong()
         },
         methods: {
             onSubmit(){
@@ -103,11 +112,22 @@
                 this.fields = []
                 this.data = []
             },
+            getMaPhuong(){
+                let maquan = this.form.maquan
+
+                this.dm_px = [{label: 'Đang tải...', value: ''}]
+                axios.post('/api/dm/phuong', {depdrop_parents: [maquan], depdrop_all_params: {['drop-quan']: maquan}}).then(({data}) => {
+                    this.dm_px = [{label: 'Chọn phường xã', value: ''}].concat(data.output.map(v => ({label: v.name, value: v.id})))
+                })
+            }
         },
         watch: {
             'form.loai_tk': function (val) {
                 this.resetData()
-            }
+            },
+            'form.maquan': function (val) {
+                this.getMaPhuong()
+            },
         }
     }
 </script>

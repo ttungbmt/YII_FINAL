@@ -55,7 +55,6 @@
         },
         methods: {
             onClick(e){
-                console.log($(this.tableSelector))
                 if(this.$listeners.click){
                     this.$emit('click', e)
                     return

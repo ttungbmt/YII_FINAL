@@ -12,6 +12,6 @@ Vuexy.liftOff({
         [Page.name]: Page
     },
     created() {
-        this.$store.commit('cat/init', window.pageData.cat)
+        this.$store.commit('cat/init', {...window.pageData.cat, px: []})
     }
 })

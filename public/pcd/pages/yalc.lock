@@ -1,0 +1,13 @@
+{
+  "version": "v1",
+  "packages": {
+    "@ttungbmt/vuex-form": {
+      "signature": "0b8af634528c8dcfbc3b58282a6d4ca2",
+      "link": true
+    },
+    "@ttungbmt/vuex-toolkit": {
+      "signature": "7781f6c29d89c7ec4beef32655b7eb97",
+      "link": true
+    }
+  }
+}
