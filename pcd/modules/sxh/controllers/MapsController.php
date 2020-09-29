@@ -136,7 +136,7 @@ class MapsController extends AppController {
                 "title"     => "Ca bệnh",
                 "type" => 'wms',
                 "key" => "cabenh_sxh",
-                'active'  => true,
+                'active'  => false,
                 "options" => [
                     "cql_filter" => $fn_cql($_3mAgo),
                     "url"        => "/geoserver/ows?",
@@ -193,6 +193,7 @@ class MapsController extends AppController {
                 "type" => 'wms',
                 "key" => "dnc",
                 "control" => true,
+                'active'  => true,
                 "options" => [
                     "url"        => "/geoserver/ows?",
                     "layers"     => "dichte:pt_nguyco_tong",

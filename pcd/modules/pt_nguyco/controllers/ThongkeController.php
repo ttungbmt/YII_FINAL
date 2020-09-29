@@ -227,4 +227,23 @@ class ThongkeController extends BackendController
             'data' => $data,
         ]);
     }
+
+
+    public function actionGiamsat($id){
+        $query = (new Query())->select([
+            'month' => "DATE_PART('month', ngay_gs)",
+            'count_gs' => "COUNT ( * )",
+            'count_lq' => "SUM ( CASE WHEN vc_lq = 1 THEN 1 ELSE 0 END )",
+        ])
+            ->from('phieu_gs')
+            ->andWhere(['pt_nguyco_id' => $id])
+            ->groupBy(new Expression('1'))
+            ->orderBy(new Expression('1'));
+
+
+        return $this->asJson([
+            'status' => 'OK',
+            'data' => $query->all()
+        ]);
+    }
 }

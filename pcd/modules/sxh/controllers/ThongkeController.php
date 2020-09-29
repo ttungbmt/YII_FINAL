@@ -225,4 +225,5 @@ class ThongkeController extends AppController
 
         return $this->render('khupho', compact('model'));
     }
+
 }
