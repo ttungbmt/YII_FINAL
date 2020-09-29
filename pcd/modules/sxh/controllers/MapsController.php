@@ -159,8 +159,45 @@ class MapsController extends AppController {
                 "control" => true,
                 "options" => [
                     "url"        => "/geoserver/ows?",
-                    "layers"     => "dichte:pt_nguyco",
+                    "layers"     => "dichte:pt_nguyco_tong",
                     "cql_filter" => $role->getGapranhCQL(''),
+                    "zIndex" => 9
+                ],
+            ],
+            [
+                "title"     => "Điểm nguy cơ (Nhóm 1)",
+                "type" => 'wms',
+                "key" => "dnc",
+                "control" => true,
+                "options" => [
+                    "url"        => "/geoserver/ows?",
+                    "layers"     => "dichte:pt_nguyco_tong",
+                    "cql_filter" => $role->getGapranhCQL('nhom = 1'),
+                    "zIndex" => 9
+                ],
+            ],
+            [
+                "title"     => "Điểm nguy cơ (Nhóm 2)",
+                "type" => 'wms',
+                "key" => "dnc",
+                "control" => true,
+                "options" => [
+                    "url"        => "/geoserver/ows?",
+                    "layers"     => "dichte:pt_nguyco_tong",
+                    "cql_filter" => $role->getGapranhCQL('nhom = 2'),
+                    "zIndex" => 9
+                ],
+            ],
+            [
+                "title"     => "Điểm nguy cơ (Nhóm 3)",
+                "type" => 'wms',
+                "key" => "dnc",
+                "control" => true,
+                "options" => [
+                    "url"        => "/geoserver/ows?",
+                    "layers"     => "dichte:pt_nguyco_tong",
+                    "cql_filter" => $role->getGapranhCQL('nhom = 3'),
+                    "styles" => 'pt_nguyco_nhom3',
                     "zIndex" => 9
                 ],
             ],
