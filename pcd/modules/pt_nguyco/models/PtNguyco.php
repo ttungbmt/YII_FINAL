@@ -269,35 +269,23 @@ class PtNguyco extends App
 
     public function getPopupFields()
     {
-        return [
+
+        return array_merge(self::rawFields(), [
             'gid',
-            'ten_cs',
             'diachi' => function ($model) {
                 if ($model->sonha || $model->tenduong) return collect([$model->sonha, $model->tenduong])->filter()->implode(' ');
                 return Html::tag('span', $model->diachi, ['class' => 'text-danger']);
-            },
-            'tenphuong' => function ($model) {
-                return data_get($model, 'phuong.tenphuong');
-            },
-            'tenquan' => function ($model) {
-                return data_get($model, 'quan.tenquan');
             },
             'khupho_to' => function ($model) {
                 return collect([$model->khupho, $model->to_dp])->filter()->implode(' - ');
             },
             'maphuong',
             'maquan',
-            'khupho',
-            'to_dp',
-            'nhom',
-            'loaihinh' => function ($model) {
-                return data_get($model->dm_loaihinh, 'ten_lh');
-            },
             'ngaycapnhat',
             'geometry' => function ($model) {
                 return $model->toGeometry();
             },
-        ];
+        ]);
     }
 
     public static function getPopupInfo($id)
