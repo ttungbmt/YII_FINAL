@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="theme-color" content="#000000"/>
     <meta name="description" content="Web site created using create-react-app"/>
-    <link rel="manifest" href="<?= asset('/assets/map/v2/manifest.json') ?>"/>
+    <link rel="manifest" href="<?= asset('/assets/map/v3/manifest.json') ?>"/>
     <title>Hệ thống quản lý bệnh truyền nhiễm</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
@@ -32,8 +32,8 @@
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
 
 
-    <link href="<?= asset('/assets/map/v2/static/css/5.chunk.css?v='.params('map_version')) ?>" rel="stylesheet">
-    <link href="<?= asset('/assets/map/v2/static/css/main.chunk.css?v='.params('map_version')) ?>" rel="stylesheet">
+    <link href="<?= asset('/assets/map/v3/static/css/5.chunk.css?v='.params('map_version')) ?>" rel="stylesheet">
+    <link href="<?= asset('/assets/map/v3/static/css/main.chunk.css?v='.params('map_version')) ?>" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuex@3.1.2/dist/vuex.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-freeze-table@1.3.0/dist/js/freeze-table.min.js"></script>
@@ -43,7 +43,7 @@
 <div id="app"></div>
 <div id="root"></div>
 <script>
-    let url = '<?=url('/pcd/assets/map/v2/')?>'
+    let url = '<?=url('/pcd/assets/map/v3/')?>'
 
     !function (c) {
         function e(e) {
@@ -153,7 +153,7 @@
         s()
     }([])
 </script>
-<script src="<?= asset('/assets/map/v2/static/js/5.chunk.js?v='.params('map_version')) ?>"></script>
-<script src="<?= asset('/assets/map/v2/static/js/main.chunk.js?v='.params('map_version')) ?>"></script>
+<script src="<?= asset('/assets/map/v3/static/js/5.chunk.js?v='.params('map_version')) ?>"></script>
+<script src="<?= asset('/assets/map/v3/static/js/main.chunk.js?v='.params('map_version')) ?>"></script>
 </body>
 </html>
