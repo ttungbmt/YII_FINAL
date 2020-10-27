@@ -410,7 +410,6 @@ class SxhForm extends MyForm
         $cb->maphuong = $this->px;
         $cb->tenquan = data_get(HcQuan::findOne(['maquan' => $this->qh]), 'tenquan');
         $cb->tenphuong = data_get(HcPhuong::findOne(['maphuong' => $this->px]), 'tenphuong');
-        $cb->deadline_at = null;
         $cb->geom = $this->lat && $this->lng ? [$this->lng, $this->lat] : null;
         $dt->attributes = $this->toArray();
 
