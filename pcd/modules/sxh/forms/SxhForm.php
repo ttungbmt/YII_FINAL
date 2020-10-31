@@ -411,6 +411,10 @@ class SxhForm extends MyForm
         $cb->tenquan = data_get(HcQuan::findOne(['maquan' => $this->qh]), 'tenquan');
         $cb->tenphuong = data_get(HcPhuong::findOne(['maphuong' => $this->px]), 'tenphuong');
         $cb->geom = $this->lat && $this->lng ? [$this->lng, $this->lat] : null;
+        if($cb->deadline_at){
+            if(Carbon::now()->lessThanOrEqualTo(Carbon::parse($cb->deadline_at))) $cb->deadline_at = null;
+        }
+
         $dt->attributes = $this->toArray();
 
 
