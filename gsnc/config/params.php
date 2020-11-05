@@ -7,13 +7,13 @@ return [
 
     'app_name'    => 'Quản lý giám sát nước',
     'description' => 'Quản lý giám sát nước',
-    'copyright'   => '<a target="_blank" href="http://yteduphongtphcm.gov.vn/">Trung tâm y tế dự phòng Tp. Hồ Chí Minh</a> & <br> <a target="_blank" href="https://hcmgis.vn">Trung tâm Ứng dụng Hệ thống thông tin Địa lý TP.HCM</a>',
+    'copyright'   => '<a target="_blank" href="http://yteduphongtphcm.gov.vn/">Trung tâm Kiểm soát Bệnh tật Tp. Hồ Chí Minh</a>',
 
     'loginReturnUrl' => '/gsnc',
 //    'logo_desc' => 'SỞ NÔNG NGHIỆP',
 
     'assets' => [
-        'logo'             => '/projects/gsnc/assets/img/logo-site.png',
+        'logo'             => '/projects/gsnc/assets/img/logo-gsnc.jpg',
         'login_background' => '/projects/gsnc/assets/img/bg-login.jpg',
     ]
 ];

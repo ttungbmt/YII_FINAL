@@ -8,6 +8,8 @@ use yii\db\Query;
 class SiteController extends GsncController
 {
     public function actionIndex(){
+        $date_from = dateToDb(request()->input('from_date'));
+        $date_to = dateToDb(request()->input('to_date'));
 
         //Số lượng user
         $users = (new Query())
@@ -62,14 +64,14 @@ class SiteController extends GsncController
         $q_maunc = (new Query)
             ->select('COUNT(*) as count, hl_vs')
             ->from('maunc')
-            ->groupBy('hl_vs')
-            ->all();
+            ->groupBy('hl_vs');
 
-//        $q_benhvien = (new Query)
-//            ->select('COUNT(*) as count, hl_vs')
-//            ->from('poi_benhvien')
-//            ->groupBy('hl_vs')
-//            ->all();
+
+        $date_from && $q_maunc->andFilterWhere(['>=', 'ngaylaymau', $date_from]);
+        $date_to && $q_maunc->andFilterWhere(['<=', 'ngaylaymau', $date_to]);
+
+
+        $q_maunc = $q_maunc->all();
 
         $dataProvider = [];
 
@@ -93,14 +95,6 @@ class SiteController extends GsncController
             'dat'       => 0,
             'khongdat'  => 0,
         ];
-
-//        foreach($q_benhvien as $value) {
-//            if($value['hl_vs'] == 1) {
-//                $data_bv['dat'] += $value['count'];
-//            } else {
-//               $data_bv['khongdat'] += $value['count'];
-//            }
-//        }
 
         array_push($dataProvider, $data_bv);
 
