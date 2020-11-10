@@ -43,6 +43,7 @@ class Api extends Component
                 return is_null($data) ? (string)$response->getBody() : $data;
             } catch (\Exception $e){
                 dd($e);
+
                 return [];
             }
 

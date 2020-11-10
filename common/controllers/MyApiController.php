@@ -17,7 +17,7 @@ use yii\web\Response;
 
 class MyApiController extends Controller
 {
-    public $request;
+    protected $request;
     public $dataMap = [];
 
     public function init()
