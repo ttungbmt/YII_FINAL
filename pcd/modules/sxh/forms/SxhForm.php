@@ -458,7 +458,7 @@ class SxhForm extends MyForm
         ]);
 
         $cb->link('chuyenCas', $ch);
-        $cb->deadline_at = Carbon::now()->addHours(24);
+        $cb->deadline_at = Carbon::now()->addOpenHours(24);
         $cb->save();
         // Xóa thông tin người gửi trên form
         $dt->nguoidieutra = null;

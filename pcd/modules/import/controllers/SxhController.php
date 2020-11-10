@@ -77,7 +77,7 @@ class SxhController extends BackendController {
             $data[$k] = $i->toArray();
             $data[$k]['maquan'] = $data[$k]['qh'];
             $data[$k]['maphuong'] = $data[$k]['px'];
-            $data[$k]['deadline_at'] = Carbon::now()->addHours(24);
+            $data[$k]['deadline_at'] S= Carbon::now()->addOpenHours(24);
 
             $models[$k] = new CabenhSxh();
         }
