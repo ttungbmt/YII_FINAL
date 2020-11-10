@@ -24,7 +24,6 @@ class MyApiController extends Controller
     {
         parent::init();
         $this->request = \Yii::$app->request;
-
     }
 
     public function behaviors()
