@@ -12,21 +12,6 @@ class ApiController extends Controller
 {
     protected $data;
 
-    public $request;
-
-    public $response;
-
-    public function init()
-    {
-        parent::init();
-        if ($this->request === null) {
-            $this->request = Yii::$app->getRequest();
-        }
-        if ($this->response === null) {
-            $this->response = Yii::$app->getResponse();
-        }
-    }
-
     public function behaviors()
     {
         return array_merge(parent::behaviors(), [
