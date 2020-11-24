@@ -16,8 +16,6 @@ class ThongkeController extends AppController
 {
     public $data;
 
-    public $request;
-
     public function init()
     {
         parent::init();
