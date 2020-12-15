@@ -119,10 +119,14 @@ class ThongkeController extends AppController
             $tb3_od = (new Query())
                 ->select([
                     $field['key'] => "od.{$field['key']}",
-                    'mxl1' => 'SUM ( CASE WHEN min_tt = 1 AND (loai_od = 1 OR loai_od = 5)  THEN 1 END )',
-                    'mxl2' => 'SUM ( CASE WHEN min_tt = 1 AND loai_od = 2 THEN 1 END )',
-                    'mxl3' => 'SUM ( CASE WHEN min_tt = 1 AND loai_od = 3 THEN 1 END )',
-                    'mxl4' => 'SUM ( CASE WHEN min_tt = 1 AND loai_od = 4 THEN 1 END )',
+                    'xl_m' => 'SUM ( CASE WHEN min_tt = 1 AND (loai_od = 1 OR loai_od = 5)  THEN 1 END )',
+                    'px_xl_m' => 'COUNT(DISTINCT CASE WHEN min_tt = 1 AND (loai_od = 1 OR loai_od = 5) THEN maphuong END)',
+                    'xl1' => 'SUM ( CASE WHEN loai_od = 1 THEN 1 END )',
+                    'xl2' => 'SUM ( CASE WHEN loai_od = 2 THEN 1 END )',
+                    'px_xl2' => 'COUNT(DISTINCT CASE WHEN loai_od = 2 THEN maphuong END)',
+                    'xl3' => 'SUM ( CASE WHEN loai_od = 3 THEN 1 END )',
+                    'xl4' => 'SUM ( CASE WHEN loai_od = 4 THEN 1 END )',
+                    'xl5' => 'SUM ( CASE WHEN loai_od = 5 THEN 1 END )',
                     'tong_odxl' => 'SUM(phc.c_tt)',
                     'px_od_xldr' => 'COUNT(DISTINCT CASE WHEN loai_od = 2 THEN maphuong END)',
                     'solit_hc' => 'SUM (phc.solit_hc)',
@@ -144,24 +148,24 @@ class ThongkeController extends AppController
                 ->orderBy('order');
 
             if($loai_tk == 3){
-                $so_px = is_null($maquan) ? [
-                    ['key' => 'px_phc', 'label' => 'Số PX có ổ dịch mới được xử lý', 'tdAttr' => ['data-t' => 'n']],
-                    ['key' => 'px_od_xldr', 'label' => 'Số PX xử lý ổ dịch diện rộng', 'tdAttr' => ['data-t' => 'n']],
-                ] : [
-                    ['key' => 'px_phc', 'label' => 'PX có ổ dịch mới được xử lý', 'tdAttr' => ['data-t' => 'n']],
-                    ['key' => 'px_od_xldr', 'label' => 'PX có xử lý ổ dịch diện rộng', 'tdAttr' => ['data-t' => 'n']]
-                ];
+                $group1 = 'Ổ dịch mới';
+                $group2 = 'Phân loại ổ dịch';
 
                 return $this->asJson([
                     'fields' => array_merge([
                         ['key' => 'stt', 'label' => '#', 'type' => 'serial'],
                         ['key' => 'name', 'label' => $field['label'], 'thStyle' => 'min-width: 150px'],
-                        ['key' => 'mxl1', 'label' => 'Số ổ dịch mới xử lý', 'tdAttr' => ['data-t' => 'n']],
-                        ['key' => 'mxl2', 'label' => 'Số ổ dịch mới xử lý diện rộng', 'tdAttr' => ['data-t' => 'n']],
-                        ['key' => 'mxl3', 'label' => 'Số ổ dịch mới liên PX', 'tdAttr' => ['data-t' => 'n']],
-                        ['key' => 'mxl4', 'label' => 'Số ổ dịch mới liên QH', 'tdAttr' => ['data-t' => 'n']],
-                        ['key' => 'tong_odmxl', 'label' => 'Tổng số ổ dịch mới được xử lý', 'tdAttr' => ['data-t' => 'n']],
-                    ], $so_px, [
+                        ['key' => 'xl_m', 'label' => 'Số ổ dịch mới xử lý', 'tdAttr' => ['data-t' => 'n'], 'group' => $group1],
+                        ['key' => 'px_xl_m', 'label' => 'Số PX xử lý', 'tdAttr' => ['data-t' => 'n'], 'group' => $group1],
+                        ['key' => 'xl1', 'label' => 'Ổ dịch', 'tdAttr' => ['data-t' => 'n'], 'group' => $group2],
+                        ['key' => 'xl2', 'label' => 'Ổ dịch diện rộng', 'tdAttr' => ['data-t' => 'n'], 'group' => $group2],
+                        ['key' => 'px_xl2', 'label' => 'Số PX xử lý ổ dịch diện rộng', 'tdAttr' => ['data-t' => 'n'], 'group' => $group2],
+                        ['key' => 'xl3', 'label' => 'Ổ dịch liên PX', 'tdAttr' => ['data-t' => 'n'], 'group' => $group2],
+                        ['key' => 'xl4', 'label' => 'Ổ dịch liên QH', 'tdAttr' => ['data-t' => 'n'], 'group' => $group2],
+                        ['key' => 'xl5', 'label' => 'Ổ dịch ca dương tính', 'tdAttr' => ['data-t' => 'n'], 'group' => $group2],
+
+                        ['key' => 'tong_xl', 'label' => 'Tổng số ổ dịch được xử lý', 'tdAttr' => ['data-t' => 'n']],
+                    ], [
                         ['key' => 'tong_odxl', 'label' => 'Tổng lượt ổ dịch được xử lý', 'tdAttr' => ['data-t' => 'n']],
                         ['key' => 'solit_hc', 'label' => 'Số lít hóa chất (chưa pha)', 'tdAttr' => ['data-t' => 'n']],
                         ['key' => 'px_dlq', 'label' => 'Số PX tổ chức diệt lăng quăng', 'tdAttr' => ['data-t' => 'n']],
@@ -170,11 +174,11 @@ class ThongkeController extends AppController
                         ['key' => 'dncs_odxp', 'label' => 'Số điểm nguy cơ trong ổ dịch xử phạt', 'tdAttr' => ['data-t' => 'n']],
                     ]),
                     'data' => collect($tb3->all())->map(function ($i) use($dm_loai_od){
-                        $tong_odmxl = collect($i)->only(['mxl1', 'mxl2', 'mxl3', 'mxl4'])->sum();
+                        $tong_xl = collect($i)->only(['xl1', 'xl2', 'xl3', 'mxl4', 'mxl5'])->sum();
                         $px_od_xldr = $i['px_od_xldr'];
 
                         return array_merge($i, [
-                            'tong_odmxl' => $tong_odmxl == 0 ? null : $tong_odmxl,
+                            'tong_xl' => $tong_xl == 0 ? null : $tong_xl,
                             'px_od_xldr' => $px_od_xldr == 0 ? null : $px_od_xldr,
                         ]);
                     })

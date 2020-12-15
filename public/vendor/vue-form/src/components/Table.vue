@@ -1,6 +1,12 @@
 <template>
     <div>
         <b-table v-bind="tbOptions" :fields="fields" :items="innerItems" @row-clicked="onRowClicked">
+            <template #thead-top="data">
+                <b-tr v-if="hasGroup(data)">
+                    <b-th data-f-bold="true" :colspan="i.count" v-for="i in getGroup(data)" class="text-center">{{i.value}}</b-th>
+                </b-tr>
+            </template>
+
             <template v-slot:[`cell(${i.key})`]="data" v-for="i in fields">
                 {{isFormatHtml(data) ? '' : cellValue(data)}}
                 <div v-if="isFormatHtml(data)" v-html="cellValue(data)"></div>
@@ -103,6 +109,32 @@
 
         },
         methods: {
+            hasGroup({fields}){
+                return !isEmpty(filter(fields, f => f.group))
+            },
+            getGroup({fields: data}){
+                if (data === null || data.length === 0) return [];
+
+                let result = [];
+                let prevEle = get(data, `0.group`, '');
+                let count = 0;
+                for (let i = 1; i < data.length; i++) {
+                    const ele = get(data, `${i}.group`, '');
+
+                    if (ele === prevEle) {
+                        if(i === 1) count +=2
+                        else count +=1
+                    } else {
+                        console.log(ele, prevEle)
+                        result.push({ count: count, value: prevEle });
+                        count = 1;
+                    }
+                    prevEle = ele;
+                }
+                result.push({ count: count, value: prevEle });
+
+                return result;
+            },
             isMatchField(field, options){
                 return isMatch(field, options)
             },
