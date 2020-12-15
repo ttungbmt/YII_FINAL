@@ -64,7 +64,7 @@ return [
         'updateOptions' => ['title' => lang('Update'), 'data-toggle' => 'tooltip'],
         'visibleButtons' => [
             'delete' => function ($model) {
-                return role('admin|quan|phuong');
+                return role('admin|quan');
             },
             'view' => false,
             'download' => function ($model) {
