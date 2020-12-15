@@ -50,6 +50,7 @@ class MauncResource extends Maunc implements Linkable
 
         $dataProvider = new ActiveDataProvider([
             'query'      => $query,
+            'sort'=> ['defaultOrder' => ['gid' => SORT_DESC]],
             'pagination' => [
                 'params'   => $params,
                 'pageSize' => 20,
@@ -57,6 +58,7 @@ class MauncResource extends Maunc implements Linkable
         ]);
 
         $this->load($params, 'form');
+        $this->load($params, '');
 
         if (!$this->validate()) {
             $query->where('0=1');

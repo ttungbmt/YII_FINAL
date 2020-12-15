@@ -25,7 +25,7 @@ class VtKhaosat extends Gsnc
 {
     protected $timestamps = true;
     protected $blameables = true;
-    protected $dates = ['ngaykhaosat'];
+    protected $dates = ['ngaykhaosat', 'ngaylaymau'];
     public $data_cts;
     /**
      * @inheritdoc

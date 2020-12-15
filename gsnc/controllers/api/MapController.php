@@ -10,6 +10,57 @@ use yii\db\Expression;
 
 class MapController extends MyApiController
 {
+//    public function actionPhp(){
+//        $query = collect((new \yii\db\Query())->select([
+//            'gid',
+//            'value',
+//            'geometry' => new Expression('ST_AsGeoJSON(geom)')
+//
+//        ])->from('v_php')->all())->map(function ($i){
+//            return [
+//                'type' => 'Feature',
+//                'geometry' => json_decode($i['geometry']),
+//                'properties' => [
+//                    'id' => $i['gid'],
+//                    'weight' => floatval($i['value']),
+//                ]
+//            ];
+//        });
+//        return $query;
+//    }
+
+
+    public function actionGetTbChitieu(){
+        $this->layout = null;
+
+        $data = request()->all();
+        $chitieu = json_decode(data_get($data, 'json'), true);
+        return $this->render('pop_chitieu', ['chitieu' => $chitieu]);
+    }
+
+    public function actionLayers(){
+        return [
+            [
+                'title' => 'Basemap',
+                'checkbox' => false,
+                'radiogroup' => true,
+                'expanded' => true,
+                'children' => [
+                    'google:selected=true',
+                    'hcmgis',
+                    'vietbando',
+                    ['google-satellite', ['title' => 'Ảnh vệ tinh']],
+                ]
+            ],
+            [
+                'title' => 'Overlay',
+                'checkbox' => false,
+                'expanded' => true,
+                'children' => api('layer_tree')
+            ],
+        ];
+    }
+
     public function actionConfig()
     {
         $data = [];

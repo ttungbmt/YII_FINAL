@@ -76,7 +76,7 @@ class VtKhaosatResource extends VtKhaosat implements Linkable
             ],
         ]);
 
-        $this->load($params, 'form');
+        $this->load($params, '');
 
         if (!$this->validate()) {
             $query->where('0=1');

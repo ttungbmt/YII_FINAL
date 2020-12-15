@@ -33,104 +33,205 @@ $data['nav_links'] = [
         'icon' => 'icon-map5',
     ],
     [
-        'path'  => '/admin',
-        'name'  => 'Quản lý dữ liệu',
-        'icon'  => 'icon-clipboard3',
+        'path' => '/admin',
+        'name' => 'Quản lý dữ liệu',
+        'icon' => 'icon-clipboard3',
         'attrs' =>
             [
                 'target' => '_blank',
             ],
     ],
     [
-        'path'  => '/maps/heatmap',
-        'name'  => 'Heatmap',
-        'icon'  => 'icon-lifebuoy',
+        'path' => '/maps/heatmap',
+        'name' => 'Heatmap',
+        'icon' => 'icon-lifebuoy',
     ],
 ];
 
 $data['layer_keys'] = [
-    'maunc'         => 'maunc',
-    'poi_benhvien'  => 'poi_benhvien',
+    'maunc' => 'maunc',
+    'poi_benhvien' => 'poi_benhvien',
     'poi_thugomrac' => 'poi_thugomrac',
-    'vt_khaosat'    => 'vt_khaosat',
-    'vt_onhiem'   => 'vt_onhiem',
-    'mangluoinuoc'  => 'mangluoinuoc',
+    'vt_khaosat' => 'vt_khaosat',
+    'vt_onhiem' => 'vt_onhiem',
+    'mangluoinuoc' => 'mangluoinuoc',
 ];
+
+$actionLink = function ($params){return array_merge(['component' => 'link-field', 'icon' => 'fal fa-info-circle', 'target' => '_blank', 'text' => 'Chi tiết'], $params);};
 
 $data['layer_tree'] = [
     [
-        'title'    => 'Địa hình',
-        'key'      => 'diahinh',
-        'folder'   => true,
+        'title' => 'Địa hình',
+        'key' => 'diahinh',
+        'folder' => true,
         'children' => [
             [
-                'title'     => 'Quận huyện',
-                'key'       => 'pg_ranhquan',
-                'component' => [
-                    'url'    => '/geoserver/ows?',
-                    'layers' => 'dichte:dm_quan',
+                'type' => 'wms',
+                'title' => 'Quận huyện',
+                'key' => 'pg_ranhquan',
+                'source' => [
+                    'url' => '/geoserver/ows?',
+                    'params' => [
+                        'layers' => 'dichte:dm_quan',
+                    ]
                 ],
             ],
             [
-                'title'     => 'Phường xã',
-                'key'       => 'dm_phuong_vn',
-                'component' => [
-                    'url'    => '/geoserver/ows?',
-                    'layers' => 'dichte:dm_phuong',
+                'type' => 'wms',
+                'title' => 'Phường xã',
+                'key' => 'dm_phuong_vn',
+                'source' => [
+                    'url' => '/geoserver/ows?',
+                    'params' => [
+                        'layers' => 'dichte:dm_phuong',
+                    ]
                 ],
             ],
         ],
     ],
     [
-        'title'     => 'Mạng lưới nước',
-        'key'       => 'mangluoinuoc',
-        'component' => [
-            'url'    => '/geoserver/ows?',
-            'layers' => 'gsnc:mangluoinuoc',
+        'title' => 'GSNC',
+        'key' => 'gsnc',
+        'folder' => true,
+        'expanded' => true,
+        'children' => [
+            [
+                'type' => 'wms',
+                'title' => 'Mẫu nước',
+                'id' => 'maunc',
+                'key' => 'maunc',
+                'source' => [
+                    'url' => '/geoserver/ows?',
+                    'params' => [
+                        'layers' => 'gsnc:v_maunc',
+                    ],
+                    'zIndex' => 30,
+                ],
+                'selected' => true,
+                'popup' => [
+                    'heading' => '#{{mamau}} {{loaimau}}',
+                    'fields' => [
+                        'loaimau',
+                        'diachi',
+                        ['component' => 'date-field', 'attribute' => 'ngaylaymau', 'format' => 'dd.mm.yyyy', 'template' => '<span class="font-bold">Ngày lấy mẫu:</span><span class="pl-3">{{value}}</span>'],
+                        ['component' => 'html-field', 'url' => '/api/map/get-tb-chitieu'],
+                    ],
+                    'attributeLabels' => [
+                        'loaimau' => 'Loại mẫu',
+                        'diachi' => 'Địa chỉ',
+                        'ngaylaymau' => 'Ngày lấy mẫu',
+                    ],
+                    'actions' => [
+                        $actionLink(['url' => '/admin/maunc/update?id={{gid}}'])
+                    ]
+                ]
+            ],
+            [
+                'type' => 'wms',
+                'title' => 'Vị trí khảo sát',
+                'key' => 'vt_khaosat',
+                'selected' => false,
+                'source' => [
+                    'url' => '/geoserver/ows?',
+                    'params' => [
+                        'layers' => 'gsnc:v_vt_khaosat',
+                    ],
+                    'zIndex' => 20
+                ],
+                'popup' => [
+                    'heading' => '#{{gid}} {{tenchuho}}',
+                    'fields' => ['tenchuho', 'ngaykhaosat', 'ngaylaymau', 'diachi', 'tenphuong', 'tenquan',],
+                    'attributeLabels' => [
+                        'tenchuho' => 'Tên chủ hộ',
+                        'ngaykhaosat' => 'Ngày khảo sát',
+                        'ngaylaymau' => 'Ngày lấy mẫu',
+                        'diachi' => 'Địa chỉ',
+                        'tenphuong' => 'Tên phường',
+                        'tenquan' => 'Tên quận',
+                    ],
+                    'actions' => [
+                        $actionLink(['url' => '/admin/vt-khaosat/update?id={{gid}}']),
+                    ]
+                ]
+            ],
         ],
     ],
     [
-        'title'     => 'Mẫu nước',
-        'key'       => 'maunc',
-        'checked'   => true,
-        'component' => [
-            'url'    => '/geoserver/ows?',
-            'layers' => 'gsnc:v_maunc',
+        'title' => 'Khác',
+        'key' => 'other',
+        'folder' => true,
+        'expanded' => true,
+        'children' => [
+            [
+                'type' => 'wms',
+                'title' => 'Mạng lưới nước',
+                'key' => 'mangluoinuoc',
+                'source' => [
+                    'url' => '/geoserver/ows?',
+                    'params' => [
+                        'layers' => 'gsnc:mangluoinuoc',
+                    ]
+                ],
+            ],
+            [
+                'type' => 'wms',
+                'title' => 'Vị trí ô nhiễm',
+                'key' => 'vt_onhiem',
+                'source' => [
+                    'url' => '/geoserver/ows?',
+                    'params' => [
+                        'layers' => 'gsnc:v_vt_onhiem',
+                    ]
+                ],
+            ],
+            [
+                'type' => 'wms',
+                'title' => 'Điểm thu gom rác',
+                'key' => 'poi_thugomrac',
+                'source' => [
+                    'url' => '/geoserver/ows?',
+                    'layers' => 'gsnc:poi_thugomrac',
+                ],
+                'popup' => [
+                    'heading' => '{{ten}}',
+                    'fields' => ['diachi'],
+                    'attributeLabels' => [
+                        'ten' => 'Tên',
+                        'diachi' => 'Địa chỉ'
+                    ],
+                    'actions' => [
+                    ]
+                ],
+                'selected' => false,
+            ],
+            [
+                'type' => 'wms',
+                'title' => 'Nước thải bệnh viện',
+                'key' => 'poi_benhvien',
+                'source' => [
+                    'url' => '/geoserver/ows?',
+                    'params' => [
+                        'layers' => 'gsnc:poi_benhvien',
+                    ]
+                ],
+                'popup' => [
+                    'heading' => '{{ten}}',
+                    'fields' => ['loaibv', 'diachi'],
+                    'attributeLabels' => [
+                        'ten' => 'Tên',
+                        'diachi' => 'Địa chỉ',
+                        'loaibv' => 'Loại bệnh viện',
+                    ],
+                    'actions' => [
+                        $actionLink(['url' => '/admin/poi-benhvien/update?id={{gid}}']),
+                    ]
+                ],
+                'selected' => false,
+            ],
         ],
-        'selected'  => true
     ],
-    [
-        'title'     => 'Vị trí khảo sát',
-        'key'       => 'vt_khaosat',
-        'component' => [
-            'url'    => '/geoserver/ows?',
-            'layers' => 'gsnc:v_vt_khaosat',
-        ],
-    ],
-    [
-        'title'     => 'Vị trí ô nhiễm',
-        'key'       => 'vt_onhiem',
-        'component' => [
-            'url'    => '/geoserver/ows?',
-            'layers' => 'gsnc:v_vt_onhiem',
-        ],
-    ],
-    [
-        'title'     => 'Điểm thu gom rác',
-        'key'       => 'poi_thugomrac',
-        'component' => [
-            'url'    => '/geoserver/ows?',
-            'layers' => 'gsnc:poi_thugomrac',
-        ],
-    ],
-    [
-        'title'     => 'Nước thải bệnh viện',
-        'key'       => 'poi_benhvien',
-        'component' => [
-            'url'    => '/geoserver/ows?',
-            'layers' => 'gsnc:poi_benhvien',
-        ],
-    ],
+
+
 ];
 
 

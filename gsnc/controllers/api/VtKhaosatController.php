@@ -32,6 +32,26 @@ class VtKhaosatController extends ActiveController
             ],
             '_link' => Link::serialize($pagination->getLinks()),
         ];
-        return $this->renderAjax('index', compact('dataProvider', 'items', 'data'));
+
+        $pageSize = $pagination->getPageSize();
+        $offset = $pagination->getOffset();
+        $links = collect($pagination->getLinks());
+
+        return [
+            "label" => "Vị trí khảo sát",
+            "total" => $pagination->totalCount,
+            "per_page" => $pageSize,
+            "current_page" => $pagination->getPage() + 1,
+            "last_page" => $pagination->getPageCount(),
+            "first_page_url" => $links->get('first'),
+            "last_page_url" => $links->get('last'),
+            "next_page_url" => $links->get('next'),
+            "prev_page_url" => $links->get('prev'),
+            "path" => $links->get('self'),
+            "from" => $offset+1,
+            "to" => $offset+$pageSize,
+            "resources" => $items
+        ];
+//        return $this->renderAjax('index', compact('dataProvider', 'items', 'data'));
     }
 }

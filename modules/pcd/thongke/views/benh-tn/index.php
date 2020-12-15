@@ -27,6 +27,13 @@ if (!$model->nam) $model->nam = date('Y');
 
 $hc = \pcd\models\HcQuan::find()->select('maquan, tenquan, center, ST_AsGeoJSON(geom) geometry')->asArray()->all();
 ?>
+<style>
+    .leaflet-control {
+        display: flex;
+        flex-direction: column;
+    }
+</style>
+
 
 <div id="app">
     <v-app>
