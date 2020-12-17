@@ -18,44 +18,55 @@ class TableController extends MyApiController
     * http://pcd.local:88/api/table/check-hc-cabenh
     */
     public function actionCheckHcCabenh(){
-        $cabenhs = CabenhSxh::find()->andWhere(['>=', 'ngaybaocao', '2020-01-01'])->andWhere('maquan IS NULL AND maphuong IS NULL')->orderBy('ngaybaocao DESC')->all();
+        $cabenhs = CabenhSxh::find()->with(['xacminhCbs'])->andWhere(['>=', 'ngaybaocao', '2020-01-01'])->andWhere('maquan IS NULL AND maphuong IS NULL')->orderBy('ngaybaocao DESC')->all();
         $data = collect();
         foreach ($cabenhs as $k => $cb){
-            $query = (new Query())->from('cabenh_sxh_2020')->andWhere([
-                'tuoi' => $cb->tuoi,
-                'phai' => $cb->phai,
-                'hoten' => $cb->hoten,
-                'diachi' => $cb->vitri,
-//                'ng_bc' => dateToDb($cb->ngaybaocao),
-            ])->all();
-
-            if($query) {
-                $data->push([
-                    'cb' => $cb,
-                    'cb_ref' => $query,
-                    'cb_ids_ref' => collect($query)->pluck('gid')->implode(','),
-                    'count_ref' => count($query)
-                ]);
-
-                if(count($query) === 1){
-                    $ex_cabenh = opt(head($query));
-                    $px = HcPhuong::find()->andWhere(['tenquan_en' => $ex_cabenh->qh, 'tenphuong_en' => $ex_cabenh->px])->one();
-                    $cb->maquan = $px->maquan;
-                    $cb->maphuong = $px->maphuong;
-                    $cb->qh = $px->maquan;
-                    $cb->px = $px->maphuong;
-                    $cb->tenquan = $px->tenquan;
-                    $cb->tenphuong = $px->tenphuong;
-                    if(!$px) throw new \Exception('Not found');
-//                    $cb->save();
-//                    dd($cb->toArray());
-//                    dd($ex_cabenh, $cb->toArray());
-                }
-
-            };
+            if(count($cb->xacminhCbs) === 6 && $cb->xacminhCbs[5]['tinh'] === 'TinhKhac'){
+                $xm = $cb->xacminhCbs[4];
+                $cb->px = $xm->px;
+                $cb->qh = $xm->qh;
+                $cb->maphuong = $xm->px;
+                $cb->maquan = $xm->qh;
+//                $cb->save();
+//                dd($xm, $cb->toArray());
+//                $data->push($cb);
+            }
+//            $query = (new Query())->from('cabenh_sxh_2020')->andWhere([
+//                'tuoi' => $cb->tuoi,
+//                'phai' => $cb->phai,
+//                'hoten' => $cb->hoten,
+//                'diachi' => $cb->vitri,
+////                'ng_bc' => dateToDb($cb->ngaybaocao),
+//            ])->all();
+//
+//            if($query) {
+//                $data->push([
+//                    'cb' => $cb,
+//                    'cb_ref' => $query,
+//                    'cb_ids_ref' => collect($query)->pluck('gid')->implode(','),
+//                    'count_ref' => count($query)
+//                ]);
+//
+//                if(count($query) === 1){
+//                    $ex_cabenh = opt(head($query));
+//                    $px = HcPhuong::find()->andWhere(['tenquan_en' => $ex_cabenh->qh, 'tenphuong_en' => $ex_cabenh->px])->one();
+//                    $cb->maquan = $px->maquan;
+//                    $cb->maphuong = $px->maphuong;
+//                    $cb->qh = $px->maquan;
+//                    $cb->px = $px->maphuong;
+//                    $cb->tenquan = $px->tenquan;
+//                    $cb->tenphuong = $px->tenphuong;
+//                    if(!$px) throw new \Exception('Not found');
+////                    $cb->save();
+////                    dd($cb->toArray());
+////                    dd($ex_cabenh, $cb->toArray());
+//                }
+//
+//            };
         }
-
-        dd($data->where('count_ref', '>', 1), $data->where('count_ref', '=', 1));
+//
+        dd($data);
+//        dd($data->where('count_ref', '>', 1), $data->where('count_ref', '=', 1));
     }
 
 //    public function actionHello(){

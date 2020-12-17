@@ -264,7 +264,10 @@ class SxhForm extends MyForm
             if($lastXm->is_diachi == 0){
                 $lastXm = optional((object)($this->xacminh[$count-2]));
             } elseif ($lastXm->is_diachi == 1 && $lastXm->tinh != 'HCM'){
+                $prevXm = optional((object)($this->xacminh[$count-2]));
                 $lastXm = optional((object)($this->xacminh[$count-1]));
+                $lastXm->px = $prevXm->px;
+                $lastXm->qh = $prevXm->qh;
             }
         }
 
@@ -416,7 +419,6 @@ class SxhForm extends MyForm
         }
 
         $dt->attributes = $this->toArray();
-
 
         // Cập nhật thông tin người nhận
         if (count($this->xacminh) > 2) {
