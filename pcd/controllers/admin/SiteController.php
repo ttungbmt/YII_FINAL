@@ -145,7 +145,7 @@ class SiteController extends AppController {
         // 3: Nội trú thực tế
         // 4: Nội trú, ngoại trú thực tế
 
-        $date = "COALESCE(ngaynhapvien, ngaymacbenh)";
+        $date = "ngaynhapvien";
         $q = (new Query())
             ->select([
                 'year'   => "date_part('year', {$date})",
