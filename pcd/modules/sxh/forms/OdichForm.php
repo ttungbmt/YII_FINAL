@@ -5,6 +5,8 @@ use Illuminate\Support\Arr;
 use pcd\models\CabenhSxh;
 use pcd\modules\pt_nguyco\models\PtNguyco;
 use pcd\modules\sxh\models\Odich;
+use ttungbmt\db\Query;
+use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 
 class OdichForm extends Odich
@@ -21,20 +23,26 @@ class OdichForm extends Odich
             }, 'skipOnEmpty' => false,],
             ['dup_odich', function ($attribute, $params, $validator) {
                 if(!$this->id){
-                    $models = collect($this->find()->with('cabenhs')->andFilterWhere([
-                        'ngayxacdinh' => $this->ngayxacdinh,
-                        'maquan' => $this->maquan,
-                        'maphuong' => $this->maphuong,
-                    ])->all())->map(function ($i){
-                        return Arr::pluck($i->cabenhs, 'gid');
-                    });
-                    foreach ($models as $m){
-                        $cabenhs = collect(request('cabenhs', []));
-                        if(count($m) !== 0 && $cabenhs->pluck('gid')->intersect($m)->count() === $cabenhs->count() ){
-                            $this->addError('dup_odich', 'Ổ dịch đã trùng với ổ dịch khác trên hệ thống');
-                            return;
-                        }
-
+                    $cabenhIds = collect(request('cabenhs', []))->pluck('gid')->implode(',');
+                    $data = (new Query)
+                        ->select(new Expression("odich_id, od.maquan, od.maphuong, string_agg(resource_id::varchar, ',') cabenh_ids"))
+                        ->from(['sxh' => 'odich_sxh_poly'])
+                        ->leftJoin(['od' => 'odich_sxh'], "sxh.odich_id = od.id")
+                        ->andWhere([
+                            'resource_type' => 'sxh',
+                            'od.maquan' => $this->maquan,
+                            'od.maphuong' => $this->maphuong,
+                        ])
+                        ->having([
+                            "string_agg(resource_id::varchar, ',')" => $cabenhIds,
+                        ])
+                        ->groupBy(new Expression("odich_id, od.maquan, od.maphuong"))
+                        ->all()
+                    ;
+                    
+                    if(!empty($data)){
+                        $this->addError('dup_odich', 'Ổ dịch đã trùng với ổ dịch khác trên hệ thống');
+                        return null;
                     }
                 }
 
