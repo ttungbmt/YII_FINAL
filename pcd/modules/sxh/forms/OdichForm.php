@@ -1,6 +1,7 @@
 <?php
 namespace pcd\modules\sxh\forms;
 
+use Illuminate\Support\Arr;
 use pcd\models\CabenhSxh;
 use pcd\modules\pt_nguyco\models\PtNguyco;
 use pcd\modules\sxh\models\Odich;
@@ -8,10 +9,36 @@ use yii\helpers\ArrayHelper;
 
 class OdichForm extends Odich
 {
+    public $dup_odich;
+    public $has_cabenhs;
+
     public function rules()
     {
         return array_merge(parent::rules(),[
-            [['maquan', 'maphuong', 'ngayxacdinh', 'ngayphathien', 'loai_od', 'cabenhs'], 'required'],
+            [['maquan', 'maphuong', 'ngayxacdinh', 'ngayphathien', 'loai_od'], 'required'],
+            ['has_cabenhs', function () {
+                if(collect(request('cabenhs', []))->isEmpty())  $this->addError('has_cabenhs', 'Danh sách ca bệnh không được bỏ trống');
+            }, 'skipOnEmpty' => false,],
+            ['dup_odich', function ($attribute, $params, $validator) {
+                if(!$this->id){
+                    $models = collect($this->find()->with('cabenhs')->andFilterWhere([
+                        'ngayxacdinh' => $this->ngayxacdinh,
+                        'maquan' => $this->maquan,
+                        'maphuong' => $this->maphuong,
+                    ])->all())->map(function ($i){
+                        return Arr::pluck($i->cabenhs, 'gid');
+                    });
+                    foreach ($models as $m){
+                        $cabenhs = collect(request('cabenhs', []));
+                        if(count($m) !== 0 && $cabenhs->pluck('gid')->intersect($m)->count() === $cabenhs->count() ){
+                            $this->addError('dup_odich', 'Ổ dịch đã trùng với ổ dịch khác trên hệ thống');
+                            return;
+                        }
+
+                    }
+                }
+
+            }, 'skipOnEmpty' => false,],
         ]);
     }
 

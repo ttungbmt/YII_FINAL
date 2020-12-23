@@ -52,7 +52,6 @@ class Odich extends App
     public $diet_lqs;
     public $khaosat_cts;
     public $phun_hcs;
-    public $cabenhs;
 
     protected $timestamps = true;
 

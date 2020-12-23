@@ -7,7 +7,8 @@ let ruleDate = `before_or_equal:today`,
 
 
 export default [
-    {component: 'validation-provider', vid: 'cabenhs'},
+    {component: 'validation-provider', vid: 'has_cabenhs'},
+    {component: 'validation-provider', vid: 'dup_odich'},
     {component: 'validation-provider', vid: 'diet_lqs'},
     {component: 'validation-provider', vid: 'khaosat_cts'},
     {component: 'validation-provider', vid: 'phun_hcs'},
