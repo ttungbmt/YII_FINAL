@@ -7,6 +7,7 @@ let ruleDate = `before_or_equal:today`,
 
 
 export default [
+    {component: 'validation-provider', vid: 'cabenhs'},
     {component: 'validation-provider', vid: 'diet_lqs'},
     {component: 'validation-provider', vid: 'khaosat_cts'},
     {component: 'validation-provider', vid: 'phun_hcs'},
@@ -207,6 +208,11 @@ export default [
                             }
                         },
                         label: 'Cập nhật danh sách ĐNC'
+                    },
+                    {
+                        type: 'search',
+                        url: '/sxh/odich/suggestion-dncs',
+                        label: 'Thêm ĐNC vào danh sách',
                     }
                 ]
             },

@@ -2,7 +2,6 @@ import '@babel/polyfill'
 import Vue from 'vue'
 import VueWait from 'vue-wait'
 
-
 // import Vuex from 'vuex'
 
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'

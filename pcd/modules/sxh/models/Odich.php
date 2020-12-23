@@ -52,6 +52,7 @@ class Odich extends App
     public $diet_lqs;
     public $khaosat_cts;
     public $phun_hcs;
+    public $cabenhs;
 
     protected $timestamps = true;
 
@@ -91,6 +92,9 @@ class Odich extends App
     public function attributeLabels()
     {
         return [
+            'maphuong' => 'Phường xã',
+            'maquan' => 'Quận huyện',
+            'loai_od' => 'Loại ổ dịch',
             'ngayxacdinh' => 'Ngày xác định',
             'ngayphathien' => 'Ngày phát hiện',
             'ngaydukien_kt' => 'Ngày dự kiến kết thúc',
@@ -99,6 +103,8 @@ class Odich extends App
             'diet_lqs' => 'Diệt lăng quăng',
             'khaosat_cts' => 'Khảo sát côn trùng',
             'phun_hcs' => 'Phun hóa chất',
+            'cabenhs' => 'Danh sách ca bệnh',
+            'sonocgia' => 'Số nóc gia',
         ];
     }
 

@@ -12,13 +12,15 @@
         "production": "cross-env NODE_ENV=production ../../../node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=../../../node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
+        "@rollup/plugin-babel": "^5.2.2",
         "axios": "^0.19.2",
         "cross-env": "^5.1",
         "laravel-mix": "^5.0.4",
         "node-sass": "^4.14.1",
         "resolve-url-loader": "^2.3.1",
+        "rollup-plugin-vue": "^6.0.0",
         "sass-loader": "^8.0.2",
-        "vue-template-compiler": "^2.6.11"
+        "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
         "@braid/vue-formulate": "^2.4.3",

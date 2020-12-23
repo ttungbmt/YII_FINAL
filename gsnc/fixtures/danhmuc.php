@@ -228,6 +228,25 @@ $data['layer_tree'] = [
                 ],
                 'selected' => false,
             ],
+
+            [
+                'type' => 'wms',
+                'title' => 'IDW PHP',
+                'key' => 'idw',
+                'source' => [
+                    'url' => '/geogis/pcd/ows?',
+                    'params' => [
+                        'layers' => 'pcd:idw_php',
+                    ]
+                ],
+                'popup' => [
+                    'heading' => 'Chỉ tiêu nội suy PHP',
+                    'fields' => ['GRAY_INDEX'],
+                    'attributeLabels' => [
+                        'GRAY_INDEX' => 'Giá trị',
+                    ],
+                ],
+            ],
         ],
     ],
 

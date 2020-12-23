@@ -11,7 +11,7 @@ class OdichForm extends Odich
     public function rules()
     {
         return array_merge(parent::rules(),[
-            [['maquan', 'maphuong', 'ngayxacdinh', 'ngayphathien', 'loai_od'], 'required'],
+            [['maquan', 'maphuong', 'ngayxacdinh', 'ngayphathien', 'loai_od', 'cabenhs'], 'required'],
         ]);
     }
 

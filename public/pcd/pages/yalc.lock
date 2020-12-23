@@ -2,11 +2,11 @@
   "version": "v1",
   "packages": {
     "@ttungbmt/vuex-form": {
-      "signature": "0b8af634528c8dcfbc3b58282a6d4ca2",
+      "signature": "b9aac56182ead535d82ae4f54565e238",
       "link": true
     },
     "@ttungbmt/vuex-toolkit": {
-      "signature": "7781f6c29d89c7ec4beef32655b7eb97",
+      "signature": "ca0655ae7a0fc8c78a5d8b3170009d25",
       "link": true
     }
   }

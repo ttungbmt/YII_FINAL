@@ -7,7 +7,6 @@ import * as mixins from './mixins'
 
 import 'jquery-serializeobject';
 
-
 if (typeof Vue !== 'undefined') {
     Vue.use(VueResource)
 

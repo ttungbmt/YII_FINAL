@@ -70,6 +70,22 @@ class OdichController extends AppController
         ]);
     }
 
+    public function actionSuggestionDncs(){
+        $input = request()->get('input');
+        $data = PtNguyco::find()->andWhere("gid = '{$input}' OR ten_cs ilike '%$input%'")->limit(5)->all();
+
+        return $this->asJson([
+            'fields' => [
+                ['key' => 'gid', 'label' => 'ID'],
+                ['key' => 'ten_cs', 'label' => 'Tên CS'],
+                ['key' => 'diachi', 'label' => 'Địa chỉ'],
+            ],
+            'items' => ArrayHelper::toArray($data, [
+                PtNguyco::class => PtNguyco::rawFields()
+            ])
+        ]);
+    }
+
     public function getPageData(){
         $id = request()->get('id');
         $odich = OdichForm::findById($id);

@@ -19,10 +19,9 @@ export default {
             control: 'basemap',
             title: 'Mapbox',
             type: 'tile',
-            active: true,
+            active: false,
             options: {
-                map: "mapbox.streets",
-                url: "https://api.tiles.mapbox.com/v4/{map}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoidHR1bmdibXQiLCJhIjoiY2EzNDFhZjU4ZThkNzY5NTU3M2U1YWFiNmY4OTE3OWQifQ.Bo1ss5J4UjPPOjmq9S3VQw",
+                url: "https://api.mapbox.com/styles/v1/ttungbmt/ckj0wbm311brs1aru2ltmnsge/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoidHR1bmdibXQiLCJhIjoiY2EzNDFhZjU4ZThkNzY5NTU3M2U1YWFiNmY4OTE3OWQifQ.Bo1ss5J4UjPPOjmq9S3VQw",
                 attribution: "Map data &copy; <a href='http://mapbox.com'>Mapbox</a>"
             },
         },
@@ -40,7 +39,7 @@ export default {
             control: "basemap",
             title: "HCMGIS",
             type: "tile",
-            active: false,
+            active: true,
             options: {
                 url: "https://pcd.hcmgis.vn/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=hcm_map:hcm_map_all&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fjpeg",
                 attribution: "Map data &copy; <a href='https://hcmgis.vn/'>HCMGIS</a>"

@@ -18,16 +18,14 @@
             </template>
         </b-table>
 
-        <v-wait :for="keyLoading" v-if="hasBtn('getList')">
+        <v-wait :for="keyLoading" v-if="hasBtnType('getList')">
             <template slot="waiting">
-                <b-progress :value="100" :max="100" animated></b-progress>
+                <b-progress :value="100" :max="100" animated class="mt-2"></b-progress>
             </template>
         </v-wait>
 
         <div class="btn-group" v-if="!_.isEmpty(buttons)">
-            <button type="button" class="btn-small mt-2" @click="openModal" v-if="hasBtn('create')">Thêm mới</button>
-            <button type="button" class="btn-small mt-2" @click="showModal('modal-order')" v-if="hasBtn('order')">{{getBtn('order', 'label')}}</button>
-            <button type="button" class="btn-small mt-2" @click="getList" v-if="hasBtn('getList')">{{getBtn('getList', 'label')}}</button>
+            <button type="button" class="btn-small mt-2 mr-1 cursor-pointer" v-on="b.listeners" v-for="b in innerButtons">{{b.label}}</button>
         </div>
 
         <b-modal ref="modal-table" :title="form.title" v-if="form" v-bind="modalOptions">
@@ -48,6 +46,31 @@
             <div class="mt-3 text-right">
                 <b-button variant="danger" @click="hideModal('modal-order')">Hủy</b-button>
                 <b-button variant="primary" @click="handleOrderOk">Lưu</b-button>
+            </div>
+        </b-modal>
+
+        <b-modal ref="modal-search" :title="getBtn('search', 'label', '')" hide-footer>
+            <div>
+                <b-alert :show="suggestions.alert" dismissible variant="success" class="border-0">Đã thêm vào danh sách</b-alert>
+
+                <b-input-group class="mb-2">
+                    <template #prepend>
+                        <div class="flex items-center"><i class="icon-search4"></i></div>
+                    </template>
+
+                    <b-form-input placeholder="Tìm kiếm..." v-model="suggestions.text"></b-form-input>
+                </b-input-group>
+
+                <v-wait for="suggestions">
+                    <template slot="waiting">
+                        <b-progress :value="100" animated></b-progress>
+                    </template>
+                    <b-table hover :items="suggestions.items" :fields="suggestions.fields" select-mode="single" selectable @row-clicked="onSearchRowClicked"></b-table>
+                </v-wait>
+            </div>
+            <div class="mt-3 text-right">
+                <b-button variant="danger" @click="hideModal('modal-search')">Hủy</b-button>
+                <b-button variant="primary" @click="handleSearch">OK</b-button>
             </div>
         </b-modal>
     </div>
@@ -97,7 +120,13 @@
                     'hide-footer': true,
                     size: get(this.form, 'size', 'md')
                 },
-                ordered: []
+                ordered: [],
+                suggestions: {
+                    text: '',
+                    alert: false,
+                    fields: [],
+                    items: []
+                }
             }
         },
         computed: {
@@ -106,9 +135,55 @@
                 if(this.itemsPath) return this.$store.get(this.itemsPath)
                 return []
             },
+            innerButtons(){
+                return this.buttons.map(v => {
+                    if(v === 'create') return {label: 'Thêm mới', type: 'create', listeners: {click: this.openModal}}
+                    if(v.type === 'order') return {...v, listeners: {click: () => this.showModal('modal-order')}}
+                    if(v.type === 'getList') return {...v, listeners: {click: this.getList}}
+                    if(v.type === 'search') return {...v, listeners: {click: () => this.showModal('modal-search')}}
 
+                    return v
+                })
+            }
+        },
+        watch: {
+            'suggestions.text': _.debounce(function (newVal) {
+                let attrs = this.getBtn('search')
+
+                if(_.trim(newVal) === '') {
+                    this.suggestions.fields = []
+                    this.suggestions.items = []
+
+                    return null
+                }
+
+
+                this.$wait.start('suggestions')
+
+                $.get(URI(attrs.url).setSearch('input', newVal).toString()).then(res => {
+                    this.suggestions.fields = res.fields
+                    this.suggestions.items = res.items
+
+                    this.$wait.end('suggestions')
+                })
+            }, 300)
         },
         methods: {
+            handleSearch(){
+                let attrs = this.getBtn('search')
+                console.log(attrs)
+            },
+            onSearchRowClicked(items){
+                let data = Object.assign([], this.innerItems).concat([items])
+                this.updateForm({value: data})
+
+                this.suggestions.alert = true
+                clearTimeout(this.alertTimer)
+
+                this.alertTimer = setTimeout(() => {
+                    this.suggestions.alert = false
+                }, 2000)
+            },
             hasGroup({fields}){
                 return !isEmpty(filter(fields, f => f.group))
             },
@@ -170,15 +245,11 @@
 
                 return value
             },
-            hasBtn(name){
-                return !isEmpty(filter(this.buttons, (v, k) => {
-                    if(isString(v) && v === name) return true
-                    if(has(v, 'type') && v.type === name) return true
-                    return false
-                }))
+            hasBtnType(type){
+                return !isEmpty(filter(this.innerButtons, b => b.type === type))
             },
-            getBtn(name, attr = '', defaultValue = {}){
-                return get(filter(this.buttons, v => this.hasBtn(name)), '0'+(attr ? '.'+attr : ''), defaultValue)
+            getBtn(type, attr = '', defaultValue = {}){
+                return get(filter(this.innerButtons, v => v.type === type), '0'+(attr ? '.'+attr : ''), defaultValue)
             },
             editItem({index}){
                 this.modelIndex = index
