@@ -1,6 +1,7 @@
 <?php
 namespace pcd\modules\sxh\forms;
 
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use pcd\models\CabenhSxh;
 use pcd\modules\pt_nguyco\models\PtNguyco;
@@ -15,11 +16,19 @@ class OdichForm extends Odich
     public $has_cabenhs;
     public $phamvi_gis;
     public $phamvi_px;
+    public $check_ngayketthuc_td;
 
     public function rules()
     {
         return array_merge(parent::rules(),[
             [['maquan', 'maphuong', 'ngayxacdinh', 'ngayphathien', 'loai_od', 'phamvi_gis', 'phamvi_px'], 'required'],
+            ['check_ngayketthuc_td', function(){
+                $lastCb = Arr::last($this->cabenhs);
+                if($lastCb && $lastCb->ngaymacbenh){
+                    $next28d = Carbon::createFromFormat('d/m/Y', $lastCb->ngaymacbenh)->addDays(28);
+                    if($next28d->greaterThan(Carbon::now())) $this->addError('check_ngayketthuc_td', 'Chưa thỏa điều kiện kết thúc ổ dịch');
+                }
+            }, 'skipOnEmpty' => false,],
             ['has_cabenhs', function () {
                 if(collect(request('cabenhs', []))->isEmpty())  $this->addError('has_cabenhs', 'Danh sách ca bệnh không được bỏ trống');
             }, 'skipOnEmpty' => false,],
