@@ -25,7 +25,7 @@ class OdichForm extends Odich
                 $lastCb = Arr::last($this->cabenhs);
                 if($this->{$attribute} && $lastCb && $lastCb->ngaymacbenh){
                     $next28d = Carbon::createFromFormat('d/m/Y', $lastCb->ngaymacbenh)->addDays(28);
-                    if($next28d->greaterThan(Carbon::now())) $this->addError($attribute, 'Chưa thỏa điều kiện kết thúc ổ dịch');
+                    if($next28d->greaterThan(Carbon::now())) $this->addError($attribute, 'Chưa thỏa điều kiện kết thúc ổ dịch. Ngày dự kiến '.$next28d->format('d/m/Y').' (28 ngày từ ca cuối cùng)');
                 }
             }, 'skipOnEmpty' => false,],
             ['has_cabenhs', function () {

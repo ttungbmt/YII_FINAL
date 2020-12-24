@@ -79,7 +79,7 @@ class Odich extends App
             [['loai_od', 'sonocgia'], 'integer'],
             [['khaosat_cts', 'diet_lqs', 'phun_hcs'], 'required'],
             [['maquan', 'maphuong', 'loai_od', 'ngayxacdinh', 'ngayphathien', 'ngaydukien_kt', 'sonocgia', 'ngaybatdau_gs', 'nguoithuchien'], 'required'],
-            [['ngayxacdinh', 'ngayphathien', 'ngaybatdau_gs'], 'dateCompare', 'compareValue' => date('d/m/Y'), 'format' => 'd/m/Y', 'operator' => '<='],
+            [['ngayxacdinh', 'ngayphathien', 'ngaybatdau_gs', 'ngayketthuc_td'], 'dateCompare', 'compareValue' => date('d/m/Y'), 'format' => 'd/m/Y', 'operator' => '<='],
         ];
     }
 
