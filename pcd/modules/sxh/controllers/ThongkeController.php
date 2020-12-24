@@ -107,12 +107,12 @@ class ThongkeController extends AppController
 
             $field = $maquan ? ['key' => 'maphuong', 'name' => 'tenphuong', 'label' => 'Phường xã', 'table' => HcPhuong::tableName(), 'filter' => ['maquan' => $maquan]] : ['key' => 'maquan', 'name' => 'tenquan', 'label' => 'Quận huyện', 'table' => HcQuan::tableName(), 'filter' => ['maquan' => null]];
 
-            $phc = (new Query())->select('odich_id, MIN(tt) min_tt, MAX ( tt ) m_tt, COUNT(tt) c_tt, SUM ( solit_hc ) solit_hc ')->from(['phc' => PhunHc::tableName()])->groupBy('odich_id')->andFilterDate(['ngayxuly' => [$date_from, $date_to]]);
+            $phc = (new Query())->select('odich_id, MIN(tt) min_tt, MAX ( tt ) m_tt, COUNT(tt) c_tt, SUM ( solit_hc ) solit_hc, MIN(ngayxuly) ngayxuly')->from(['phc' => PhunHc::tableName()])->groupBy('odich_id')->andFilterDate(['ngayxuly' => [$date_from, $date_to]]);
             $phc_px = (new Query()) ->select("od.{$field['key']}, COUNT(DISTINCT od.maphuong) px_phc")->from(['tb' => PhunHc::tableName()])->leftJoin(['od' => Odich::tableName()], 'od.id = tb.odich_id')
                 ->andFilterDate(['ngayxuly' => [$date_from, $date_to]])
                 ->groupBy('od.'.$field['key'])->having('MAX (tt) = 1');
 
-            $dlq = (new Query())->select('odich_id, MAX ( tt ) m_tt_dlq')->from(['phc' => DietLq::tableName()])->groupBy('odich_id')->andFilterDate(['ngayxuly' => [$date_from, $date_to]]);
+            $dlq = (new Query())->select('odich_id, MAX ( tt ) m_tt_dlq, MIN(ngayxuly) ngayxuly')->from(['phc' => DietLq::tableName()])->groupBy('odich_id')->andFilterDate(['ngayxuly' => [$date_from, $date_to]]);
             $dlq_px = (new Query())->select("od.{$field['key']}, COUNT(DISTINCT od.maphuong) px_dlq")->from(['tb' => DietLq::tableName()])->leftJoin(['od' => Odich::tableName()], 'od.id = tb.odich_id')->groupBy('od.'.$field['key'])
                 ->andFilterDate(['ngayxuly' => [$date_from, $date_to]]);
 
@@ -128,7 +128,6 @@ class ThongkeController extends AppController
                     'xl4' => 'SUM ( CASE WHEN loai_od = 4 THEN 1 END )',
                     'xl5' => 'SUM ( CASE WHEN loai_od = 5 THEN 1 END )',
                     'tong_odxl' => 'SUM(phc.c_tt)',
-                    'px_od_xldr' => 'COUNT(DISTINCT CASE WHEN loai_od = 2 THEN maphuong END)',
                     'solit_hc' => 'SUM (phc.solit_hc)',
                     'soluot_dlq' => 'SUM (dlq.m_tt_dlq)',
                     'dncs_count' => 'SUM(od.dncs_count)',
@@ -136,6 +135,7 @@ class ThongkeController extends AppController
                 ->from(['od' => Odich::tableName()])
                 ->leftJoin(['phc' => $phc], 'phc.odich_id = od.id')
                 ->leftJoin(['dlq' => $dlq], 'dlq.odich_id = od.id')
+                ->andFilterDate(['COALESCE(phc.ngayxuly, dlq.ngayxuly)' => [$date_from, $date_to]])
                 ->groupBy('od.'.$field['key'])
             ;
 
@@ -175,11 +175,9 @@ class ThongkeController extends AppController
                     ]),
                     'data' => collect($tb3->all())->map(function ($i) use($dm_loai_od){
                         $tong_xl = collect($i)->only(['xl1', 'xl2', 'xl3', 'mxl4', 'mxl5'])->sum();
-                        $px_od_xldr = $i['px_od_xldr'];
 
                         return array_merge($i, [
                             'tong_xl' => $tong_xl == 0 ? null : $tong_xl,
-                            'px_od_xldr' => $px_od_xldr == 0 ? null : $px_od_xldr,
                         ]);
                     })
                 ]);
