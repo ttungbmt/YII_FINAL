@@ -22,6 +22,7 @@ class OdichSxhSearch extends OdichSxh
     public $date_from;
     public $date_to;
     public $field_date;
+    public $tinhtrang;
 
     /**
      * @inheritdoc
@@ -30,6 +31,7 @@ class OdichSxhSearch extends OdichSxh
     {
         return [
             [['maquan', 'maphuong', 'field_date'], 'string'],
+            [['tinhtrang'], 'integer'],
             [['date_from', 'date_to'], 'date', 'format' => 'php:d/m/Y'],
         ];
     }
@@ -67,6 +69,9 @@ class OdichSxhSearch extends OdichSxh
                 'defaultPageSize' => 10,
             ],
         ]);
+
+        if($this->tinhtrang === '1') $query->andWhere('ngayketthuc_td IS NOT NULL');
+        if($this->tinhtrang === '0') $query->andWhere('ngayketthuc_td IS NULL');
 
 
         if (!$this->validate()) {
@@ -181,14 +186,9 @@ class OdichSxhSearch extends OdichSxh
             [
                 'label'     => 'Tình trạng',
                 'attribute' => 'tinhtrang',
+                'filter' => false,
                 'value' => function($model){
                     if($model->ngayketthuc_td){
-//                        $date = Carbon::createFromFormat('d/m/Y', $model->ngayketthuc_td);
-//                        if($date > Carbon::now()) {
-//                            return 'Kết thúc';
-//                        } else {
-//                            return 'Hoạt động';
-//                        }
                         return 'Kết thúc';
                     }
                     return 'Hoạt động';

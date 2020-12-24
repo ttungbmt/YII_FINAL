@@ -51,6 +51,14 @@ $role->initFormHc($model);
             </div>
         </div>
     </div>
+    <div class="col-md-2">
+        <?= $form->field($model, 'tinhtrang')->dropDownList([
+                1 => 'Kết thúc',
+                0 => 'Hoạt động'
+        ], [
+            'prompt'  => 'Tình trạng OD',
+        ])->label(false); ?>
+    </div>
 </div>
 
 <?php ActiveForm::end() ?>
