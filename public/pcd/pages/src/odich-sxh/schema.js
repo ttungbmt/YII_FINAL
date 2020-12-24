@@ -13,7 +13,6 @@ export default [
     {component: 'validation-provider', vid: 'diet_lqs'},
     {component: 'validation-provider', vid: 'khaosat_cts'},
     {component: 'validation-provider', vid: 'phun_hcs'},
-    {component: 'validation-provider', vid: 'check_ngayketthuc_td'},
 
     {component: 'm-heading', type: 'heading', serial: 'I', title: 'Tổng quan về ổ dịch', class: 'text-lg'},
     {component: 'm-html', html: `<div class="mt-2 mb-2 font-semibold"><a href="/admin/cabenh-sxh?cabenh_ids=${cabenh_ids}" title="Mở danh sách chi tiết ca bệnh" target="_blank" class="flex"><div class="text-base uppercase">Danh sách ca bệnh trong ổ dịch</div> <i class="ml-2 mt-1 icon-link"></i></a></div>`},
