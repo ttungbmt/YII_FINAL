@@ -13,11 +13,13 @@ class OdichForm extends Odich
 {
     public $dup_odich;
     public $has_cabenhs;
+    public $phamvi_gis;
+    public $phamvi_px;
 
     public function rules()
     {
         return array_merge(parent::rules(),[
-            [['maquan', 'maphuong', 'ngayxacdinh', 'ngayphathien', 'loai_od'], 'required'],
+            [['maquan', 'maphuong', 'ngayxacdinh', 'ngayphathien', 'loai_od', 'phamvi_gis', 'phamvi_px'], 'required'],
             ['has_cabenhs', function () {
                 if(collect(request('cabenhs', []))->isEmpty())  $this->addError('has_cabenhs', 'Danh sách ca bệnh không được bỏ trống');
             }, 'skipOnEmpty' => false,],
@@ -39,7 +41,7 @@ class OdichForm extends Odich
                         ->groupBy(new Expression("odich_id, od.maquan, od.maphuong"))
                         ->all()
                     ;
-                    
+
                     if(!empty($data)){
                         $this->addError('dup_odich', 'Ổ dịch đã trùng với ổ dịch khác trên hệ thống');
                         return null;
@@ -49,6 +51,15 @@ class OdichForm extends Odich
             }, 'skipOnEmpty' => false,],
         ]);
     }
+
+    public function attributeLabels()
+    {
+        return array_merge(parent::attributeLabels(), [
+            'phamvi_gis' => 'Phạm vi ổ dịch cần xử lý trên hệ thống GIS',
+            'phamvi_px' => 'Phạm vi ổ dịch cần xử lý',
+        ]);
+    }
+
 
     public static function findById($id){
         $model = self::findOne($id);
